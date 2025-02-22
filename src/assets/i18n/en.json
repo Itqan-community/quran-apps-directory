@@ -1,0 +1,71 @@
+{
+  "common": {
+    "back": "Back",
+    "submit": "Submit",
+    "loading": "Loading..."
+  },
+  "header": {
+    "title": "Quran Apps Directory",
+    "language": {
+      "ar": "العربية",
+      "en": "English"
+    }
+  },
+  "footer": {
+    "copyright": "Quran Apps Directory ©2025"
+  },
+  "appList": {
+    "search": {
+      "placeholder": "Search apps..."
+    },
+    "categories": {
+      "title": "Categories",
+      "recite": "Recite",
+      "listen": "Listen",
+      "kids": "Kids",
+      "memorization":"Memorization",
+      "translation": "Translation",
+      "research": "Research"
+    },
+    "apps": {
+      "title": "Apps List",
+      "sort": "Sort by rating"
+    }
+  },
+  "appDetail": {
+    "description": "Description",
+    "downloadLinks": "Download Links",
+    "appStore": "App Store",
+    "playStore": "Google Play",
+    "huaweiStore": "Huawei AppGallery",
+    "relevantApps": "Relevant Apps",
+    "screenshots": "Screenshots"
+  },
+  "requestForm": {
+    "title": "Request App Addition",
+    "subtitle": "Submit a Quran app to be added to our directory",
+    "form": {
+      "name": {
+        "label": "App Name",
+        "placeholder": "Enter the app name"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Describe the app's features and purpose"
+      },
+      "link": {
+        "label": "App Link",
+        "placeholder": "Enter the app store or website link"
+      },
+      "email": {
+        "label": "Contact Email",
+        "placeholder": "Enter your email address"
+      }
+    },
+    "success": {
+      "title": "Request Submitted",
+      "message": "Thank you for your submission! We will review your app request and get back to you soon.",
+      "reset": "Form has been reset"
+    }
+  }
+}

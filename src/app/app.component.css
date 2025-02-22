@@ -1,0 +1,32 @@
+.app-layout {
+  min-height: 100vh;
+}
+nz-header {
+  background-color: #23433d !important;
+}
+
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  color: white;
+}
+
+.lang-btn{
+  background-color: #669a7f;
+  border-color: #669a7f;
+}
+
+nz-content {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+nz-footer {
+  text-align: center;
+}

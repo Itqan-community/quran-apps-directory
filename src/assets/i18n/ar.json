@@ -1,0 +1,71 @@
+{
+  "common": {
+    "back": "رجوع",
+    "submit": "إرسال",
+    "loading": "جاري التحميل..."
+  },
+  "header": {
+    "title": "دليل تطبيقات القرآن",
+    "language": {
+      "ar": "العربية",
+      "en": "English"
+    }
+  },
+  "footer": {
+    "copyright": "دليل تطبيقات القرآن ©2025"
+  },
+  "appList": {
+    "search": {
+      "placeholder": "البحث في التطبيقات..."
+    },
+    "categories": {
+      "title": "التصنيفات",
+      "recite": "تلاوة",
+      "listen": "استماع",
+      "kids": "أطفال",
+      "memorization":"التذكر",
+      "translation": "ترجمة",
+      "research": "بحث"
+    },
+    "apps": {
+      "title": "قائمة التطبيقات",
+      "sort": "ترتيب حسب التقييم"
+    }
+  },
+  "appDetail": {
+    "description": "الوصف",
+    "downloadLinks": "روابط التحميل",
+    "appStore": "متجر آبل",
+    "playStore": "متجر جوجل بلاي",
+    "huaweiStore": "متجر هواوي",
+    "relevantApps": "تطبيقات ذات صلة",
+    "screenshots": "لقطات الشاشة"
+  },
+  "requestForm": {
+    "title": "طلب إضافة تطبيق",
+    "subtitle": "قدم طلباً لإضافة تطبيق قرآني إلى دليلنا",
+    "form": {
+      "name": {
+        "label": "اسم التطبيق",
+        "placeholder": "أدخل اسم التطبيق"
+      },
+      "description": {
+        "label": "الوصف",
+        "placeholder": "صف مميزات وأهداف التطبيق"
+      },
+      "link": {
+        "label": "رابط التطبيق",
+        "placeholder": "أدخل رابط المتجر أو الموقع"
+      },
+      "email": {
+        "label": "البريد الإلكتروني للتواصل",
+        "placeholder": "أدخل عنوان بريدك الإلكتروني"
+      }
+    },
+    "success": {
+      "title": "تم إرسال الطلب",
+      "message": "شكراً لك! سنراجع طلبك ونتواصل معك قريباً.",
+      "reset": "تم إعادة تعيين النموذج"
+    }
+  }
+}

@@ -1,0 +1,75 @@
+<!-- Request form container -->
+<div class="container">
+  <div class="form-card">
+    <h1>Request App Addition</h1>
+    <p class="subtitle">Submit a Quran app to be added to our directory</p>
+
+    <!-- App request form -->
+    <form nz-form (ngSubmit)="onSubmit()" #requestForm="ngForm">
+      <!-- App name field -->
+      <div class="form-item">
+        <label for="name">App Name</label>
+        <input
+          nz-input
+          id="name"
+          name="name"
+          [(ngModel)]="request.name"
+          required
+          placeholder="Enter the app name"
+        />
+      </div>
+
+      <!-- Description field -->
+      <div class="form-item">
+        <label for="description">Description</label>
+        <textarea
+          nz-input
+          id="description"
+          name="description"
+          [(ngModel)]="request.description"
+          required
+          rows="4"
+          placeholder="Describe the app's features and purpose"
+        ></textarea>
+      </div>
+
+      <!-- App link field -->
+      <div class="form-item">
+        <label for="link">App Link</label>
+        <input
+          nz-input
+          id="link"
+          name="link"
+          [(ngModel)]="request.link"
+          required
+          placeholder="Enter the app store or website link"
+        />
+      </div>
+
+      <!-- Contact email field -->
+      <div class="form-item">
+        <label for="email">Contact Email</label>
+        <input
+          nz-input
+          id="email"
+          name="email"
+          type="email"
+          [(ngModel)]="request.email"
+          required
+          placeholder="Enter your email address"
+        />
+      </div>
+
+      <!-- Submit button -->
+      <button
+        nz-button
+        nzType="primary"
+        nzSize="large"
+        type="submit"
+        [disabled]="!requestForm.form.valid"
+      >
+        Submit Request
+      </button>
+    </form>
+  </div>
+</div>
