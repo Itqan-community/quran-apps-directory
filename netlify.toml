@@ -1,6 +1,6 @@
 [build]
-  command = "npm run deploy"
-  publish = "dist/demo"
+  command = "ng build"
+  publish = "dist/browser"
 
 [[redirects]]
   from = "/*"
