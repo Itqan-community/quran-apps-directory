@@ -2,9 +2,9 @@
 <div class="container" *ngIf="app">
   <!-- Header with back button and app name -->
   <div class="header">
-    <button 
-      nz-button 
-      nzType="text" 
+    <button
+      nz-button
+      nzType="text"
       routerLink="/"
       aria-label="Back to apps list"
     >
@@ -15,9 +15,12 @@
 
   <!-- Screenshots carousel -->
   <nz-carousel [nzEffect]="'fade'" [nzAutoPlay]="true">
-    <div nz-carousel-content *ngFor="let screenshot of app.screenshots; let i = index">
-      <img 
-        [src]="screenshot" 
+    <div
+      nz-carousel-content
+      *ngFor="let screenshot of app.screenshots; let i = index"
+    >
+      <img
+        [src]="screenshot"
         [alt]="app.name + ' screenshot ' + (i + 1)"
         class="carousel-image"
       />
@@ -27,63 +30,63 @@
   <!-- App details content -->
   <div class="content-section">
     <!-- Description section -->
-    <h2>{{ 'appDetail.description' | translate }}</h2>
+    <h2>{{ "appDetail.description" | translate }}</h2>
     <p>{{ app.description[currentLang] }}</p>
 
     <!-- Categories section -->
     <div class="categories">
       <nz-tag *ngFor="let category of app.categories">
         <span [innerHTML]="getCategoryIcon(category)"></span>
-        {{ 'appList.categories.' + category.toLowerCase() | translate }} 
+        {{ "appList.categories." + category.toLowerCase() | translate }}
       </nz-tag>
     </div>
 
     <!-- Download links section -->
-    <h2>{{ 'appDetail.downloadLinks' | translate }}</h2>
+    <h2>{{ "appDetail.downloadLinks" | translate }}</h2>
     <div class="download-links">
       <!-- App Store link -->
-      <a 
-        *ngIf="app.appStoreLink" 
-        [href]="app.appStoreLink" 
-        target="_blank" 
-        nz-button 
+      <a
+        *ngIf="app.appStoreLink"
+        [href]="app.appStoreLink"
+        target="_blank"
+        nz-button
         nzType="default"
         aria-label="Download from App Store"
       >
         <span nz-icon nzType="apple" nzTheme="fill"></span>
-        {{ 'appDetail.appStore' | translate }}
+        {{ "appDetail.appStore" | translate }}
       </a>
       <!-- Google Play link -->
-      <a 
-        *ngIf="app.playStoreLink" 
-        [href]="app.playStoreLink" 
-        target="_blank" 
-        nz-button 
+      <a
+        *ngIf="app.googlePlayLink"
+        [href]="app.googlePlayLink"
+        target="_blank"
+        nz-button
         nzType="default"
         aria-label="Download from Google Play"
       >
         <span nz-icon nzType="android" nzTheme="fill"></span>
-        {{ 'appDetail.playStore' | translate }}
+        {{ "appDetail.playStore" | translate }}
       </a>
       <!-- Huawei AppGallery link -->
-      <a 
-        *ngIf="app.huaweiStoreLink" 
-        [href]="app.huaweiStoreLink" 
-        target="_blank" 
-        nz-button 
+      <a
+        *ngIf="app.huaweiAppGalleryLink"
+        [href]="app.huaweiAppGalleryLink"
+        target="_blank"
+        nz-button
         nzType="default"
         aria-label="Download from Huawei AppGallery"
       >
         <span nz-icon nzType="mobile" nzTheme="fill"></span>
-        {{ 'appDetail.huaweiStore' | translate }}
+        {{ "appDetail.huaweiStore" | translate }}
       </a>
     </div>
 
     <!-- Related apps section -->
-    <h2>{{ 'appDetail.relevantApps' | translate }}</h2>
+    <h2>{{ "appDetail.relevantApps" | translate }}</h2>
     <div class="relevant-apps">
-      <nz-card 
-        *ngFor="let relatedApp of relevantApps" 
+      <nz-card
+        *ngFor="let relatedApp of relevantApps"
         [routerLink]="['/app', relatedApp.id]"
         [attr.aria-label]="'View details for ' + relatedApp.name"
       >

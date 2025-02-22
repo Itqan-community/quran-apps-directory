@@ -5,7 +5,6 @@ nz-header {
   background-color: #23433d !important;
 }
 
-
 .header-content {
   display: flex;
   justify-content: space-between;
@@ -16,7 +15,7 @@ nz-header {
   color: white;
 }
 
-.lang-btn{
+.lang-btn {
   background-color: #669a7f;
   border-color: #669a7f;
 }
@@ -29,4 +28,57 @@ nz-content {
 
 nz-footer {
   text-align: center;
+}
+
+.logo-container img {
+  cursor: pointer;
+}
+
+.mobile-menu-btn {
+  display: none;
+  color: white;
+}
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background-color: #23433d;
+}
+
+.mobile-menu-active {
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  .desktop-menu {
+    display: none;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .header-content {
+    padding: 0 8px;
+  }
+
+  .mobile-menu a {
+    color: white;
+  }
+}
+
+::ng-deep .ant-btn-link {
+  color: #fff !important;
+}
+
+::ng-deep .ant-input:focus,
+.ant-input-focused {
+  border-color: red !important;
+}
+
+::ng-deep .ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused {
+  border-color: red !important;
 }

@@ -17,8 +17,8 @@
   padding: 8px 0;
   overflow-x: auto;
   cursor: grab;
-  -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
-  scrollbar-width: none;  /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
   user-select: none;
 }
 
@@ -73,10 +73,24 @@
   max-width: 100%;
   margin: 0 auto;
 
-  .app-card{
+  .app-card {
     min-width: 250px;
+    border-radius: 8px;
   }
-  
+}
+
+::ng-deep .ant-card-cover img {
+  border-radius: 8px 8px 0 0 !important;
+}
+
+::ng-deep .ant-input-affix-wrapper:hover {
+  border-color: #23433d !important; /* Replace with your desired hover border color */
+}
+
+::ng-deep .ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused {
+  border-color: #23433d !important;
+  box-shadow: 0 0 0 2px rgba(27, 94, 41, 0.2);
 }
 
 /* Small phones (320px and up) */
@@ -130,7 +144,7 @@ nz-card {
 }
 
 nz-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* RTL Support */

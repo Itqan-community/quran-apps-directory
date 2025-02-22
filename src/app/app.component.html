@@ -1,17 +1,66 @@
 <nz-layout class="app-layout" [dir]="isRtl ? 'rtl' : 'ltr'">
-  <nz-header> 
+  <nz-header>
     <div class="header-content">
-      <!-- <h1>{{ 'header.title' | translate }}</h1> -->
-       <img width="80" src="../assets/images/logo.png" alt="">
-      <nz-space>
-        <button *nzSpaceItem nz-button nzType="primary" class="lang-btn" (click)="toggleLanguage()">
-          {{ 'header.language.' + (isRtl ? 'en' : 'ar') | translate }}
-        </button>
-      </nz-space>
+      <div class="logo-container">
+        <img
+          width="80"
+          src="../assets/images/logo.png"
+          alt=""
+          routerLink="/apps"
+        />
+      </div>
+
+      <!-- Desktop Menu -->
+      <div class="desktop-menu">
+        <nz-space>
+          <a *nzSpaceItem nz-button nzType="link" routerLink="/apps">
+            {{ "header.home" | translate }}
+          </a>
+          <button
+            *nzSpaceItem
+            nz-button
+            nzType="primary"
+            class="lang-btn"
+            (click)="toggleLanguage()"
+          >
+            {{ "header.language." + (isRtl ? "en" : "ar") | translate }}
+          </button>
+        </nz-space>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        class="mobile-menu-btn"
+        nz-button
+        nzType="text"
+        (click)="toggleMobileMenu()"
+      >
+        <span nz-icon nzType="menu" nzTheme="outline"></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" [class.mobile-menu-active]="isMobileMenuVisible">
+      <a
+        nz-button
+        nzType="link"
+        routerLink="/apps"
+        (click)="toggleMobileMenu()"
+      >
+        {{ "header.home" | translate }}
+      </a>
+      <button
+        nz-button
+        nzType="primary"
+        class="lang-btn"
+        (click)="toggleLanguage(); toggleMobileMenu()"
+      >
+        {{ "header.language." + (isRtl ? "en" : "ar") | translate }}
+      </button>
     </div>
   </nz-header>
   <nz-content>
     <router-outlet></router-outlet>
   </nz-content>
-  <nz-footer>{{ 'footer.copyright' | translate }}</nz-footer>
+  <nz-footer>{{ "footer.copyright" | translate }}</nz-footer>
 </nz-layout>

@@ -6,6 +6,7 @@
   },
   "header": {
     "title": "دليل تطبيقات القرآن",
+    "home": "الرئيسية",
     "language": {
       "ar": "العربية",
       "en": "English"
@@ -23,7 +24,7 @@
       "recite": "تلاوة",
       "listen": "استماع",
       "kids": "أطفال",
-      "memorization":"التذكر",
+      "memorization": "التذكر",
       "translation": "ترجمة",
       "research": "بحث"
     },

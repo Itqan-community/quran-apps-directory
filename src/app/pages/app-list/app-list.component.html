@@ -4,11 +4,11 @@
   <div class="search-section">
     <!-- Search input with icon prefix -->
     <nz-input-group [nzPrefix]="searchPrefix">
-      <input 
-        type="text" 
-        nz-input 
-        [placeholder]="'appList.search.placeholder' | translate" 
-        [(ngModel)]="searchQuery" 
+      <input
+        type="text"
+        nz-input
+        [placeholder]="'appList.search.placeholder' | translate"
+        [(ngModel)]="searchQuery"
         (ngModelChange)="onSearch()"
         aria-label="Search apps"
       />
@@ -21,24 +21,26 @@
 
   <!-- Categories section -->
   <div class="categories-section">
-    <h2>{{ 'appList.categories.title' | translate }}</h2>
+    <h2>{{ "appList.categories.title" | translate }}</h2>
     <!-- Grid of category buttons -->
-    <div 
+    <div
       class="categories-grid"
       (mousedown)="startDragging($event)"
       (mousemove)="onDrag($event)"
       (mouseup)="stopDragging()"
       (mouseleave)="stopDragging()"
     >
-      <div 
-        class="category-item" 
-        *ngFor="let category of categories" 
+      <div
+        class="category-item"
+        *ngFor="let category of categories"
         (click)="filterByCategory(category.name)"
         role="button"
         [attr.aria-label]="'Filter by ' + category.name"
       >
         <span class="category-icon" [innerHTML]="category.icon"></span>
-        <span>{{ 'appList.categories.' + category.name.toLowerCase() | translate }}</span>
+        <span>{{
+          "appList.categories." + category.name.toLowerCase() | translate
+        }}</span>
       </div>
     </div>
   </div>
@@ -46,24 +48,28 @@
   <!-- Apps grid section -->
   <div class="apps-section">
     <div class="section-header">
-      <h2>{{ 'appList.apps.title' | translate }}</h2>
+      <h2>{{ "appList.apps.title" | translate }}</h2>
       <!-- Sort button -->
-      <button 
-        nz-button 
-        nzType="text" 
+      <button
+        nz-button
+        nzType="text"
         (click)="toggleSort()"
         aria-label="Sort by rating"
       >
-        <span nz-icon [nzType]="sortAscending ? 'sort-ascending' : 'sort-descending'" nzTheme="outline"></span>
+        <span
+          nz-icon
+          [nzType]="sortAscending ? 'sort-ascending' : 'sort-descending'"
+          nzTheme="outline"
+        ></span>
       </button>
     </div>
 
     <!-- Grid of app cards -->
     <div class="app-grid">
       <!-- App card with cover image -->
-      <nz-card 
-        *ngFor="let app of filteredApps" 
-        [nzCover]="coverTemplate" 
+      <nz-card
+        *ngFor="let app of filteredApps"
+        [nzCover]="coverTemplate"
         [routerLink]="['/app', app.id]"
         [attr.aria-label]="'View details for ' + app.name"
         class="app-card"
@@ -80,7 +86,10 @@
       </nz-card>
       <!-- Card cover image template -->
       <ng-template #coverTemplate>
-        <img alt="App screenshot" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
+        <img
+          alt="App screenshot"
+          src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+        />
       </ng-template>
     </div>
   </div>

@@ -1,44 +1,52 @@
-import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzSpaceModule } from 'ng-zorro-antd/space';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Component, inject } from "@angular/core";
+import { RouterOutlet, RouterLink } from "@angular/router";
+import { NzLayoutModule } from "ng-zorro-antd/layout";
+import { NzButtonModule } from "ng-zorro-antd/button";
+import { NzSpaceModule } from "ng-zorro-antd/space";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { NzIconModule } from "ng-zorro-antd/icon";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"],
   standalone: true,
   imports: [
     RouterOutlet,
+    RouterLink,
     NzLayoutModule,
     NzButtonModule,
     NzSpaceModule,
-    TranslateModule
-  ]
+    TranslateModule,
+    NzIconModule,
+  ],
 })
 export class App {
   public isRtl: boolean;
+  public isMobileMenuVisible = false;
   private translate = inject(TranslateService);
 
   constructor() {
     // Get browser language
     const browserLang = navigator.language;
-    const defaultLang = browserLang.startsWith('ar') ? 'ar' : 'en';
-    
+    const defaultLang = browserLang.startsWith("ar") ? "ar" : "en";
+
     // Set initial RTL state based on language
-    this.isRtl = defaultLang === 'ar';
-    document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+    this.isRtl = defaultLang === "ar";
+    document.documentElement.dir = this.isRtl ? "rtl" : "ltr";
 
     // Set up translations
-    this.translate.setDefaultLang('en');
+    this.translate.setDefaultLang("en");
     this.translate.use(defaultLang);
   }
 
   toggleLanguage() {
     this.isRtl = !this.isRtl;
-    document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
-    this.translate.use(this.isRtl ? 'ar' : 'en');
+    document.documentElement.dir = this.isRtl ? "rtl" : "ltr";
+    this.translate.use(this.isRtl ? "ar" : "en");
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuVisible = !this.isMobileMenuVisible;
   }
 }

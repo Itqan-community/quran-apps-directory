@@ -2,11 +2,18 @@
 /* @import "ng-zorro-antd/theme.rtl.min.css"; */
 
 /* Add custom styles */
+/* ::ng-deep :root {
+  --primary-color: #f5222d !important;
+} */
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
 }
-
+.ant-layout {
+  background: #ffffff !important;
+}
 /* RTL Support */
 [dir="rtl"] .ant-input {
   text-align: right;
