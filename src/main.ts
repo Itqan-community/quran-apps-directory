@@ -8,6 +8,9 @@ import { importProvidersFrom } from '@angular/core';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { App } from './app/app.component';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { MenuOutline, ArrowUpOutline, ArrowDownOutline } from '@ant-design/icons-angular/icons';
+
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -27,6 +30,7 @@ bootstrapApplication(App, {
     provideNzConfig(ngZorroConfig),
     importProvidersFrom(
       HttpClientModule,
+      NzIconModule.forRoot([MenuOutline, ArrowUpOutline, ArrowDownOutline]),
       TranslateModule.forRoot({
         loader: {
           provide: TranslateLoader,

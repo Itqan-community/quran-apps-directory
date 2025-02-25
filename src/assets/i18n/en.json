@@ -20,6 +20,7 @@
       "placeholder": "Search apps..."
     },
     "categories": {
+      "all":"All",
       "title": "Categories",
       "recite": "Recite",
       "listen": "Listen",
@@ -35,6 +36,7 @@
   },
   "appDetail": {
     "description": "Description",
+    "developer": "Developer",
     "downloadLinks": "Download Links",
     "appStore": "App Store",
     "playStore": "Google Play",

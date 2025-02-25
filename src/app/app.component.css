@@ -72,13 +72,3 @@ nz-footer {
 ::ng-deep .ant-btn-link {
   color: #fff !important;
 }
-
-::ng-deep .ant-input:focus,
-.ant-input-focused {
-  border-color: red !important;
-}
-
-::ng-deep .ant-input-affix-wrapper:focus,
-.ant-input-affix-wrapper-focused {
-  border-color: red !important;
-}

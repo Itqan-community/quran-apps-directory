@@ -5,6 +5,10 @@ import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzSpaceModule } from "ng-zorro-antd/space";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { NzIconModule } from "ng-zorro-antd/icon";
+import { MenuOutline } from '@ant-design/icons-angular/icons';
+
+// Import what icons you need
+const icons = [MenuOutline];
 
 @Component({
   selector: "app-root",
@@ -36,7 +40,7 @@ export class App {
     document.documentElement.dir = this.isRtl ? "rtl" : "ltr";
 
     // Set up translations
-    this.translate.setDefaultLang("en");
+    this.translate.setDefaultLang(defaultLang);
     this.translate.use(defaultLang);
   }
 

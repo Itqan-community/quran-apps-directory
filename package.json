@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@angular/animations": "^19.0.6",
+    "@angular/cdk": "^19.0.0",
     "@angular/common": "^19.0.6",
     "@angular/compiler": "^19.0.6",
     "@angular/core": "^19.0.6",
@@ -17,10 +18,10 @@
     "@angular/platform-browser": "^19.0.6",
     "@angular/platform-browser-dynamic": "^19.0.6",
     "@angular/router": "^19.0.6",
-    "ng-zorro-antd": "^19.0.2",
-    "@angular/cdk": "^19.0.0",
+    "@ant-design/icons-angular": "^19.0.0",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
+    "ng-zorro-antd": "^19.0.2",
     "rxjs": "^7.8.1",
     "tslib": "^2.5.0",
     "zone.js": "~0.15.0"

@@ -10,11 +10,11 @@ import { NzGridModule } from "ng-zorro-antd/grid";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { AppService, QuranApp } from "../../services/app.service";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { categories } from "../../services/applicationsData";
+import { NzRateModule } from "ng-zorro-antd/rate";
+import { FormsModule } from "@angular/forms";
 
-type CategoryKey = "Recite" | "Listen" | "Kids" | "Translation";
-
-const CATEGORY_ICONS: Record<CategoryKey, string> = categories;
 
 @Component({
   selector: "app-detail",
@@ -22,10 +22,13 @@ const CATEGORY_ICONS: Record<CategoryKey, string> = categories;
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule,
     NzCarouselModule,
     NzCardModule,
     NzButtonModule,
     NzIconModule,
+    NzDividerModule,
+    NzRateModule,
     NzTagModule,
     NzGridModule,
     TranslateModule,
@@ -36,7 +39,8 @@ const CATEGORY_ICONS: Record<CategoryKey, string> = categories;
 export class AppDetailComponent implements OnInit {
   app?: QuranApp;
   relevantApps: QuranApp[] = [];
-  currentLang: "en" | "ar" = this.getBrowserLanguage();
+  currentLang: "en" | "ar" = "ar";
+  categoriesSet: Array<{name: string, icon: string}> = categories;
 
   constructor(
     private route: ActivatedRoute,
@@ -45,9 +49,9 @@ export class AppDetailComponent implements OnInit {
     private translateService: TranslateService
   ) {
     // Set initial language based on browser
-    const browserLang = this.getBrowserLanguage();
-    this.translateService.use(browserLang);
-
+    // const browserLang = this.getBrowserLanguage();
+    // this.translateService.use(browserLang);
+    this.currentLang = this.translateService.currentLang as 'ar' | 'en';
     // Subscribe to language changes
     this.translateService.onLangChange.subscribe((event) => {
       this.currentLang = event.lang as "en" | "ar";
@@ -79,9 +83,10 @@ export class AppDetailComponent implements OnInit {
     });
   }
 
+
+  
   getCategoryIcon(category: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(
-      CATEGORY_ICONS[category as CategoryKey] || ""
-    );
+    const foundCategory = this.categoriesSet.find(cat => cat.name === category);
+    return this.sanitizer.bypassSecurityTrustHtml(foundCategory?.icon || '');
   }
 }

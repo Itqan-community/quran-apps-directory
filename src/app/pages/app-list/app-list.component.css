@@ -48,8 +48,14 @@
   background: #e6f7ff;
 }
 
+.category-item.selected {
+  background: #ede0c090;
+  color: black;
+}
+
 .category-icon {
   margin-bottom: 8px;
+  font-size: 24px;
 }
 
 .category-icon svg {
@@ -67,6 +73,7 @@
 .app-grid {
   display: flex;
   flex-wrap: wrap;
+  justify-content:space-around;
   gap: 16px;
   padding: 16px;
   width: 100%;
@@ -74,9 +81,18 @@
   margin: 0 auto;
 
   .app-card {
-    min-width: 250px;
+    min-width: 300px;
     border-radius: 8px;
   }
+
+  .app-icon-container {
+    margin-inline-end: 20px;
+    .app-icon{
+      width: 38px;
+      border-radius: 40px;
+    }
+  }
+
 }
 
 ::ng-deep .ant-card-cover img {
@@ -91,6 +107,10 @@
 .ant-input-affix-wrapper-focused {
   border-color: #23433d !important;
   box-shadow: 0 0 0 2px rgba(27, 94, 41, 0.2);
+}
+
+::ng-deep .ant-card-body{
+  padding-inline-start: 8px;
 }
 
 /* Small phones (320px and up) */
@@ -134,8 +154,10 @@
 }
 
 .rating-number {
-  margin-left: 8px;
-  color: #faad14;
+  margin-top: 6px;
+  font-weight: bold;
+  margin-inline-end: 8px;
+  color: #0f0f0f;
 }
 
 nz-card {
@@ -171,6 +193,10 @@ nz-card:hover {
     min-width: 80px;
     padding: 12px;
     font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 
   .category-icon svg {

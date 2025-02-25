@@ -5,6 +5,9 @@ import { applicationsData } from "./applicationsData";
 export interface QuranApp {
   id: string;
   name: string;
+  mainImage:string | null;
+  applicationIcon: string | null;
+  developerName: string | null;
   description: {
     ar: string;
     en: string;
@@ -46,6 +49,10 @@ export class AppService {
   }
 
   getAppsByCategory(category: string): Observable<QuranApp[]> {
-    return of(this.apps.filter((app) => app.categories.includes(category)));
+    if (category == 'all') {
+      return of(this.apps);
+    }else {
+      return of(this.apps.filter((app) => app.categories.includes(category)));
+    }
   }
 }

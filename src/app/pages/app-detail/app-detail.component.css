@@ -3,6 +3,10 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+nz-divider::after,
+nz-divider::before {
+  border-color: #ceced1 !important;
+}
 
 .header {
   display: flex;
@@ -23,42 +27,108 @@
 }
 
 .content-section {
-  margin-top: 32px;
+  margin-top: 24px;
 }
 
 .categories {
-  margin: 24px 0;
+  margin: 16px 0;
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  .cat{
+    margin-inline-end: 28px;
+    .cat-icon{
+      margin-inline-end: 8px;
+    }
+    .cat-name{
+      font-weight: bold;
+    }
+  }
+
+}
+
+.dev-container{
+  .icon{
+    margin-top: 6px;
+    margin-inline-end: 10px;
+  }
 }
 
 .download-links {
+  margin: 16px 0 40px 0px;
   display: flex;
   gap: 16px;
-  margin: 24px 0;
   flex-wrap: wrap;
 }
 
 .relevant-apps {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-around;
   gap: 16px;
-  margin-top: 16px;
+  padding: 16px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
 }
 
-nz-card {
+.app-card {
+  min-width: 300px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s;
-  flex: 0 0 calc(33.333% - 11px);
 }
 
-nz-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+.app-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.app-icon-container {
+  margin-inline-end: 20px;
+}
+
+.app-icon {
+  width: 38px;
+  border-radius: 40px;
+}
+
+.app-rating {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.rating-number {
+  margin-top: 6px;
+  font-weight: bold;
+  margin-inline-end: 8px;
+  color: #0f0f0f;
+}
+
+::ng-deep .ant-card-cover img {
+  border-radius: 8px 8px 0 0 !important;
+}
+
+::ng-deep .ant-card-body {
+  padding-inline-start: 8px;
 }
 
 [dir="rtl"] .header {
   flex-direction: row-reverse;
+}
+
+/* Tablet (768px and up) */
+@media screen and (min-width: 768px) {
+  nz-card {
+    flex: 0 0 calc(50% - 12px);
+  }
+}
+
+/* Large Desktop (1200px and up) */
+@media screen and (min-width: 1200px) {
+  nz-card {
+    flex: 0 0 calc(33.333% - 16px);
+  }
 }
 
 /* Mobile adjustments */
@@ -100,15 +170,23 @@ nz-card:hover {
   }
 
   .download-links a {
-    width: 100%;
+    flex-basis: 46%;
   }
 
   .relevant-apps {
     gap: 12px;
   }
 
+  .app-rating nz-rate {
+    font-size: 16px;
+  }
+
+  .rating-number {
+    font-size: 14px;
+  }
+
   nz-card {
-    flex: 0 0 100%;
+    width: 100%;
   }
 
   nz-tag {
