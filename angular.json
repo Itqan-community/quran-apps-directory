@@ -39,8 +39,8 @@
             "polyfills": ["zone.js"],
             "scripts": [],
             "styles": [
-              "src/global_styles.css",
-              "node_modules/ng-zorro-antd/ng-zorro-antd.css"
+              "node_modules/ng-zorro-antd/ng-zorro-antd.css",
+              "src/global_styles.less"
             ],
             "tsConfig": "tsconfig.app.json"
           }

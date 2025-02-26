@@ -1,10 +1,24 @@
 .app-layout {
   min-height: 100vh;
 }
-nz-header {
-  background-color: #23433d !important;
+.app-header {
+  margin-top: 30px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  &--content {
+    background-color: #f8f8f8cc;
+    // backdrop-filter: blur(2px);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    height: 60px;
+  }
 }
-
 .header-content {
   display: flex;
   justify-content: space-between;
@@ -13,17 +27,6 @@ nz-header {
   margin: 0 auto;
   padding: 0 16px;
   color: white;
-}
-
-.lang-btn {
-  background-color: #669a7f;
-  border-color: #669a7f;
-}
-
-nz-content {
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 nz-footer {
@@ -67,8 +70,4 @@ nz-footer {
   .mobile-menu a {
     color: white;
   }
-}
-
-::ng-deep .ant-btn-link {
-  color: #fff !important;
 }
