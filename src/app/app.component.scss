@@ -9,14 +9,32 @@
   justify-content: space-between;
   width: 100%;
   &--content {
-    background-color: #f8f8f8cc;
-    // backdrop-filter: blur(2px);
+    background-color: #f0f0f0cc;
+    backdrop-filter: blur(4px);
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 16px;
-    height: 60px;
+    min-height: 60px;
+    flex-flow: row wrap;
+    // responsive
+    @media screen and (max-width: 768px) {
+      min-height: unset;
+      padding: 8px;
+      .logo-container {
+        img {
+          height: auto;
+          width: 36px;
+        }
+      }
+    }
+  }
+  @media screen and (max-width: 768px) {
+    top: 20px;
+    position: fixed;
+    z-index: 1000;
+    margin: 0;
   }
 }
 .header-content {
@@ -38,21 +56,74 @@ nz-footer {
 }
 
 .mobile-menu-btn {
+  width: 35px;
+  height: 35px;
+  background: none;
+  border: none;
+  padding: 0;
   display: none;
-  color: white;
+  .mobile-menu-btn--bars,
+  .mobile-menu-btn--bars::before,
+  .mobile-menu-btn--bars::after {
+    background: #A0533B;
+    content: "";
+    display: block;
+    height: 2px;
+    position: absolute;
+    transition: background ease 0.2s, top ease 0.2s 0.2s, transform ease 0.2s;
+    width: 20px;
+  }
+  .mobile-menu-btn--bars {
+    position: relative;
+    background-color: transparent;
+    transform: translate(-50%, 50%);
+    left: 50%;
+    &::before {
+      top: -4px;
+      transform: rotate(0deg);
+    }
+    &::after {
+      top: 4px;
+      transform: rotate(0deg);
+    }
+    &.expanded {
+      background: transparent;
+
+      &::before,
+      &::after {
+        top: 0;
+        transition: top ease 0.2s, transform ease 0.2s 0.2s;
+      }
+
+      &::before {
+        transform: rotate(45deg);
+      }
+      &::after {
+        transform: rotate(-45deg);
+      }
+    }
+  }
 }
 
 .mobile-menu {
+  padding: 16px 8px 5px;
+  position: relative;
+  width: 100%;
+  top: 100%;
+  left: 0;
+  flex: 0 0 100%;
   display: none;
-  flex-direction: column;
-  gap: 16px;
-  padding: 16px;
-  background-color: #23433d;
+  &-active {
+    display: block;
+  }
+  a {
+    display: block;
+    color: #A0533B;
+    padding: 5px 0;
+  }
 }
 
-.mobile-menu-active {
-  display: flex;
-}
+ 
 
 @media (max-width: 768px) {
   .desktop-menu {
@@ -65,9 +136,5 @@ nz-footer {
 
   .header-content {
     padding: 0 8px;
-  }
-
-  .mobile-menu a {
-    color: white;
   }
 }

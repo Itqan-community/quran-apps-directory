@@ -42,7 +42,7 @@
     "appStore": "App Store",
     "playStore": "Google Play",
     "huaweiStore": "Huawei AppGallery",
-    "relevantApps": "Relevant Apps",
+    "relevantApps": "Similar Apps",
     "screenshots": "Screenshots"
   },
   "requestForm": {

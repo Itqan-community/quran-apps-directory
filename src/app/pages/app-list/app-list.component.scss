@@ -10,44 +10,68 @@
   h1 {
     margin: 0;
   }
+  // responsive
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    h1 {
+      margin-bottom: 10px;
+    }
+    .search-section {
+      margin-top: 0;
+      width: 100%;
+    }
+  }
 }
 
 .categories-section {
   margin-bottom: 32px;
-  overflow: hidden;
 }
 .section-title {
   font-size: 16px;
   font-weight: 500;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .anticon {
+    color: #a0533b;
+  }
   h2 {
     font-size: 18px;
     font-weight: 500;
     color: #72788e;
+    margin-bottom: 0;
   }
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 .categories-grid {
   display: flex;
   gap: 16px;
-  padding: 8px 0;
   overflow-x: auto;
   cursor: grab;
   -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
   scrollbar-width: none; /* Hide scrollbar for Firefox */
   user-select: none;
+  // responsive
+  @media screen and (max-width: 768px) {
+    margin-inline-end: -1rem;
+  }
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-.categories-grid::-webkit-scrollbar {
+.categories-grid::-webkit-scrollbar,
+.app-grid-row::-webkit-scrollbar {
   display: none;
 }
 
 .categories-grid:active {
   cursor: grabbing;
 }
-
+.main-content {
+  @media screen and (max-width: 768px) {
+    padding-top: 60px;
+  }
+}
 :host ::ng-deep {
   nz-rate {
     .ant-rate-star:not(:last-child) {
@@ -110,19 +134,33 @@
     border-radius: 8px;
     background-color: #f8f8f8;
     height: 100%;
+    cursor: pointer;
+    transition: all 0.3s;
+    .app-icon-container {
+      margin-inline-end: 16px;
+      .app-icon {
+        width: 38px;
+        border-radius: 40px;
+      }
+    }
+    .card-data-container {
+      min-width: 0;
+    }
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
   }
 
-  .app-icon-container {
-    margin-inline-end: 16px;
-    .app-icon {
-      width: 38px;
-      border-radius: 40px;
+  // responsive
+  @media screen and (max-width: 768px) {
+    .app-grid-row {
+      overflow-x: auto !important;
+      flex-flow: row nowrap !important;
+      margin-inline-end: -1rem;
     }
   }
 }
-.card-data-container {
-  min-width: 0;
-}
+
 ::ng-deep .ant-card-cover img {
   border-radius: 8px 8px 0 0 !important;
 }
@@ -141,22 +179,6 @@
   padding: 16px;
 }
 
-/* Small phones (320px and up) */
-@media screen and (max-width: 375px) {
-}
-
-/* Tablet (768px and up) */
-@media screen and (min-width: 768px) {
-}
-
-/* Large Desktop (1200px and up) */
-@media screen and (min-width: 1200px) {
-}
-
-/* Extra Large Desktop (1600px and up) */
-@media screen and (min-width: 1600px) {
-}
-
 .app-rating {
   margin-top: 6px;
   display: flex;
@@ -169,15 +191,6 @@
   margin-inline-end: 8px;
   padding-top: 2px;
   color: #272424;
-}
-
-nz-card {
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-nz-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* RTL Support */

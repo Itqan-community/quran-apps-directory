@@ -34,7 +34,7 @@ import { FormsModule } from "@angular/forms";
     TranslateModule,
   ],
   templateUrl: "./app-detail.component.html",
-  styleUrls: ["./app-detail.component.css"],
+  styleUrls: ["./app-detail.component.scss"],
 })
 export class AppDetailComponent implements OnInit {
   app?: QuranApp;
