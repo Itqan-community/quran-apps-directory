@@ -32,32 +32,26 @@
           <!-- Mobile Menu Button -->
           <button
             class="mobile-menu-btn"
-            nz-button
-            nzType="text"
             (click)="toggleMobileMenu()"
+            
           >
-            <span nz-icon nzType="menu" nzTheme="outline"></span>
+            <span class="mobile-menu-btn--bars" [class.expanded]="isMobileMenuVisible"></span>
           </button>
         
     
         <!-- Mobile Menu -->
         <div class="mobile-menu" [class.mobile-menu-active]="isMobileMenuVisible">
           <a
-            nz-button
-            nzType="link"
             routerLink="/apps"
             (click)="toggleMobileMenu()"
           >
             {{ "header.home" | translate }}
           </a>
-          <button
-            nz-button
-            nzType="primary"
-            class="lang-btn"
+          <a
             (click)="toggleLanguage(); toggleMobileMenu()"
           >
             {{ "header.language." + (isRtl ? "en" : "ar") | translate }}
-          </button>
+        </a>
         </div>
       </div>
     </div>
