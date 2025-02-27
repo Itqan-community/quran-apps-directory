@@ -1,27 +1,32 @@
 <!-- Main container -->
 <div class="container">
-  <!-- Search section -->
-  <div class="search-section">
-    <!-- Search input with icon prefix -->
-    <nz-input-group [nzPrefix]="searchPrefix">
-      <input
-        type="text"
-        nz-input
-        [placeholder]="'appList.search.placeholder' | translate"
-        [(ngModel)]="searchQuery"
-        (ngModelChange)="onSearch()"
-        aria-label="Search apps"
-      />
-    </nz-input-group>
-    <!-- Search icon template -->
-    <ng-template #searchPrefix>
-      <span nz-icon nzType="search"></span>
-    </ng-template>
-  </div>
-
   <!-- Categories section -->
   <div class="categories-section">
-    <h2>{{ "appList.categories.title" | translate }}</h2>
+    <div class="search-section-wrapper">
+      <h1>{{ "appList.categories.main-title" | translate }}</h1>
+      <!-- Search section -->
+      <div class="search-section">
+        <!-- Search input with icon prefix -->
+        <nz-input-group [nzPrefix]="searchPrefix">
+          <input
+            type="text"
+            nz-input
+            [placeholder]="'appList.search.placeholder' | translate"
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="onSearch()"
+            aria-label="Search apps"
+          />
+        </nz-input-group>
+        <!-- Search icon template -->
+        <ng-template #searchPrefix>
+          <span nz-icon nzType="search"></span>
+        </ng-template>
+      </div>
+    </div>
+    <div class="section-title">
+      <h2>{{ "appList.categories.title" | translate }}</h2>
+      <a href="#">View All</a>
+    </div>
     <!-- Grid of category buttons -->
     <div
       class="categories-grid"
@@ -31,18 +36,33 @@
       (mouseleave)="stopDragging()"
     >
       <div
-      class="category-item"
-      role="button"
-      [class.selected]="selectedCategory === 'all'"
-      aria-label="Filter by All"
-      (click)="filterByCategory('all')"
+        class="category-item"
+        role="button"
+        [class.selected]="selectedCategory === 'all'"
+        aria-label="Filter by All"
+        (click)="filterByCategory('all')"
       >
-      <span class="category-icon">
-        <svg fill="#A0533B" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#A0533B"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5,22 C3.40231912,22 2.09633912,20.75108 2.00509269,19.1762728 L2,19 L2,5 C2,3.40231912 3.24891996,2.09633912 4.82372721,2.00509269 L5,2 L19,2 C20.5976809,2 21.9036609,3.24891996 21.9949073,4.82372721 L22,5 L22,19 C22,20.5976809 20.75108,21.9036609 19.1762728,21.9949073 L19,22 L5,22 Z M11,13 L4,13 L4,19 C4,19.5128358 4.38604019,19.9355072 4.88337887,19.9932723 L5,20 L11,20 L11,13 Z M20,13 L13,13 L13,20 L19,20 C19.5128358,20 19.9355072,19.6139598 19.9932723,19.1166211 L20,19 L20,13 Z M11,4 L5,4 C4.48716416,4 4.06449284,4.38604019 4.00672773,4.88337887 L4,5 L4,11 L11,11 L11,4 Z M19,4 L13,4 L13,11 L20,11 L20,5 C20,4.48716416 19.6139598,4.06449284 19.1166211,4.00672773 L19,4 Z"></path> </g></svg>
-      </span>
-      <span>{{
-        "appList.categories.all" | translate
-      }}</span>
+        <span class="category-icon">
+          <svg
+            fill="#A0533B"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            stroke="#A0533B"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              <path
+                d="M5,22 C3.40231912,22 2.09633912,20.75108 2.00509269,19.1762728 L2,19 L2,5 C2,3.40231912 3.24891996,2.09633912 4.82372721,2.00509269 L5,2 L19,2 C20.5976809,2 21.9036609,3.24891996 21.9949073,4.82372721 L22,5 L22,19 C22,20.5976809 20.75108,21.9036609 19.1762728,21.9949073 L19,22 L5,22 Z M11,13 L4,13 L4,19 C4,19.5128358 4.38604019,19.9355072 4.88337887,19.9932723 L5,20 L11,20 L11,13 Z M20,13 L13,13 L13,20 L19,20 C19.5128358,20 19.9355072,19.6139598 19.9932723,19.1166211 L20,19 L20,13 Z M11,4 L5,4 C4.48716416,4 4.06449284,4.38604019 4.00672773,4.88337887 L4,5 L4,11 L11,11 L11,4 Z M19,4 L13,4 L13,11 L20,11 L20,5 C20,4.48716416 19.6139598,4.06449284 19.1166211,4.00672773 L19,4 Z"
+              ></path>
+            </g>
+          </svg>
+        </span>
+        <span class="category-item--title">{{ "appList.categories.all" | translate }}</span>
       </div>
       <div
         class="category-item"
@@ -53,7 +73,7 @@
         [attr.aria-label]="'Filter by ' + category.name"
       >
         <span class="category-icon" [innerHTML]="category.icon"></span>
-        <span>{{
+        <span class="category-item--title">{{
           "appList.categories." + category.name.toLowerCase() | translate
         }}</span>
       </div>
@@ -62,7 +82,7 @@
 
   <!-- Apps grid section -->
   <div class="apps-section">
-    <div class="section-header">
+    <div class="section-title">
       <h2>{{ "appList.apps.title" | translate }}</h2>
       <!-- Sort button -->
       <button
@@ -81,44 +101,50 @@
 
     <!-- Grid of app cards -->
     <div class="app-grid">
-      <!-- App card with cover image -->
-      <nz-card
-        *ngFor="let app of filteredApps"
-        [nzCover]="coverTemplate"
-        [routerLink]="['/app', app.id]"
-        [attr.aria-label]="'View details for ' + app.name"
-        class="app-card"
-      >
-        <ng-template  #coverTemplate>
-          <div style="max-height: 300px; overflow: hidden;">
+      <div nz-row [nzGutter]="[24, 24]"> 
+        <div nz-col nzXs="2" nzSm="4" nzMd="8" nzLg="6" nzXl="6" *ngFor="let app of filteredApps">
+          <!-- App card with cover image -->
+          <nz-card
             
-            <img
-              [alt]="app.name + ' screenshot'"
-              [src]="app.mainImage"
-              style="width: 100%;"
-            />
-          </div>
-        </ng-template>
-
-        <div class="ant-flex">
-          <div class="app-icon-container ">
-            <img class="app-icon" [src]="app.applicationIcon" [alt]="app.name + ' icon'">          
-          </div>
-          <div class="card-data-container">
-            <nz-card-meta
-              [nzTitle]="app.name"
-              [nzDescription]="app.description[currentLang]"
-            ></nz-card-meta>
-            <!-- Rating display -->
-            <div class="app-rating ant-flex ant-flex-align-center">
-              <span class="rating-number">{{ app.rating }}</span>
-              <nz-rate [ngModel]="app.rating" [nzDisabled]="true"></nz-rate>
-
+            [nzCover]="coverTemplate"
+            [routerLink]="['/app', app.id]"
+            [attr.aria-label]="'View details for ' + app.name"
+            class="app-card"
+          >
+            <ng-template #coverTemplate>
+              <div style="max-height: 220px; overflow: hidden">
+                <img
+                  [alt]="app.name + ' screenshot'"
+                  [src]="app.mainImage"
+                  style="width: 100%"
+                />
+              </div>
+            </ng-template>
+    
+            <div class="ant-flex">
+              <div class="app-icon-container">
+                <img
+                  class="app-icon"
+                  [src]="app.applicationIcon"
+                  [alt]="app.name + ' icon'"
+                />
+              </div>
+              <div class="card-data-container">
+                <nz-card-meta
+                  [nzTitle]="app.name"
+                  [nzDescription]="app.description[currentLang]"
+                ></nz-card-meta>
+                <!-- Rating display -->
+                <div class="app-rating ant-flex ant-flex-align-center">
+                  <span class="rating-number">{{ app.rating }}</span>
+                  <nz-rate [ngModel]="app.rating" [nzDisabled]="true"></nz-rate>
+                </div>
+              </div>
             </div>
-
-          </div>
+          </nz-card>
         </div>
-      </nz-card>
+      </div>
+
     </div>
   </div>
 </div>

@@ -1,16 +1,33 @@
-.container {
-  padding: 24px;
-}
-
 .search-section {
   margin-bottom: 32px;
+  margin-top: 30px;
+}
+.search-section-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 30px;
+  h1 {
+    margin: 0;
+  }
 }
 
 .categories-section {
   margin-bottom: 32px;
   overflow: hidden;
 }
-
+.section-title {
+  font-size: 16px;
+  font-weight: 500;
+  h2 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #72788e;
+  }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .categories-grid {
   display: flex;
   gap: 16px;
@@ -31,36 +48,52 @@
   cursor: grabbing;
 }
 
-.category-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px;
-  background: #f5f5f5;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s;
-  min-width: 100px;
-  flex-shrink: 0;
-}
+:host ::ng-deep {
+  nz-rate {
+    .ant-rate-star:not(:last-child) {
+      margin-right: 3px;
+    }
+    .anticon svg {
+      width: 14px;
+      height: auto;
+    }
+  }
+  .ant-card-meta-description {
+    line-height: 1.3;
+  }
+  .category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-width: 100px;
+    flex-shrink: 0;
+    .category-icon {
+      margin-bottom: 8px;
 
-.category-item:hover {
-  background: #e6f7ff;
-}
-
-.category-item.selected {
-  background: #ede0c090;
-  color: black;
-}
-
-.category-icon {
-  margin-bottom: 8px;
-  font-size: 24px;
-}
-
-.category-icon svg {
-  width: 24px;
-  height: 24px;
+      svg {
+        width: 34px;
+        height: 34px;
+        display: block;
+      }
+    }
+    &--title {
+      font-size: 14px;
+      color: #272424;
+      font-weight: 500;
+    }
+    &:hover {
+      background: #ede0c04b;
+    }
+    &.selected {
+      background: #ede0c090;
+      color: black;
+    }
+  }
 }
 
 .section-header {
@@ -71,30 +104,25 @@
 }
 
 .app-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content:space-around;
-  gap: 16px;
-  padding: 16px;
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
+  margin-bottom: 30px;
 
   .app-card {
-    min-width: 300px;
     border-radius: 8px;
+    background-color: #f8f8f8;
+    height: 100%;
   }
 
   .app-icon-container {
-    margin-inline-end: 20px;
-    .app-icon{
+    margin-inline-end: 16px;
+    .app-icon {
       width: 38px;
       border-radius: 40px;
     }
   }
-
 }
-
+.card-data-container {
+  min-width: 0;
+}
 ::ng-deep .ant-card-cover img {
   border-radius: 8px 8px 0 0 !important;
 }
@@ -109,55 +137,38 @@
   box-shadow: 0 0 0 2px rgba(27, 94, 41, 0.2);
 }
 
-::ng-deep .ant-card-body{
-  padding-inline-start: 8px;
+::ng-deep .ant-card-body {
+  padding: 16px;
 }
 
 /* Small phones (320px and up) */
 @media screen and (max-width: 375px) {
-  .app-grid {
-    gap: 12px;
-    padding: 12px;
-  }
 }
 
 /* Tablet (768px and up) */
 @media screen and (min-width: 768px) {
-  .app-grid {
-    gap: 24px;
-    padding: 24px;
-  }
-
-  nz-card {
-    flex: 0 0 calc(50% - 12px);
-  }
 }
 
 /* Large Desktop (1200px and up) */
 @media screen and (min-width: 1200px) {
-  nz-card {
-    flex: 0 0 calc(33.333% - 16px);
-  }
 }
 
 /* Extra Large Desktop (1600px and up) */
 @media screen and (min-width: 1600px) {
-  nz-card {
-    flex: 0 0 calc(25% - 18px);
-  }
 }
 
 .app-rating {
-  margin-top: 16px;
+  margin-top: 6px;
   display: flex;
   align-items: center;
 }
 
 .rating-number {
-  margin-top: 6px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 500;
   margin-inline-end: 8px;
-  color: #0f0f0f;
+  padding-top: 2px;
+  color: #272424;
 }
 
 nz-card {
@@ -177,10 +188,6 @@ nz-card:hover {
 
 /* Mobile adjustments */
 @media screen and (max-width: 480px) {
-  .container {
-    padding: 16px;
-  }
-
   .search-section {
     margin-bottom: 24px;
   }
@@ -202,16 +209,6 @@ nz-card:hover {
   .category-icon svg {
     width: 20px;
     height: 20px;
-  }
-
-  .app-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 0;
-  }
-
-  nz-card {
-    width: 100%;
   }
 
   /* Make ratings more compact on mobile */
