@@ -10,6 +10,28 @@
     <base href="/">
   </head>
   <body>
-    <app-root>Loading...</app-root>
+    <app-root>
+        <style>
+          .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Rubik', sans-serif;
+          }
+          .loading h1 {
+            font-size: 2rem;
+            font-weight: 500;
+          }
+        </style>
+      <div class="loading">
+        <img
+              height="100"
+              src="../assets/images/logo-svg.svg"
+              alt=""
+              routerLink="/apps"
+            />
+      </div>
+    </app-root>
   </body>
 </html>
