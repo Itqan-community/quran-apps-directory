@@ -31,7 +31,7 @@ const CATEGORIES = categories;
     TranslateModule,
   ],
   templateUrl: "./app-list.component.html",
-  styleUrls: ["./app-list.component.css"],
+  styleUrls: ["./app-list.component.scss"],
 })
 export class AppListComponent implements OnInit {
   apps: QuranApp[] = [];

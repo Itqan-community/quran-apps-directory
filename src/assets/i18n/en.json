@@ -21,6 +21,7 @@
     },
     "categories": {
       "all":"All",
+      "main-title": "Quran App Index",
       "title": "Categories",
       "recite": "Recite",
       "listen": "Listen",
