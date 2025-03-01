@@ -4,12 +4,15 @@
       <div class="app-header--content">
  
           <div class="logo-container">
-            <img
-              height="40"
-              src="../assets/images/logo-svg.svg"
-              alt=""
-              routerLink="/apps"
-            />
+            <div class="logo-wrapper">
+              <img
+                height="40"
+                src="../assets/images/logo-svg.svg"
+                alt=""
+                routerLink="/apps"
+              />
+              <span class="beta-label">{{ "header.beta" | translate }}</span>
+            </div>
           </div>
     
           <!-- Desktop Menu -->

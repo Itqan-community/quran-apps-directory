@@ -6,6 +6,7 @@
   },
   "header": {
     "title": "دليل التطبيقات القرآنية",
+    "beta": "تجريبي",
     "home": "الرئيسية",
     "language": {
       "ar": "العربية",
@@ -26,7 +27,10 @@
       "recite": "تلاوة",
       "listen": "استماع",
       "kids": "أطفال",
-      "memorization": "حفط",
+      "memorize": "حفط",
+      "read": "قراءة",
+      "tafsir": "تفسير",
+      "education": "تعليم",
       "translation": "ترجمة",
       "research": "بحث"
     },

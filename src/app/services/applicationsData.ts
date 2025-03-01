@@ -1,133 +1,161 @@
 export const applicationsData = [
   {
-    "id": "quran-pro",
-    "name": "Quran Pro Muslim | القرآن الكريم",
-    "description": {
-      "en": "Offers a vast collection of audio recitations from various Qaris and supports translations in 30 different languages.",
-      "ar": "يقدم مجموعة واسعة من التلاوات الصوتية من قراء مختلفين ويدعم الترجمات بـ 30 لغة مختلفة."
-    },
-    "link": "https://quranpro.co/",
-    "status": "Done",
-    "rating": 4.7,
-    "categories": ["Recite", "Listen"],
-    "screenshots": [
-      "https://placehold.co/600x400",
-      "https://placehold.co/600x400"
+    id: "1_Wahy (Holy Quran)",
+    Name_Ar: "وَحي (القرآن الكريم)‬",
+    Name_En: "Wahy (Holy Quran)",
+    Short_Description_Ar: "القرآن تلاوة وتفسير كلمة بكلمة",
+    Short_Description_En: "Learn Holy Quran word-by-word",
+    Description_Ar:
+      "وحي - مصحفك الرقمي المتكامل لتلاوة وفهم واستماع القرآن الكريم\n\n\nيوفر لك تطبيق وحي تجربة سلسة ومتكاملة لقراءة واستماع وفهم القرآن الكريم بطريقة حديثة ومبتكرة، مع ميزات متقدمة تساعدك على التفاعل مع المصحف بكل سهوله على مستوى السور والآيات والكلمات.\n\nلماذا تختار وحي؟\n\n\n- مصحف رواية حفص بجميع إصدارات مجمع الملك فهد ورواية ورش.\n\n- أكثر من 64 قارئًا عالميًا لتلاوة القرآن الكريم بجودة عالية\n\n- ميزة نطق كل كلمة منفردة لمساعدتك على الحفظ وتحسين التلاوة\n\n- البحث الذكي بالرسم الإملائي للعثور على الآيات بسهولة\n\n- تفسير القرآن الكريم بـ 184 مصدرًا يشمل أشهر التفاسير والترجمات\n\n- تحميل التلاوات والتفاسير للاستماع والقراءة بدون إنترنت\n\n- صور توضيحية وتقنية الواقع المعزز لفهم معاني الآيات بعمق\n\n- واجهة تدعم أكثر من 34 لغة لتناسب المستخدمين حول العالم\n\n- خطط قرآنية لمتابعة ختمتك وتقدمك فيها\n\n- علامات مرجعية لحفظ مواضع القراءة.\n\n- كتابة التعليقات والملاحظات على الآيات\n\n- مشاركة الآية مع المحتوى المصاحب لها بصيغة نصية أو صور\n\n- تمرير تلقائي للصفحات\n\n- وصول مباشر للمواقع التي تشير لها الكلمات",
+    Description_En:
+      "Holy Quran app with unique features like Highlight the word being recited, word-translation, repeating ayah in recitation (to help in memorization) and many translations/tafsirs, and more ..\n\n\nFeatures:\n\n\n- Highlight the word being recited by the reciter, to help non-arabic speakers and the kids.\n\n- Listen Many recitations, with ayah repeating (to help in memorization).\n\n- Many translations and tafsirs.\n\n- Download recitations to play it without internet.\n\n- Ayah Searching\n\n- Adding Bookmarks.\n\n- Mushaf Mode and List Mode.",
+    status: "Done",
+    Apps_Avg_Rating: 4.9,
+    categories: ["read", "listen", "tafsir", "translation"],
+    screenshots: [
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/01_screenshots_ar.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/01_screenshots_en.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/02_screenshots_ar.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/02_screenshots_en.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/03_screenshots_ar.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/03_screenshots_en.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/04_screenshots_ar.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/05_screenshots_ar.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/05_screenshots_en.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/06_screenshots_ar.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/06_screenshots_en.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/07_screenshots_ar.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/07_screenshots_en.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/08_screenshots_ar.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/08_screenshots_en.png",
     ],
-    "mainImage": "https://play-lh.googleusercontent.com/89ySIAv_HXM99XhKo-N_EBdNZu_DTbDdLRXUH0ZQFE0mhmriZ13CI81hwtXaYIZtMzs=w2560-h1440-rw",
-    "applicationIcon": "https://play-lh.googleusercontent.com/WVzs3GbUtplP1KoEdL7-0PFL3AAZRe7u12eIy4vm4Y6IqjxTX-I4hLZch9KC-QSYyw=w240-h480-rw",
-    "developerName": "Quran App Index",
-    "googlePlayLink": "https://play.google.com/store/apps/details?id=com.quanticapps.quranandroid",
-    "appStoreLink": "https://apps.apple.com/us/app/quran-pro-muslim/id388389451",
-    "huaweiAppGalleryLink": null,
-    "websiteLink": "https://quranpro.co/"
+    mainImage:
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/cover_photo_ar.png",
+    applicationIcon:
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/app_icon.png",
+    Developer_Logo:
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy (Holy Quran)/developer_logo.png",
+    Developer_Name_En: "Tafsir Center for Qur'anic Studies",
+    Developer_Name_Ar: "مركز تفسير للدراسات القرآنية",
+    Developer_Website: "https://tafsir.net",
+    Google_Play_Link:
+      "https://play.google.com/store/apps/details?id=com.logicdev.quran_reader",
+    AppStore_Link:
+      "https://apps.apple.com/sa/app/%D9%88-%D8%AD%D9%8A-%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86-%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85/id1615454207",
+    App_Gallery_Link: "https://appgallery.huawei.com/#/app/C110460595",
   },
   {
-    "id": "tarteel-ai",
-    "name": "Tarteel AI | ترتيل",
-    "description": {
-      "en": "Utilizes AI to assist users in memorizing the Quran by detecting recitation mistakes and providing feedback.",
-      "ar": "يستخدم الذكاء الاصطناعي لمساعدة المستخدمين في حفظ القرآن من خلال اكتشاف أخطاء التلاوة وتقديم التغذية الراجعة."
-    },
-    "link": "https://tarteel.ai/",
-    "status": "Done",
-    "rating": 4.6,
-    "categories": ["Recite", ],
-    "screenshots": [
-      "https://placehold.co/600x400",
-      "https://placehold.co/600x400",
-      "https://placehold.co/600x400"
+    id: "5_Quran",
+    Name_Ar: "قرآن",
+    Name_En: "Quran",
+    Short_Description_Ar: "من صناع Quran.com",
+    Short_Description_En: "from Quran.com",
+    Description_Ar:
+      "من صناع Quran.com يأتي تطبيق القرآن للأجهزة المحمولة، تطبيق للمصحف ذو صفحات جميلة خالي تماما من الاعلانات.\n\n\nلقد أصبح من السهل قراءة القرآن بالشارع، وحفظه، والاستماع إلى قارئك المفضل.\n\n\nهذا هو مجرد بداية لتطبيق القرآن. سنعمل على تحديث التطبيق بشكل منتظم إن شاء الله، ونحب أن نسمع رأيك ومتطلبتك. يمكنك الوصول إلينا عن طريق البريد الإلكتروني ios@quran.com\n\n\nعَنْ ابْنِ مَسْعُودٍ قَالَ : قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ { مَنْ قَرَأَ حَرْفًا مِنْ كِتَابِ اللَّهِ فَلَهُ حَسَنَةٌ وَالْحَسَنَةُ بِعَشْرِ أَمْثَالِهَا, لَا أَقُولُ الم حَرْفٌ, وَلَكِنْ أَلِفٌ حَرْفٌ, وَلَامٌ حَرْفٌ,وَمِيمٌ حَرْفٌ }. رَوَاهُ التِّرْمِذِيُّ. ونحن نأمل أن يساعدك هذا التطبيق على زيادة قراءتك للقرآن وزيادة حسناتك في الدنيا والآخرة.",
+    Description_En:
+      "From the makers of Quran.com comes Quran for iOS, a beautiful, and ad-free mushaf app.\n\n\nIt’s now easier to read the Quran on the go, memorize it and listen to your favorite reciters.\n\n\nThis is just the beginning for Quran for iOS. We’ll be updating the app regularly insha'Allah and would love to hear your feedback and feature requests. You can reach us at ios@quran.com\n\n\nAs the Hadeeth (prophetic statement) in At-Tirmithi states: “Whoever reads a letter from the Book of Allah, he will have a reward, and this reward will be multiplied by ten. I am not saying that 'Alif, Laam, Meem' (a combination of letters frequently mentioned in the Holy Quran) is a letter, rather I am saying that ‘Alif’ is a letter, ‘Laam’ is a letter and ‘Meem’ is a letter.” [At-Tirmithi] We hope this app will help you increase your recitation of the Quran and increase your blessings in this world and the hereafter.",
+    status: "Done",
+    Apps_Avg_Rating: 4.7,
+    categories: ["read", "listen", "tafsir", "translation"],
+    screenshots: [
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/01_screenshots_en.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/02_screenshots_en.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/03_screenshots_en.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/04_screenshots_en.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/05_screenshots_en.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/06_screenshots_en.png",
     ],
-    "mainImage": "https://play-lh.googleusercontent.com/5IkLUploK0rfcLSmh3h9xyz-BQnTTQ9aA9NY-6OUc9HWyJVL82XSNJ2hgj_Lgvioe6P3=w2560-h1440-rw",
-    "applicationIcon": "https://play-lh.googleusercontent.com/RFtl6drnVL9hpbz0cal9cce7mWEPSejcRFUh0nxX94NYEb5ycmhtwPbYdGYhl-F0JUTf=w240-h480-rw",
-    "developerName": "Quran App Index",
-    "appStoreLink": "https://apps.apple.com/us/app/tarteel-ai/id1440441075",
-    "googlePlayLink": "https://play.google.com/store/apps/details?id=com.tarteel.ai",
-    "huaweiAppGalleryLink": null,
-    "websiteLink": "https://tarteel.ai/"
+    mainImage:
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/cover_photo_en.png",
+    applicationIcon:
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/app_icon.png",
+    Developer_Logo:
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/developer_logo.png",
+    Developer_Name_En: "Quran.com",
+    Developer_Name_Ar: "Quran.com",
+    Developer_Website: "https://quran.com",
+    Google_Play_Link:
+      "https://play.google.com/store/apps/details?id=com.quran.labs.androidquran",
+    AppStore_Link:
+      "https://apps.apple.com/sa/app/quran-by-quran-com-%D9%82%D8%B1%D8%A2%D9%86/id1118663303",
+    App_Gallery_Link: "https://appgallery.huawei.com/app/C101321131",
   },
   {
-    "id": "quran-majeed",
-    "name": "Quran Majeed",
-    "description": {
-      "en": "Comprehensive Quran app with translations, tafsir, and audio recitations. Features include prayer times and Qibla direction.",
-      "ar": "تطبيق قرآن شامل يحتوي على ترجمات وتفاسير وتلاوات صوتية. يتضمن ميزات مثل مواقيت الصلاة واتجاه القبلة."
-    },
-    "link": "https://www.quranmajeed.com/",
-    "status": "Done",
-    "rating": 4.8,
-    "categories": ["Recite", "Listen", "Translation"],
-    "screenshots": ["https://placehold.co/600x400"],
-    "mainImage": "https://play-lh.googleusercontent.com/K_LXJsti4633uWuubFLbS1cTxdodSOZXICMwD4tLC8np1y6CV5h7tF8_6XG1mTUZP2E=w2560-h1440-rw",
-    "applicationIcon": "https://play-lh.googleusercontent.com/RPgQ_o59AxaJKonqv-eAgFQQa3ObSieV6faDQD-HatklretCZpesfdl8rO7J4FWrYmo=w240-h480-rw",
-    "developerName": "Quran App Index",
-    "appStoreLink": "https://apps.apple.com/us/app/quran-majeed/id365557665",
-    "googlePlayLink": "https://play.google.com/store/apps/details?id=com.pakdata.QuranMajeed",
-    "huaweiAppGalleryLink": "https://appsonhms.com/app/com.pakdata.QuranMajeed",
-    "websiteLink": "https://www.quranmajeed.com/"
+    id: "10_Adnan The Quran Teacher",
+    Name_Ar: "عدنان معلم القرآن",
+    Name_En: "Adnan The Quran Teacher",
+    Short_Description_Ar: "الآن متوفر كامل المصح‪ف‬",
+    Short_Description_En: "The Complete Holy Quran",
+    Description_Ar:
+      "تطبيق تفاعلي للأطفال لتعلم وحفظ القرآن الكريم المصحف كامل بصوت الشيخ المنشاوي وتعليم الأحرف الهجائية وأكثر من 12 دعاء وحديث للأذكار اليومية تطبيق موجه للفئات العمرية من 3 سنوات حتى 12 سنة",
+    Description_En:
+      "Adnan the Quran teacher app has reached more than 10,000,000 children thanks to Allah, it is an interactive application for children to teach and memorize the full Noble Quran, the alphabet and more than 12 supplications and Hadiths.",
+    status: "Done",
+    Apps_Avg_Rating: 4.4,
+    categories: ["kids", "memorize", "listen"],
+    screenshots: [
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/01_screenshots_ar.jpg",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/02_screenshots_ar.jpg",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/03_screenshots_ar.jpg",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/04_screenshots_ar.jpg",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/05_screenshots_ar.jpeg",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/06_screenshots_ar.jpeg",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/07_screenshots_ar.jpeg",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/08_screenshots_ar.jpeg",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/09_screenshots_ar.jpeg",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/10_screenshots_ar.jpeg",
+    ],
+    mainImage:
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/cover_photo_ar.jpg",
+    applicationIcon:
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/app_icon.png",
+    Developer_Logo:
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/developer_logo.png",
+    Developer_Name_En: "KidsApp Company",
+    Developer_Name_Ar: "شركة تطبيقات الطفولة",
+    Developer_Website: "https://kidsapp.sa",
+    Google_Play_Link:
+      "https://play.google.com/store/apps/details?id=com.tagmedia.adnan",
+    AppStore_Link:
+      "https://apps.apple.com/sa/app/%D8%B9%D8%AF%D9%86%D8%A7%D9%86-%D9%85%D8%B9%D9%84%D9%85-%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86/id565905501",
+    App_Gallery_Link: "https://appgallery.huawei.com/app/C103136965",
   },
   {
-    "id": "learn-quran-tajwid",
-    "name": "Learn Quran Tajwid",
-    "description": {
-      "en": "Educational app focusing on teaching proper Tajweed rules with interactive lessons and exercises.",
-      "ar": "تطبيق تعليمي يركز على تعليم قواعد التجويد الصحيحة من خلال دروس وتمارين تفاعلية."
-    },
-    "link": "https://learn-quran.co/",
-    "status": "Done",
-    "rating": 4.5,
-    "categories": ["Recite"],
-    "screenshots": ["https://placehold.co/600x400"],
-    "mainImage": "https://play-lh.googleusercontent.com/1IAuIynQyQdUy5a5ZdbKywXPhtPp7C64ctc2OaQCUQODfR0K-64pq4ZDgBHe-W5dcQ=w2560-h1440-rw",
-    "applicationIcon": "https://play-lh.googleusercontent.com/RFtl6drnVL9hpbz0cal9cce7mWEPSejcRFUh0nxX94NYEb5ycmhtwPbYdGYhl-F0JUTf=w240-h480-rw",
-    "developerName": "Quran App Index",
-    "appStoreLink": "https://apps.apple.com/us/app/learn-quran-tajwid/id1118663303",
-    "googlePlayLink": "https://play.google.com/store/apps/details?id=com.bi.quran.id",
-    "huaweiAppGalleryLink": null,
-    "websiteLink": "https://learn-quran.co/"
+    id: "14_Quran Mobasher",
+    Name_Ar: "القرآن مباشر",
+    Name_En: "Quran Mobasher",
+    Short_Description_Ar: "تعليم القرآن..في كل زمان ومكان",
+    Short_Description_En: "Teaching Quran... anytime, anywhere",
+    Description_Ar:
+      'تطبيق "القرآن مباشر" هو أول تطبيق مجاني في العالم لتصحيح التلاوة يتيح تعلم القرآن الكريم عن بعد بالصوت والصورة عن طريق جلسات تفاعلية مع معلمين ومعلمات مؤهلين ومتميزين؛ حيث يلبي التطبيق احتياجات من يريد تعلم القرآن الكريم من جميع الفئات (ذكوراً وإناثاً – كباراً وصغاراً)\n\nيعمل التطبيق على مدار 24 ساعة مجانًا ويوفر معلمين ومعلمات مجازين بالسند المتصل إلى النبي صلى الله عليه وسلم، كما يتميز التطبيق بتسجيل جميع الجلسات للرجوع إليها لاحقاً، ويمكنك وضع خطتك التعليمية ومتابعة إنجازها.\n\nيهتم التطبيق بجودة التعليم حيث يتم متابعة المعلمين وتقييم أدائهم باستمرار من خلال إدارة الجودة والتطوير وحيث يمكن للطالب تقييم المعلم بعد انتهاء كل جلسة.',
+    Description_En:
+      "Quran Mobasher is the first mobile app that allows students to learn Quran using only a mobile phone connected to the internet, from any place and at any time. Quran Mobasher offers different kinds of sessions:\n\n\n• Recitation Correction : The student can choose any mode of recitation and recite to a teacher who focuses on correcting the provisions and phonetic rules of Quranic recitation.\n\n• Memorization :The student can memorize and recite Quran to any of the available teachers at any time.\n\n• Teaching Kids :Kida are taught Quran using Al-Qaida Noorania method.",
+    status: "Done",
+    Apps_Avg_Rating: 4.9,
+    categories: ["recite", "memorize", "education"],
+    screenshots: [
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/01_screenshots_ar.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/02_screenshots_ar.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/03_screenshots_ar.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/04_screenshots_ar.png",
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/05_screenshots_ar.png",
+    ],
+    mainImage:
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/cover_photo_ar.png",
+    applicationIcon:
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/app_icon.png",
+    Developer_Logo:
+      "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/developer_logo.png",
+    Developer_Name_En: "Maknon",
+    Developer_Name_Ar: "مكنون",
+    Developer_Website: "https://maknon.org.sa",
+    Google_Play_Link:
+      "https://play.google.com/store/apps/details?id=maknoon.student",
+    AppStore_Link:
+      "https://apps.apple.com/sa/app/quran-mobasher-%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86-%D9%85%D8%A8%D8%A7%D8%B4%D8%B1/id1602922387",
+    App_Gallery_Link: "",
   },
-  {
-    "id": "quran-stories-kids",
-    "name": "Quran Stories for Kids",
-    "description": {
-      "en": "Engaging app presenting Quranic stories tailored for children with interactive elements and illustrations.",
-      "ar": "تطبيق ممتع يقدم قصصًا قرآنية مخصصة للأطفال مع عناصر تفاعلية ورسوم توضيحية."
-    },
-    "link": "https://quranstories.com/",
-    "status": "Done",
-    "rating": 4.7,
-    "categories": ["Kids"],
-    "screenshots": ["https://placehold.co/600x400"],
-    "mainImage": "https://play-lh.googleusercontent.com/qabhGptr5Vsevk2GzATGnljC0zLQzCHXvIjw72BqIKGl6jla2HZesK5WmDAWkzfvQtwC=w2560-h1440-rw",
-    "applicationIcon": "https://play-lh.googleusercontent.com/RFtl6drnVL9hpbz0cal9cce7mWEPSejcRFUh0nxX94NYEb5ycmhtwPbYdGYhl-F0JUTf=w240-h480-rw",
-    "developerName": "Quran App Index",
-    "appStoreLink": "https://apps.apple.com/us/app/quran-stories-for-kids/id1234567890",
-    "googlePlayLink": "https://play.google.com/store/apps/details?id=com.quranstories.app",
-    "huaweiAppGalleryLink": null,
-    "websiteLink": "https://quranstories.com/"
-  },
-  {
-    "id": "memorize-quran-kids",
-    "name": "Memorize Quran for Kids",
-    "description": {
-      "en": "Assists children in memorizing the last Hizb of the Quran with word-by-word recitation and interactive features.",
-      "ar": "يساعد الأطفال في حفظ الجزء الأخير من القرآن من خلال التلاوة كلمة بكلمة وميزات تفاعلية."
-    },
-    "link": "http://app.osratouna.com",
-    "status": "Done",
-    "rating": 4.4,
-    "categories": ["Kids"],
-    "screenshots": ["https://placehold.co/600x400"],
-    "mainImage": "https://play-lh.googleusercontent.com/W3OPmrz6FpiTGmqPAhTk_wOCCgAxxX9YtGOGISavSHYcvWDO0ZpStcss3GNEki5boMM=w2560-h1440-rw",
-    "applicationIcon": "https://play-lh.googleusercontent.com/RFtl6drnVL9hpbz0cal9cce7mWEPSejcRFUh0nxX94NYEb5ycmhtwPbYdGYhl-F0JUTf=w240-h480-rw",
-    "developerName": "Quran App Index",
-    "appStoreLink": "https://apps.apple.com/us/app/memorize-quran-word-by-word-for-kids-last-hizb/id1060926926",
-    "googlePlayLink": "https://play.google.com/store/apps/details?id=com.memorize.quran.kids",
-    "huaweiAppGalleryLink": null,
-    "websiteLink": "http://app.osratouna.com"
-  }
-]
-;
+];
 
 export const categories = [
   {
@@ -153,5 +181,21 @@ export const categories = [
     icon: `<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M4.5 5H11.5M9.5 3V5C9.5 9.418 7.261 13 4.5 13M5.5 9C5.5 11.144 8.452 12.908 12.2 13M12.5 20L16.5 11L20.5 20M19.5999 18H13.3999" stroke="#A0533B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>`,
+  },
+  {
+    name: "Education",
+    icon: `<svg fill="#A0533B" viewBox="0 0 100.4 100.4" id="Layer_1" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" stroke="#A0533B" stroke-width="3.5140000000000002"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M20.4,19.3L32,24.4c-2.3,3.4-3.5,7.3-3.5,11.4c0,11.2,9.1,20.4,20.4,20.4s20.4-9.1,20.4-20.4c0-4-1.2-8-3.4-11.3l10.2-4.8 l0,19.4L73,45.7c-0.2,0.5-0.2,1,0.1,1.4s0.8,0.7,1.3,0.7h5.9c0.5,0,1-0.2,1.2-0.7c0.3-0.4,0.3-0.9,0.1-1.4l-2.7-6.6V18.4 c0-0.8-0.1-1.4-1.5-2C77.1,16.3,49.6,4.1,49.6,4.1c-0.4-0.2-0.8-0.2-1.2,0l-28,12.4c-0.5,0.2-0.9,0.8-0.9,1.4S19.8,19,20.4,19.3z M66.2,35.8c0,9.6-7.8,17.4-17.4,17.4s-17.4-7.8-17.4-17.4c0-3.7,1.2-7.2,3.3-10.2l13.6,6.1c0.2,0.1,0.4,0.1,0.6,0.1s0.4,0,0.6-0.1 l13.4-6C65.1,28.7,66.2,32.2,66.2,35.8z M76.7,44.8l0.7-1.5l0.6,1.5H76.7z M49,7.1l24.3,10.8L49,28.7L24.7,17.9L49,7.1z"></path> <path d="M49.4,59.8C29.9,59.8,14,75.7,14,95.2c0,0.8,0.7,1.5,1.5,1.5h67.8c0.8,0,1.5-0.7,1.5-1.5C84.8,75.7,68.9,59.8,49.4,59.8z M17.1,93.7c0.8-17.2,15-30.9,32.4-30.9S81,76.6,81.8,93.7H17.1z"></path> </g> </g></svg>`,
+  },
+  {
+    name: "Tafsir",
+    icon: `<svg version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" xml:space="preserve" fill="#A0533B" stroke="#A0533B" stroke-width="0.32"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css"> .blueprint_een{fill:#A0533B;} </style> <path class="blueprint_een" d="M23,17h-7v-1h7V17z M23,18h-7v1h7V18z M23,8h-7v1h7V8z M23,6h-7v1h7V6z M10,22.05V19.95 c-1.141-0.232-2-1.24-2-2.45c0-1.209,0.859-2.218,2-2.45V9.95C8.859,9.718,8,8.709,8,7.5C8,6.119,9.119,5,10.5,5S13,6.119,13,7.5 c0,1.209-0.859,2.218-2,2.45v5.101c1.141,0.232,2,1.24,2,2.45c0,1.209-0.859,2.218-2,2.45v2.101c1.141,0.232,2,1.24,2,2.45 c0,1.381-1.119,2.5-2.5,2.5S8,25.881,8,24.5C8,23.291,8.859,22.282,10,22.05z M10.5,23C9.673,23,9,23.673,9,24.5S9.673,26,10.5,26 s1.5-0.673,1.5-1.5S11.327,23,10.5,23z M10.5,9C11.327,9,12,8.327,12,7.5S11.327,6,10.5,6S9,6.673,9,7.5S9.673,9,10.5,9z M10.5,19 c0.827,0,1.5-0.673,1.5-1.5S11.327,16,10.5,16S9,16.673,9,17.5S9.673,19,10.5,19z M29,2v28c0,0.552-0.447,1-1,1H4 c-0.553,0-1-0.448-1-1V2c0-0.552,0.447-1,1-1h24C28.553,1,29,1.448,29,2z M27,3H5v26h22V3z M23,25h-7v1h7V25z M23,23h-7v1h7V23z"></path> </g></svg>`,
+  },
+  {
+    name: "Read",
+    icon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 19V6.2C4 5.0799 4 4.51984 4.21799 4.09202C4.40973 3.71569 4.71569 3.40973 5.09202 3.21799C5.51984 3 6.0799 3 7.2 3H16.8C17.9201 3 18.4802 3 18.908 3.21799C19.2843 3.40973 19.5903 3.71569 19.782 4.09202C20 4.51984 20 5.0799 20 6.2V17H6C4.89543 17 4 17.8954 4 19ZM4 19C4 20.1046 4.89543 21 6 21H20M9 7H15M9 11H15M19 17V21" stroke="#A0533B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>`,
+  },
+  {
+    name: "Memorize",
+    icon: `<svg fill="#A0533B" viewBox="0 0 100 100" id="Layer_1" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" stroke="#A0533B" stroke-width="3.3"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M93.998,45.312c0-3.676-1.659-7.121-4.486-9.414c0.123-0.587,0.184-1.151,0.184-1.706c0-4.579-3.386-8.382-7.785-9.037 c0.101-0.526,0.149-1.042,0.149-1.556c0-4.875-3.842-8.858-8.655-9.111c-0.079-0.013-0.159-0.024-0.242-0.024 c-0.04,0-0.079,0.005-0.12,0.006c-0.04-0.001-0.079-0.006-0.12-0.006c-0.458,0-0.919,0.041-1.406,0.126 c-0.846-4.485-4.753-7.825-9.437-7.825c-5.311,0-9.632,4.321-9.632,9.633v65.918c0,6.723,5.469,12.191,12.191,12.191 c4.46,0,8.508-2.413,10.646-6.246c0.479,0.104,0.939,0.168,1.401,0.198c2.903,0.185,5.73-0.766,7.926-2.693 c2.196-1.927,3.51-4.594,3.7-7.51c0.079-1.215-0.057-2.434-0.403-3.638c3.796-2.691,6.027-6.952,6.027-11.621 c0-3.385-1.219-6.635-3.445-9.224C92.731,51.505,93.998,48.471,93.998,45.312z M90.938,62.999c0,3.484-1.582,6.68-4.295,8.819 c-2.008-3.196-5.57-5.237-9.427-5.237c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5c3.341,0,6.384,2.093,7.582,5.208 c0.41,1.088,0.592,2.189,0.521,3.274c-0.138,2.116-1.091,4.051-2.685,5.449c-1.594,1.399-3.641,2.094-5.752,1.954 c-0.594-0.039-1.208-0.167-1.933-0.402c-0.74-0.242-1.541,0.124-1.846,0.84c-1.445,3.404-4.768,5.604-8.465,5.604 c-5.068,0-9.191-4.123-9.191-9.191V16.399c0-3.657,2.975-6.633,6.632-6.633c3.398,0,6.194,2.562,6.558,5.908 c-2.751,1.576-4.612,4.535-4.612,7.926c0,0.829,0.672,1.5,1.5,1.5s1.5-0.671,1.5-1.5c0-3.343,2.689-6.065,6.016-6.13 c3.327,0.065,6.016,2.787,6.016,6.129c0,0.622-0.117,1.266-0.359,1.971c-0.057,0.166-0.084,0.34-0.081,0.515 c0.001,0.041,0.003,0.079,0.007,0.115c-0.006,0.021-0.01,0.035-0.01,0.035c-0.118,0.465-0.006,0.959,0.301,1.328 c0.307,0.369,0.765,0.569,1.251,0.538c0.104-0.007,0.208-0.02,0.392-0.046c3.383,0,6.136,2.753,6.136,6.136 c0,0.572-0.103,1.159-0.322,1.849c-0.203,0.635,0.038,1.328,0.591,1.7c2.434,1.639,3.909,4.329,4.014,7.242 c0,0.004-0.001,0.008-0.001,0.012c0,5.03-4.092,9.123-9.122,9.123s-9.123-4.093-9.123-9.123c0-0.829-0.672-1.5-1.5-1.5 s-1.5,0.671-1.5,1.5c0,6.685,5.438,12.123,12.123,12.123c2.228,0,4.31-0.615,6.106-1.668C89.88,57.539,90.938,60.212,90.938,62.999 z"></path> <path d="M38.179,6.766c-4.684,0-8.59,3.34-9.435,7.825c-0.488-0.085-0.949-0.126-1.407-0.126c-0.04,0-0.079,0.005-0.12,0.006 c-0.04-0.001-0.079-0.006-0.12-0.006c-0.083,0-0.163,0.011-0.242,0.024c-4.813,0.253-8.654,4.236-8.654,9.111 c0,0.514,0.049,1.03,0.149,1.556c-4.399,0.655-7.785,4.458-7.785,9.037c0,0.554,0.061,1.118,0.184,1.706 c-2.827,2.293-4.486,5.738-4.486,9.414c0,3.159,1.266,6.193,3.505,8.463c-2.227,2.589-3.446,5.839-3.446,9.224 c0,4.669,2.231,8.929,6.027,11.621c-0.347,1.204-0.482,2.423-0.402,3.639c0.19,2.915,1.503,5.582,3.699,7.509 c2.196,1.928,5.015,2.879,7.926,2.693c0.455-0.03,0.919-0.096,1.4-0.199c2.138,3.834,6.186,6.247,10.646,6.247 c6.722,0,12.191-5.469,12.191-12.191V16.399C47.811,11.087,43.49,6.766,38.179,6.766z M44.811,82.317 c0,5.068-4.123,9.191-9.191,9.191c-3.697,0-7.02-2.2-8.464-5.604c-0.241-0.567-0.793-0.914-1.381-0.914 c-0.154,0-0.311,0.023-0.465,0.074c-0.724,0.235-1.338,0.363-1.933,0.402c-2.119,0.139-4.158-0.556-5.751-1.954 c-1.594-1.398-2.547-3.333-2.685-5.449c-0.076-1.16,0.125-2.336,0.598-3.495c0.007-0.017,0.005-0.036,0.011-0.053 c1.342-3.056,4.225-4.953,7.597-4.953c0.829,0,1.5-0.672,1.5-1.5s-0.671-1.5-1.5-1.5c-3.938,0-7.501,2.007-9.548,5.239 c-2.701-2.139-4.277-5.327-4.277-8.802c0-2.787,1.06-5.46,2.978-7.549c1.796,1.053,3.879,1.668,6.107,1.668 c6.685,0,12.123-5.438,12.123-12.123c0-0.829-0.671-1.5-1.5-1.5s-1.5,0.671-1.5,1.5c0,5.03-4.092,9.123-9.123,9.123 s-9.123-4.093-9.123-9.123c0-0.002-0.001-0.004-0.001-0.006c0.103-2.915,1.578-5.607,4.013-7.248 c0.553-0.372,0.793-1.064,0.591-1.699c-0.22-0.691-0.322-1.278-0.322-1.85c0-3.376,2.741-6.125,6.195-6.125 c0.007,0,0.015,0,0.022,0c0.103,0.014,0.206,0.027,0.311,0.034c0.485,0.03,0.948-0.171,1.254-0.542 c0.307-0.372,0.417-0.868,0.294-1.334c0-0.001-0.003-0.014-0.008-0.031c0.003-0.035,0.006-0.067,0.007-0.095 c0.005-0.18-0.022-0.359-0.081-0.529c-0.242-0.707-0.359-1.352-0.359-1.972c0-3.342,2.688-6.065,6.016-6.129 c3.328,0.065,6.016,2.787,6.016,6.13c0,0.829,0.671,1.5,1.5,1.5s1.5-0.671,1.5-1.5c0-3.391-1.861-6.35-4.612-7.926 c0.364-3.346,3.16-5.908,6.558-5.908c3.657,0,6.632,2.976,6.632,6.633V82.317z"></path> </g> </g></svg>`,
   },
 ];
