@@ -11,7 +11,7 @@
         >
           <img
             [src]="screenshot"
-            [alt]="app.name + ' screenshot ' + (i + 1)"
+            [alt]="app.Name_En + ' screenshot ' + (i + 1)"
             class="carousel-image"
           />
         </div>
@@ -38,11 +38,11 @@
         >
           <span nz-icon nzType="left"></span>
         </button>
-        <h1>{{ app.name }}</h1>
+        <h1>{{ currentLang == "en" ? app.Name_En : app.Name_Ar }}</h1>
       </div>
       <!-- Description section -->
       <h2>{{ "appDetail.description" | translate }}</h2>
-      <p>{{ app.description[currentLang] }}</p>
+      <p>{{ currentLang == "en"? app.Description_En : app.Description_Ar }}</p>
 
       <!-- Categories section -->
       <div class="categories">
@@ -64,7 +64,7 @@
             </svg>
         </div>
         <div class="dev-data">
-          <h2 style="margin-bottom: 0;">{{app.developerName}}</h2>
+          <h2 style="margin-bottom: 0;">{{currentLang === "en"? app.Developer_Name_En : app.Developer_Name_Ar}}</h2>
           <p style="margin-bottom: 0;">{{"appDetail.developer" | translate}}</p>
         </div>
       </div>
@@ -77,8 +77,8 @@
 
         <!-- App Store link -->
         <a
-          *ngIf="app.appStoreLink"
-          [href]="app.appStoreLink"
+          *ngIf="app.AppStore_Link"
+          [href]="app.AppStore_Link"
           target="_blank"
           aria-label="Download from App Store"
         >
@@ -123,8 +123,8 @@
         </a>
         <!-- Google Play link -->
         <a
-          *ngIf="app.googlePlayLink"
-          [href]="app.googlePlayLink"
+          *ngIf="app.Google_Play_Link"
+          [href]="app.Google_Play_Link"
           target="_blank"
           aria-label="Download from Google Play"
         >
@@ -184,8 +184,8 @@
         </a>
         <!-- Huawei AppGallery link -->
         <a
-          *ngIf="app.huaweiAppGalleryLink"
-          [href]="app.huaweiAppGalleryLink"
+          *ngIf="app.App_Gallery_Link"
+          [href]="app.App_Gallery_Link"
           target="_blank"
           nz-button
           nzType="text"
@@ -233,14 +233,14 @@
             <nz-card
               
               [routerLink]="['/app', relatedApp.id]"
-              [attr.aria-label]="'View details for ' + relatedApp.name"
+              [attr.aria-label]="'View details for ' + relatedApp.Name_En"
               class="app-card"
               [nzCover]="coverTemplate"
             >
               <ng-template #coverTemplate>
                 <div style="max-height: 220px; overflow: hidden;">
                   <img
-                    [alt]="relatedApp.name + ' screenshot'"
+                    [alt]="relatedApp.Name_En + ' screenshot'"
                     [src]="relatedApp.mainImage"
                     style="width: 100%;"
                   />
@@ -249,17 +249,17 @@
 
               <div class="ant-flex">
                 <div class="app-icon-container">
-                  <img class="app-icon" [src]="relatedApp.applicationIcon" [alt]="relatedApp.name + ' icon'">
+                  <img class="app-icon" [src]="relatedApp.applicationIcon" [alt]="relatedApp.Name_En + ' icon'">
                 </div>
                 <div class="card-data-container">
                   <nz-card-meta
-                    [nzTitle]="relatedApp.name"
-                    [nzDescription]="relatedApp.description[currentLang]"
+                    [nzTitle]=" currentLang == 'en'? relatedApp.Name_En : relatedApp.Name_Ar"
+                    [nzDescription]=" currentLang == 'en'? relatedApp.Short_Description_En : relatedApp.Short_Description_Ar"
                   ></nz-card-meta>
                   <!-- Rating display -->
                   <div class="app-rating ant-flex ant-flex-align-center">
-                    <span class="rating-number">{{ relatedApp.rating }}</span>
-                    <nz-rate [ngModel]="relatedApp.rating" [nzDisabled]="true"></nz-rate>
+                    <span class="rating-number">{{ relatedApp.Apps_Avg_Rating }}</span>
+                    <nz-rate [ngModel]="relatedApp.Apps_Avg_Rating" [nzDisabled]="true"></nz-rate>
                   </div>
                 </div>
               </div>

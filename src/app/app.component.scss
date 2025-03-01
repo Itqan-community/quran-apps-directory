@@ -53,6 +53,30 @@ nz-footer {
 
 .logo-container img {
   cursor: pointer;
+  z-index: 10;
+}
+.logo-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.beta-label {
+  z-index: 9;
+  position: absolute;
+  bottom: -8px;
+  right: -32px;
+  background: #ede0c0;
+  color: #23433d;
+  padding: 4px 6px 2px 6px;
+  border-radius: 4px;
+  font-size: 8px;
+  font-weight: bold;
+  text-transform: uppercase;
+} 
+
+[dir="rtl"] .beta-label {
+  right: auto;
+  left: -32px;
 }
 
 .mobile-menu-btn {

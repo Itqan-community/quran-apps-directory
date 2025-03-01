@@ -108,13 +108,13 @@
             
             [nzCover]="coverTemplate"
             [routerLink]="['/app', app.id]"
-            [attr.aria-label]="'View details for ' + app.name"
+            [attr.aria-label]="'View details for ' + app.Name_En"
             class="app-card"
           >
             <ng-template #coverTemplate>
               <div style="max-height: 220px; overflow: hidden">
                 <img
-                  [alt]="app.name + ' screenshot'"
+                  [alt]="app.Name_En+ ' screenshot'"
                   [src]="app.mainImage"
                   style="width: 100%"
                 />
@@ -126,18 +126,18 @@
                 <img
                   class="app-icon"
                   [src]="app.applicationIcon"
-                  [alt]="app.name + ' icon'"
+                  [alt]="app.Name_En + ' icon'"
                 />
               </div>
               <div class="card-data-container">
                 <nz-card-meta
-                  [nzTitle]="app.name"
-                  [nzDescription]="app.description[currentLang]"
+                  [nzTitle]="currentLang === 'en' ? app.Name_En : app.Name_Ar"
+                  [nzDescription]="currentLang === 'en' ? app.Short_Description_En : app.Short_Description_Ar"
                 ></nz-card-meta>
                 <!-- Rating display -->
                 <div class="app-rating ant-flex ant-flex-align-center">
-                  <span class="rating-number">{{ app.rating }}</span>
-                  <nz-rate [ngModel]="app.rating" [nzDisabled]="true"></nz-rate>
+                  <span class="rating-number">{{ app.Apps_Avg_Rating }}</span>
+                  <nz-rate [ngModel]="app.Apps_Avg_Rating" [nzDisabled]="true"></nz-rate>
                 </div>
               </div>
             </div>
