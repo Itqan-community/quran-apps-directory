@@ -2,6 +2,10 @@
   .ant-carousel .slick-dots-bottom {
     bottom: 32px;
   }
+  .ant-carousel .slick-slide img {
+    object-fit: contain;
+  }
+
   .app-header {
     display: none !important;
   }

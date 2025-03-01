@@ -89,8 +89,8 @@ export class AppListComponent implements OnInit {
   }
 
   filterByCategory(category: string) {
-    this.selectedCategory = category;
-    this.appService.getAppsByCategory(category).subscribe((apps) => {
+    this.selectedCategory = category.toLowerCase();
+    this.appService.getAppsByCategory(this.selectedCategory).subscribe((apps) => {
       this.filteredApps = apps;
     });
   }
@@ -98,7 +98,7 @@ export class AppListComponent implements OnInit {
   toggleSort() {
     this.sortAscending = !this.sortAscending;
     this.filteredApps = [...this.filteredApps].sort((a, b) =>
-      this.sortAscending ? b.rating - a.rating : a.rating - b.rating
+      this.sortAscending ? b.Apps_Avg_Rating - a.Apps_Avg_Rating : a.Apps_Avg_Rating - b.Apps_Avg_Rating
     );
   }
 
