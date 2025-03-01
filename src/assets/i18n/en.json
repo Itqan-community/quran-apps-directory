@@ -13,7 +13,7 @@
     }
   },
   "footer": {
-    "copyright": "Quran Apps Directory ©2025"
+    "copyright": "Quran Apps Directory, an ITQAN project, 1446 H"
   },
   "appList": {
     "search": {
@@ -21,7 +21,7 @@
     },
     "categories": {
       "all":"All",
-      "main-title": "Quran App Index",
+      "main-title": "Quran Apps Directory",
       "title": "Categories",
       "recite": "Recite",
       "listen": "Listen",
