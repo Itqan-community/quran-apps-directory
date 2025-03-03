@@ -28,6 +28,7 @@
           width: 36px;
         }
       }
+      
     }
   }
   @media screen and (max-width: 768px) {
@@ -35,6 +36,16 @@
     position: fixed;
     z-index: 1000;
     margin: 0;
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: 90%;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background: #fff;
+
+    }
   }
 }
 .header-content {
