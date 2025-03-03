@@ -8,6 +8,8 @@
     "title": "Quran Apps Directory",
     "beta": "Beta",
     "home": "Home",
+    "about": "About Us",
+    "contact": "Contact Us",
     "language": {
       "ar": "العربية",
       "en": "English"
@@ -74,6 +76,26 @@
       "title": "Request Submitted",
       "message": "Thank you for your submission! We will review your app request and get back to you soon.",
       "reset": "Form has been reset"
+    }
+  },
+  "contactUs": {
+    "title": "Contact Us",
+    "message": "You can always send us a massage. We’d be happy to help you out with support, inquiries and/or suggestions",
+    "email": "Email",
+    "appRequests": "App Requests"
+  },
+  "aboutUs": {
+    "title": "About Us",
+    "mission": "Our Mission",
+    "vision": "Our Vision",
+    "missionDescription": "We are dedicated to making the Quran more accessible through technology. Our platform provides a comprehensive index and search functionality to help users navigate and understand the holy text better.",
+    "visionDescription": "To become the most reliable and user-friendly digital resource for Quranic studies, helping people worldwide connect with and understand the divine message.",
+    "values": "Our Values",
+    "values_list": {
+      "accuracyAndAuthenticity": "Accuracy and authenticity in Quranic content",
+      "userCentricDesignAndAccessibility": "User-centric design and accessibility",
+      "continuousImprovementAndInnovation": "Continuous improvement and innovation",
+      "communityEngagementAndSupport": "Community engagement and support"
     }
   }
 }

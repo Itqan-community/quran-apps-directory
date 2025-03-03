@@ -146,7 +146,9 @@ nz-footer {
     padding: 5px 0;
   }
 }
-
+:host ::ng-deep .ant-layout-content {
+  min-height: 100vh !important;
+}
  
 
 @media (max-width: 768px) {
