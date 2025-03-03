@@ -95,13 +95,6 @@ export class AppListComponent implements OnInit {
     });
   }
 
-  toggleSort() {
-    this.sortAscending = !this.sortAscending;
-    this.filteredApps = [...this.filteredApps].sort((a, b) =>
-      this.sortAscending ? b.Apps_Avg_Rating - a.Apps_Avg_Rating : a.Apps_Avg_Rating - b.Apps_Avg_Rating
-    );
-  }
-
   startDragging(e: MouseEvent) {
     this.isDragging = true;
     this.categoriesContainer = (e.target as HTMLElement).closest(
