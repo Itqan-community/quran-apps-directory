@@ -7,7 +7,7 @@
       <nz-carousel [nzEffect]="'fade'" [nzAutoPlay]="true" [nzLoop]="true" [nzAutoPlaySpeed]="3000">
         <div
           nz-carousel-content
-          *ngFor="let screenshot of app.screenshots; let i = index"
+          *ngFor="let screenshot of currentLang === 'en' ? app.screenshots_en : app.screenshots_ar; let i = index"
         >
           <img
             [src]="screenshot"
@@ -241,7 +241,7 @@
                 <div style="max-height: 220px; overflow: hidden;">
                   <img
                     [alt]="relatedApp.Name_En + ' screenshot'"
-                    [src]="relatedApp.mainImage"
+                    [src]="currentLang === 'en' ? relatedApp.mainImage_en : relatedApp.mainImage_ar"
                     style="width: 100%;"
                   />
                 </div>
