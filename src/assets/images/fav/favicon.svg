@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="1000" height="1000"><style>
+    #light-icon {
+      display: inline;
+    }
+    #dark-icon {
+      display: none;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      #light-icon {
+        display: none;
+      }
+      #dark-icon {
+        display: inline;
+      }
+    }
+  </style><g id="light-icon"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="1000" height="1000"><g clip-path="url(#SvgjsClipPath1134)"><rect width="1000" height="1000" fill="#ffffff"></rect><g transform="matrix(2.864391521401097,0,0,2.864391521401097,150,150)"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="244.38" height="244.38"><svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="477.81 477.81 244.38 244.38">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #A0533B;
+      }
+    </style>
+  <clipPath id="SvgjsClipPath1134"><rect width="1000" height="1000" x="0" y="0" rx="350" ry="350"></rect></clipPath></defs>
+  <g id="_Radial_Repeat_" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="535.55 629.06 540.93 657.12 568.85 663.52 528.99 701.79 495.68 667.34 535.55 629.06"></polygon>
+  </g>
+  <g id="_Radial_Repeat_-2" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="533.88 574.98 517.84 598.62 533.06 622.89 477.81 621.77 478.62 573.85 533.88 574.98"></polygon>
+  </g>
+  <g id="_Radial_Repeat_-3" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="570.94 535.55 542.88 540.93 536.48 568.85 498.21 528.99 532.66 495.68 570.94 535.55"></polygon>
+  </g>
+  <g id="_Radial_Repeat_-4" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="625.02 533.88 601.38 517.84 577.11 533.06 578.23 477.81 626.15 478.62 625.02 533.88"></polygon>
+  </g>
+  <g id="_Radial_Repeat_-5" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="664.45 570.94 659.07 542.88 631.15 536.48 671.01 498.21 704.32 532.66 664.45 570.94"></polygon>
+  </g>
+  <g id="_Radial_Repeat_-6" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="666.12 625.02 682.16 601.38 666.94 577.11 722.19 578.23 721.38 626.15 666.12 625.02"></polygon>
+  </g>
+  <g id="_Radial_Repeat_-7" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="629.06 664.45 657.12 659.07 663.52 631.15 701.79 671.01 667.34 704.32 629.06 664.45"></polygon>
+  </g>
+  <g id="_Radial_Repeat_-8" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="574.98 666.12 598.62 682.16 622.89 666.94 621.77 722.19 573.85 721.38 574.98 666.12"></polygon>
+  </g>
+</svg></svg></g></g></svg></g><g id="dark-icon"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="1000" height="1000"><g clip-path="url(#SvgjsClipPath1135)"><rect width="1000" height="1000" fill="#000000"></rect><g transform="matrix(2.864391521401097,0,0,2.864391521401097,150,150)"><svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="244.38" height="244.38"><svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="477.81 477.81 244.38 244.38">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #A0533B;
+      }
+    </style>
+  <clipPath id="SvgjsClipPath1135"><rect width="1000" height="1000" x="0" y="0" rx="350" ry="350"></rect></clipPath></defs>
+  <g id="_Radial_Repeat_" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="535.55 629.06 540.93 657.12 568.85 663.52 528.99 701.79 495.68 667.34 535.55 629.06"></polygon>
+  </g>
+  <g id="_Radial_Repeat_-2" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="533.88 574.98 517.84 598.62 533.06 622.89 477.81 621.77 478.62 573.85 533.88 574.98"></polygon>
+  </g>
+  <g id="_Radial_Repeat_-3" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="570.94 535.55 542.88 540.93 536.48 568.85 498.21 528.99 532.66 495.68 570.94 535.55"></polygon>
+  </g>
+  <g id="_Radial_Repeat_-4" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="625.02 533.88 601.38 517.84 577.11 533.06 578.23 477.81 626.15 478.62 625.02 533.88"></polygon>
+  </g>
+  <g id="_Radial_Repeat_-5" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="664.45 570.94 659.07 542.88 631.15 536.48 671.01 498.21 704.32 532.66 664.45 570.94"></polygon>
+  </g>
+  <g id="_Radial_Repeat_-6" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="666.12 625.02 682.16 601.38 666.94 577.11 722.19 578.23 721.38 626.15 666.12 625.02"></polygon>
+  </g>
+  <g id="_Radial_Repeat_-7" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="629.06 664.45 657.12 659.07 663.52 631.15 701.79 671.01 667.34 704.32 629.06 664.45"></polygon>
+  </g>
+  <g id="_Radial_Repeat_-8" data-name="&amp;lt;Radial Repeat&amp;gt;">
+    <polygon class="cls-1" points="574.98 666.12 598.62 682.16 622.89 666.94 621.77 722.19 573.85 721.38 574.98 666.12"></polygon>
+  </g>
+</svg></svg></g></g></svg></g></svg>

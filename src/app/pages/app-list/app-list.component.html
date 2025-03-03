@@ -25,7 +25,7 @@
     </div>
     <div class="section-title">
       <h2>{{ "appList.categories.title" | translate }}</h2>
-      <a href="#">View All</a>
+      <!-- <a href="#">View All</a> -->
     </div>
     <!-- Grid of category buttons -->
     <div
@@ -84,19 +84,6 @@
   <div class="apps-section">
     <div class="section-title">
       <h2>{{ "appList.apps.title" | translate }}</h2>
-      <!-- Sort button -->
-      <button
-        nz-button
-        nzType="text"
-        (click)="toggleSort()"
-        aria-label="Sort by rating"
-      >
-        <span
-          nz-icon
-          [nzType]="sortAscending ? 'arrow-up' : 'arrow-down'"
-          nzTheme="outline"
-        ></span>
-      </button>
     </div>
 
     <!-- Grid of app cards -->
@@ -115,7 +102,7 @@
               <div style="max-height: 220px; overflow: hidden">
                 <img
                   [alt]="app.Name_En+ ' screenshot'"
-                  [src]="app.mainImage"
+                  [src]="currentLang === 'en' ? app.mainImage_en : app.mainImage_ar"
                   style="width: 100%"
                 />
               </div>

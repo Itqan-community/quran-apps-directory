@@ -21,6 +21,12 @@
               <a *nzSpaceItem nz-button nzType="link" routerLink="/apps">
                 {{ "header.home" | translate }}
               </a>
+              <a *nzSpaceItem nz-button nzType="link" routerLink="/about-us">
+                {{ "header.about" | translate }}
+              </a>
+              <a *nzSpaceItem nz-button nzType="link" routerLink="/contact-us">
+                {{ "header.contact" | translate }}
+              </a>
               <button
                 *nzSpaceItem
                 nz-button
@@ -36,7 +42,6 @@
           <button
             class="mobile-menu-btn"
             (click)="toggleMobileMenu()"
-            
           >
             <span class="mobile-menu-btn--bars" [class.expanded]="isMobileMenuVisible"></span>
           </button>
@@ -51,10 +56,22 @@
             {{ "header.home" | translate }}
           </a>
           <a
+            routerLink="/about-us"
+            (click)="toggleMobileMenu()"
+          >
+            About Us
+          </a>
+          <a
+            routerLink="/contact-us"
+            (click)="toggleMobileMenu()"
+          >
+            Contact Us
+          </a>
+          <a
             (click)="toggleLanguage(); toggleMobileMenu()"
           >
             {{ "header.language." + (isRtl ? "en" : "ar") | translate }}
-        </a>
+          </a>
         </div>
       </div>
     </div>
