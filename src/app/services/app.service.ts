@@ -10,7 +10,8 @@ export interface QuranApp {
   Short_Description_En:string | null;
   Description_Ar:string | null;
   Description_En:string | null;
-  mainImage:string | null;
+  mainImage_ar:string | null;
+  mainImage_en:string | null;
   applicationIcon: string | null;
   Developer_Logo: string | null;
   Developer_Name_En: string | null;
@@ -19,7 +20,8 @@ export interface QuranApp {
   status: string;
   Apps_Avg_Rating: number;
   categories: string[];
-  screenshots: string[];
+  screenshots_ar: string[];
+  screenshots_en: string[];
   AppStore_Link?: string | null;
   Google_Play_Link?: string | null;
   App_Gallery_Link?: string | null;
