@@ -31,10 +31,6 @@ nz-divider::before {
   .container {
    position: relative;
   }
-  // responsive
-  @media screen and (max-width: 768px) {
-    margin-top: 90px;
-  }
  }
 
  .carousel-image {

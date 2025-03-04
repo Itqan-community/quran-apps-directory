@@ -32,10 +32,6 @@
     }
   }
   @media screen and (max-width: 768px) {
-    top: 20px;
-    position: fixed;
-    z-index: 1000;
-    margin: 0;
     &::before {
       content: '';
       position: absolute;
