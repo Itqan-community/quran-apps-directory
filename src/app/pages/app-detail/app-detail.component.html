@@ -4,7 +4,32 @@
 
   <div class="content-carousel">
     <div class="container">
-      <nz-carousel [nzEffect]="'fade'" [nzAutoPlay]="true" [nzLoop]="true" [nzAutoPlaySpeed]="3000">
+       <!-- Header with back button and app name -->
+       <div class="header">
+        <button
+          nz-button
+          nzType="text"
+          routerLink="/"
+          aria-label="Back to apps list"
+        >
+          <span nz-icon nzType="left"></span>
+        </button>
+        <h1>{{ currentLang == "en" ? app.Name_En : app.Name_Ar }}</h1>
+      </div>
+      <swiper-container #swiperContainer init="false">
+        <swiper-slide class="swiper-slide" *ngFor="let screenshot of currentLang === 'en' ? app.screenshots_en : app.screenshots_ar; let i = index">
+          <img
+            [src]="screenshot"
+            [alt]="app.Name_En + ' screenshot ' + (i + 1)"
+            class="carousel-image"
+          />
+        </swiper-slide>
+      </swiper-container>
+      <div part="button-next" class="swiper-button-next" tabindex="0" role="button" aria-label="Next slide" aria-controls="swiper-wrapper-b8ddbe4e0197ba1e" aria-disabled="false"><svg width="11" height="20" viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z" fill="currentColor"></path></svg>
+      </div>
+      <div part="button-prev" class="swiper-button-prev" tabindex="0" role="button" aria-label="Previous slide" aria-controls="swiper-wrapper-251019db751410bc35" aria-disabled="false"><svg width="11" height="20" viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z" fill="currentColor" transform-origin="center" transform="rotate(180)"></path></svg>
+      </div>
+      <!-- <nz-carousel [nzEffect]="'fade'" [nzAutoPlay]="true" [nzLoop]="true" [nzAutoPlaySpeed]="3000">
         <div
           nz-carousel-content
           *ngFor="let screenshot of currentLang === 'en' ? app.screenshots_en : app.screenshots_ar; let i = index"
@@ -15,7 +40,7 @@
             class="carousel-image"
           />
         </div>
-      </nz-carousel>
+      </nz-carousel> -->
     </div>
 
     <!-- Screenshots carousel -->
@@ -28,18 +53,7 @@
     <div class="container">
 
    
-      <!-- Header with back button and app name -->
-      <div class="header">
-        <button
-          nz-button
-          nzType="text"
-          routerLink="/"
-          aria-label="Back to apps list"
-        >
-          <span nz-icon nzType="left"></span>
-        </button>
-        <h1>{{ currentLang == "en" ? app.Name_En : app.Name_Ar }}</h1>
-      </div>
+     
       <!-- Description section -->
       <h2>{{ "appDetail.description" | translate }}</h2>
       <p>{{ currentLang == "en"? app.Description_En : app.Description_Ar }}</p>
