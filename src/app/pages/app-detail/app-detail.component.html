@@ -17,7 +17,7 @@
         <h1>{{ currentLang == "en" ? app.Name_En : app.Name_Ar }}</h1>
       </div>
       <swiper-container #swiperContainer init="false">
-        <swiper-slide class="swiper-slide" *ngFor="let screenshot of app.screenshots; let i = index">
+        <swiper-slide class="swiper-slide" *ngFor="let screenshot of currentLang === 'en' ? app.screenshots_en : app.screenshots_ar; let i = index">
           <img
             [src]="screenshot"
             [alt]="app.Name_En + ' screenshot ' + (i + 1)"
