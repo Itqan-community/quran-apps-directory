@@ -31,10 +31,6 @@ nz-divider::before {
   .container {
    position: relative;
   }
-  // responsive
-  @media screen and (max-width: 768px) {
-    margin-top: 90px;
-  }
  }
 
  .carousel-image {
@@ -281,8 +277,30 @@ nz-divider::before {
   &.swiper-button-disabled {
     display: none;
   }
+
+  svg {
+    transform: rotate(0deg);
+  }
 }
 .swiper-button-next {
   inset-inline-start: unset;
   inset-inline-end: 0;
+}
+
+/* RTL Support */
+.swiper-button-next[dir="rtl"] {
+
+    inset-inline-end: unset;
+    inset-inline-start: 0;
+    svg {
+      transform: rotate(0deg);
+    }
+}
+
+.swiper-button-prev[dir="rtl"] {
+  inset-inline-start: unset;
+  inset-inline-end: 0;
+  svg {
+    transform: rotate(0deg);
+  }
 }
