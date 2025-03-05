@@ -7,7 +7,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { App } from './app/app.component';
+import { AppComponent } from './app/app.component';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { MenuOutline, ArrowUpOutline, ArrowDownOutline } from '@ant-design/icons-angular/icons';
 
@@ -23,7 +23,7 @@ const ngZorroConfig: NzConfig = {
   }
 };
 
-bootstrapApplication(App, {
+bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideAnimations(),

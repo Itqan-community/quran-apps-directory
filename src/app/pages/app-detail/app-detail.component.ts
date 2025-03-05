@@ -38,8 +38,8 @@ register();
   styleUrls: ["./app-detail.component.scss"],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppDetailComponent implements OnInit, AfterViewInit {
-  @ViewChild('swiperContainer', { static: false }) swiperContainer!: ElementRef;
+export class AppDetailComponent implements OnInit, AfterViewInit  {
+  @ViewChild('swiperContainer') swiperContainer: any;
 
   app?: QuranApp;
   relevantApps: QuranApp[] = [];
@@ -56,19 +56,31 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     },
   };
 
+  hideSwiper = true;
+
   constructor(
     private route: ActivatedRoute,
     private appService: AppService,
     private sanitizer: DomSanitizer,
     private translateService: TranslateService
   ) {
-    // Set initial language based on browser
-    // const browserLang = this.getBrowserLanguage();
-    // this.translateService.use(browserLang);
     this.currentLang = this.translateService.currentLang as 'ar' | 'en';
     // Subscribe to language changes
     this.translateService.onLangChange.subscribe((event) => {
       this.currentLang = event.lang as "en" | "ar";
+      // Reinitialize swiper when language changes
+      if (this.swiperContainer) {
+        this.hideSwiper = false;
+        setTimeout(() => {
+          this.hideSwiper = true;
+        }, 50);
+        setTimeout(() => {
+          console.log(this.hideSwiper);
+          const swiperEl = this.swiperContainer.nativeElement;
+          Object.assign(swiperEl, this.swiperParams);
+          swiperEl.initialize();
+        }, 60);
+      }
     });
   }
 

@@ -9,7 +9,7 @@
                 height="40"
                 src="../assets/images/logo-svg.svg"
                 alt=""
-                routerLink="/apps"
+                [routerLink]="['/', currentLang]"
               />
               <span class="beta-label">{{ "header.beta" | translate }}</span>
             </div>
@@ -18,13 +18,13 @@
           <!-- Desktop Menu -->
           <div class="desktop-menu">
             <nz-space>
-              <a *nzSpaceItem nz-button nzType="link" routerLink="/apps">
+              <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/', currentLang]">
                 {{ "header.home" | translate }}
               </a>
-              <a *nzSpaceItem nz-button nzType="link" routerLink="/about-us">
+              <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/', currentLang, 'about-us']">
                 {{ "header.about" | translate }}
               </a>
-              <a *nzSpaceItem nz-button nzType="link" routerLink="/contact-us">
+              <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/', currentLang, 'contact-us']">
                 {{ "header.contact" | translate }}
               </a>
               <button
@@ -50,19 +50,19 @@
         <!-- Mobile Menu -->
         <div class="mobile-menu" [class.mobile-menu-active]="isMobileMenuVisible">
           <a
-            routerLink="/apps"
+          [routerLink]="['/', currentLang]"
             (click)="toggleMobileMenu()"
           >
             {{ "header.home" | translate }}
           </a>
           <a
-            routerLink="/about-us"
+          [routerLink]="['/', currentLang, 'about-us']"
             (click)="toggleMobileMenu()"
           >
             About Us
           </a>
           <a
-            routerLink="/contact-us"
+          [routerLink]="['/', currentLang, 'contact-us']"
             (click)="toggleMobileMenu()"
           >
             Contact Us
