@@ -17,12 +17,14 @@
         </button>
         <h1>{{ currentLang == "en" ? app.Name_En : app.Name_Ar }}</h1>
       </div>
+      <div *ngIf="loading" class="swiper-loader"><span></span></div>
       <swiper-container #swiperContainer *ngIf="hideSwiper" init="false" [dir]="currentLang == 'en' ? 'ltr' : 'rtl'">
         <swiper-slide class="swiper-slide" *ngFor="let screenshot of currentLang === 'en' ? app.screenshots_en : app.screenshots_ar; let i = index">
           <img
             [src]="screenshot"
             [alt]="app.Name_En + ' screenshot ' + (i + 1)"
             class="carousel-image"
+            (load)="loading = false"
           />
         </swiper-slide>
       </swiper-container>
