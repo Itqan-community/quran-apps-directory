@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { RouterModule } from "@angular/router";
+import { RouterModule, ActivatedRoute } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { NzGridModule } from "ng-zorro-antd/grid";
 import { NzCardModule } from "ng-zorro-antd/card";
@@ -43,35 +43,36 @@ export class AppListComponent implements OnInit {
   scrollLeft = 0;
   sortAscending = true;
   private categoriesContainer: HTMLElement | null = null;
-  currentLang: "en" | "ar" = 'ar' ; // Initialize with browser language
+  currentLang: "en" | "ar" = 'ar'; // Initialize with browser language
   selectedCategory: string = 'all';
 
   constructor(
     private appService: AppService,
     private sanitizer: DomSanitizer,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private route: ActivatedRoute
   ) {
     this.categories = CATEGORIES.map((category) => ({
       name: category.name,
       icon: this.sanitizer.bypassSecurityTrustHtml(category.icon),
     }));
 
-    // // Set initial language based on browser
-    // const browserLang = this.getBrowserLanguage();
-    // this.translateService.use(browserLang);
-    this.currentLang = this.translateService.currentLang as "en" | "ar"
+    // Set initial language based on browser
+    this.currentLang = this.translateService.currentLang as "en" | "ar";
     // Subscribe to language changes
     this.translateService.onLangChange.subscribe((event) => {
       this.currentLang = event.lang as "en" | "ar";
     });
   }
 
-  private getBrowserLanguage(): "en" | "ar" {
-    const browserLang = navigator.language.toLowerCase().split("-")[0];
-    return browserLang === "ar" ? "ar" : "en";
-  }
-
   ngOnInit() {
+    this.route.paramMap.subscribe(params => {
+      const lang = params.get('lang');
+      if (lang) {
+        this.currentLang = lang as "en" | "ar";
+      }
+    });
+
     this.appService.getApps().subscribe((apps) => {
       this.apps = apps;
       this.filteredApps = apps;
