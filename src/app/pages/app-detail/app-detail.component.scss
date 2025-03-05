@@ -52,6 +52,7 @@ nz-divider::before {
   p {
     font-size: 17px;
     color: #72788E;
+    text-align: justify;
   }
   // responsive
   @media screen and (max-width: 768px) {
@@ -281,26 +282,57 @@ nz-divider::before {
   svg {
     transform: rotate(0deg);
   }
+  // responsive
+  @media screen and (max-width: 768px) {
+    width: 40px;
+    height: 40px;
+    inset-inline-start: 8px;
+    svg {
+      width: 10px;
+      height: auto;
+    }
+  }
 }
 .swiper-button-next {
   inset-inline-start: unset;
   inset-inline-end: 0;
+  // responsive
+  @media screen and (max-width: 768px) {
+    inset-inline-end: 8px;
+  }
 }
 
 /* RTL Support */
-.swiper-button-next[dir="rtl"] {
+.swiper-button-next[dir="rtl"],
+.swiper-button-prev[dir="rtl"] {
 
-    inset-inline-end: unset;
-    inset-inline-start: 0;
-    svg {
-      transform: rotate(0deg);
+     svg {
+      transform: rotate(180deg);
     }
 }
-
-.swiper-button-prev[dir="rtl"] {
-  inset-inline-start: unset;
-  inset-inline-end: 0;
-  svg {
-    transform: rotate(0deg);
+.swiper-loader {
+  width: 100%;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  span {
+    display: block;
+    width: 50px;
+  padding: 8px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #7c4332;
+  --_m: 
+    conic-gradient(#0000 10%,#000),
+    linear-gradient(#000 0 0) content-box;
+  -webkit-mask: var(--_m);
+          mask: var(--_m);
+  -webkit-mask-composite: source-out;
+          mask-composite: subtract;
+  animation: spin .5s infinite linear;
   }
 }
+ /* HTML: <div class="loader"></div> */
+ 
+@keyframes spin {to{transform: rotate(1turn)}}

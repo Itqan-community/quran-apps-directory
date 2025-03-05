@@ -57,6 +57,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
   };
 
   hideSwiper = true;
+  loading = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -104,6 +105,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
                   .slice(0, 3);
               });
           }
+          this.loading = false;
         }
       });
     });
