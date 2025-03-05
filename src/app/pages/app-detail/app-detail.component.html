@@ -9,10 +9,11 @@
         <button
           nz-button
           nzType="text"
-          routerLink="/"
+          [routerLink]="['/', currentLang]"
           aria-label="Back to apps list"
         >
-          <span nz-icon nzType="left"></span>
+           <span nz-icon [nzType]="currentLang === 'en' ? 'left' : 'right'"></span>
+
         </button>
         <h1>{{ currentLang == "en" ? app.Name_En : app.Name_Ar }}</h1>
       </div>

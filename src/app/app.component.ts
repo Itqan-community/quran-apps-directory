@@ -31,15 +31,15 @@ const icons = [MenuOutline];
 export class AppComponent implements OnInit, AfterViewInit {
   public isRtl: boolean;
   public isMobileMenuVisible = false;
+  public currentLang: "en" | "ar" = "en";
   private translate = inject(TranslateService);
   private titleService = inject(Title);
   private metaService = inject(Meta);
-  public currentLang: any = "en";
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
   constructor(private languageService: LanguageService) {
-     // Get browser language
+    // Get browser language
     const browserLang = navigator.language;
     const defaultLang = browserLang.startsWith("ar") ? "ar" : "en";
 
@@ -50,6 +50,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     // Set up translations
     this.translate.setDefaultLang(defaultLang);
     this.translate.use(defaultLang);
+    this.currentLang = defaultLang;
   }
 
   getCurrentRouteParams(): any {
@@ -67,7 +68,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    console.log("ngOnInit", this.getCurrentRouteParams());
     this.updateMetaTags();
     this.translate.onLangChange.subscribe(() => {
       this.updateMetaTags();
@@ -79,6 +79,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.isRtl = lang === 'ar';
       document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
       this.translate.use(lang);
+      this.currentLang = lang as "en" | "ar";
     });
   }
 
@@ -87,13 +88,14 @@ export class AppComponent implements OnInit, AfterViewInit {
       const currentUrl = (event as NavigationEnd).url;
       console.log('Updated URL:', currentUrl);
     });
-    console.log("ngAfterViewInit", this.getCurrentRouteParams());
     this.languageService.setLanguageFromUrl();
   }
 
   toggleLanguage() {
     this.isRtl = !this.isRtl;
-    this.languageService.changeLanguage(this.isRtl ? "ar" : "en");
+    const newLang = this.isRtl ? "ar" : "en";
+    this.languageService.changeLanguage(newLang);
+    this.currentLang = newLang;
   }
 
   toggleMobileMenu() {

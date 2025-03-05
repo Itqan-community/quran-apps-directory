@@ -92,9 +92,8 @@
         <div nz-col nzXs="18" nzSm="12" nzMd="8" nzLg="6" nzXl="6" *ngFor="let app of filteredApps">
           <!-- App card with cover image -->
           <nz-card
-            
             [nzCover]="coverTemplate"
-            [routerLink]="['/app', app.id]"
+            [routerLink]="['/', currentLang, 'app', app.id]"
             [attr.aria-label]="'View details for ' + app.Name_En"
             class="app-card"
           >
