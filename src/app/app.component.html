@@ -9,7 +9,7 @@
                 height="40"
                 src="../assets/images/logo-svg.svg"
                 alt=""
-                routerLink="/apps"
+                [routerLink]="['/', currentLang]"
               />
               <span class="beta-label">{{ "header.beta" | translate }}</span>
             </div>
