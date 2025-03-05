@@ -282,26 +282,33 @@ nz-divider::before {
   svg {
     transform: rotate(0deg);
   }
+  // responsive
+  @media screen and (max-width: 768px) {
+    width: 40px;
+    height: 40px;
+    inset-inline-start: 8px;
+    svg {
+      width: 10px;
+      height: auto;
+    }
+  }
 }
 .swiper-button-next {
   inset-inline-start: unset;
   inset-inline-end: 0;
+  // responsive
+  @media screen and (max-width: 768px) {
+    inset-inline-end: 8px;
+  }
 }
 
 /* RTL Support */
-.swiper-button-next[dir="rtl"] {
+.swiper-button-next[dir="rtl"],
+.swiper-button-prev[dir="rtl"] {
 
-    inset-inline-end: unset;
-    inset-inline-start: 0;
-    svg {
-      transform: rotate(0deg);
+     svg {
+      transform: rotate(180deg);
     }
 }
 
-.swiper-button-prev[dir="rtl"] {
-  inset-inline-start: unset;
-  inset-inline-end: 0;
-  svg {
-    transform: rotate(0deg);
-  }
-}
+ 
