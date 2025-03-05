@@ -1,5 +1,5 @@
-import { Component, inject, OnInit } from "@angular/core";
-import { RouterOutlet, RouterLink } from "@angular/router";
+import { AfterViewInit, Component, inject, OnInit } from "@angular/core";
+import { RouterOutlet, RouterLink, ActivatedRoute, Router, ActivatedRouteSnapshot, NavigationEnd } from "@angular/router";
 import { NzLayoutModule } from "ng-zorro-antd/layout";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzSpaceModule } from "ng-zorro-antd/space";
@@ -7,6 +7,8 @@ import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { MenuOutline } from '@ant-design/icons-angular/icons';
 import { Title, Meta } from '@angular/platform-browser';
+import { LanguageService } from "./services/language.service";
+import { filter } from "rxjs";
 
 // Import what icons you need
 const icons = [MenuOutline];
@@ -26,38 +28,60 @@ const icons = [MenuOutline];
     NzIconModule,
   ],
 })
-export class App implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
   public isRtl: boolean;
   public isMobileMenuVisible = false;
   private translate = inject(TranslateService);
   private titleService = inject(Title);
   private metaService = inject(Meta);
+  public currentLang: any = "en";
 
-  constructor() {
+  constructor(private languageService: LanguageService, private router: Router) {
     // Get browser language
-    const browserLang = navigator.language;
-    const defaultLang = browserLang.startsWith("ar") ? "ar" : "en";
-
+    console.log("constructor", this.getCurrentRouteParams());
+    
+    this.translate.onLangChange.subscribe(lang => {
+      this.currentLang = lang;
+    });
     // Set initial RTL state based on language
-    this.isRtl = defaultLang === "ar";
+    this.isRtl = this.translate.currentLang === "ar";
     document.documentElement.dir = this.isRtl ? "rtl" : "ltr";
+  }
 
-    // Set up translations
-    this.translate.setDefaultLang(defaultLang);
-    this.translate.use(defaultLang);
+  getCurrentRouteParams(): any {
+    const snapshot = this.router.routerState.snapshot.root;
+    return this.extractParams(snapshot);
+  }
+
+  private extractParams(route: ActivatedRouteSnapshot): any {
+    let params = { ...route.params };
+    while (route.firstChild) {
+      route = route.firstChild;
+      params = { ...params, ...route.params };
+    }
+    return params;
   }
 
   ngOnInit() {
+    console.log("ngOnInit", this.getCurrentRouteParams());
     this.updateMetaTags();
     this.translate.onLangChange.subscribe(() => {
       this.updateMetaTags();
     });
   }
 
+  ngAfterViewInit() {
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
+      const currentUrl = (event as NavigationEnd).url;
+      console.log('Updated URL:', currentUrl);
+    });
+    console.log("ngAfterViewInit", this.getCurrentRouteParams());
+    this.languageService.setLanguageFromUrl();
+  }
+
   toggleLanguage() {
     this.isRtl = !this.isRtl;
-    document.documentElement.dir = this.isRtl ? "rtl" : "ltr";
-    this.translate.use(this.isRtl ? "ar" : "en");
+    this.languageService.changeLanguage(this.isRtl ? "ar" : "en");
   }
 
   toggleMobileMenu() {
