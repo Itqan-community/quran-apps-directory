@@ -277,8 +277,30 @@ nz-divider::before {
   &.swiper-button-disabled {
     display: none;
   }
+
+  svg {
+    transform: rotate(0deg);
+  }
 }
 .swiper-button-next {
   inset-inline-start: unset;
   inset-inline-end: 0;
+}
+
+/* RTL Support */
+.swiper-button-next[dir="rtl"] {
+
+    inset-inline-end: unset;
+    inset-inline-start: 0;
+    svg {
+      transform: rotate(0deg);
+    }
+}
+
+.swiper-button-prev[dir="rtl"] {
+  inset-inline-start: unset;
+  inset-inline-end: 0;
+  svg {
+    transform: rotate(0deg);
+  }
 }
