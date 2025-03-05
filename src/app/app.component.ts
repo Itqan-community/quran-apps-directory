@@ -35,17 +35,21 @@ export class AppComponent implements OnInit, AfterViewInit {
   private titleService = inject(Title);
   private metaService = inject(Meta);
   public currentLang: any = "en";
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
-  constructor(private languageService: LanguageService, private router: Router) {
-    // Get browser language
-    console.log("constructor", this.getCurrentRouteParams());
-    
-    this.translate.onLangChange.subscribe(lang => {
-      this.currentLang = lang;
-    });
+  constructor(private languageService: LanguageService) {
+     // Get browser language
+    const browserLang = navigator.language;
+    const defaultLang = browserLang.startsWith("ar") ? "ar" : "en";
+
     // Set initial RTL state based on language
-    this.isRtl = this.translate.currentLang === "ar";
+    this.isRtl = defaultLang === "ar";
     document.documentElement.dir = this.isRtl ? "rtl" : "ltr";
+
+    // Set up translations
+    this.translate.setDefaultLang(defaultLang);
+    this.translate.use(defaultLang);
   }
 
   getCurrentRouteParams(): any {
@@ -67,6 +71,14 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.updateMetaTags();
     this.translate.onLangChange.subscribe(() => {
       this.updateMetaTags();
+    });
+
+    // Listen for URL changes
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
+      const lang = this.route.snapshot.firstChild?.paramMap.get('lang') || this.translate.getDefaultLang();
+      this.isRtl = lang === 'ar';
+      document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+      this.translate.use(lang);
     });
   }
 

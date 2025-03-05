@@ -18,13 +18,13 @@
           <!-- Desktop Menu -->
           <div class="desktop-menu">
             <nz-space>
-              <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/',currentLang,'apps']">
+              <a *nzSpaceItem nz-button nzType="link" routerLink="/apps">
                 {{ "header.home" | translate }}
               </a>
-              <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/',currentLang,'about-us']">
+              <a *nzSpaceItem nz-button nzType="link" routerLink="/about-us">
                 {{ "header.about" | translate }}
               </a>
-              <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/',currentLang,'contact-us']">
+              <a *nzSpaceItem nz-button nzType="link" routerLink="/contact-us">
                 {{ "header.contact" | translate }}
               </a>
               <button
