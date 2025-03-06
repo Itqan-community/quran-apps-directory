@@ -15,6 +15,7 @@ import { NzRateModule } from "ng-zorro-antd/rate";
 import { FormsModule } from "@angular/forms";
 // import function to register Swiper custom elements
 import { register } from 'swiper/element/bundle';
+import {Nl2brPipe} from "../../pipes/nl2br.pipe";
 // register Swiper custom elements
 register();
 
@@ -33,6 +34,7 @@ register();
     NzTagModule,
     NzGridModule,
     TranslateModule,
+    Nl2brPipe,
   ],
   templateUrl: "./app-detail.component.html",
   styleUrls: ["./app-detail.component.scss"],
@@ -45,6 +47,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
   relevantApps: QuranApp[] = [];
   currentLang: "en" | "ar" = "ar";
   categoriesSet: Array<{name: string, icon: string}> = categories;
+  isExpanded = false;
 
   swiperParams = {
     slidesPerView: "auto",
@@ -115,7 +118,10 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
   // Add a method to handle navigation to a related app
   navigateToApp(appId: string) {
   
-    this.router.navigate([`/${this.currentLang}/app/${appId}`]);
+    this.router.navigate([`/${this.currentLang}/app/${appId}`]).then(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      this.isExpanded = false;
+    });;
   }
 
   ngAfterViewInit() {
@@ -129,5 +135,11 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
   getCategoryIcon(category: string): SafeHtml {
     const foundCategory = this.categoriesSet.find(cat => cat.name === category);
     return this.sanitizer.bypassSecurityTrustHtml(foundCategory?.icon || '');
+  }
+
+  shouldShowReadMore(text: string | null): boolean {
+    if (text === null) return false;
+    // Only show read more button if text is long enough
+    return text.length > 200; // Adjust character threshold as needed
   }
 }
