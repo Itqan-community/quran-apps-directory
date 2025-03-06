@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { ActivatedRoute, RouterModule } from "@angular/router";
+import { ActivatedRoute, RouterModule, Router } from "@angular/router";
 import { NzCardModule } from "ng-zorro-antd/card";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzIconModule } from "ng-zorro-antd/icon";
@@ -63,7 +63,8 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     private route: ActivatedRoute,
     private appService: AppService,
     private sanitizer: DomSanitizer,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private router: Router // Add Router to the constructor
   ) {
     this.currentLang = this.translateService.currentLang as 'ar' | 'en';
     // Subscribe to language changes
@@ -109,6 +110,11 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
         }
       });
     });
+  }
+
+  // Add a method to handle navigation to a related app
+  navigateToApp(appId: string) {
+    this.router.navigate(['/app-detail', appId], { queryParams: { lang: this.currentLang } });
   }
 
   ngAfterViewInit() {

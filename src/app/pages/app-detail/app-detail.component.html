@@ -236,8 +236,7 @@
         <div nz-row [nzGutter]="[24, 24]" class="app-grid-row"> 
           <div nz-col nzXs="18" nzSm="12" nzMd="8" nzLg="6" nzXl="6" *ngFor="let relatedApp of relevantApps">
             <nz-card
-              
-              [routerLink]="['/app', relatedApp.id]"
+              (click)="navigateToApp(relatedApp.id)"
               [attr.aria-label]="'View details for ' + relatedApp.Name_En"
               class="app-card"
               [nzCover]="coverTemplate"
