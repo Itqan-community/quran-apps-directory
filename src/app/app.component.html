@@ -59,13 +59,13 @@
           [routerLink]="['/', currentLang, 'about-us']"
             (click)="toggleMobileMenu()"
           >
-            About Us
+              {{ "header.about" | translate }}
           </a>
           <a
           [routerLink]="['/', currentLang, 'contact-us']"
             (click)="toggleMobileMenu()"
           >
-            Contact Us
+              {{ "header.contact" | translate }}
           </a>
           <a
             (click)="toggleLanguage(); toggleMobileMenu()"

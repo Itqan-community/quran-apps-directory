@@ -55,7 +55,7 @@
             <button
                     class="read-more-button"
                     (click)="isExpanded = !isExpanded"
-                    *ngIf="shouldShowReadMore(currentLang == 'en' ? app.Description_En : app.Description_Ar)">
+                    *ngIf="!isExpanded">
                 {{ isExpanded ? ('appDetail.readLess' | translate) : 'appDetail.readMore' | translate }}
             </button>
         </div>
