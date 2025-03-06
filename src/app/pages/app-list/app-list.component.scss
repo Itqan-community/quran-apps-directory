@@ -107,7 +107,11 @@
         width: 24px;
         height: 24px;
         display: block;
+        [dir="rtl"] & {
+          transform: scaleX(-1) !important;
+        }
       }
+
     }
     &--title {
       font-size: 14px;
