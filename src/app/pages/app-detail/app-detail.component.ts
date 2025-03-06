@@ -114,7 +114,8 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
 
   // Add a method to handle navigation to a related app
   navigateToApp(appId: string) {
-    this.router.navigate(['/app-detail', appId], { queryParams: { lang: this.currentLang } });
+  
+    this.router.navigate([`/${this.currentLang}/app/${appId}`]);
   }
 
   ngAfterViewInit() {
