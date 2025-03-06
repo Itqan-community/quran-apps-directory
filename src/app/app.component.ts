@@ -116,12 +116,12 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.metaService.updateTag({ property: "og:url", content: "https://quran-apps.itqan.dev/" });
       this.metaService.updateTag({ property: "og:title", content: "دليل التطبيقات القرآنية" });
       this.metaService.updateTag({ property: "og:description", content: "نساعدك في الوصول لأهم التطبيقات القرآنية للحفظ والقراءة والتدبر .... وغيرها الكثير، مقدم من مجتمع إتقان لتقنيات القرآن" });
-      this.metaService.updateTag({ property: "og:image", content: "../assets/images/Social-Media-Thumnail.png" });
+      this.metaService.updateTag({ property: "og:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" });
       this.metaService.updateTag({ property: "twitter:card", content: "summary_large_image" });
       this.metaService.updateTag({ property: "twitter:url", content: "https://quran-apps.itqan.dev/" });
       this.metaService.updateTag({ property: "twitter:title", content: "دليل التطبيقات القرآنية" });
       this.metaService.updateTag({ property: "twitter:description", content: "نساعدك في الوصول لأهم التطبيقات القرآنية للحفظ والقراءة والتدبر .... وغيرها الكثير، مقدم من مجتمع إتقان لتقنيات القرآن" });
-      this.metaService.updateTag({ property: "twitter:image", content: "../assets/images/Social-Media-Thumnail.png" });
+      this.metaService.updateTag({ property: "twitter:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" });
     // } else {
     //   this.titleService.setTitle("Quran Apps Directory");
     //   this.metaService.updateTag({ name: "title", content: "Quran Apps Directory" });
@@ -142,5 +142,25 @@ export class AppComponent implements OnInit, AfterViewInit {
     //   this.metaService.updateTag({ property: "twitter:description", content: "We help you reach top Quranic applications for memorization, reading, translation... and much more, provided by ITQAN community for Quran technologies" });
     //   this.metaService.updateTag({ property: "twitter:image", content: "image URL" });
     // }
+//     } else {
+//       this.titleService.setTitle("Quran Apps Directory");
+//       this.metaService.updateTag({ name: "title", content: "Quran Apps Directory" });
+//       this.metaService.updateTag({ name: "description", content: "We help you reach top Quranic applications for memorization, reading, translation... and much more, provided by ITQAN community for Quran technologies" });
+//       this.metaService.updateTag({ name: "keywords", content: "دليل التطبيقات, دليل القرآن, تفسير,Quran apps, تطبيقات القرآن, إتقان, ITQAN, Quran technology, open source" });
+//       this.metaService.updateTag({ name: "robots", content: "index, follow" });
+//       this.metaService.updateTag({ httpEquiv: "Content-Type", content: "text/html; charset=utf-8" });
+//       this.metaService.updateTag({ name: "language", content: "English" });
+//       this.metaService.updateTag({ name: "author", content: "ITQAN community for Quran technologies" });
+//       this.metaService.updateTag({ property: "og:type", content: "website" });
+//       this.metaService.updateTag({ property: "og:url", content: "https://quran-apps.itqan.dev/" });
+//       this.metaService.updateTag({ property: "og:title", content: "Quran Apps Directory" });
+//       this.metaService.updateTag({ property: "og:description", content: "We help you reach top Quranic applications for memorization, reading, translation... and much more, provided by ITQAN community for Quran technologies" });
+//       this.metaService.updateTag({ property: "og:image", content: "https://quran-apps.itqan.dev/assets/images/banner.png" });
+//       this.metaService.updateTag({ property: "twitter:card", content: "summary_large_image" });
+//       this.metaService.updateTag({ property: "twitter:url", content: "https://quran-apps.itqan.dev/" });
+//       this.metaService.updateTag({ property: "twitter:title", content: "Quran Apps Directory" });
+//       this.metaService.updateTag({ property: "twitter:description", content: "We help you reach top Quranic applications for memorization, reading, translation... and much more, provided by ITQAN community for Quran technologies" });
+//       this.metaService.updateTag({ property: "twitter:image", content: "https://quran-apps.itqan.dev/assets/images/banner.png" });
+//     }
   }
 }

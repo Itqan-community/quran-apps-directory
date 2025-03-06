@@ -27,7 +27,7 @@
       "main-title": "Quran Apps Directory",
       "title": "Categories",
       "mushaf": "Mushaf",
-      "translation": "Translation",
+      "translations": "Translation",
       "recite": "Recite",
       "kids": "Kids",
       "tafsir": "Tafsir",
@@ -51,7 +51,10 @@
     "playStore": "Google Play",
     "huaweiStore": "Huawei AppGallery",
     "relevantApps": "Similar Apps",
-    "screenshots": "Screenshots"
+    "screenshots": "Screenshots",
+    "readMore": "Read More",
+    "readLess": "Read Less"
+
   },
   "requestForm": {
     "title": "Request App Addition",
