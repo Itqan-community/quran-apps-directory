@@ -47,18 +47,28 @@
      
       <!-- Description section -->
       <h2>{{ "appDetail.description" | translate }}</h2>
-      <p>{{ currentLang == "en"? app.Description_En : app.Description_Ar }}</p>
+        <div class="app-description">
+            <p [ngClass]="{'truncated': !isExpanded}"
+               [innerHTML]=' currentLang == "en" ? app.Description_En : app.Description_Ar  | nl2br'>
 
-      <!-- Categories section -->
-      <div class="categories">
-        <div *ngFor="let category of app.categories" class="ant-flex cat" >
-          <span class="cat-icon" [innerHTML]="getCategoryIcon(category)"></span>
-          <span class="cat-name">
-          {{ "appList.categories." + category.toLowerCase() | translate }}
-          </span> 
+            </p>
+            <button
+                    class="read-more-button"
+                    (click)="isExpanded = !isExpanded"
+                    *ngIf="shouldShowReadMore(currentLang == 'en' ? app.Description_En : app.Description_Ar)">
+                {{ isExpanded ? ('appDetail.readLess' | translate) : 'appDetail.readMore' | translate }}
+            </button>
         </div>
-      </div>
-      <!-- Deverloper -->
+        <div class="categories">
+            <div *ngFor="let category of app.categories" class="category-badge">
+                <span class="badge-icon" [innerHTML]="getCategoryIcon(category)"></span>
+                <span class="badge-name">
+      {{ "appList.categories." + category.toLowerCase() | translate }}
+    </span>
+            </div>
+        </div>
+
+        <!-- Deverloper -->
       <nz-divider ></nz-divider>
 
       <div class="dev-container ant-flex ant-flex-align-center ">

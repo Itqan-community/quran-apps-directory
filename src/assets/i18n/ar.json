@@ -27,7 +27,7 @@
       "main-title": "دليل التطبيقات القرآنية",
       "title": "التصنيفات",
       "mushaf": "مصحف",
-      "translation": "ترجمات",
+      "translations": "ترجمات",
       "recite": "تسميع",
       "kids": "أطفال",
       "tafsir": "تفسير",
@@ -51,7 +51,9 @@
     "playStore": "متجر جوجل بلاي",
     "huaweiStore": "متجر هواوي",
     "relevantApps": "تطبيقات ذات صلة",
-    "screenshots": "لقطات الشاشة"
+    "screenshots": "لقطات الشاشة",
+    "readMore": "اقرأ المزيد",
+    "readLess": "قلّص"
   },
   "requestForm": {
     "title": "طلب إضافة تطبيق",
