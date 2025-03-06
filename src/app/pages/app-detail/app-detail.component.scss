@@ -10,6 +10,41 @@
     display: none !important;
   }
 }
+.category-badge {
+  padding: 6px 12px;
+  background-color: #f8f8f8;
+  border-radius: 20px;
+  transition: all 0.3s;
+  border: 1px solid #e8e8e8;
+}
+
+.badge-name {
+  font-weight: 500;
+  font-size: 14px;
+  color: #272424;
+}
+
+/* Mobile adjustments */
+@media screen and (max-width: 480px) {
+  .categories {
+    margin: 12px 0;
+    gap: 6px;
+  }
+
+  .category-badge {
+    padding: 4px 10px;
+  }
+
+  .badge-name {
+    font-size: 12px;
+  }
+}
+
+/* RTL Support */
+[dir="rtl"] .badge-icon {
+  margin-inline-start: 8px;
+  margin-inline-end: 0;
+}
 nz-divider::after,
 nz-divider::before {
   border-color: #ceced1 !important;
@@ -336,3 +371,39 @@ nz-divider::before {
  /* HTML: <div class="loader"></div> */
  
 @keyframes spin {to{transform: rotate(1turn)}}
+
+
+.app-description {
+  position: relative;
+  margin-bottom: 16px;
+
+  p{
+    margin: 0;
+  }
+}
+
+.truncated {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  max-height: 90px; /* Fallback for browsers that don't support -webkit-line-clamp */
+}
+
+.read-more-button {
+  background: none;
+  border: none;
+  color: #7c4332;
+  font-weight: 500;
+  padding: 4px 0;
+  cursor: pointer;
+  font-size: 15px;
+  display: inline-block;
+  transition: color 0.3s;
+}
+
+.read-more-button:hover {
+  color: #995441;
+  text-decoration: underline;
+}
