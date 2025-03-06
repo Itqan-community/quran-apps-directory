@@ -842,6 +842,7 @@ export const applicationsData =[
   }
 ]
 
+// categories definition
 export const categories = [
   {
     name: "Recite",
