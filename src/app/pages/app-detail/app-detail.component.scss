@@ -139,6 +139,10 @@ nz-divider::before {
 ::ng-deep .ant-card-cover img {
   border-radius: 8px 8px 0 0 !important;
 }
+::ng-deep .ant-btn-icon-only {
+  background: #ede0c090;
+}
+
 
 ::ng-deep .ant-card-body {
   padding-inline-start: 8px;
@@ -163,7 +167,7 @@ nz-divider::before {
       margin-inline-end: 16px;
       .app-icon {
         width: 38px;
-        border-radius: 40px;
+        // border-radius: 40px;
       }
     }
     .card-data-container {
