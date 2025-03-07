@@ -863,17 +863,17 @@ export const applicationsData = [
             "mushaf"
         ],
         "screenshots_ar": [
-            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/01_screenshots_ar.jpeg",
-            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/02_screenshots_ar.jpeg",
-            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/03_screenshots_ar.jpeg"
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/03_screenshots_ar.png"
         ],
         "screenshots_en": [
-            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/01_screenshots_ar.jpeg",
-            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/02_screenshots_ar.jpeg",
-            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/03_screenshots_ar.jpeg"
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/03_screenshots_ar.png"
         ],
-        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/cover_photo_ar.jpeg",
-        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/cover_photo_ar.jpeg",
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/cover_photo_ar.png",
         "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/app_icon.png",
         "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/developer_logo.svg",
         "Developer_Name_En": "Wiqaya",
