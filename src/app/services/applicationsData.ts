@@ -665,13 +665,25 @@ export const applicationsData = [
             "tools"
         ],
         "screenshots_ar": [
-            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/01_screenshots_en.Not Found"
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/06_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/07_screenshots_ar.png"
         ],
         "screenshots_en": [
-            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/01_screenshots_ar.Not Found"
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/06_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/07_screenshots_ar.png"
         ],
-        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/cover_photo_en.Not Found",
-        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/cover_photo_ar.Not Found",
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/cover_photo_ar.png",
         "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/app_icon.png",
         "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/developer_logo.png",
         "Developer_Name_En": "Maknon",
@@ -877,13 +889,17 @@ export const applicationsData = [
             "mushaf"
         ],
         "screenshots_ar": [
-            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/01_screenshots_en.Not Found"
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/01_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/02_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/03_screenshots_ar.jpeg"
         ],
         "screenshots_en": [
-            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/01_screenshots_ar.Not Found"
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/01_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/02_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/03_screenshots_ar.jpeg"
         ],
-        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/cover_photo_en.Not Found",
-        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/cover_photo_ar.Not Found",
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/cover_photo_ar.jpeg",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/cover_photo_ar.jpeg",
         "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/app_icon.png",
         "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/developer_logo.png",
         "Developer_Name_En": "Digital Corners",
