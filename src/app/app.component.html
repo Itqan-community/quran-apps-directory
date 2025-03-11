@@ -4,19 +4,28 @@
       <div class="app-header--content">
  
           <div class="logo-container">
-            <img
-              height="40"
-              src="../assets/images/logo-svg.svg"
-              alt=""
-              routerLink="/apps"
-            />
+            <div class="logo-wrapper">
+              <img
+                height="40"
+                src="../assets/images/logo-svg.svg"
+                alt=""
+                [routerLink]="['/', currentLang]"
+              />
+              <span class="beta-label">{{ "header.beta" | translate }}</span>
+            </div>
           </div>
     
           <!-- Desktop Menu -->
           <div class="desktop-menu">
             <nz-space>
-              <a *nzSpaceItem nz-button nzType="link" routerLink="/apps">
+              <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/', currentLang]">
                 {{ "header.home" | translate }}
+              </a>
+              <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/', currentLang, 'about-us']">
+                {{ "header.about" | translate }}
+              </a>
+              <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/', currentLang, 'contact-us']">
+                {{ "header.contact" | translate }}
               </a>
               <button
                 *nzSpaceItem
@@ -33,7 +42,6 @@
           <button
             class="mobile-menu-btn"
             (click)="toggleMobileMenu()"
-            
           >
             <span class="mobile-menu-btn--bars" [class.expanded]="isMobileMenuVisible"></span>
           </button>
@@ -42,16 +50,28 @@
         <!-- Mobile Menu -->
         <div class="mobile-menu" [class.mobile-menu-active]="isMobileMenuVisible">
           <a
-            routerLink="/apps"
+          [routerLink]="['/', currentLang]"
             (click)="toggleMobileMenu()"
           >
             {{ "header.home" | translate }}
           </a>
           <a
+          [routerLink]="['/', currentLang, 'about-us']"
+            (click)="toggleMobileMenu()"
+          >
+              {{ "header.about" | translate }}
+          </a>
+          <a
+          [routerLink]="['/', currentLang, 'contact-us']"
+            (click)="toggleMobileMenu()"
+          >
+              {{ "header.contact" | translate }}
+          </a>
+          <a
             (click)="toggleLanguage(); toggleMobileMenu()"
           >
             {{ "header.language." + (isRtl ? "en" : "ar") | translate }}
-        </a>
+          </a>
         </div>
       </div>
     </div>

@@ -1,157 +1,1512 @@
 export const applicationsData = [
-  {
-    "id": "quran-pro",
-    "name": "Quran Pro Muslim | القرآن الكريم",
-    "description": {
-      "en": "Offers a vast collection of audio recitations from various Qaris and supports translations in 30 different languages.",
-      "ar": "يقدم مجموعة واسعة من التلاوات الصوتية من قراء مختلفين ويدعم الترجمات بـ 30 لغة مختلفة."
+    {
+        "id": "1_Wahy",
+        "Name_Ar":"وَحي",
+        "Name_En": "Wahy",
+        "Short_Description_Ar": "القرآن تلاوة وتفسير كلمة بكلمة",
+        "Short_Description_En": "Learn Holy Quran word-by-word",
+        "Description_Ar": "وحي - مصحفك الرقمي المتكامل لتلاوة وفهم واستماع القرآن الكريم\nيوفر لك تطبيق وحي تجربة سلسة ومتكاملة لقراءة واستماع وفهم القرآن الكريم بطريقة حديثة ومبتكرة، مع ميزات متقدمة تساعدك على التفاعل مع المصحف بكل سهوله على مستوى السور والآيات والكلمات.\nلماذا تختار وحي؟\n- مصحف رواية حفص بجميع إصدارات مجمع الملك فهد ورواية ورش.\n- أكثر من 64 قارئًا عالميًا لتلاوة القرآن الكريم بجودة عالية\n- ميزة نطق كل كلمة منفردة لمساعدتك على الحفظ وتحسين التلاوة\n- البحث الذكي بالرسم الإملائي للعثور على الآيات بسهولة\n- تفسير القرآن الكريم بـ 184 مصدرًا يشمل أشهر التفاسير والترجمات\n- تحميل التلاوات والتفاسير للاستماع والقراءة بدون إنترنت\n- صور توضيحية وتقنية الواقع المعزز لفهم معاني الآيات بعمق\n- واجهة تدعم أكثر من 34 لغة لتناسب المستخدمين حول العالم\n- خطط قرآنية لمتابعة ختمتك وتقدمك فيها\n- علامات مرجعية لحفظ مواضع القراءة.\n- كتابة التعليقات والملاحظات على الآيات\n- مشاركة الآية مع المحتوى المصاحب لها بصيغة نصية أو صور\n- تمرير تلقائي للصفحات\n- وصول مباشر للمواقع التي تشير لها الكلمات",
+        "Description_En": "Holy Quran app with unique features like Highlight the word being recited, word-translation, repeating ayah in recitation (to help in memorization) and many translations/tafsirs, and more ..\nFeatures:\n- Highlight the word being recited by the reciter, to help non-arabic speakers and the kids.\n- Listen Many recitations, with ayah repeating (to help in memorization).\n- Many translations and tafsirs.\n- Download recitations to play it without internet.\n- Ayah Searching\n- Adding Bookmarks.\n- Mushaf Mode and List Mode.",
+        "status": "Done",
+        "sort": 1,
+        "Apps_Avg_Rating": 4.9,
+        "categories": [
+            "mushaf",
+            "tafsir",
+            "translations",
+            "riwayat",
+            "audio"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/06_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/07_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/08_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/01_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/02_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/03_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/04_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/05_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/06_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/07_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/08_screenshots_en.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/cover_photo_en.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/1_Wahy/developer_logo.png",
+        "Developer_Name_En": "Tafsir Center for Qur'anic Studies",
+        "Developer_Name_Ar": "مركز تفسير للدراسات القرآنية",
+        "Developer_Website": "https://tafsir.net",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.logicdev.quran_reader",
+        "AppStore_Link": "https://apps.apple.com/sa/app/%D9%88-%D8%AD%D9%8A-%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86-%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85/id1615454207",
+        "App_Gallery_Link": "https://appgallery.huawei.com/#/app/C110460595"
     },
-    "link": "https://quranpro.co/",
-    "status": "Done",
-    "rating": 4.7,
-    "categories": ["Recite", "Listen"],
-    "screenshots": [
-      "https://placehold.co/600x400",
-      "https://placehold.co/600x400"
-    ],
-    "mainImage": "https://play-lh.googleusercontent.com/89ySIAv_HXM99XhKo-N_EBdNZu_DTbDdLRXUH0ZQFE0mhmriZ13CI81hwtXaYIZtMzs=w2560-h1440-rw",
-    "applicationIcon": "https://play-lh.googleusercontent.com/WVzs3GbUtplP1KoEdL7-0PFL3AAZRe7u12eIy4vm4Y6IqjxTX-I4hLZch9KC-QSYyw=w240-h480-rw",
-    "developerName": "Quran App Index",
-    "googlePlayLink": "https://play.google.com/store/apps/details?id=com.quanticapps.quranandroid",
-    "appStoreLink": "https://apps.apple.com/us/app/quran-pro-muslim/id388389451",
-    "huaweiAppGalleryLink": null,
-    "websiteLink": "https://quranpro.co/"
-  },
-  {
-    "id": "tarteel-ai",
-    "name": "Tarteel AI | ترتيل",
-    "description": {
-      "en": "Utilizes AI to assist users in memorizing the Quran by detecting recitation mistakes and providing feedback.",
-      "ar": "يستخدم الذكاء الاصطناعي لمساعدة المستخدمين في حفظ القرآن من خلال اكتشاف أخطاء التلاوة وتقديم التغذية الراجعة."
+    {
+        "id": "15_Ayah",
+        "Name_Ar":"آية",
+        "Name_En": "Ayah",
+        "Short_Description_Ar": "التطبيق الأمثل لقراءة القرآن",
+        "Short_Description_En": "Quran App",
+        "Description_Ar": "آية  تطبيق يوفر تجربة قراءة مريحة بدون أي تشويش بصري. كما أنه سريع ليساعدك على العودة للقراءة بأسرع وقت ممكن\nمع آية، يمكنك الاستماع إلى تلاواتك المفضلة من القرآن الكريم، مع تمييز الآيات أثناء التلاوة وخيارات تكرار قابلة للتخصيص.",
+        "Description_En": "Ayah is a modern, fully-featured Quran app that is beautiful and easy to use.\nAyah's clean, intuitive interface makes for a relaxing reading experience without any visual clutter. It's also fast to help you get back reading as quickly as possible.\nWith Ayah, you can listen to your favorite Quran recitations, with verse-by-verse highlighting and customizable repeat options.\nFEATURES\n• The latest edition of the Madinah Mushaf\n• Tens of reciters to choose from\n• Extensive sharing options\n• Khatmah\n• Colorful bookmarks\n• Starred verses\n• Quick searching\n• Verse of the day\n• Thematic highlighting\n• Reminders\n• Dark Mode",
+        "status": "Done",
+        "sort": 2,
+        "Apps_Avg_Rating": 4.3,
+        "categories": [
+            "mushaf",
+            "tafsir",
+            "translations"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/06_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/07_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/01_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/02_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/03_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/04_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/05_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/06_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/07_screenshots_en.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/cover_photo_en.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/15_Ayah/developer_logo.Not Found",
+        "Developer_Name_En": "Abdullah Bajaber",
+        "Developer_Name_Ar": "عبدالله باجابر",
+        "Developer_Website": "",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.ayah",
+        "AppStore_Link": "https://apps.apple.com/sa/app/%D8%A2%D9%8A%D8%A9/id706037876",
+        "App_Gallery_Link": "https://appgallery.huawei.com/app/C101524583"
     },
-    "link": "https://tarteel.ai/",
-    "status": "Done",
-    "rating": 4.6,
-    "categories": ["Recite", ],
-    "screenshots": [
-      "https://placehold.co/600x400",
-      "https://placehold.co/600x400",
-      "https://placehold.co/600x400"
-    ],
-    "mainImage": "https://play-lh.googleusercontent.com/5IkLUploK0rfcLSmh3h9xyz-BQnTTQ9aA9NY-6OUc9HWyJVL82XSNJ2hgj_Lgvioe6P3=w2560-h1440-rw",
-    "applicationIcon": "https://play-lh.googleusercontent.com/RFtl6drnVL9hpbz0cal9cce7mWEPSejcRFUh0nxX94NYEb5ycmhtwPbYdGYhl-F0JUTf=w240-h480-rw",
-    "developerName": "Quran App Index",
-    "appStoreLink": "https://apps.apple.com/us/app/tarteel-ai/id1440441075",
-    "googlePlayLink": "https://play.google.com/store/apps/details?id=com.tarteel.ai",
-    "huaweiAppGalleryLink": null,
-    "websiteLink": "https://tarteel.ai/"
-  },
-  {
-    "id": "quran-majeed",
-    "name": "Quran Majeed",
-    "description": {
-      "en": "Comprehensive Quran app with translations, tafsir, and audio recitations. Features include prayer times and Qibla direction.",
-      "ar": "تطبيق قرآن شامل يحتوي على ترجمات وتفاسير وتلاوات صوتية. يتضمن ميزات مثل مواقيت الصلاة واتجاه القبلة."
+    {
+        "id": "5_Quran",
+        "Name_Ar":"قرآن",
+        "Name_En": "Quran",
+        "Short_Description_Ar": "من صناع Quran.com",
+        "Short_Description_En": "from Quran.com",
+        "Description_Ar": "من صناع Quran.com يأتي تطبيق القرآن للأجهزة المحمولة، تطبيق للمصحف ذو صفحات جميلة خالي تماما من الاعلانات.\nلقد أصبح من السهل قراءة القرآن بالشارع، وحفظه، والاستماع إلى قارئك المفضل.\nهذا هو مجرد بداية لتطبيق القرآن. سنعمل على تحديث التطبيق بشكل منتظم إن شاء الله، ونحب أن نسمع رأيك ومتطلبتك. يمكنك الوصول إلينا عن طريق البريد الإلكتروني ios@quran.com\nعَنْ ابْنِ مَسْعُودٍ قَالَ : قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ { مَنْ قَرَأَ حَرْفًا مِنْ كِتَابِ اللَّهِ فَلَهُ حَسَنَةٌ وَالْحَسَنَةُ بِعَشْرِ أَمْثَالِهَا, لَا أَقُولُ الم حَرْفٌ, وَلَكِنْ أَلِفٌ حَرْفٌ, وَلَامٌ حَرْفٌ,وَمِيمٌ حَرْفٌ }. رَوَاهُ التِّرْمِذِيُّ. ونحن نأمل أن يساعدك هذا التطبيق على زيادة قراءتك للقرآن وزيادة حسناتك في الدنيا والآخرة.",
+        "Description_En": "From the makers of Quran.com comes Quran for iOS, a beautiful, and ad-free mushaf app.\nIt’s now easier to read the Quran on the go, memorize it and listen to your favorite reciters.\nThis is just the beginning for Quran for iOS. We’ll be updating the app regularly insha'Allah and would love to hear your feedback and feature requests. You can reach us at ios@quran.com\nAs the Hadeeth (prophetic statement) in At-Tirmithi states: “Whoever reads a letter from the Book of Allah, he will have a reward, and this reward will be multiplied by ten. I am not saying that 'Alif, Laam, Meem' (a combination of letters frequently mentioned in the Holy Quran) is a letter, rather I am saying that ‘Alif’ is a letter, ‘Laam’ is a letter and ‘Meem’ is a letter.” [At-Tirmithi] We hope this app will help you increase your recitation of the Quran and increase your blessings in this world and the hereafter.",
+        "status": "Done",
+        "sort": 3,
+        "Apps_Avg_Rating": 4.7,
+        "categories": [
+            "mushaf",
+            "tafsir",
+            "translations",
+            "audio"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/01_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/02_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/03_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/04_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/05_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/06_screenshots_en.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/01_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/02_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/03_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/04_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/05_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/06_screenshots_en.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/cover_photo_en.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/cover_photo_en.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/5_Quran/developer_logo.png",
+        "Developer_Name_En": "Quran.com",
+        "Developer_Name_Ar": "Quran.com",
+        "Developer_Website": "https://quran.com",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.quran.labs.androidquran",
+        "AppStore_Link": "https://apps.apple.com/sa/app/quran-by-quran-com-%D9%82%D8%B1%D8%A2%D9%86/id1118663303",
+        "App_Gallery_Link": "https://appgallery.huawei.com/app/C101321131"
     },
-    "link": "https://www.quranmajeed.com/",
-    "status": "Done",
-    "rating": 4.8,
-    "categories": ["Recite", "Listen", "Translation"],
-    "screenshots": ["https://placehold.co/600x400"],
-    "mainImage": "https://play-lh.googleusercontent.com/K_LXJsti4633uWuubFLbS1cTxdodSOZXICMwD4tLC8np1y6CV5h7tF8_6XG1mTUZP2E=w2560-h1440-rw",
-    "applicationIcon": "https://play-lh.googleusercontent.com/RPgQ_o59AxaJKonqv-eAgFQQa3ObSieV6faDQD-HatklretCZpesfdl8rO7J4FWrYmo=w240-h480-rw",
-    "developerName": "Quran App Index",
-    "appStoreLink": "https://apps.apple.com/us/app/quran-majeed/id365557665",
-    "googlePlayLink": "https://play.google.com/store/apps/details?id=com.pakdata.QuranMajeed",
-    "huaweiAppGalleryLink": "https://appsonhms.com/app/com.pakdata.QuranMajeed",
-    "websiteLink": "https://www.quranmajeed.com/"
-  },
-  {
-    "id": "learn-quran-tajwid",
-    "name": "Learn Quran Tajwid",
-    "description": {
-      "en": "Educational app focusing on teaching proper Tajweed rules with interactive lessons and exercises.",
-      "ar": "تطبيق تعليمي يركز على تعليم قواعد التجويد الصحيحة من خلال دروس وتمارين تفاعلية."
+    {
+        "id": "14_Quran Mobasher",
+        "Name_Ar":"القرآن مباشر",
+        "Name_En": "Quran Mobasher",
+        "Short_Description_Ar": "تعليم القرآن..في كل زمان ومكان",
+        "Short_Description_En": "Teaching Quran... anytime, anywhere",
+        "Description_Ar": "تطبيق 'القرآن مباشر' هو أول تطبيق مجاني في العالم لتصحيح التلاوة يتيح تعلم القرآن الكريم عن بعد بالصوت والصورة عن طريق جلسات تفاعلية مع معلمين ومعلمات مؤهلين ومتميزين؛ حيث يلبي التطبيق احتياجات من يريد تعلم القرآن الكريم من جميع الفئات (ذكوراً وإناثاً – كباراً وصغاراً)\nيعمل التطبيق على مدار 24 ساعة مجانًا ويوفر معلمين ومعلمات مجازين بالسند المتصل إلى النبي صلى الله عليه وسلم، كما يتميز التطبيق بتسجيل جميع الجلسات للرجوع إليها لاحقاً، ويمكنك وضع خطتك التعليمية ومتابعة إنجازها.\nيهتم التطبيق بجودة التعليم حيث يتم متابعة المعلمين وتقييم أدائهم باستمرار من خلال إدارة الجودة والتطوير وحيث يمكن للطالب تقييم المعلم بعد انتهاء كل جلسة.",
+        "Description_En": "Quran Mobasher is the first mobile app that allows students to learn Quran using only a mobile phone connected to the internet, from any place and at any time. Quran Mobasher offers different kinds of sessions:\n• Recitation Correction : The student can choose any mode of recitation and recite to a teacher who focuses on correcting the provisions and phonetic rules of Quranic recitation.\n• Memorization :The student can memorize and recite Quran to any of the available teachers at any time.\n• Teaching Kids :Kida are taught Quran using Al-Qaida Noorania method.",
+        "status": "Done",
+        "sort": 4,
+        "Apps_Avg_Rating": 4.9,
+        "categories": [
+            "recite",
+            "memorize"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/05_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/05_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/14_Quran Mobasher/developer_logo.png",
+        "Developer_Name_En": "Maknon",
+        "Developer_Name_Ar": "مكنون",
+        "Developer_Website": "https://maknon.org.sa",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=maknoon.student",
+        "AppStore_Link": "https://apps.apple.com/sa/app/quran-mobasher-%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86-%D9%85%D8%A8%D8%A7%D8%B4%D8%B1/id1602922387",
+        "App_Gallery_Link": ""
     },
-    "link": "https://learn-quran.co/",
-    "status": "Done",
-    "rating": 4.5,
-    "categories": ["Recite"],
-    "screenshots": ["https://placehold.co/600x400"],
-    "mainImage": "https://play-lh.googleusercontent.com/1IAuIynQyQdUy5a5ZdbKywXPhtPp7C64ctc2OaQCUQODfR0K-64pq4ZDgBHe-W5dcQ=w2560-h1440-rw",
-    "applicationIcon": "https://play-lh.googleusercontent.com/RFtl6drnVL9hpbz0cal9cce7mWEPSejcRFUh0nxX94NYEb5ycmhtwPbYdGYhl-F0JUTf=w240-h480-rw",
-    "developerName": "Quran App Index",
-    "appStoreLink": "https://apps.apple.com/us/app/learn-quran-tajwid/id1118663303",
-    "googlePlayLink": "https://play.google.com/store/apps/details?id=com.bi.quran.id",
-    "huaweiAppGalleryLink": null,
-    "websiteLink": "https://learn-quran.co/"
-  },
-  {
-    "id": "quran-stories-kids",
-    "name": "Quran Stories for Kids",
-    "description": {
-      "en": "Engaging app presenting Quranic stories tailored for children with interactive elements and illustrations.",
-      "ar": "تطبيق ممتع يقدم قصصًا قرآنية مخصصة للأطفال مع عناصر تفاعلية ورسوم توضيحية."
+    {
+        "id": "10_Adnan The Quran Teacher",
+        "Name_Ar":"عدنان معلم القرآن",
+        "Name_En": "Adnan The Quran Teacher",
+        "Short_Description_Ar": "الآن متوفر كامل المصحف",
+        "Short_Description_En": "The Complete Holy Quran",
+        "Description_Ar": "تطبيق تفاعلي للأطفال لتعلم وحفظ القرآن الكريم المصحف كامل بصوت الشيخ المنشاوي وتعليم الأحرف الهجائية وأكثر من 12 دعاء وحديث للأذكار اليومية تطبيق موجه للفئات العمرية من 3 سنوات حتى 12 سنة",
+        "Description_En": "Adnan the Quran teacher app has reached more than 10,000,000 children thanks to Allah, it is an interactive application for children to teach and memorize the full Noble Quran, the alphabet and more than 12 supplications and Hadiths.",
+        "status": "Done",
+        "sort": 5,
+        "Apps_Avg_Rating": 4.4,
+        "categories": [
+            "kids",
+            "memorize"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/01_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/02_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/03_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/04_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/05_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/06_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/07_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/08_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/09_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/10_screenshots_ar.jpg"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/01_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/02_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/03_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/04_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/05_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/06_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/07_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/08_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/09_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/10_screenshots_en.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/cover_photo_ar.jpg",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/cover_photo_en.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/10_Adnan The Quran Teacher/developer_logo.png",
+        "Developer_Name_En": "KidsApp Company",
+        "Developer_Name_Ar": "شركة تطبيقات الطفولة",
+        "Developer_Website": "https://kidsapp.sa",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.tagmedia.adnan",
+        "AppStore_Link": "https://apps.apple.com/sa/app/%D8%B9%D8%AF%D9%86%D8%A7%D9%86-%D9%85%D8%B9%D9%84%D9%85-%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86/id565905501",
+        "App_Gallery_Link": "https://appgallery.huawei.com/app/C103136965"
     },
-    "link": "https://quranstories.com/",
-    "status": "Done",
-    "rating": 4.7,
-    "categories": ["Kids"],
-    "screenshots": ["https://placehold.co/600x400"],
-    "mainImage": "https://play-lh.googleusercontent.com/qabhGptr5Vsevk2GzATGnljC0zLQzCHXvIjw72BqIKGl6jla2HZesK5WmDAWkzfvQtwC=w2560-h1440-rw",
-    "applicationIcon": "https://play-lh.googleusercontent.com/RFtl6drnVL9hpbz0cal9cce7mWEPSejcRFUh0nxX94NYEb5ycmhtwPbYdGYhl-F0JUTf=w240-h480-rw",
-    "developerName": "Quran App Index",
-    "appStoreLink": "https://apps.apple.com/us/app/quran-stories-for-kids/id1234567890",
-    "googlePlayLink": "https://play.google.com/store/apps/details?id=com.quranstories.app",
-    "huaweiAppGalleryLink": null,
-    "websiteLink": "https://quranstories.com/"
-  },
-  {
-    "id": "memorize-quran-kids",
-    "name": "Memorize Quran for Kids",
-    "description": {
-      "en": "Assists children in memorizing the last Hizb of the Quran with word-by-word recitation and interactive features.",
-      "ar": "يساعد الأطفال في حفظ الجزء الأخير من القرآن من خلال التلاوة كلمة بكلمة وميزات تفاعلية."
+    {
+        "id": "6_Rayyaan & Bayaan",
+        "Name_Ar":"ريان وبيان",
+        "Name_En": "Rayyaan & Bayaan",
+        "Short_Description_Ar": "مساعدة الأطفال على حفظ ومراجعة القرآن",
+        "Short_Description_En": "مساعدة الأطفال على حفظ ومراجعة القرآن",
+        "Description_Ar": "تطبيق رقمي لمساندة الأطفال على حفظ ومراجعة القرآن الكريم بطريقة ممتعة وفعالة، حيث يستخدم التطبيق أحدث الأساليب التعليمية لتقديم أنشطة تعلم ذاتية وتفاعلية للأطفال، ويسمح لمعلمي القرآن بإنشاء تكليفات ومهام مخصصة لهم؛ كما يوفر التطبيق فرصة للأطفال للتعلم الحر، والتمكن من أنشطة المراجعة والحفظ بشكل مستقل.",
+        "Description_En": "تطبيق رقمي لمساندة الأطفال على حفظ ومراجعة القرآن الكريم بطريقة ممتعة وفعالة، حيث يستخدم التطبيق أحدث الأساليب التعليمية لتقديم أنشطة تعلم ذاتية وتفاعلية للأطفال، ويسمح لمعلمي القرآن بإنشاء تكليفات ومهام مخصصة لهم؛ كما يوفر التطبيق فرصة للأطفال للتعلم الحر، والتمكن من أنشطة المراجعة والحفظ بشكل مستقل.",
+        "status": "Done",
+        "sort": 6,
+        "Apps_Avg_Rating": 4.3,
+        "categories": [
+            "kids",
+            "memorize"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/06_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/06_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/6_Rayyaan & Bayaan/developer_logo.png",
+        "Developer_Name_En": "Maknon",
+        "Developer_Name_Ar": "مكنون",
+        "Developer_Website": "https://maknon.org.sa",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=net.rayyaanbayaan.app",
+        "AppStore_Link": "https://apps.apple.com/sa/app/%D8%B1%D9%8A%D8%A7%D9%86-%D9%88-%D8%A8%D9%8A%D8%A7%D9%86/id6450221877",
+        "App_Gallery_Link": "https://appgallery.huawei.com/#/app/C108861273"
     },
-    "link": "http://app.osratouna.com",
-    "status": "Done",
-    "rating": 4.4,
-    "categories": ["Kids"],
-    "screenshots": ["https://placehold.co/600x400"],
-    "mainImage": "https://play-lh.googleusercontent.com/W3OPmrz6FpiTGmqPAhTk_wOCCgAxxX9YtGOGISavSHYcvWDO0ZpStcss3GNEki5boMM=w2560-h1440-rw",
-    "applicationIcon": "https://play-lh.googleusercontent.com/RFtl6drnVL9hpbz0cal9cce7mWEPSejcRFUh0nxX94NYEb5ycmhtwPbYdGYhl-F0JUTf=w240-h480-rw",
-    "developerName": "Quran App Index",
-    "appStoreLink": "https://apps.apple.com/us/app/memorize-quran-word-by-word-for-kids-last-hizb/id1060926926",
-    "googlePlayLink": "https://play.google.com/store/apps/details?id=com.memorize.quran.kids",
-    "huaweiAppGalleryLink": null,
-    "websiteLink": "http://app.osratouna.com"
-  }
+    {
+        "id": "17_Al Fatiha",
+        "Name_Ar":"الفاتحة",
+        "Name_En": "Al Fatiha",
+        "Short_Description_Ar": "تصحيح قراءة الفاتحة",
+        "Short_Description_En": "Teaching Al-Fatihah Online",
+        "Description_Ar": "تطبيق سورة الفاتحة:\nفكرة التطبيق بسيطة جداً، وهدفه الأول هو: هو تصحيح قراءة الفاتحة، كل ما عليك فعله هو الضغط على زر التسجيل، وتسجل قراءتك للفاتحة، ثم الانتظار حتى يرد عليك أحد المعلمين المجازين ذوي الكفاءة.\nيهدف التطبيق إلى:\nتعليم المستفيدين سورة الفاتحة تلاوةً وحفظاً وفهماً من خلال تصحيح الأخطاء الشائعة في تلاوة الفاتحة وتلقين المستفيد علوم التجويد وفق الأصول العلمية.\nتعليم المستفيدين العمل بسورة الفاتحة اعتقاداً وسلوكاً وأخلاقاً.\nيحتوى التطبيق بالإضافة إلى خدمة التصحيح بعض المراجع الإثرائية التي تتعلق بالفاتحة، والتي تتضمن بعض التفاسير والفوائد، وقراءات بأصوات مختلفة، بالإضافة إلى المراجع العلمية حول تعليم كيفية قراءة الفاتحة بشكل صحيح.⁠⁠⁠⁠",
+        "Description_En": "Al-Fatiha application is an application that helps students To develop their abilities to read Surah Fatiha in a sound way as they can The app to communicate with competent teachers And listen to their comments for improvement and development.",
+        "status": "Done",
+        "sort": 7,
+        "Apps_Avg_Rating": 4.8,
+        "categories": [
+            "recite"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/17_Al Fatiha/01_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/17_Al Fatiha/02_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/17_Al Fatiha/03_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/17_Al Fatiha/04_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/17_Al Fatiha/05_screenshots_ar.jpg"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/17_Al Fatiha/01_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/17_Al Fatiha/02_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/17_Al Fatiha/03_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/17_Al Fatiha/04_screenshots_ar.jpg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/17_Al Fatiha/05_screenshots_ar.jpg"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/17_Al Fatiha/cover_photo_ar.jpg",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/17_Al Fatiha/cover_photo_ar.jpg",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/17_Al Fatiha/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/17_Al Fatiha/developer_logo.png",
+        "Developer_Name_En": "Quran Audio Library",
+        "Developer_Name_Ar": "المكتبة الصوتية للقرآن الكريم",
+        "Developer_Website": "https://mp3quran.net",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=org.alfatiha.app",
+        "AppStore_Link": "https://apps.apple.com/sa/app/al-fatiha-%D8%A7%D9%84%D9%81%D8%A7%D8%AA%D8%AD%D8%A9/id1199635059",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "7_Moddakir",
+        "Name_Ar":"مُدَكر",
+        "Name_En": "Moddakir",
+        "Short_Description_Ar": "لتعليم القرآن",
+        "Short_Description_En": "Teaching Quran",
+        "Description_Ar": "مُدَكر يعينك على تعلم القرآن الكريم مع أمهر المعلمين والمعلمات المتاحين على مدار 24 ساعة\n(معتمد من وزارة الموارد البشرية والتنمية الاجتماعية)\n- معلمين ومعلمات متقنين\n- متاح على مدار 24 ساعة\n- جلسات تعليمية صوتية أو مرئية\n- متاح للرجال والنساء والأطفال\n- خصوصية تامة بين المعلم والمتعلم\n- مشاركة الباقة مع العائلة ومتابعة إنجازهم\nالمسارات التعليمية:\n- تصحيح التلاوة\n- الحفظ والمراجعة\n- التلقين للصغار والكبار\n- الإقراء والإجازة\nمعلمك بانتظارك .. حمل التطبيق الآن",
+        "Description_En": "Moddakir's application helps you learn the Holy Qur’an with the most skilled teachers available 24 hours a day\n(Approved by the Ministry of Human Resources and Social Development)\n- Proficient teachers\n- Available 24 hours a day\n- Audio or video tutorials\n- Audio or video educational sessions\n- Available for men, women, and children\n- Complete privacy between the teacher and the learner\n- Share the package with the family and follow up on their achievement\nEducational paths:\n- Correction of recitation\n- Memorizing and reviewing the Qur’an\n- Indoctrination (Talqeen) for young and old\n- Reading and Ejaza\nYour teacher is waiting for you.. Download the app now",
+        "status": "Done",
+        "sort": 8,
+        "Apps_Avg_Rating": 4.1,
+        "categories": [
+            "recite",
+            "memorize"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/7_Moddakir/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/7_Moddakir/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/7_Moddakir/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/7_Moddakir/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/7_Moddakir/05_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/7_Moddakir/01_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/7_Moddakir/02_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/7_Moddakir/03_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/7_Moddakir/04_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/7_Moddakir/05_screenshots_en.jpeg"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/7_Moddakir/cover_photo_ar.jpeg",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/7_Moddakir/cover_photo_en.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/7_Moddakir/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/7_Moddakir/developer_logo.png",
+        "Developer_Name_En": "Moddakir",
+        "Developer_Name_Ar": "مدكر",
+        "Developer_Website": "https://moddakir.com",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.moddakir.moddakir",
+        "AppStore_Link": "https://apps.apple.com/sa/app/moddakir-to-teach-the-quran/id1492246697",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "9_Maher",
+        "Name_Ar":"ماهر",
+        "Name_En": "Maher",
+        "Short_Description_Ar": "تسميع القرآن الكريم",
+        "Short_Description_En": "Live recitation recognition",
+        "Description_Ar": "ماهر تطبيق فريد لتسميع القرآن الكريم باستخدام الذكاء الاصطناعي\nصفحة المصحف، التطبيق يوفر كذلك ميزات نوعية أخرى مثل بيان معنى كل كلمة من كلمات القرآن الكريم ومتابعة معدل استخدام التطبيق بشكل مفصل.\nهذا إطلاق تجريبي من التطبيق وجار العمل على إضافة العديد من الميزات الأخرى.\nهذا المشروع بإشراف جمعية البرهان لخدمة السنة والقرآن، وبرعاية وقف الملك عبد الله بن عبدالعزيز لوالديه يرحمهم الله.",
+        "Description_En": "A unique application for reciting the Noble Qur’an using artificial intelligence.\nMaher is a unique application for reciting the Noble Qur’an using artificial intelligence through real time voice recognition and showing what is being recited on the page of the Qur’an. The application also provides other qualitative features such as showing the meaning of each word of the Noble Qur’an and monitoring the application usage statistics in detail.\nThis project is supervised by Al-Burhan Association for the Service of the Sunnah and the Qur’an, and sponsored by وقف الملك عبد الله بن عبدالعزيز لوالديه يرحمهم الله.\nCurrent features of Maher include:\n- Track your recitations in real time and get feedback!\n- Automatic usage tracker.\n- Automatic bookmarking recently viewed pages based on usage patterns.\n- Distraction free reading in landscape mode.\n- Choice between horizontal or vertical mush view.",
+        "status": "Done",
+        "sort": 9,
+        "Apps_Avg_Rating": 3.8,
+        "categories": [
+            "recite",
+            "mushaf",
+            "tafsir"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/01_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/02_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/03_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/04_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/05_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/06_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/07_screenshots_ar.jpeg"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/01_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/02_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/03_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/04_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/05_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/06_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/07_screenshots_ar.jpeg"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/cover_photo_ar.jpeg",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/cover_photo_ar.jpeg",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/9_Maher/developer_logo.png",
+        "Developer_Name_En": "AL BORHAN CHARITY FOR SUNNAH & QURAN SERVICES",
+        "Developer_Name_Ar": "جمعية البرهان لخدمة السنة والقرآن",
+        "Developer_Website": "https://www.alborhan.sa",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=app.maher",
+        "AppStore_Link": "https://apps.apple.com/sa/app/maher-%D9%85%D8%A7%D9%87%D8%B1/id6737059750",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "23_Quran Hafs",
+        "Name_Ar":"مصحف حفص",
+        "Name_En": "Quran Hafs",
+        "Short_Description_Ar": "من مجمع الملك فهد لطباعة المصحف الشريف",
+        "Short_Description_En": "By King Fahd Quran Printing Complex",
+        "Description_Ar": "\nيقدم هذا التطبيق الرسمي من مجمع الملك فهد لطباعة المصحف الشريف في المدينة المنورة تجربة رقمية متقدمة لقراءة القرآن الكريم، حيث يوفر نسخة رقمية عالية الدقة من مصحف المدينة النبوية برواية حفص. يتميز التطبيق بواجهة سهلة الاستخدام تتناسب مع مختلف الفئات، مع إمكانية العرض العمودي والأفقي، والتكبير حتى 4x مع الحفاظ على قابلية التصفح.\nيحتوي التطبيق على ميزات متقدمة مثل الإشارات المرجعية المتعددة، التفسير المبسط، معاني الكلمات الغريبة، البحث المتقدم على مستوى الآيات والكلمات، التلاوة الصوتية بـ 5 قرّاء، التكرار لتسهيل الحفظ، الوضع الليلي، ودعم المزامنة مع وضع النظام الداكن. كما يتيح تعديل ألوان النصوص والخلفيات، مع إمكانية التحكم في سمك الخطوط القرآنية.\nيوفر التطبيق أيضًا خدمات مثل التفسير الصوتي، دليل المستخدم المكتوب والمرئي، عرض علامات الأجزاء والأحزاب والسجدات، وتحميل التلاوات الصوتية، مما يجعله مصدرًا موثوقًا لدراسة القرآن الكريم وتدبره",
+        "Description_En": "This official app from the King Fahd Quran Printing Complex in Al-Madina Al-Munawwara offers an advanced digital experience for reading the Holy Quran. It provides a high-resolution digital copy of Al-Madina Mushaf (Hafs narration) with a user-friendly interface that adapts to various users, supporting both portrait and landscape modes, and zooming up to 4x while maintaining page-flipping functionality.\nThe app includes advanced features such as multi-bookmarking, simplified tafsir, meanings of uncommon words, advanced search at the verse and word level, audio recitations by five renowned Qaris, repetition mode for memorization, night mode, and synchronization with system dark mode. Users can customize text and background colors, control Quranic text thickness, and adjust interactive elements.\nAdditional features include spoken tafsir, a comprehensive user guide (both written and animated), visual indicators for Juzz, Hizb, and Sajdah markings, downloadable recitations, and an intuitive interactive index. This makes the app a reliable and comprehensive resource for studying and reflecting on the Quran.",
+        "status": "Done",
+        "sort": 10,
+        "Apps_Avg_Rating": 4.8,
+        "categories": [
+            "mushaf",
+            "tafsir"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/06_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/07_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/08_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/09_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/10_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/06_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/07_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/08_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/09_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/10_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/23_Quran Hafs/developer_logo.png",
+        "Developer_Name_En": "King Fahd Glorious Quran Printing Complex",
+        "Developer_Name_Ar": "مجمع الملك فهد لطباعة المصحف الشريف",
+        "Developer_Website": "https://qurancomplex.gov.sa/",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=sa.QuranComplex.QuranHafs",
+        "AppStore_Link": "https://apps.apple.com/sa/app/quran-hafs-by-kfgqpc/id1616321992",
+        "App_Gallery_Link": "https://appgallery.huawei.com/app/C110318817"
+    },
+    {
+        "id": "37_Interactive Tafsir",
+        "Name_Ar":"التفسير التفاعلي",
+        "Name_En": "Interactive Tafsir",
+        "Short_Description_Ar": "تفسير صوتي ونصي",
+        "Short_Description_En": "Read and listen to interpretations",
+        "Description_Ar": "قراءة واستماع إلى التفاسير التالية:\n• التفسير الميسر الصادر عن مجمع الملك فهد\n• المختصر في تفسير القرآن الكريم لمركز التفسير\n• تفسير العلامة السعدي رحمه الله (تيسير الكريم الرحمن)\n• تفسير العلامة ابن جُزي (التسهيل لعلوم التنزيل)\n• السراج في غريب القرآن\n• الميسر في غريب القرآن\n• تفسير ابن جُزي\n• تفسير ابن عاشور",
+        "Description_En": "Read and listen to the following interpretations:\n• Facilitated interpretation issued by the King Fahd Complex\n• Al-Mukhtasar fi Tafsir of the Noble Qur’an for Interpretation Center\n• Interpretation of Allama Saadi, may God have mercy on him (Tayseer al-Karim al-Rahman)\nInterpretation of Allama Ibn Jouzi (Facilitation of the science of download)\n• The lamp in the strange Qur’an\n• Facilitator in the strange Qur’an\n• Interpretation of Ibn Jouzi\n• Interpretation of Ibn Ashour",
+        "status": "Done",
+        "sort": 11,
+        "Apps_Avg_Rating": 4.8,
+        "categories": [
+            "tafsir"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/37_Interactive Tafsir/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/37_Interactive Tafsir/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/37_Interactive Tafsir/03_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/37_Interactive Tafsir/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/37_Interactive Tafsir/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/37_Interactive Tafsir/03_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/37_Interactive Tafsir/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/37_Interactive Tafsir/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/37_Interactive Tafsir/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/37_Interactive Tafsir/developer_logo.svg",
+        "Developer_Name_En": "Nuqayah",
+        "Developer_Name_Ar": "نُقاية",
+        "Developer_Website": "https://nuqayah.com",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=one.tafsir.read",
+        "AppStore_Link": "https://apps.apple.com/sa/app/%D8%A7%D9%84%D8%AA%D9%81%D8%B3%D9%8A%D8%B1-%D8%A7%D9%84%D8%AA%D9%81%D8%A7%D8%B9%D9%84%D9%8A/id6503959086",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "38_MA'ANONI DA SHIRIYAR ALQUR'ANI",
+        "Name_Ar":"تفسير الهوسا",
+        "Name_En": "MA'ANONI DA SHIRIYAR ALQUR'ANI",
+        "Short_Description_Ar": "معاني وتفسير القرآن بلغة الهوسا",
+        "Short_Description_En": "Hausa Tafsir",
+        "Description_Ar": "مزايا التطبيق:\n- عرض التفسير الموثوق بلغة الهاوسا من 'أوضح البيان لمعاني وهدايات القرآن'.\n- التصفح من خلال قائمة السور والأجزاء.\n- تصفح الآيات من خلال اسم السورة و رقم الآية.\n- التلاوة الصوتية للآيات بصوت الشيخ الحذيفي.\n- إمكانية البحث في نصوص المصحف.\n- إمكانية البحث في التفسير والترجمة.\n- إمكانية نسخ النصوص ومشاركتها، أو مشاركة رابط الصفحة.\n- إمكانية إرسال الملاحظات على التفسير.\n- إمكانية الاستخدام بدون حاجة للإنترنت.",
+        "Description_En": "Bijiro da fassara da tafsiri daga littafin FAYYATACCEN BAYANI NA MA'ANONI DA SHIRIYAR ALQUR'ANI\n- Tafiya ga aya ta hanyar rubuta lambarta\n- Jerin juzu'ai da surori\n- Karatun alƙur'ani da muryan Sheikh alhuzaifi\nSamun damar bincike a cikin ayoyin alƙur'ani da tafsiri da fassara\n- Samun damar kwafa da yaɗa tafsiri ko adreshinsa daga shafi\n- Kashe kashen ayoyi gwargwadon abinda suke karantarwa\n- Bijiro da fassara da tafsiri daga littafin audahu al- bayan lima'ani wa hidayaati al-ƙur'an\n- Bijiro da tarjamar kowace aya a keɓance domin sauƙaƙe fahimtar ta",
+        "status": "Done",
+        "sort": 12,
+        "Apps_Avg_Rating": 4.9,
+        "categories": [
+            "translations",
+            "mushaf",
+            "tafsir"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/01_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/02_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/03_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/04_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/05_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/06_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/07_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/08_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/09_screenshots_ar.jpeg"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/01_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/02_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/03_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/04_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/05_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/06_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/07_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/08_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/09_screenshots_ar.jpeg"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/cover_photo_ar.jpeg",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/cover_photo_ar.jpeg",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/38_MA'ANONI DA SHIRIYAR ALQUR'ANI/developer_logo.png",
+        "Developer_Name_En": "Basayir",
+        "Developer_Name_Ar": "وقف بصائر لخدمة القرآن الكريم وعلومه",
+        "Developer_Website": "https://basayir.net",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=online.smartech.basayir.hausa",
+        "AppStore_Link": "https://apps.apple.com/sa/app/maanoni-da-shiriyar-alqurani/id6480479512",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "39_Ayah widget",
+        "Name_Ar":"آية ويدجت",
+        "Name_En": "Ayah widget",
+        "Short_Description_Ar": "عرض آيات قرآنية على الويدجت بشكل متغير",
+        "Short_Description_En": "عرض آيات قرآنية على الويدجت بشكل متغير",
+        "Description_Ar": "آية ويدجت هو تطبيق يعرض آيات قرآنية على الويدجت بشكل متغير تلقائيًا، حيث يتم تغيير الآية بانتظام. بالإضافة إلى ذلك، يتكيف لون خلفية الويدجت تلقائياً مع وضع الجهاز، حيث يتحول بين الوضع الفاتح والداكن ليتناسب مع إعدادات الهاتف ويضمن تجربة مستخدم مريحة وجذابة.",
+        "Description_En": "آية ويدجت هو تطبيق يعرض آيات قرآنية على الويدجت بشكل متغير تلقائيًا، حيث يتم تغيير الآية بانتظام. بالإضافة إلى ذلك، يتكيف لون خلفية الويدجت تلقائياً مع وضع الجهاز، حيث يتحول بين الوضع الفاتح والداكن ليتناسب مع إعدادات الهاتف ويضمن تجربة مستخدم مريحة وجذابة.",
+        "status": "Done",
+        "sort": 13,
+        "Apps_Avg_Rating": 4.7,
+        "categories": [
+            "tools"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/39_Ayah widget/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/39_Ayah widget/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/39_Ayah widget/03_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/39_Ayah widget/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/39_Ayah widget/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/39_Ayah widget/03_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/39_Ayah widget/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/39_Ayah widget/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/39_Ayah widget/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/39_Ayah widget/developer_logo.Not Found",
+        "Developer_Name_En": "Badr Alhanaky",
+        "Developer_Name_Ar": "بدر الحناكي",
+        "Developer_Website": "",
+        "Google_Play_Link": "",
+        "AppStore_Link": "https://apps.apple.com/sa/app/%D8%A7-%D9%8A%D8%A9-%D9%88%D9%8A%D8%AF%D8%AC%D8%AA/id6497876401",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "11_Tarteel",
+        "Name_Ar":"ترتيل",
+        "Name_En": "Tarteel",
+        "Short_Description_Ar": "صاحبك للقرآن",
+        "Short_Description_En": "A.I. Quran Mistake Detection",
+        "Description_Ar": "قوّ علاقتك بالقرآن في هذا الشهر الكريم بالاستعانة بأدوات الذكاء الاصطناعي لدى ترتيل. ترتيل هو تطبيق iOS مجاني يشمل ترقية اختيارية Premium يتيح لك المزيد من التفاعل مع القرآن.\nتوفر ترتيل حاليًا هذه الميزات:\nتلاوة:\n- اقرأ الآيات مباشرة من المصحف\n- اختر ما بين الخط العثماني والإندو-باكستاني\n- ابدأ بتلاوة أي آية واستمر في قراءتها مباشرة من المصحف باستخدام خاصية 'تلاوة'\n- اختبر حفظك عن طريق إخفاء الآيات التالية باستخدام وضع الحفظ.\nحدد وتعلم:\n- ابحث في القرآن من خلال تلاوة آية كامة، جزء من الآية، أو حتى كلمة واحدة\n- شاهد الآية التي تبحث عنها باللغة العربية، وترجمتها اللفظية، وتفسيرها، ومعناها باللغات الأخرى.\n- حدد أماكن ظهور الآيات أو الألفاظ التي تبحث عنها في المصحف.\n- حدد الآية التي يتم تلاوتها فورًا وشاركها مع أصدقائك.\nتعزيز القراءة:\n- ضبط حجم الخط\n- تشغيل وإيقاف الترجمة\n- اختر بين الترجمة للإنجليزية والفرنسية والأوردو والهندي، وبين التفسير بالإنجليزية والعربية\n- الوضع الفاتح والداكن\n- إشارات مرجعية\nمتابعة التقدم وإنشاء عادة:\n- قم بإنشاء حساب مجاني لمراقبة سلسلة الأيام المتواصلة التي تقرأ فيها، الحصول على الشارات، ولمزامنة بياناتك على أجهزة مختلفة.\n- اشتر اشتراك Premium للحصول على إحصائيات وتحليلات مفصلة لجلسات قراءتك للقرآن.\nفي الإصدار القادم إن شاء الله:\n- تشغيل صوتي لتلاواتك\n- الاستماع لتلاوات قراء متعددين\n- لغات أخرى وترجمات متعددة\n- مميزات متطورة لجعل حفظ القرآن أكثر سهولة\nنسعد بتعليقاتكم واقتراحاتكم بينما نعمل على تطوير البرنامج باستمرار. إذا وجدت برنامج ترتيل مفيدًا لك، فضلًا اترك لنا تقييمك.\nتعليقات:\nيتطلب برنامج ترتيل الوصول إلى الميكروفون والاتصال المستقر بالانترنت حتى تعمل ميزات الصوت بشكل سلس. فضلًا تأكد من السماح للبرنامج بالوصول لتلك المتطلبات.",
+        "Description_En": "No one to recite to? No problem. Tarteel AI is here!\nHow many times have you wished you knew more surahs to use in salah? That you could get feedback on your recitation whenever you needed it? That you could memorize more, and worry less?\nHide. Tap. Recite. In three easy moves, you’re strengthening your memorization of the Quran with the world’s leading AI Quran memorization companion. Simply hide the verses, tap the mic and start reciting. The pages will fill with your recitation and if you make a mistake, Tarteel’s intuitive AI will be sure let you know INSTANTLY with its flagship feature, Memorization Mistake Detection. That’s live feedback on your recitation, any time, anywhere - even if you whisper!\nWhether you’re memorizing for your next Hifz class or revising Juz Amma on your daily commute, Tarteel adapts to your recitation, tracks your progress and aligns with your goals. It’s your companion —helping you memorize better, build confidence, and create a Quran habit that lasts a lifetime. No matter where you are in your memorization, Tarteel is here for the journey.\nTarteel is free to use with no ads and prioritizes user privacy. The team operates within the framework of Ihsan, striving for excellence and using innovative tech to serve the Muslim Ummah.\nTARTEEL PREMIUM\nSupercharge your Quran memorization with a paid subscription to Tarteel Premium. Try it now for FREE, no credit card required. Features include:\n- Memorization Mistake Detection\nStart reciting and you’ll be notified whenever you miss a word, use the wrong word or say one word too many! Tarteel will highlight your mistakes and keep track so you can revise and review for next time. Currently, this feature does not include Tajweed or pronunciation correction, but we know there’s community demand and it’s on our roadmap for the future!\n- Hidden Verses\nHide the verses and recite; Tarteel will highlight verses and follow along with your recitation so you can check your memorization as you go. You’re one step closer to perfecting that verse!\n- Goals\nSet custom Goals for what you want to memorize and revise. Choose your portion, deadline and the type of engagement you want; memorization, reading, revision or recitation!\n- Historical Mistakes\nProgress is key! Tarteel keeps a record of all of your mistakes so you know exactly where your memorization is strong and what could use a little more work.\n- Unlimited Listening and Audio\nSolidify your memorization with listening and audio! Choose your favourite Qari, the portion and how many times you want to listen.\n- Advanced Progress Tracking\nCheck if you’re reaching your goals with detailed analytics around your Quran engagement.\n—\nJoin the 9M+ Muslims worldwide who are using Tarteel to support their memorization of the Quran!\nDo you use Tarteel? Your feedback helps us improve the platform and add to our long-term roadmap. If you’ve benefited from Tarteel, please remember to leave us a review - we’d love to hear from you! Request new features here: [http://feedback.tarteel.ai](http://feedback.tarteel.ai/)\n—\nNOTES:\nTarteel requires microphone access and a stable internet connection in order for its voice features to function properly. Please ensure you allow Tarteel to access these permissions on your device.",
+        "status": "Done",
+        "sort": 14,
+        "Apps_Avg_Rating": 4.7,
+        "categories": [
+            "recite",
+            "memorize",
+            "translations",
+            "tafsir"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/01_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/02_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/03_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/04_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/05_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/06_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/07_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/08_screenshots_en.jpeg"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/01_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/02_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/03_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/04_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/05_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/06_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/07_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/08_screenshots_en.jpeg"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/cover_photo_en.jpeg",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/cover_photo_en.jpeg",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/11_Tarteel/developer_logo.png",
+        "Developer_Name_En": "Tarteel, Inc",
+        "Developer_Name_Ar": "شركة ترتيل",
+        "Developer_Website": "https://www.tarteel.ai",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.mmmoussa.iqra",
+        "AppStore_Link": "https://apps.apple.com/sa/app/tarteel-%D8%AA%D8%B1%D8%AA%D9%8A%D9%84-ai-quran/id1391009396",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "47_Convey",
+        "Name_Ar":"بلغوا",
+        "Name_En": "Convey",
+        "Short_Description_Ar": "تسهيل نشر وتبليغ كتاب الله",
+        "Short_Description_En": "Facilitate the spread and conveyance of Allah's Book",
+        "Description_Ar": "تطبيق بلغوا\nهدفنا تسهيل نشر وتبليغ كتاب الله، فساهم معنا ولو بآية واحدة\nيواجه طلبة العلم والدعاة ومكاتب الدعوة والجهات الخيرية صعوبة في نشر الآيات القرآنية في وسائل التواصل الإجتماعي الحديثة وذلك لإهتمام المستخدمين وخاصة الشباب والجيل الجديد في جودة وجمال التصميم قبل النظر في المحتوى، فبدأ بعض طلبة العلم والدعاة باستخدام بعض برامج التصميم كالفوتوشوب وغيرها وقام البعض الآخر بتوظيف المصممين ومن ثَّم تزويدهم بالبيانات ويقوم المصمم بتصميمها ومن ثم نشرها. وهذا الأمر يكلفهم مبالغ دورية كرواتب للمصممين على سبيل المثال وكذلك إهدار كبير في الجهد والوقت . فوقع الاختيار في 'بلغوا' ليكون اسمًا للتطبيق، وذلك من حديث رسول الله صلى الله عليه وسلم حيث قال: ))بلغوا عني ولو آية((. فلكلمة'بلغوا' معنى أصيل وعظيم من أصول الإسلام، وهو تبليغ منهج الله للعالم. وجاءت'بلغوا' كفعل أمر؛ أي: أن رسول الله صلى الله عليه وسلم يأمرنا أن نُبلِّغَ ولو آيةً واحدة، فعندما تُبلِّغُ ولو آية واحدة تصبح لديك الهمة العالية والطموح للفعل وللتعلُّم . وبعد دراسة لمجموعة مختلفة من المستخدمين )كطلبة العلم، والدعاة والمتخصصين، والمكاتب ومراكز الدعوة، وكبار السن، وعامة المستخدمين، وكذلك المبادرات والحسابات التي تنشر الآيات القرآنية في وسائل التواصل الاجتماعي( ودراسة احتياجاتهم وجدنا أنه مع موجود تطبيقات القرآن المختلفة والتي تدعم خدمة مشاركة الآيات عبر وسائل التواصل الاجتماعي، إلا أنها تعتبر بدائية وليست متطورة بالحد الكافي ولا تفي بالغرض المطلوب. لذا نهدف من خلال تطبيق 'بلغوا' تسهيل نشر وتبليغ كتاب الله ولو بآية واحدة بطريقة حديثة إبداعية عبر وسائل التواصل الاجتماعي المختلفة. فصممنا التطبيق ليكون سهل الإستخدام وليتناسب مع جميع الفئات العمرية والعلمية. ومن أهم مزايا وخدمات التطبيق:\nأكثر من 300 صورة عالية الجودة في مختلف المواضيع والمناسبات.\nالبحث السريع في آيات القرآن الكريم كاملة.\nإمكانية مشاركة ترجمات مركز نور إنترناشيونال للقرآن الكريم لكل من اللغة الإنجليزية والفرنسية والأسبانية واللاتينية.\nإمكانية التحكم في تصميم المنشور قبل مشاركته.\nتكبير وتصغير الخطوط.\nتغيير ألوان الآيات القرآنية والترجمات وكذلك النصوص.\nفلاتر متنوعة.\nإمكانية اختيار صورة من ألبوم الصور الخاص بك.\nالمشاركة في جميع وسائل التواصل الإجتماعي وبمختلف المقاسات.",
+        "Description_En": "We aim at facilitating the spread and conveyance of Allah's Book (i.e. the Quran), so help us by conveying even a single Verse.\n​\nStudents of knowledge, preachers, Da`wah centers, and charitable bodies face various problems and difficulties to spread Quranic Verses via social media. This is due to the interest of users, particularly the youth and the new generations, in the quality and beauty of the design at the expense of the content. As a result, some students of knowledge and preachers began to use design software such as Photoshop, while others hired professional designers and provide them with data for which the designer creates a beautiful design and then posts it on social media. In fact, this matter costs monthly payments as salaries for the designers, beside a significant waste of time and effort. That is why we have developed Balligho App. The name is derived from the Prophetic hadith in which Allah’s Messenger said, 'Convey (Arabic: Balligho) from me (to people) even a (single) Verse…' The word 'Balligho (i.e. Convey)' is a great and authentic principle of Islam, which urges to conveying Allah’s approach to the world. The Arabic verb 'Balligho' (i.e. convey) is a command of the Prophet to us to convey from him even a single Verse to the world. Complying to such a command helps us attain the great determination, vigor and ambition necessary for learning. After studying the needs of a group of various users (such as, students of knowledge, preachers, Da`wah centers, the elderly, general user, and initiatives and accounts posting Quranic Verses on social media), we concluded that all Quran-related Apps supporting the service of sharing Verses through social media are not sufficiently advanced, and thus they do not meet the purposes required. Balligho is an App aimed at facilitating the conveyance of even a single Verse of the Quran to the whole world in a modern, creative way via various social media. The App is user-friendly and suits all ages and scientific backgrounds. The most important features and services of the App include:\n​\nProviding more than 300 high quality images for various topics and events.\nQuick search in the whole Verses of the Quran.\nThe ability to share Noor International English, French, Spanish and Latin translations of the Noble Quran.\nThe ability to edit the designs of posts before sharing them.\nThe ability to change font size.\nThe ability to colors of Verses, texts and translations.\nFurnished with various filters.\nThe ability to select an image from your own gallery.\nThe ability to share cards via social media in all sizes.",
+        "status": "Done",
+        "sort": 15,
+        "Apps_Avg_Rating": 4.8,
+        "categories": [
+            "tools"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/47_Convey/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/47_Convey/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/47_Convey/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/47_Convey/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/47_Convey/05_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/47_Convey/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/47_Convey/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/47_Convey/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/47_Convey/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/47_Convey/05_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/47_Convey/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/47_Convey/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/47_Convey/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/47_Convey/developer_logo.png",
+        "Developer_Name_En": "نور إنترناشيونال",
+        "Developer_Name_Ar": "Noor International",
+        "Developer_Website": "https://noorinternational.net",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.arabia_it.ballegho",
+        "AppStore_Link": "https://apps.apple.com/sa/app/%D8%A8%D9%84%D8%BA%D9%88%D8%A7-convey/id1463949765",
+        "App_Gallery_Link": "https://appgallery.huawei.com/app/C102028881"
+    },
+    {
+        "id": "13_The Holy Quran",
+        "Name_Ar":"القرآن الكريم",
+        "Name_En": "The Holy Quran",
+        "Short_Description_Ar": "القرآن في الواقع الافتراضي",
+        "Short_Description_En": "The Quran in Virtual Reality",
+        "Description_Ar": "اقرأ القرآن الكريم بتقنية ثلاثية الأبعاد في بيئات روحانية فريدة تعزز السكينة.\nتطبيق القرآن في الواقع الافتراضي يقدم تجربة لقراءة القرآن الكريم بتقنية ثلاثية الأبعاد. يسمح لك بقراءة القرآن في بيئات إفتراضية روحانية مميزة، مثل الكعبة المشرفة والمسجد النبوي، أو حتى مناظر طبيعية تبعث الراحه والسكينة.",
+        "Description_En": "Read the Quran in 3D with unique spiritual environments that enhance tranquility.\nThe Quran in Virtual Reality application provides a 3D Quran reading experience. It allows you to read the Quran in distinctive spiritual virtual environments, such as the Holy Kaaba and the Prophet’s Mosque, or even natural landscapes that inspire comfort and tranquility.",
+        "status": "Done",
+        "sort": 16,
+        "Apps_Avg_Rating": 3.7,
+        "categories": [
+            "mushaf",
+            "tools"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/06_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/07_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/06_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/07_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/13_The Holy Quran/developer_logo.png",
+        "Developer_Name_En": "Maknon",
+        "Developer_Name_Ar": "مكنون",
+        "Developer_Website": "https://maknon.org.sa",
+        "Google_Play_Link": "",
+        "AppStore_Link": "https://apps.apple.com/sa/app/the-holy-quran/id6667091349",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "48_Mushaf Mecca",
+        "Name_Ar":"مصحف مكة",
+        "Name_En": "Mushaf Mecca",
+        "Short_Description_Ar": "تطبيق قرآني متطور بخصائص فريدة",
+        "Short_Description_En": "Your Essential Quran App",
+        "Description_Ar": "تطبيق قرآني متطور ذو خدمات برمجية متميزة\nمع واجهة تدعم 19 لغة\nوتلاوات أكثر من 140 قارئ و 40 تفسير و 21 ترجمة موثوقة\nمكتبة المصاحف: مصحف المدينة، ورش، قالون، شمرلي، دوري\n- القراءة\nقراءة القرآن الكريم برواية حفص، بالخط العثماني، من طبعة مصحف المدينة الإصدار الأول أو الثاني أو الثالث، ورش، قالون، دوري، مصحف إندونيسيا، مصحف النستعليق وغيرها من المصاحف، ضمن ألوانٍ هادئة مريحة للعين.\n- التفاسير\nدراسة آيات القرآن من خلال أكثر من 35 تفسير.\n- ترجمات المعاني\nتعلم معاني الآيات من خلال تراجم لمعاني القرآن الكريم بعدة لغات.\n- التلاوات الصوتية\nالاستماع إلى تلاوات القرآن بصوت أكثر من 100 قارئ من مشاهير القُراء، مع تظليل الآيات المتلوة لتلاوات 30 قارئ.\n- البحث المتقدم والذكي\nبحث سريع وذكي في كامل المصحف، يجمع بين البحث في الآيات وأسماء السور، وحتى الانتقال السريع بأرقام الصفحات.\n- العلامات المرجعية\nوضع فواصل لمساعدتك على قراءة الورد اليومي أو ختمة الحفظ.\n- إضافة الخواطر وتدوين التدبرات\nتدوين خواطر على الآيات، للتدبُّر أثناء القراءة والاستماع، وحفظها في محفوظات التطبيق.\n- المفضلة\nحفظ عدد من الآيات في المفضلة لسهولة العودة إليها في أي وقت.\n- المكتبة\nاختيار نوعية المصحف، الترجمات والتفاسير من بين الكتب المتاحة في المكتبة الخاصة بالتطبيق.\n- المشاركة\nإمكانية مشاركة الآية بالنص أو بالصورة، ومشاركة التفسير والترجمة.\n- الإعدادات\nالانتقال بين لغات الواجهة، إدارة العلامات والملاحظات، وأسلوب التنقل بين الصفحات و...\n- المزامنة\nإمكانية مزامنة بياناتك على أجهزتك المختلفة.\n- وخصائص أخرى\nتصميم قرآني فريد وخاص، تحفيظ القرآن الكريم من خلال خاصية تكرار آية أو عدد من الآيات، والقراءة الليلة.",
+        "Description_En": "Most Advanced & Authentic Quran App\nMultilingual (19 languages)\nMore than 140 reciters, 40 interpretations & 21 translations\nQuran Library: Madinah, Indopak, Kemenag..\nMost advanced and authentic Quran app for iOS devices with ease in reading and listening Quran on the go.\nThis Multilingual (19 languages), Quran application includes more than 140 reciters, 40 interpretations & many translations with a unique Quran Library (Madinah, Indopak, Kemenag, Warsh, Qaloon, Muhammadi, Turkey, and others).\nThe latest version of the Quran app offers complete Quran in the elegant Uthmanic font, audio recitation, translations and Tafsir, proofread by authentic Muslim scholars. There are many features under development. Please send us your feedback and feature requests. Please do keep us in your prayers!\nThe Mecca Mushaf is an integrated project in the service of the Holy Quran.\nA Muṣḥaf, in literal meaning is an Arabic word for collection of pages and refers to a compiled, written pages of Al Quran.\nMushaf Mecca Quran App provides the following features:\n- Reading\nReading the Noble Quran with the narration of Hafs, in the Ottoman script, from the edition of the Quran of al-Madina (1st, 2nd, or 3rd edition), Warsh, Qaloon, Doori, the Qur'an of Indonesia (Kemenag), Indopak Quran, and others, in calm colors that are comfortable for the eye.\nInterpretations\nStudy verses of the al Quran through more than 35 interpretations.\nTranslations of meanings\nLearn the meanings of the verses through translations of the meanings of the Noble Quran in several languages.\n- Audio recitations\nListen to Quran recitations with the voice of more than 100 famous reciters, with the recited verses highlighted while reciting the verse.\n- Advanced and smart search\nFast and smart search throughout the entire Quran, combining verse and surah names, and even page numbers quick navigation.\n- Bookmarks\nSet Bookmarks to help you read the daily planned reading or complete your memorizing.\n- Adding thoughts and Notes\nJot down thoughts on verses, to reflect while reading and listening, and save them in the application's archives.\n- Favorite\nSave a number of verses in your favorites for easy return to it at any time.\n- The library\nChoose the type of Quran, translations and interpretations from among the books available in the application's library.\n- Share\nThe ability to share the verse in text or image format, and to share the interpretation and translation.\n- Settings\nInterface languages ​​switching, bookmark and note management, page navigation and others.\n- Sync\nAbility to sync your data across your different devices.\n- Auto Scrolling\n- And other features\nUnique and special Quranic design, Holy Quran memorization through the feature of repeating a verse or a number of verses, and night mode.",
+        "status": "Done",
+        "sort": 17,
+        "Apps_Avg_Rating": 4.6,
+        "categories": [
+            "mushaf",
+            "riwayat",
+            "tafsir",
+            "translations",
+            "audio"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/06_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/07_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/06_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/07_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/48_Mushaf Mecca/developer_logo.png",
+        "Developer_Name_En": "مصحف مكة",
+        "Developer_Name_Ar": "Mushaf Makkah",
+        "Developer_Website": "https://mushafmakkah.com",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.quran.mushaf.mecca",
+        "AppStore_Link": "https://apps.apple.com/us/app/id1438777424",
+        "App_Gallery_Link": "https://appgallery.huawei.com/#/app/C103952077"
+    },
+    {
+        "id": "49_Elmohafez",
+        "Name_Ar":"محفظ الوحيين",
+        "Name_En": "Elmohafez",
+        "Short_Description_Ar": "طريقك الميسر لحفظ كتاب الله",
+        "Short_Description_En": "Your companion in memorizing the holy Quran",
+        "Description_Ar": "محفظ الوحيين يتيح لك إمكانية حفظ القرآن الكريم والسنة النبوية والمتون بطريقة سهلة وبإمكانيات متطورة\nمحفظ الوحيين يتيح لك إمكانية حفظ القرآن الكريم بالقراءات بالرسم العثماني والسنة النبوية والمتون بطريقة سهلة. كل ما عليك هو اختيار وقراءة النص وسماعه من القارئ ثم تسجيله بصوتك في حين يختفي النص. بعد الانتهاء من التسجيل يقوم التطبيق بعرض النص مرة أخرى وتشغيل صوتك لكي تطابقه بالصواب. يمكنك متابعة نسبة الحفظ في كل سورة أو كتاب حديث وسماع التسجيل في أي وقت.\nكما يمكن استخدام محفظ الوحيين في قاعات التدريس وذلك بعرضه على الشاشات الخارجية بكامل مساحتها وظهور الآيات بملء الشاشة عند تلاوتها.\nيدعم التطبيق القرآن الكريم بـ ٢٠ رواية و ١٥ قارئًا بالإضافة إلى مصحف التجويد الملون وكتب صحيح البخاري ومسلم وكتب المتون كتحفة الأطفال والشاطبية والجزرية والبيقونية وغيرهم.\nمزايا التطبيق:\n- قراءة القرآن بالرسم العثماني كما هو موجود في مصحف المدينة طبعة الملك فهد (الإصدار الأول والثاني)\n- حفظ القرآن الكريم بالروايات عن طريق السماع والتسجيل والمطابقة\n- الختمة ومتابعة الختمات (المعين)\n- حصريا وللمرة الأولى تظليل آيات القرآن مع التلاوة على مستوى الكلمة في جميع سور القرآن وجميع قراء حفص عن عاصم\n- إمكانية الضغط على أي كلمة وسماع تلاوتها بشكل منفصل\n- إمكانية العرض على كامل مساحة الشاشات الخارجية باستخدام تقنية AirPlay للعرض اللاسلكي أو عن طريق التوصيل السلكي باستخدام AV Adapter\n- إمكانية الرسم والتظليل على صفحات القرآن الكريم بغرض التعليم\n- البحث الفوري في القرآن الكريم وكتب الحديث والمتون\n- استماع التلاوة للعديد من القراء\n- الاستماع لترجمات القرآن بعدة لغات\n- تشغيل متواصل لصفحات كاملة وسور وأرباع وأجزاء والقرآن كاملا\n- استمتع بالتشغيل في الخلفية مع بيانات كاملة عن الآية الحالية في شاشة القفل وجميع كماليات iPod\n- إمكانية تعيين الآيات أو الأحاديث والمتون المراد حفظها وتكرارها\n- إمكانية التحكم في سرعة القراءة للمراجعة السريعة\n- سجل المتابعة لمعرفة نسبة الحفظ بحسب السور أو الأجزاء\n- قراءة التفسير الموضوعي للقرآن الكريم\n- قراءة أيسر التفاسير للشيخ أبي بكر الجزائري\n- قراءة تفسير وترحمة معاني القرآن بعدة لغات\n- التفسير الصوتي من الميسر في التفسير والمختصر في التفسير\n- إمكانية متابعة حفظ الأحاديث على مستوى الفصول والأبواب والكتب والمصنفات\n- إمكانية تحميل السور الكاملة وأبواب كتب الحديث دفعة واحدة\n- إمكانية وضع الفواصل الذكية بألوان مختلفة وأسماء مميزة وتحريكها على الصفحات أو الآيات، حيث يمكنك تحديد كمية الورد واستقبال تنبيهات للتذكير بالقراءة.\n- إمكانية كتابة الملاحظات النصية على الآيات\n- إمكانية نسخ ومشاركة الآيات والأحاديث والمتون عبر شبكات التواصل الاجتماعي",
+        "Description_En": "Your companion in memorizing the holy Quran, Hadith and Motoon\nElmohafez app allows you to memorize the noble Qur’an according to the different qira’aat while using the Uthmani script. It also helps you memorize the Prophetic Sunnah and the mutoon (brief Islamic texts) in an easy way. All you have to do is choose the text, read it and listen to the recitation, and then record your voice as the text disappears. After the recording, the application shows the text along with your recorded voice for you to compare it and know how correct it is. You have the ability to follow your progress of memorization of the Qur’an or the books of hadeeth, and you can listen to your recording at any time.\nCurrently, the app supports the recitation of the Qur’an according to 20 different rewayaat (narrations) and 15 different reciters as well as the coloured Quran. It has Bukhari, Muslim and different mutoon such as “Tuhfat Al-Atfal”, “Al-Jazareyya”, “Ash-Shatebeyya” and other books.\nFeatures\n-Read the Qur’an according to the Uthmani script which is used in the mushaf that is printed at King Fahd Printing Complex.\n-Listen to the recitation of many reciters.\n-Control the speed of the recitation. This helps those who want to revise quickly.\n-Choose any verse/hadeeth you want to memorize and repeat it several times.\n- Draw and highlight on Quran pages for the purpose of teaching.\n- Follow your progress of memorization of a chapter or part of the Qur’an.\n- Read the topical interpretation of the Qur’an (tafseer mawdoo’ey).\n-Help your children memorize the Qur’an.\n-Supports displaying its content on an external display device (AirPlay/Cable).",
+        "status": "Done",
+        "sort": 18,
+        "Apps_Avg_Rating": 4.7,
+        "categories": [
+            "memorize",
+            "mushaf",
+            "riwayat",
+            "tafsir",
+            "translations",
+            "audio"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/01_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/02_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/03_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/04_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/05_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/06_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/07_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/08_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/09_screenshots_ar.jpeg"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/01_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/02_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/03_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/04_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/05_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/06_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/07_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/08_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/09_screenshots_ar.jpeg"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/cover_photo_ar.jpeg",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/cover_photo_ar.jpeg",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/49_Elmohafez/developer_logo.svg",
+        "Developer_Name_En": "elMohafez",
+        "Developer_Name_Ar": "محفظ الوحيين",
+        "Developer_Website": "https://www.elmohafez.com",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=net.hammady.android.mohafez",
+        "AppStore_Link": "https://apps.apple.com/us/app/elmohafez-tv-%D9%85%D8%AD%D9%81%D8%B8-%D8%A7%D9%84%D9%88%D8%AD%D9%8A%D9%8A%D9%86/id560715467",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "50_Mofassal",
+        "Name_Ar":"مفصل",
+        "Name_En": "Mofassal",
+        "Short_Description_Ar": "لإنشاء الخطط القرآنية",
+        "Short_Description_En": "Create Quranic Plans",
+        "Description_Ar": "هل تحتاج إلى خطة تعينك في حفظ القرآن ؟\nهل أنت معلم حلقة وتريد إنشاء خطط لطلابك ومتابعتها بشكل سهل ومريح ؟\nسواء كنت معلم حلقة أو ترغب في حفظ القرآن.. نقدم لك تطبيق مفصل..\nتطبيق مفصل هو تطبيق يمكنك من إنشاء خطط لحفظ ومراجعة القرآن الكريم بشكل سهل وبسيط ..\nويتيح لك متابعة إنجازك ومشاركة خطتك مع من تريد",
+        "Description_En": "Mofassal is an application that helps you create detailed\nplans to memorize and review the Holy Qur'an, follow it up,\nand share it with others with high professionalism",
+        "status": "Done",
+        "sort": 19,
+        "Apps_Avg_Rating": 4.8,
+        "categories": [
+            "tools",
+            "memorize"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/50_Mofassal/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/50_Mofassal/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/50_Mofassal/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/50_Mofassal/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/50_Mofassal/05_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/50_Mofassal/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/50_Mofassal/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/50_Mofassal/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/50_Mofassal/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/50_Mofassal/05_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/50_Mofassal/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/50_Mofassal/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/50_Mofassal/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/50_Mofassal/developer_logo.png",
+        "Developer_Name_En": "Tafsir Center for Qur'anic Studies",
+        "Developer_Name_Ar": "مركز تفسير للدراسات القرآنية",
+        "Developer_Website": "https://tafsir.net",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.mofassal.app",
+        "AppStore_Link": "https://apps.apple.com/us/app/%D9%85%D9%81%D8%B5%D9%84/id1584188020?l=ar",
+        "App_Gallery_Link": "https://appgallery.huawei.com/app/C108746233"
+    },
+    {
+        "id": "51_The Correct Quotation",
+        "Name_Ar":"الاستشهاد الصحيح",
+        "Name_En": "The Correct Quotation",
+        "Short_Description_Ar": "لوحة مفاتيح القرآن",
+        "Short_Description_En": "Quran Keyboard",
+        "Description_Ar": "تعظيماً لنصوص الوحيين وتفادياً لما يحصل من أخطاء أثناء الكتابة تم تنفيذ لوحة مفاتيح تمكن المستخدم من البحث المباشر في نصوص الكتاب والسنة والمشاركة بها في مواقع التواصل الاجتماعي أو استخدامها في التطبيقات الأخرى دون الحاجة إلى كتابتها.\nمميزات التطبيق:\n1- ضبط كتابة نصوص الوحيين من خلال قواعد بيانات موثوقة.\n2- البحث في نصوص القرآن الكريم أو أحاديث الصحيحين وتسهيل استخدام النتيجة أو مشاركتها.\n3- إمكانية إدراج ترجمة الآية أو تفسيرها.\n4- النص القرآني مأخوذ من مجمع الملك فهد لطباعة المصحف الشريف.\n5- نصوص أحاديث الصحيحين مأخوذة من وقفية الشيخ عبدالله بن عقيل رحمه الله لدى دار التأصيل.",
+        "Description_En": "This is a Quran Keyboard and it can be used as a Normal Keyboard.\nThis Keyboard will help millions of Muslims around the world.",
+        "status": "Done",
+        "sort": 20,
+        "Apps_Avg_Rating": 4.8,
+        "categories": [
+            "tools"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/06_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/06_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/51_The Correct Quotation/developer_logo.png",
+        "Developer_Name_En": "وزارة الشؤون الإسلامية والدعوة والإرشاد",
+        "Developer_Name_Ar": "Ministry of Islamic Affairs, Dawah and Guidance",
+        "Developer_Website": "https://www.moia.gov.sa",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.moia.qurankeyboard",
+        "AppStore_Link": "https://apps.apple.com/us/app/id1557031461?l=ar",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "52_Satr",
+        "Name_Ar":"سطر",
+        "Name_En": "Satr",
+        "Short_Description_Ar": "تلاوة مبتكرة مرنة",
+        "Short_Description_En": "Innovative flexible recitation",
+        "Description_Ar": "يُتيح لك قراءة القرآن الكريم بطريقة مبتكرة من خلال عرض جميع الآيات القرآنية على شكل سطر واحد مع إمكانية التلاوة بالوضعين الأفقي والرأسي والتحكم في سرعة عرض الآيات وحجم الخط",
+        "Description_En": "It allows you to read the Holy Quran in an innovative way by displaying all the verses in a single line, with the ability to recite in both horizontal and vertical orientations, as well as control the speed of verse display and font size.",
+        "status": "Done",
+        "sort": 21,
+        "Apps_Avg_Rating": 4.0,
+        "categories": [
+            "tools",
+            "mushaf"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/01_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/02_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/03_screenshots_ar.jpeg"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/01_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/02_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/03_screenshots_ar.jpeg"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/cover_photo_ar.jpeg",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/cover_photo_ar.jpeg",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/52_Satr/developer_logo.png",
+        "Developer_Name_En": "Digital Corners",
+        "Developer_Name_Ar": "شركة الأركان الرقمية",
+        "Developer_Website": "https://digital-corners.net",
+        "Google_Play_Link": "",
+        "AppStore_Link": "https://apps.apple.com/us/app/id6446127230?l=ar",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "53_Moeen",
+        "Name_Ar":"معين",
+        "Name_En": "Moeen",
+        "Short_Description_Ar": "مصحف المراجعة",
+        "Short_Description_En": "مصحف المراجعة",
+        "Description_Ar": "تطبيق معين، الرفيق المساعد في حفظ وتثبيت القرآن الكريم.\nيهدف إلى المساعدة في تقوية الحفظ وتثبيت المراجعة عن طريق معرفة نقاط الضعف من خلال التحديد على التنبيهات والأخطاء",
+        "Description_En": "تطبيق معين، الرفيق المساعد في حفظ وتثبيت القرآن الكريم.\nيهدف إلى المساعدة في تقوية الحفظ وتثبيت المراجعة عن طريق معرفة نقاط الضعف من خلال التحديد على التنبيهات والأخطاء",
+        "status": "Done",
+        "sort": 22,
+        "Apps_Avg_Rating": 5.0,
+        "categories": [
+            "memorize",
+            "mushaf"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/53_Moeen/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/53_Moeen/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/53_Moeen/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/53_Moeen/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/53_Moeen/05_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/53_Moeen/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/53_Moeen/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/53_Moeen/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/53_Moeen/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/53_Moeen/05_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/53_Moeen/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/53_Moeen/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/53_Moeen/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/53_Moeen/developer_logo.Not Found",
+        "Developer_Name_En": "Faisal Haddad",
+        "Developer_Name_Ar": "فيصل حداد",
+        "Developer_Website": "",
+        "Google_Play_Link": "",
+        "AppStore_Link": "https://apps.apple.com/us/app/%D9%85%D8%B9%D9%8A%D9%86-%D9%85%D8%B5%D8%AD%D9%81-%D8%A7%D9%84%D9%85%D8%B1%D8%A7%D8%AC%D8%B9%D8%A9/id1638765798",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "54_Ana Atlou",
+        "Name_Ar":"أنا أتلو",
+        "Name_En": "Ana Atlou",
+        "Short_Description_Ar": "مصحف رقمي صوتي للمكفوفين",
+        "Short_Description_En": "A digital audio Quran for the visually impaired",
+        "Description_Ar": "مصحف رقمي مبتكر تم تصميمه خصيصاً للمكفوفين وضعاف البصر يمكن من خلاله الإستماع لتلاوات القرآن الكريم والتفاسير والترجمات مع سهولة الإنتقال بين محتوياته بإستخدام التوجية الصوتي كما يشمل خاصية البحث صوتياً في نص القرآن الكريم",
+        "Description_En": "An innovative digital Quran designed specifically for the blind and visually impaired, allowing them to listen to Quran recitations, interpretations, and translations. It also enables easy navigation through its content using voice guidance and includes a voice search feature within the Quranic text.",
+        "status": "Done",
+        "sort": 23,
+        "Apps_Avg_Rating": 5.0,
+        "categories": [
+            "accessibility",
+            "mushaf",
+            "tafsir",
+            "translations"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/54_Ana Atlou/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/54_Ana Atlou/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/54_Ana Atlou/03_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/54_Ana Atlou/01_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/54_Ana Atlou/02_screenshots_en.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/54_Ana Atlou/03_screenshots_en.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/54_Ana Atlou/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/54_Ana Atlou/cover_photo_en.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/54_Ana Atlou/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/54_Ana Atlou/developer_logo.svg",
+        "Developer_Name_En": "Noor Taibah Foundation",
+        "Developer_Name_Ar": "مؤسسة نور طيبة",
+        "Developer_Website": "https://noortaibah.org",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=org.noor.anaatlou.vi",
+        "AppStore_Link": "https://apps.apple.com/us/app/%D8%A3%D9%86%D8%A7-%D8%A3%D8%AA%D9%84%D9%88/id1620636638",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "55_Alfanous",
+        "Name_Ar":"الفانوس",
+        "Name_En": "Alfanous",
+        "Short_Description_Ar": "محرك بحث قرآني متقدم",
+        "Short_Description_En": "Advanced Quranic search engine",
+        "Description_Ar": "الفانوس هو كمثل جوجل للإنترنت ولكنه باحث متخصص ومتقدم للقرآن، فكما تستطيع البحث في الشبكة العنكبوتية على أدق الأمور بكافة الأشكال سوف يعينك تطبيق الفانوس في البحث عن أدق الأمور وبعدة أشكال وسوف تبحر كما لم تبحر من قبل لتجد ضالتك في كتاب الله بإذن الله",
+        "Description_En": "Al-Fanoos is like Google for the internet but is a specialized and advanced search engine for the Quran. Just as you can search the web for the most precise details in various ways, Al-Fanoos will assist you in searching for intricate details in multiple forms. You will navigate through the Quran like never before, helping you find what you seek in the Book of Allah, God willing.",
+        "status": "Done",
+        "sort": 24,
+        "Apps_Avg_Rating": 4.7,
+        "categories": [
+            "tools",
+            "tafsir"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/06_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/06_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/55_Alfanous/developer_logo.png",
+        "Developer_Name_En": "Islam phone",
+        "Developer_Name_Ar": "إسلام فون",
+        "Developer_Website": "",
+        "Google_Play_Link": "",
+        "AppStore_Link": "https://apps.apple.com/us/app/id543646326?l=ar",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "56_Tebyan Quran",
+        "Name_Ar":"مصحف تبيان للصم",
+        "Name_En": "Tebyan Quran",
+        "Short_Description_Ar": "مُصحف تفاعلي للصمّ مع تفسير بلغة الإشارة وميزات متقدمة",
+        "Short_Description_En": "Interactive Quran for the deaf with sign language interpretations",
+        "Description_Ar": "مُصحف تفاعلي مخصص للصُمّ ولمن يُعانون من الإعاقة السمعية يقوم بتفسير سور جزء عم بلغة الإشارة ليتمكنوا من تدبر الآيات وفهم معانيها مع إمكانية تنزيل المرئيات وحفظها ومشاركتها كما يتميز بنظام الفهرسة وخاصية القراءة الليلية والفواصل والمفضلة والبحث الدقيق",
+        "Description_En": "An interactive Quran designed for the deaf and hearing-impaired, interpreting the chapters of Juz Amma in sign language to help them reflect on and understand the verses. It also allows downloading, saving, and sharing videos, with features like indexing, night reading mode, bookmarks, and precise search.",
+        "status": "Done",
+        "sort": 25,
+        "Apps_Avg_Rating": 4.7,
+        "categories": [
+            "accessibility",
+            "mushaf",
+            "tafsir"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/01_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/02_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/03_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/04_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/05_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/06_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/07_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/08_screenshots_ar.jpeg"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/01_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/02_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/03_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/04_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/05_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/06_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/07_screenshots_ar.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/08_screenshots_ar.jpeg"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/cover_photo_ar.jpeg",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/cover_photo_ar.jpeg",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/56_Tebyan Quran/developer_logo.Not Found",
+        "Developer_Name_En": "جمعية لأجلهم لخدمة الأشخاص ذوي الإعاقة",
+        "Developer_Name_Ar": "Liajlehum",
+        "Developer_Website": "https://www.liajlehum.org.sa",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=online.smartech.tebyan",
+        "AppStore_Link": "https://apps.apple.com/us/app/id1601962979",
+        "App_Gallery_Link": "https://appgallery.huawei.com/#/app/C105200513"
+    },
+    {
+        "id": "57_Noor International Quran",
+        "Name_Ar":"مصحف نور إنترناشيونال",
+        "Name_En": "Noor International Quran",
+        "Short_Description_Ar": "قرآن كامل مع ترجمات متعددة، بحث فوري، تلاوات صوتية، وميزات إضافية",
+        "Short_Description_En": "The most reliable translations",
+        "Description_Ar": "شامل القرآن الكريم مع ترجمة المعاني باللغة الإنجليزية والفرنسية والإسبانية بالإضافة لخاصية البحث الفوري والقراءة الصوتية للترجمات حسب الآيات وإمكانية إستماع التلاوات بصوت أشهر القراء ومزايا متنوعة أخرى",
+        "Description_En": "A complete Quran with translations in English, French, and Spanish, featuring instant search, audio reading of translations by verse, and the ability to listen to recitations by famous Qaris, along with various other features.",
+        "status": "Done",
+        "sort": 26,
+        "Apps_Avg_Rating": 4.2,
+        "categories": [
+            "translations",
+            "mushaf",
+            "audio"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/01_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/02_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/03_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/04_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/05_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/06_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/07_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/08_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/09_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/10_screenshots_en.jpeg"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/01_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/02_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/03_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/04_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/05_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/06_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/07_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/08_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/09_screenshots_en.jpeg",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/10_screenshots_en.jpeg"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/cover_photo_en.jpeg",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/cover_photo_en.jpeg",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/57_Noor International Quran/developer_logo.png",
+        "Developer_Name_En": "Noor International",
+        "Developer_Name_Ar": "نور انترناشونال",
+        "Developer_Website": "https://noorinternational.net/ar",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.smartech.noor.inl&hl=ar&gl=US",
+        "AppStore_Link": "https://apps.apple.com/us/app/id1525532425?l=ar",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "58_Werdy",
+        "Name_Ar":"وردي",
+        "Name_En": "Werdy",
+        "Short_Description_Ar": "رفيقك في ختم القرآن صُمم لمن يفضل المصحف الورقي",
+        "Short_Description_En": "رفيقك في ختم القرآن صُمم لمن يفضل المصحف الورقي",
+        "Description_Ar": "وِردي, رفيقك في ختم القرآن صُمم لمن يفضل المصحف الورقي!\nما زال البعض منا يفضل قراءة القرآن الكريم من المصحف الورقي واعتاد ذلك, مثل كبار السن. ولا تكاد تجد تطبيقا يساعد هؤلاء القرّاء في وردهم مع المصحف الورقي, ولذا أحببنا المساعدة.\nببساطة, قمنا بأخذ جدول الورد القرآني -المعتاد قديما عند القرّاء- المحمول في الجيب لمتابعة مكان التوقف والإنجاز اليومي, ثم حولنا هذا الجدول إلى تطبيق إلكتروني يساعدك على متابعة ختمتك دون الحاجة إلى التحول عن المصحف الورقي.\nلـ«وِردي» عدة خدمات ومزايا، أهمها:\n• إنشاء أكثر من ختمة أو ورد.\n• جدولة الختمة وتحديد المقدار اليومي.\n• تذكيرات يومية.\n• تحديد السور والآيات التي أتممتها.\n• نسبة الإنجاز التفصيلي لكل ختمة.\n• تقارير تفصيلية يومية وأسبوعية لعدد الختمات والسور والآيات والحروف التي قرأتها.\nتطبيق وِردي, تابع ختمتك في المسجد, البيت, العمل, غرف الانتظار, مع المصحف الورقي أو تطبيقك المفضل. حمّل #وِردي وتابع وردك.",
+        "Description_En": "An app to track your Quran completion, showing your progress in the physical Quran. It allows creating multiple schedules, setting daily goals, sending daily reminders, and providing detailed daily and weekly reports on completed surahs, verses, and letters.",
+        "status": "Done",
+        "sort": 27,
+        "Apps_Avg_Rating": 4.3,
+        "categories": [
+            "tools"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/06_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/06_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/58_Werdy/developer_logo.png",
+        "Developer_Name_En": "Arabia IT",
+        "Developer_Name_Ar": "شركة الدار العربية",
+        "Developer_Website": "https://arabia-it.com/",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.arabiait.werdy",
+        "AppStore_Link": "https://apps.apple.com/us/app/id1475112472?l=ar",
+        "App_Gallery_Link": "https://appgallery.huawei.com/#/app/C104710873"
+    },
+    {
+        "id": "59_School Mushaf",
+        "Name_Ar":"المصحف المدرسي",
+        "Name_En": "School Mushaf",
+        "Short_Description_Ar": "تطبيق لتلاوة وتحفيظ سور المنهج الدراسي مع جوائز، تلاوات بصوت مشاهير القراء، وميزات قابلة للتخصيص",
+        "Short_Description_En": "تطبيق لتلاوة وتحفيظ سور المنهج الدراسي مع جوائز، تلاوات بصوت مشاهير القراء، وميزات قابلة للتخصيص",
+        "Description_Ar": "المنهج الدراسي:\nعرض المصحف وفقا للمنهج الدراسي المعتمد من وزارة التعليم لمادة القرآن الكريم.\n- المنهج المعتمد لوزارة التعليم بالسعودية\n- المنهج المعتمد لوزارة التعليم بالكويت\n- المنهج المعتمد لوزارة التعليم بالبحرين\n- المنهج المعتمد لوزارة التعليم بعمان\nحسابات للطلاب والمعلمين:\nإنشاء أكثر من حساب في مراحل تعليمية مختلفة في جوال واحد.\nمنهج التلاوة والحفظ:\nتمييز منهج التلاوة والحفظ على مختلف الصفوف والفصول الدراسية.\nتلاوات لمشاهير القراء:\nتلاوات لأكثر من 10 مشاهير من القراء والسماع لها بالإنترنت وبدونه.\n1. الشيخ عبدالرحمن السديس\n2. الشيخ سعود الشريم\n3. الشيخ إبراهيم الأخضر\n4. الشيخ عبدالله بصفر\n5. الشيخ محمد أيوب\n6. الشيخ علي الحذيفي\n7. الشيخ مشاري العفاسي\n8. الشيخ ماهر المعيقلي\n9. الشيخ محمد المنشاوي\n10. الشيخ محمد المنشاوي وأطفال\n11. الشيخ خليفة الطنيجي\n12. الشيخ أحمد العجمي\nتصميم جذاب:\nيتناسب مع الأطفال في المراحل الدراسية المبكرة.\nتغيير لون المصحف:\n4 ألوان مختلفة لصفحات المصحف تتلائم مع جميع الأذواق.\nإنجازاتي:\nجوائز تشجيعية للسور التي أكمل الطالب تلاوتها وحفظها.\nخدمة التحفيظ:\nتسهيل عملية حفظ الآيات من خلال تكرارها.\nالفاصلة:\nحفظ آخر موضع انتهى فيه الطالب من التلاوة أو الحفظ.",
+        "Description_En": "An app for reciting and memorizing the Quranic chapters in the official curriculum of Saudi Arabia, Kuwait, Bahrain, and Oman. It allows creating multiple accounts for different educational stages, changing the Quran’s color, listening to recitations by famous Qaris, and earning rewards for completed surahs.",
+        "status": "Done",
+        "sort": 28,
+        "Apps_Avg_Rating": 4.6,
+        "categories": [
+            "memorize",
+            "mushaf",
+            "kids"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/59_School Mushaf/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/59_School Mushaf/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/59_School Mushaf/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/59_School Mushaf/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/59_School Mushaf/05_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/59_School Mushaf/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/59_School Mushaf/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/59_School Mushaf/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/59_School Mushaf/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/59_School Mushaf/05_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/59_School Mushaf/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/59_School Mushaf/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/59_School Mushaf/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/59_School Mushaf/developer_logo.png",
+        "Developer_Name_En": "Arabia IT",
+        "Developer_Name_Ar": "شركة الدار العربية",
+        "Developer_Website": "https://arabia-it.com/",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.devlabs.quran",
+        "AppStore_Link": "https://apps.apple.com/us/app/id1177013583",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "60_School Mushaf - Sign Language",
+        "Name_Ar":"المصحف المدرسي الإشاري",
+        "Name_En": "School Mushaf - Sign Language",
+        "Short_Description_Ar": "منهج القرآن الكريم المعتمد للطلبة الصم (العوق السمعي) بلغة الإشارة",
+        "Short_Description_En": "منهج القرآن الكريم المعتمد للطلبة الصم (العوق السمعي) بلغة الإشارة",
+        "Description_Ar": "المصحف المدرسي الإشاري\nمنهج القرآن الكريم المعتمد بوزارة التعليم بالسعودية للمرحلة الابتدائية والمتوسطة والثانوية للطلبة الصم (العوق السمعي) بلغة الإشارة.\nقام بمراجعة العمل :\nعصام عبدالله الفريح\nعبدالله سعد الشريمي\nعواطف عبدالعزيز ال تويم\nفاطمة عثمان باوجيه\nالترجمة بلغة الإشارة\nعبدالوهاب عبدالرحمن البابطين\nحسابات للطلاب والمعلمين:\nإنشاء أكثر من حساب في مراحل تعليمية مختلفة في جوال واحد.\nمنهج التلاوة والحفظ:\nتمييز منهج التلاوة والحفظ على مختلف الصفوف والفصول الدراسية.\nتلاوات لمشاهير القراء:\nتلاوات لأكثر من 10 مشاهير من القراء والسماع لها بالإنترنت وبدونه.\n1. الشيخ عبدالرحمن السديس\n2. الشيخ سعود الشريم\n3. الشيخ إبراهيم الأخضر\n4. الشيخ عبدالله بصفر\n5. الشيخ محمد أيوب\n6. الشيخ علي الحذيفي\n7. الشيخ مشاري العفاسي\n8. الشيخ ماهر المعيقلي\n9. الشيخ محمد المنشاوي\n10. الشيخ محمد المنشاوي وأطفال\n11. الشيخ خليفة الطنيجي\n12. الشيخ أحمد العجمي\nالمقاطع المرئية:\nمقاطع مرئية لكامل المنهج بلغة الإشارة\nتصميم جذاب:\nيتناسب مع الأطفال في المراحل الدراسية المبكرة.\nتغيير لون المصحف:\n4 ألوان مختلفة لصفحات المصحف تتلائم مع جميع الأذواق.\nإنجازاتي:\nجوائز تشجيعية للسور التي أكمل الطالب تلاوتها وحفظها.\nخدمة التحفيظ:\nتسهيل عملية حفظ الآيات من خلال تكرارها.\nالفاصلة:\nحفظ آخر موضع انتهى فيه الطالب من التلاوة أو الحفظ.",
+        "Description_En": "Reference School Quran\nThe Noble Qur’an curriculum approved by the Ministry of Education in Saudi Arabia for the elementary, intermediate and secondary levels for deaf students (hearing impairment) in sign language.\nHe reviewed the work:\nIssam Abdullah Al-Fraih\nAbdullah Saad Al-Shuraimi\nAwatef Abdulaziz Al Twaim\nFatma Osman Baojeh\nSign language translation\nAbdul Wahab Abdulrahman Al-Babtain\nAccounts for students and teachers:\nCreating more than one account in different educational stages in one mobile phone.\nMethod of recitation and memorization:\nDistinguishing the method of recitation and memorization in the various classes and classes.\nRecitations by Famous Reciters:\nRecitations by more than 10 famous readers, and listened to online and offline.\n1. Sheikh Abdulrahman Al-Sudais\n2. Sheikh Saud Al-Shuraim\n3. Sheikh Ibrahim Al-Akhdar\n4. Sheikh Abdullah Basfar\n5. Sheikh Muhammad Ayyub\n6. Sheikh Ali Al-Hudhaifi\n7. Sheikh Mishary Al-Afasy\n8. Sheikh Maher Al-Moaikli\n9. Sheikh Muhammad Al-Minshawi\n10. Sheikh Muhammad Al-Minshawi and children\n11. Sheikh Khalifa Al-Tunaiji\n12. Sheikh Ahmed Al-Ajmi\nVideos:\nSign language videos of the entire curriculum\nAttractive design:\nIt is suitable for children in the early grades.\nChanging the color of the Qur’an:\n4 different colors for the pages of the Qur’an to suit all tastes.\nMy Achievements:\nIncentive prizes for the suras that the student completed and memorized.\nMemorization service:\nFacilitate the process of memorizing verses by repeating them.\ninterval:\nMemorizing the last place in which the student completed his recitation or memorization.",
+        "status": "Done",
+        "sort": 29,
+        "Apps_Avg_Rating": 4.2,
+        "categories": [
+            "accessibility",
+            "kids",
+            "memorize",
+            "mushaf"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/60_School Mushaf - Sign Language/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/60_School Mushaf - Sign Language/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/60_School Mushaf - Sign Language/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/60_School Mushaf - Sign Language/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/60_School Mushaf - Sign Language/05_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/60_School Mushaf - Sign Language/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/60_School Mushaf - Sign Language/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/60_School Mushaf - Sign Language/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/60_School Mushaf - Sign Language/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/60_School Mushaf - Sign Language/05_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/60_School Mushaf - Sign Language/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/60_School Mushaf - Sign Language/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/60_School Mushaf - Sign Language/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/60_School Mushaf - Sign Language/developer_logo.png",
+        "Developer_Name_En": "Arabic IT",
+        "Developer_Name_Ar": "الدار العربية",
+        "Developer_Website": "https://arabia-it.com/",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.devlabs.qurandeaf",
+        "AppStore_Link": "https://apps.apple.com/us/app/%D8%A7%D9%84%D9%85%D8%B5%D8%AD%D9%81-%D8%A7%D9%84%D9%85%D8%AF%D8%B1%D8%B3%D9%8A-%D8%A7%D9%84%D8%A5%D8%B4%D8%A7%D8%B1%D9%8A/id1538979237",
+        "App_Gallery_Link": "https://appgallery.huawei.com/#/app/C103380003"
+    },
+    {
+        "id": "61_Ehfaz Al Quran",
+        "Name_Ar":"احفظ القرآن",
+        "Name_En": "Ehfaz Al Quran",
+        "Short_Description_Ar": "حفظ سور القرآن الكريم بطريقة الألواح",
+        "Short_Description_En": "Memorization of the Holy Quran using theLouh method",
+        "Description_Ar": "تطبيق احفظ مبني علي سهولة وتيسير حفظ سور القرآن الكريم بطريقة الألواح فكل سورة من سور القرآن تزيد عدد آياتها عن 6 آية مقسمة إلي عدة ألواح كل لوح 6 أية واللوح يتم حفظه علي 4 مراحل كل مرحلة عدة مقاطع صوتيه لنفس اللوح مرتبة بشكل هرمي يسهل سماعها وترديدها حتي يتم حفظها بطريقة سهلة للصغير والكبير والعربي والأعجمي.",
+        "Description_En": "EHFAZ app is designed to facilitate memorization of the Holy Quran Surahs “chapters” using theLouh “tablet” method. Each Quran Surah “chapter” of more than 6 Ayahs “verses” is divided into several 6-ayah tablets. Each Louh “tablet”is memorized in 4 phases. Each phase is composed of some sound clipsarranged in a hierarchy to facilitatelistening and repeating untilmemorization by the young, old, and non-Arab.",
+        "status": "Done",
+        "sort": 30,
+        "Apps_Avg_Rating": 4.4,
+        "categories": [
+            "memorize"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/61_Ehfaz Al Quran/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/61_Ehfaz Al Quran/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/61_Ehfaz Al Quran/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/61_Ehfaz Al Quran/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/61_Ehfaz Al Quran/05_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/61_Ehfaz Al Quran/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/61_Ehfaz Al Quran/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/61_Ehfaz Al Quran/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/61_Ehfaz Al Quran/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/61_Ehfaz Al Quran/05_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/61_Ehfaz Al Quran/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/61_Ehfaz Al Quran/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/61_Ehfaz Al Quran/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/61_Ehfaz Al Quran/developer_logo.png",
+        "Developer_Name_En": "Ealamy group",
+        "Developer_Name_Ar": "شركة إعلامي",
+        "Developer_Website": "https://ealamy.com/",
+        "Google_Play_Link": "",
+        "AppStore_Link": "https://apps.apple.com/us/app/id1070807769?l=ar",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "62_Quran Warsh",
+        "Name_Ar":"مصحف ورش",
+        "Name_En": "Quran Warsh",
+        "Short_Description_Ar": "من مجمع الملك فهد لطباعة المصحف الشريف",
+        "Short_Description_En": "By King Fahd Quran Printing Complex",
+        "Description_Ar": "تطبيق يتضمن نسخة رقمية بدقة عالية من مصحف المدينة النبوية برواية ورش كما يشمل على سبب تسمية كل سورة ومكان نزولها وترتيب نزولها وعدد آياتها مع التفسير الميسر وإمكانية البحث وعرض المصحف بشكل طولي أو عرضي وتقليب الصفحات بشكل تلقائي ومتابعة ورد القراءة وسماع تلاوة الآيات ، صادر عن مجمع الملك فهد لطباعة المصحف الشريف بالمدينة المنورة",
+        "Description_En": "An app featuring a high-quality digital version of the Madani Mushaf in the Warsh narration, including the reason for naming each surah, its place and order of revelation, the number of verses, simplified interpretation, search capabilities, and options to view the Quran in portrait or landscape mode. It also includes automatic page flipping, reading progress tracking, and audio recitations, published by the King Fahd Complex for the Printing of the Holy Quran in Madinah.",
+        "status": "Done",
+        "sort": 31,
+        "Apps_Avg_Rating": 4.6,
+        "categories": [
+            "riwayat",
+            "mushaf",
+            "tafsir"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/06_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/07_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/08_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/09_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/10_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/06_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/07_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/08_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/09_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/10_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/62_Quran Warsh/developer_logo.png",
+        "Developer_Name_En": "King Fahd Glorious Quran Printing Complex",
+        "Developer_Name_Ar": "مجمع الملك فهد لطباعة المصحف الشريف",
+        "Developer_Website": "https://qurancomplex.gov.sa/",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=sa.QuranComplex.QuranWarsh",
+        "AppStore_Link": "https://apps.apple.com/us/app/id1603047183",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "63_Wiqaya",
+        "Name_Ar":"وقاية اللسان",
+        "Name_En": "Wiqaya",
+        "Short_Description_Ar": "الوقاية من اللحن الجلي والخفي",
+        "Short_Description_En": "Tajweed, correcting pronunciation",
+        "Description_Ar": "تطبيق لتعليم تلاوة القرآن الكريم مع أحكام التجويد بطريقة مبتكرة تهدف إلى تصحيح نُطق كلماته وتسهيل قراءتها بشكل سليم خالي من اللحن الجلي والخفي وفق منهج تربوي تعليمي متكامل ومُجرب على ثلاث مراحل عبر أدوات تعليمية سهلة الإستخدام تدعم التعلم الذاتي والتفاعلي لتحقق أفضل النتائج بإتقان وأقل وقت وجهد ممكن",
+        "Description_En": "Graduated educational program:\nTake care of the prevention of obvious and hidden melody:\nFirst: The learner starts with one page or specific verses, so he listens to the words of protection from a clear melody because it is the most important, and he is the one who takes care of reading the letters and movements correctly without intonation. Then the words of the intermediates, then the words of the advanced ones. (He repeats this several times.)\nEach student reads according to his level (the beginner reads the words of all levels, the intermediate reads the words of his level with the words of the advanced students, and the advanced reads the words of the advanced students only), whose level is determined by the tongue guard teacher.\nThen the learner chooses an easy intonation sentence at the beginning: such as the stressed noon and meem, while listening to it and practicing pronouncing its examples. (repeat this several times)\nThen he listens to the recitation of this page from a reciter from the reading (repeating this several times).\nAnd if he is reciting to a teacher, then the teacher takes care of: the safety of reading from every clear melody, and as for the intonation, he corrects the intonation rule that the student listened to only with what he studied previously, until the student masters the rule he listened to, and thus the rulings are taken gradually, and if he mastered, he moves after him to another rule With him, until the provisions of intonation ends. God bless.",
+        "status": "Done",
+        "sort": 32,
+        "Apps_Avg_Rating": 4.6,
+        "categories": [
+            "tajweed",
+            "mushaf"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/03_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/03_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/63_Wiqaya/developer_logo.Not Found",
+        "Developer_Name_En": "Wiqaya",
+        "Developer_Name_Ar": "وقاية اللسان",
+        "Developer_Website": "https://wiqayah.net",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.nasaq.wiqaya",
+        "AppStore_Link": "https://apps.apple.com/us/app/id6448244188?l=ar",
+        "App_Gallery_Link": ""
+    },
+    {
+        "id": "64_Kaedat Alnoor",
+        "Name_Ar":"قاعدة النور",
+        "Name_En": "Kaedat Alnoor",
+        "Short_Description_Ar": "تعليم القاعدة النورانية",
+        "Short_Description_En": "Noorani Qaida and Arabic alphabet",
+        "Description_Ar": "تطبيق لتعليم القاعدة النورانية والحروف الهجائية بطريقة سهلة وميسرة مع الشرح الصوتي وإمكانية التكرار وهو موجه إلى النشء وطلاب المدارس وحلقات التحفيظ وغير الناطقين باللغة العربية",
+        "Description_En": "An app to teach the Noorani Qaida and Arabic alphabet in an easy and accessible way, with audio explanations and repetition features, aimed at children, school students, memorization circles, and non-Arabic speakers.",
+        "status": "Done",
+        "sort": 33,
+        "Apps_Avg_Rating": 4.6,
+        "categories": [
+            "tajweed"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/06_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/07_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/06_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/07_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/64_Kaedat Alnoor/developer_logo.jpg",
+        "Developer_Name_En": "Jabal Al-Noor Scientific Complex in Makkah",
+        "Developer_Name_Ar": "مجمع جبل النور العلمي بمكة المكرمة",
+        "Developer_Website": "",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=xsupermu.iesnaad.alnour",
+        "AppStore_Link": "https://apps.apple.com/us/app/id1594371615",
+        "App_Gallery_Link": "https://appgallery.huawei.com/#/app/C105336263"
+    },
+    {
+        "id": "65_Tangheem Al Quran",
+        "Name_Ar":"تنغيم القرآن",
+        "Name_En": "Tangheem Al Quran",
+        "Short_Description_Ar": "تطبيق لإتقان 31 أسلوبًا لغويًا قرآنيًا",
+        "Short_Description_En": "Mastering 31 Quranic linguistic styles",
+        "Description_Ar": "تطبيق يُساعدك على أداء الأساليب اللغوية القرآنية كالإستفهام والإتمام والشرط والقسم بما يخدم معنى الآية لتمكين القارئ من القراءة التدبرية ومساعدة المُستمع على فهم الجُملة وتدبرها حيث يتضمن 31 أسلوباً لغوياً مع إمكانية قراءة القرآن الكريم وسماع تلاوة الآية المُختارة وتسجيل الآية بصوتك وإضافة التعليقات",
+        "Description_En": "An app that helps in mastering Quranic linguistic styles such as interrogation, completion, condition, and oath to enhance contemplative reading and aid listeners in understanding verses. It includes 31 linguistic styles, Quran reading, audio recitation, voice recording, and comment adding features.",
+        "status": "Done",
+        "sort": 34,
+        "Apps_Avg_Rating": 5.0,
+        "categories": [
+            "tajweed"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/06_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/05_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/06_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/65_Tangheem Al Quran/developer_logo.png",
+        "Developer_Name_En": "مؤسسة تأثير للنشر",
+        "Developer_Name_Ar": "مؤسسة تأثير للنشر",
+        "Developer_Website": "",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.cloudsolutions.tangheem",
+        "AppStore_Link": "https://apps.apple.com/us/app/id6445980815",
+        "App_Gallery_Link": "https://appgallery.huawei.com/#/app/C107843411"
+    }, 
 ]
-;
 
+// categories definition
 export const categories = [
-  {
-    name: "Recite",
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M5 10C5 11.8565 5.7375 13.637 7.05025 14.9497C8.36301 16.2625 10.1435 17 12 17M12 17C13.8565 17 15.637 16.2625 16.9497 14.9497C18.2625 13.637 19 11.8565 19 10M12 17V21M8 21H16M9 5C9 4.20435 9.31607 3.44129 9.87868 2.87868C10.4413 2.31607 11.2044 2 12 2C12.7956 2 13.5587 2.31607 14.1213 2.87868C14.6839 3.44129 15 4.20435 15 5V10C15 10.7956 14.6839 11.5587 14.1213 12.1213C13.5587 12.6839 12.7956 13 12 13C11.2044 13 10.4413 12.6839 9.87868 12.1213C9.31607 11.5587 9 10.7956 9 10V5Z" stroke="#A0533B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>`,
-  },
-  {
-    name: "Listen",
-    icon: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M15 8C15.621 8.46574 16.125 9.06966 16.4721 9.76393C16.8193 10.4582 17 11.2238 17 12C17 12.7762 16.8193 13.5418 16.4721 14.2361C16.125 14.9303 15.621 15.5343 15 16M17.7 5C18.7439 5.84365 19.586 6.91013 20.1644 8.12132C20.7429 9.33252 21.0431 10.6578 21.0431 12C21.0431 13.3422 20.7429 14.6675 20.1644 15.8787C19.586 17.0899 18.7439 18.1563 17.7 19M6 15H4C3.73478 15 3.48043 14.8946 3.29289 14.7071C3.10536 14.5195 3 14.2652 3 14V9.99997C3 9.73476 3.10536 9.4804 3.29289 9.29287C3.48043 9.10533 3.73478 8.99997 4 8.99997H6L9.5 4.49997C9.5874 4.3302 9.73265 4.1973 9.90949 4.12526C10.0863 4.05323 10.2831 4.04683 10.4643 4.10722C10.6454 4.1676 10.799 4.29078 10.8972 4.45451C10.9955 4.61824 11.0319 4.81171 11 4.99997V19C11.0319 19.1882 10.9955 19.3817 10.8972 19.5454C10.799 19.7092 10.6454 19.8323 10.4643 19.8927C10.2831 19.9531 10.0863 19.9467 9.90949 19.8747C9.73265 19.8027 9.5874 19.6697 9.5 19.5L6 15Z" stroke="#A0533B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>`,
-  },
-  {
-    name: "Kids",
-    icon: `<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M9.5 4V22M13.5 8H15.5M13.5 12H15.5M6.5 4H17.5C18.0304 4 18.5391 4.21071 18.9142 4.58579C19.2893 4.96086 19.5 5.46957 19.5 6V18C19.5 18.5304 19.2893 19.0391 18.9142 19.4142C18.5391 19.7893 18.0304 20 17.5 20H6.5C6.23478 20 5.98043 19.8946 5.79289 19.7071C5.60536 19.5196 5.5 19.2652 5.5 19V5C5.5 4.73478 5.60536 4.48043 5.79289 4.29289C5.98043 4.10536 6.23478 4 6.5 4Z" stroke="#A0533B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>`,
-  },
-  {
-    name: "Translation",
-    icon: `<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M4.5 5H11.5M9.5 3V5C9.5 9.418 7.261 13 4.5 13M5.5 9C5.5 11.144 8.452 12.908 12.2 13M12.5 20L16.5 11L20.5 20M19.5999 18H13.3999" stroke="#A0533B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>`,
-  },
+    {
+        name: "Mushaf",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 19.2" width="24" height="19.2"><path fill="#A0533B" d="M19.2 12.645V1.965l-6.3.922v11.1zm-8.1 1.342v-11.1l-6.3-.922v10.68zM19.627.083A1.196 1.196 0 0 1 21 1.267v11.861c0 .566-.397 1.054-.949 1.174l-7.549 1.613c-.33.071-.671.071-1.001 0l-7.549-1.613A1.2 1.2 0 0 1 3 13.129V1.267C3 .536 3.649-.026 4.372.083L12 1.2zM1.436.889l.382.075a3 3 0 0 0-.019.304v14.063l9.967 2.044a1.2 1.2 0 0 0 .464 0l9.97-2.045V1.267q0-.157-.019-.304l.382-.075a1.197 1.197 0 0 1 1.436 1.174v13.759c0 .57-.401 1.061-.96 1.174L12.592 19.14q-.294.06-.593.06a2.3 2.3 0 0 1-.593-.06L.96 16.995A1.196 1.196 0 0 1 0 15.821V2.063C0 1.306.694.739 1.436.889"/></svg>`,
+    },
+    {
+        name: "Translations",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#A0533B" d="M12 21.75c.347 0 1.266-.338 2.231-2.269.413-.83.769-1.838 1.031-2.981H8.738c.262 1.144.619 2.152 1.031 2.981.965 1.932 1.884 2.269 2.231 2.269m-3.633-7.5h7.266a21.7 21.7 0 0 0 0-4.5H8.367a21.7 21.7 0 0 0 0 4.5m.37-6.75h6.525c-.262-1.144-.619-2.152-1.031-2.981C13.266 2.588 12.347 2.25 12 2.25s-1.266.338-2.231 2.269C9.356 5.349 9 6.357 8.738 7.5m9.155 2.25c.07.727.103 1.481.103 2.25s-.038 1.523-.103 2.25h3.595c.169-.722.262-1.477.262-2.25s-.089-1.528-.262-2.25zm2.756-2.25a9.8 9.8 0 0 0-4.613-4.378c.661 1.2 1.186 2.695 1.528 4.378h3.089zm-14.217 0c.342-1.683.867-3.173 1.528-4.378A9.8 9.8 0 0 0 3.347 7.5h3.089zM2.513 9.75c-.169.722-.263 1.477-.263 2.25s.089 1.528.262 2.25h3.595c-.07-.727-.103-1.481-.103-2.25s.038-1.523.103-2.25zm13.523 11.128a9.8 9.8 0 0 0 4.613-4.378H17.56c-.342 1.683-.867 3.173-1.528 4.378zm-8.072 0c-.661-1.2-1.186-2.695-1.528-4.378H3.347a9.8 9.8 0 0 0 4.613 4.378zM12 24a12 12 0 1 1 0-24 12 12 0 1 1 0 24"/></svg>`,
+    },
+    {
+        name: "Recite",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 32" width="24" height="32"><path fill="#A0533B" d="M15 6v10c0 1.656 -1.344 3 -3 3s-3 -1.344 -3 -3V6c0 -1.656 1.344 -3 3 -3s3 1.344 3 3M6 6v10c0 3.313 2.688 6 6 6s6 -2.688 6 -6V6c0 -3.313 -2.688 -6 -6 -6S6 2.688 6 6M4 13.5c0 -0.831 -0.669 -1.5 -1.5 -1.5s-1.5 0.669 -1.5 1.5v2.5c0 5.569 4.138 10.169 9.5 10.9V29h-3c-0.831 0 -1.5 0.669 -1.5 1.5s0.669 1.5 1.5 1.5h9c0.831 0 1.5 -0.669 1.5 -1.5s-0.669 -1.5 -1.5 -1.5h-3v-2.1c5.362 -0.731 9.5 -5.331 9.5 -10.9v-2.5c0 -0.831 -0.669 -1.5 -1.5 -1.5s-1.5 0.669 -1.5 1.5v2.5c0 4.419 -3.581 8 -8 8S4 20.419 4 16z"/></svg>`,
+    },
+    {
+        name: "Kids",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 32" width="24" height="32"><path fill="#A0533B" d="M12 3a1.5 1.5 0 1 1 0 3 1.5 1.5 0 1 1 0 -3m0 6a4.5 4.5 0 1 0 0 -9 4.5 4.5 0 1 0 0 9m-0.013 2c-2.6 0 -5 -1.4 -6.287 -3.656L4.806 5.763c-0.406 -0.719 -1.325 -0.975 -2.044 -0.563s-0.975 1.325 -0.563 2.044l0.9 1.581c0.938 1.656 2.3 2.981 3.906 3.881L7 30.5c0 0.831 0.669 1.5 1.5 1.5s1.5 -0.669 1.5 -1.5V24h4v6.5c0 0.831 0.669 1.5 1.5 1.5s1.5 -0.669 1.5 -1.5V12.688c1.563 -0.875 2.888 -2.163 3.819 -3.763l0.975 -1.669c0.419 -0.713 0.175 -1.631 -0.537 -2.05s-1.631 -0.175 -2.05 0.537l-0.975 1.669C16.938 9.637 14.556 11 11.988 11M14 21h-4V13.806c0.65 0.131 1.313 0.194 1.988 0.194 0.681 0 1.356 -0.069 2.013 -0.2z"/></svg>`,
+    },
+    {
+        name: "Tafsir",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#A0533B" d="M2.25 19.5v2.25h3v-2.25zm4.125 4.2c-0.333 0.192 -0.717 0.3 -1.125 0.3H2.25c-1.242 0 -2.25 -1.008 -2.25 -2.25V2.25C0 1.008 1.008 0 2.25 0h3c0.408 0 0.792 0.108 1.125 0.3 0.333 -0.192 0.717 -0.3 1.125 -0.3h3c0.966 0 1.786 0.605 2.109 1.458 0.262 -0.286 0.605 -0.502 1.003 -0.609l2.789 -0.773c1.158 -0.319 2.348 0.389 2.658 1.584l0.844 3.244 0.281 1.087 2.897 11.17 0.281 1.087 0.558 2.156c0.309 1.195 -0.375 2.423 -1.533 2.742L19.594 23.92c-1.158 0.319 -2.348 -0.389 -2.658 -1.584l-0.844 -3.244 -0.281 -1.087 -2.892 -11.166 -0.169 -0.642V21.75c0 1.242 -1.008 2.25 -2.25 2.25h-3c-0.408 0 -0.792 -0.108 -1.125 -0.3m1.125 -1.95h3v-2.25h-3zM5.25 2.25H2.25v2.25h3zm0 4.5H2.25v10.5h3zm2.25 -2.25h3V2.25h-3zm3 12.75V6.75h-3v10.5zm10.13 -0.577 -2.616 -10.078 -2.648 0.731 2.616 10.078zm-2.081 2.911 0.558 2.142 2.644 -0.731v-0.019l-0.548 -2.119 -2.648 0.731zm-3.745 -14.438 2.648 -0.731 -0.558 -2.142L14.25 3.005v0.019l0.548 2.119z"/></svg>`,
+    },
+    {
+        name: "Riwayat",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21.333" width="24" height="21.333"><path fill="#A0533B" d="M6.5 1.333c-2.308 0-4.467.609-5.371.9C.429 2.458 0 3.104 0 3.796v13.017c0 1.087 1 1.842 2 1.675a26 26 0 0 1 4.167-.321c2.25 0 4.063 1.063 4.688 1.483.313.208.7.35 1.125.35.479 0 .9-.175 1.221-.412.558-.408 2.179-1.421 4.633-1.421 1.988 0 3.354.167 4.125.3.996.171 2.042-.575 2.042-1.692V3.796c0-.688-.429-1.337-1.129-1.563-.905-.291-3.064-.9-5.372-.9-1.533 0-2.992.267-4.058.529-.533.133-.979.262-1.287.362q-.083.025-.154.05-.071-.025-.154-.05c-.313-.1-.754-.229-1.287-.362-1.068-.262-2.527-.529-4.06-.529M11 4.054v13.358c-1.083-.571-2.8-1.246-4.833-1.246-1.787 0-3.225.154-4.167.296V4.054c.929-.279 2.683-.721 4.5-.721 1.317 0 2.608.233 3.579.471.358.087.671.175.921.25m2 13.3v-13.3c.25-.075.563-.162.921-.25.971-.237 2.262-.471 3.579-.471 1.817 0 3.571.442 4.5.721v12.392c-.904-.137-2.287-.279-4.167-.279-2.142 0-3.783.625-4.833 1.192z"/></svg>`,
+    },
+    {
+        name: "Audio",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 21.333" width="24" height="21.333"><path fill="#A0533B" d="M7.996 8.412 12.667 4.262v12.804l-4.671 -4.146c-0.183 -0.162 -0.421 -0.254 -0.662 -0.254H3.667c-0.183 0 -0.333 -0.15 -0.333 -0.333v-3.333c0 -0.183 0.15 -0.333 0.333 -0.333h3.667c0.246 0 0.483 -0.092 0.662 -0.254M13.425 1.333c-0.304 0 -0.596 0.113 -0.825 0.313L6.954 6.667H3.667c-1.287 0 -2.333 1.046 -2.333 2.333v3.333c0 1.287 1.046 2.333 2.333 2.333h3.288l5.646 5.021c0.229 0.2 0.521 0.313 0.825 0.313 0.688 0 1.242 -0.554 1.242 -1.242V2.575c0 -0.688 -0.554 -1.242 -1.242 -1.242m7.621 3.125c-0.429 -0.35 -1.058 -0.283 -1.408 0.146s-0.283 1.058 0.146 1.408C21.137 7.112 22 8.787 22 10.667s-0.862 3.554 -2.217 4.658c-0.429 0.35 -0.492 0.979 -0.146 1.408s0.979 0.492 1.408 0.146c1.8 -1.467 2.954 -3.704 2.954 -6.208s-1.154 -4.742 -2.954 -6.208zm-2.521 3.104c-0.429 -0.35 -1.058 -0.283 -1.408 0.146s-0.283 1.058 0.146 1.408C17.712 9.483 18 10.042 18 10.667s-0.287 1.183 -0.737 1.554c-0.429 0.35 -0.492 0.979 -0.146 1.408s0.979 0.492 1.408 0.146c0.896 -0.737 1.475 -1.854 1.475 -3.108s-0.579 -2.371 -1.475 -3.104"/></svg>`,
+    },
+    {
+        name: "Memorize",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 27.429" width="24" height="27.429"><path fill="#A0533B" d="M0 4.714A4.715 4.715 0 0 1 4.714 0H21c1.655 0 3 1.345 3 3v15.429a3 3 0 0 1-1.714 2.711v3.717h.429c.713 0 1.286.573 1.286 1.286s-.573 1.286-1.286 1.286H4.286a4.285 4.285 0 0 1-4.265-4.715H0zm4.286 16.714c-.948 0-1.714.766-1.714 1.714s.766 1.714 1.714 1.714h15.429v-3.429zm-1.714-2.212a4.3 4.3 0 0 1 1.714-.359H21a.43.43 0 0 0 .429-.429V3A.43.43 0 0 0 21 2.571H4.714a2.14 2.14 0 0 0-2.143 2.143zm4.286-9.932a3.284 3.284 0 0 1 5.604-2.325l.396.396.396-.396a3.284 3.284 0 0 1 4.645 4.645l-4.43 4.43a.86.86 0 0 1-1.211 0l-4.43-4.43a3.28 3.28 0 0 1-.959-2.32z"/></svg>`,
+    },
+    {
+        name: "Tajweed",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 19.2" width="24" height="19.2"><path fill="#A0533B" d="M12 0c0.499 0 0.9 0.401 0.9 0.9v17.4c0 0.499 -0.401 0.9 -0.9 0.9s-0.9 -0.401 -0.9 -0.9V0.9c0 -0.499 0.401 -0.9 0.9 -0.9m7.5 2.4c0.499 0 0.9 0.401 0.9 0.9v12.6c0 0.499 -0.401 0.9 -0.9 0.9s-0.9 -0.401 -0.9 -0.9V3.3c0 -0.499 0.401 -0.9 0.9 -0.9M8.1 3.6c0.499 0 0.9 0.401 0.9 0.9v10.2c0 0.499 -0.401 0.9 -0.9 0.9s-0.9 -0.401 -0.9 -0.9V4.5c0 -0.499 0.401 -0.9 0.9 -0.9m7.8 1.2c0.499 0 0.9 0.401 0.9 0.9v7.8c0 0.499 -0.401 0.9 -0.9 0.9s-0.9 -0.401 -0.9 -0.9V5.7c0 -0.499 0.401 -0.9 0.9 -0.9m-11.4 2.4c0.499 0 0.9 0.401 0.9 0.9v3c0 0.499 -0.401 0.9 -0.9 0.9s-0.9 -0.401 -0.9 -0.9v-3c0 -0.499 0.401 -0.9 0.9 -0.9m-3.6 1.2c0.499 0 0.9 0.401 0.9 0.9v0.6c0 0.499 -0.401 0.9 -0.9 0.9S0 10.399 0 9.9v-0.6c0 -0.499 0.401 -0.9 0.9 -0.9m22.2 0c0.499 0 0.9 0.401 0.9 0.9v0.6c0 0.499 -0.401 0.9 -0.9 0.9s-0.9 -0.401 -0.9 -0.9v-0.6c0 -0.499 0.401 -0.9 0.9 -0.9"/></svg>`,
+    },
+    {
+        name: "Accessibility",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#A0533B" d="M9 0a2.25 2.25 0 1 1 0 4.5 2.25 2.25 0 1 1 0 -4.5m-3.352 11.587C3.661 12.337 2.25 14.255 2.25 16.5c0 2.902 2.348 5.25 5.25 5.25 2.006 0 3.75 -1.125 4.636 -2.78 0.291 -0.548 0.975 -0.755 1.523 -0.464s0.755 0.975 0.464 1.523c-1.266 2.362 -3.755 3.97 -6.623 3.97C3.356 24 0 20.644 0 16.5c0 -3.211 2.02 -5.948 4.852 -7.017 0.581 -0.22 1.228 0.075 1.448 0.656s-0.075 1.228 -0.656 1.448zm3.15 -5.569c0.609 -0.112 1.195 0.295 1.308 0.905l0.239 1.327H16.125c0.623 0 1.125 0.502 1.125 1.125s-0.502 1.125 -1.125 1.125H10.758l0.628 3.441c0.033 0.178 0.188 0.309 0.37 0.309h5.756c0.745 0 1.42 0.441 1.716 1.125l2.016 4.608 1.275 -0.427c0.591 -0.197 1.228 0.122 1.425 0.712s-0.122 1.228 -0.712 1.425l-2.25 0.75c-0.553 0.183 -1.153 -0.084 -1.388 -0.614L17.264 16.5H11.752c-1.27 0 -2.358 -0.909 -2.583 -2.156l-1.275 -7.017c-0.112 -0.609 0.295 -1.195 0.905 -1.308"/></svg>`,
+    },
+    {
+        name: "Tools",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" width="15" height="15"><path fill="#A0533B" d="M7.5 0c.498 0 .985.05 1.459.14.232.044.638.179.862.589q.09.162.135.346l.272 1.128c.041.17.328.337.495.287l1.113-.328q.176-.052.358-.056c.472-.014.791.275.946.451a7.5 7.5 0 0 1 1.462 2.528c.076.223.164.638-.079 1.037a1.4 1.4 0 0 1-.235.293l-.841.8c-.123.117-.123.454 0 .571l.841.8q.137.134.235.293c.24.398.152.814.079 1.037a7.5 7.5 0 0 1-1.462 2.528c-.155.176-.478.466-.946.451a1.5 1.5 0 0 1-.358-.056l-1.113-.331c-.167-.05-.454.117-.495.287l-.272 1.128q-.045.186-.135.346c-.226.41-.633.542-.862.589a7.7 7.7 0 0 1-2.918 0c-.232-.044-.638-.179-.862-.589a1.4 1.4 0 0 1-.135-.346l-.272-1.128c-.041-.17-.328-.337-.495-.287l-1.113.328a1.4 1.4 0 0 1-.358.056c-.472.014-.791-.275-.946-.451A7.6 7.6 0 0 1 .398 9.913C.322 9.69.234 9.275.477 8.876a1.4 1.4 0 0 1 .235-.293l.842-.8c.123-.117.123-.454 0-.571l-.844-.8a1.5 1.5 0 0 1-.235-.293c-.24-.398-.152-.814-.076-1.034a7.5 7.5 0 0 1 1.462-2.528c.155-.176.478-.466.946-.451q.18.006.358.056l1.113.328c.167.05.454-.117.495-.287l.272-1.128Q5.09.889 5.18.729c.226-.41.633-.542.862-.589C6.515.05 7.002 0 7.5 0M6.389 1.506 6.14 2.534c-.229.946-1.327 1.579-2.262 1.307l-1.011-.299a6.1 6.1 0 0 0-1.113 1.925l.767.73c.703.668.703 1.939 0 2.608l-.767.729a6.1 6.1 0 0 0 1.113 1.925l1.013-.299c.932-.275 2.033.361 2.262 1.307l.249 1.028a6.3 6.3 0 0 0 2.224 0l.249-1.028c.229-.946 1.327-1.579 2.262-1.307l1.013.299a6.1 6.1 0 0 0 1.113-1.925l-.767-.73c-.703-.668-.703-1.939 0-2.608l.767-.73a6.1 6.1 0 0 0-1.113-1.925l-1.013.299c-.932.275-2.033-.361-2.262-1.307l-.249-1.028a6.3 6.3 0 0 0-2.224 0zM6.093 7.5a1.406 1.406 0 1 0 2.813 0 1.406 1.406 0 1 0-2.813 0m1.406 2.813a2.813 2.813 0 1 1 0-5.625 2.813 2.813 0 1 1 0 5.625"/></svg>`,
+    },
 ];

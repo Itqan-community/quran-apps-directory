@@ -4,23 +4,28 @@ import { applicationsData } from "./applicationsData";
 
 export interface QuranApp {
   id: string;
-  name: string;
-  mainImage:string | null;
+  Name_Ar: string;
+  Name_En: string;
+  Short_Description_Ar:string | null;
+  Short_Description_En:string | null;
+  Description_Ar:string | null;
+  Description_En:string | null;
+  mainImage_ar:string | null;
+  mainImage_en:string | null;
   applicationIcon: string | null;
-  developerName: string | null;
-  description: {
-    ar: string;
-    en: string;
-  };
-  link: string;
+  Developer_Logo: string | null;
+  Developer_Name_En: string | null;
+  Developer_Name_Ar: string | null;
+  Developer_Website: string | null;
   status: string;
-  rating: number;
+  Apps_Avg_Rating: number;
   categories: string[];
-  screenshots: string[];
-  appStoreLink?: string | null;
-  googlePlayLink?: string | null;
-  huaweiAppGalleryLink?: string | null;
-  websiteLink?: string | null;
+  screenshots_ar: string[];
+  screenshots_en: string[];
+  AppStore_Link?: string | null;
+  Google_Play_Link?: string | null;
+  App_Gallery_Link?: string | null;
+
 }
 
 @Injectable({
@@ -41,9 +46,10 @@ export class AppService {
     return of(
       this.apps.filter(
         (app) =>
-          app.name.toLowerCase().includes(lowercaseQuery) ||
-          app.description.ar.toLowerCase().includes(lowercaseQuery) ||
-          app.description.en.toLowerCase().includes(lowercaseQuery)
+          app.Name_Ar.toLowerCase().includes(lowercaseQuery) ||
+          app.Name_En.toLowerCase().includes(lowercaseQuery) ||
+          app.Description_En?.toLowerCase().includes(lowercaseQuery) ||
+          app.Description_Ar?.toLowerCase().includes(lowercaseQuery)
       )
     );
   }
