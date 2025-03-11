@@ -5,20 +5,18 @@
     "loading": "Loading..."
   },
   "header": {
-<<<<<<< Updated upstream
     "title": "Quran Apps Directory",
-=======
-    "title": "≈",
     "beta": "Beta",
->>>>>>> Stashed changes
     "home": "Home",
+    "about": "About",
+    "contact": "Contact Us",
     "language": {
       "ar": "العربية",
       "en": "English"
     }
   },
   "footer": {
-    "copyright": "Quran Apps Directory ©2025"
+    "copyright": "Quran Apps Directory, an ITQAN project, 1446 H"
   },
   "appList": {
     "search": {
@@ -26,14 +24,19 @@
     },
     "categories": {
       "all":"All",
-      "main-title": "Quran App Index",
+      "main-title": "Quran Apps Directory",
       "title": "Categories",
+      "mushaf": "Mushaf",
+      "translations": "Translation",
       "recite": "Recite",
-      "listen": "Listen",
       "kids": "Kids",
-      "memorization": "Memorization",
-      "translation": "Translation",
-      "research": "Research"
+      "tafsir": "Tafsir",
+      "riwayat": "Riwayat",
+      "audio": "Audio",
+      "memorize": "Memorize",
+      "tajweed": "Tajweed",
+      "tools": "Tools",
+      "accessibility": "Accessibility"
     },
     "apps": {
       "title": "Apps List",
@@ -48,7 +51,10 @@
     "playStore": "Google Play",
     "huaweiStore": "Huawei AppGallery",
     "relevantApps": "Similar Apps",
-    "screenshots": "Screenshots"
+    "screenshots": "Screenshots",
+    "readMore": "Read More",
+    "readLess": "Read Less"
+
   },
   "requestForm": {
     "title": "Request App Addition",
@@ -76,8 +82,6 @@
       "message": "Thank you for your submission! We will review your app request and get back to you soon.",
       "reset": "Form has been reset"
     }
-<<<<<<< Updated upstream
-=======
   },
   "contactUs": {
     "title": "Contact Us",
@@ -98,6 +102,5 @@
       "continuousImprovementAndInnovation": "Continuous improvement and innovation",
       "communityEngagementAndSupport": "Community engagement and support"
     }
->>>>>>> Stashed changes
   }
 }
