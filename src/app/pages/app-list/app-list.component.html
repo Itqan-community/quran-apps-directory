@@ -25,49 +25,33 @@
     </div>
     <div class="section-title">
       <h2>{{ "appList.categories.title" | translate }}</h2>
-      <a href="#">View All</a>
+      <!-- <a href="#">View All</a> -->
     </div>
     <!-- Grid of category buttons -->
     <div
       class="categories-grid"
+      style="padding-right: 10px; padding-left: 10px;"
       (mousedown)="startDragging($event)"
       (mousemove)="onDrag($event)"
       (mouseup)="stopDragging()"
       (mouseleave)="stopDragging()"
     >
       <div
-        class="category-item"
+        class="category-item "
         role="button"
         [class.selected]="selectedCategory === 'all'"
         aria-label="Filter by All"
         (click)="filterByCategory('all')"
       >
         <span class="category-icon">
-          <svg
-            fill="#A0533B"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            stroke="#A0533B"
-          >
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g
-              id="SVGRepo_tracerCarrier"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></g>
-            <g id="SVGRepo_iconCarrier">
-              <path
-                d="M5,22 C3.40231912,22 2.09633912,20.75108 2.00509269,19.1762728 L2,19 L2,5 C2,3.40231912 3.24891996,2.09633912 4.82372721,2.00509269 L5,2 L19,2 C20.5976809,2 21.9036609,3.24891996 21.9949073,4.82372721 L22,5 L22,19 C22,20.5976809 20.75108,21.9036609 19.1762728,21.9949073 L19,22 L5,22 Z M11,13 L4,13 L4,19 C4,19.5128358 4.38604019,19.9355072 4.88337887,19.9932723 L5,20 L11,20 L11,13 Z M20,13 L13,13 L13,20 L19,20 C19.5128358,20 19.9355072,19.6139598 19.9932723,19.1166211 L20,19 L20,13 Z M11,4 L5,4 C4.48716416,4 4.06449284,4.38604019 4.00672773,4.88337887 L4,5 L4,11 L11,11 L11,4 Z M19,4 L13,4 L13,11 L20,11 L20,5 C20,4.48716416 19.6139598,4.06449284 19.1166211,4.00672773 L19,4 Z"
-              ></path>
-            </g>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#A0533B" d="M3.75 3.75v4.5h4.5v-4.5zm-2.25 0A2.25 2.25 0 0 1 3.75 1.5h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5A2.25 2.25 0 0 1 1.5 8.25zm2.25 12v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25zm18.75-12h-4.5v4.5h4.5zm-4.5-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25v-4.5a2.25 2.25 0 0 1 2.25-2.25m0 14.25v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25z"/></svg>
         </span>
         <span class="category-item--title">{{ "appList.categories.all" | translate }}</span>
       </div>
       <div
         class="category-item"
         *ngFor="let category of categories"
-        [class.selected]="selectedCategory === category.name"
+        [class.selected]="selectedCategory === (category.name | lowercase)"
         (click)="filterByCategory(category.name)"
         role="button"
         [attr.aria-label]="'Filter by ' + category.name"
@@ -84,19 +68,6 @@
   <div class="apps-section">
     <div class="section-title">
       <h2>{{ "appList.apps.title" | translate }}</h2>
-      <!-- Sort button -->
-      <button
-        nz-button
-        nzType="text"
-        (click)="toggleSort()"
-        aria-label="Sort by rating"
-      >
-        <span
-          nz-icon
-          [nzType]="sortAscending ? 'arrow-up' : 'arrow-down'"
-          nzTheme="outline"
-        ></span>
-      </button>
     </div>
 
     <!-- Grid of app cards -->
@@ -105,17 +76,16 @@
         <div nz-col nzXs="18" nzSm="12" nzMd="8" nzLg="6" nzXl="6" *ngFor="let app of filteredApps">
           <!-- App card with cover image -->
           <nz-card
-            
             [nzCover]="coverTemplate"
-            [routerLink]="['/app', app.id]"
-            [attr.aria-label]="'View details for ' + app.name"
+            [routerLink]="['/', currentLang, 'app', app.id]"
+            [attr.aria-label]="'View details for ' + app.Name_En"
             class="app-card"
           >
             <ng-template #coverTemplate>
               <div style="max-height: 220px; overflow: hidden">
                 <img
-                  [alt]="app.name + ' screenshot'"
-                  [src]="app.mainImage"
+                  [alt]="app.Name_En+ ' screenshot'"
+                  [src]="currentLang === 'en' ? app.mainImage_en : app.mainImage_ar"
                   style="width: 100%"
                 />
               </div>
@@ -126,18 +96,18 @@
                 <img
                   class="app-icon"
                   [src]="app.applicationIcon"
-                  [alt]="app.name + ' icon'"
+                  [alt]="app.Name_En + ' icon'"
                 />
               </div>
               <div class="card-data-container">
                 <nz-card-meta
-                  [nzTitle]="app.name"
-                  [nzDescription]="app.description[currentLang]"
+                  [nzTitle]="currentLang === 'en' ? app.Name_En : app.Name_Ar"
+                  [nzDescription]="currentLang === 'en' ? app.Short_Description_En : app.Short_Description_Ar"
                 ></nz-card-meta>
                 <!-- Rating display -->
                 <div class="app-rating ant-flex ant-flex-align-center">
-                  <span class="rating-number">{{ app.rating }}</span>
-                  <nz-rate [ngModel]="app.rating" [nzDisabled]="true"></nz-rate>
+                  <span class="rating-number">{{ app.Apps_Avg_Rating }}</span>
+                  <nz-rate [ngModel]="app.Apps_Avg_Rating" [nzDisabled]="true"></nz-rate>
                 </div>
               </div>
             </div>

@@ -9,6 +9,12 @@
 /* ::ng-deep :root {
   --primary-color: #f5222d !important;
 } */
+:root {
+  --swiper-pagination-bottom: 20px;
+  --swiper-pagination-color: @primary-color;
+  --swiper-pagination-color-active: @primary-color;
+  --swiper-pagination-color-inactive: #e8e8e8;
+}
 
 body {
   margin: 0;
@@ -40,6 +46,7 @@ h6 {
 .ant-layout {
  display: unset !important; 
 }
+
 .container {
   width: 100%;
   max-width: 1200px;
@@ -51,4 +58,34 @@ h6 {
     padding-right: 1rem;
     padding-left: 1rem;
   }
+}
+
+.flex {
+  display: flex;
+}
+.justify-center {
+  justify-content: center;
+}
+.items-center {
+  align-items: center;
+}
+.full-width {
+  width: 100%;
+}
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+.mb-5 {
+  margin-bottom: 2rem;
+}
+.mb-6 {
+  margin-bottom: 2.5rem;
+}
+
+.ant-input-prefix {
+  margin: 0 !important;
+  margin-inline-end: 6px !important;
 }

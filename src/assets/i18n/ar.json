@@ -6,7 +6,10 @@
   },
   "header": {
     "title": "دليل التطبيقات القرآنية",
-    "home": "الرئيسية",
+    "beta": "تجريبي",
+    "home": "الرئيسة",
+    "about": "عن المشروع",
+    "contact": "تواصل معنا",
     "language": {
       "ar": "العربية",
       "en": "English"
@@ -23,12 +26,17 @@
       "all":"الكل",
       "main-title": "دليل التطبيقات القرآنية",
       "title": "التصنيفات",
-      "recite": "تلاوة",
-      "listen": "استماع",
+      "mushaf": "مصحف",
+      "translations": "ترجمات",
+      "recite": "تسميع",
       "kids": "أطفال",
-      "memorization": "حفط",
-      "translation": "ترجمة",
-      "research": "بحث"
+      "tafsir": "تفسير",
+      "riwayat": "روايات",
+      "audio": "صوتيات",
+      "memorize": "تحفيظ",
+      "tajweed": "تجويد",
+      "tools": "أخرى",
+      "accessibility": "ذوي الإعاقة"
     },
     "apps": {
       "title": "قائمة التطبيقات",
@@ -36,13 +44,16 @@
     }
   },
   "appDetail": {
+    "developer": "المطور",
     "description": "الوصف",
     "downloadLinks": "روابط التحميل",
     "appStore": "متجر آبل",
     "playStore": "متجر جوجل بلاي",
     "huaweiStore": "متجر هواوي",
     "relevantApps": "تطبيقات ذات صلة",
-    "screenshots": "لقطات الشاشة"
+    "screenshots": "لقطات الشاشة",
+    "readMore": "اقرأ المزيد",
+    "readLess": "قلّص"
   },
   "requestForm": {
     "title": "طلب إضافة تطبيق",
@@ -70,8 +81,6 @@
       "message": "شكراً لك! سنراجع طلبك ونتواصل معك قريباً.",
       "reset": "تم إعادة تعيين النموذج"
     }
-<<<<<<< Updated upstream
-=======
   },
   "contactUs": {
     "title": "تواصل معنا",
@@ -92,6 +101,5 @@
       "continuousImprovementAndInnovation": "التحسين المستمر والابتكار",
       "communityEngagementAndSupport": "التعاون والدعم المجتمعي"
     }
->>>>>>> Stashed changes
   }
 }

@@ -2,9 +2,48 @@
   .ant-carousel .slick-dots-bottom {
     bottom: 32px;
   }
+  .ant-carousel .slick-slide img {
+    object-fit: contain;
+  }
+
   .app-header {
     display: none !important;
   }
+}
+.category-badge {
+  padding: 6px 12px;
+  background-color: #f8f8f8;
+  border-radius: 20px;
+  transition: all 0.3s;
+  border: 1px solid #e8e8e8;
+}
+
+.badge-name {
+  font-weight: 500;
+  font-size: 14px;
+  color: #272424;
+}
+
+/* Mobile adjustments */
+@media screen and (max-width: 480px) {
+  .categories {
+    margin: 12px 0;
+    gap: 6px;
+  }
+
+  .category-badge {
+    padding: 4px 10px;
+  }
+
+  .badge-name {
+    font-size: 12px;
+  }
+}
+
+/* RTL Support */
+[dir="rtl"] .badge-icon {
+  margin-inline-start: 8px;
+  margin-inline-end: 0;
 }
 nz-divider::after,
 nz-divider::before {
@@ -24,28 +63,18 @@ nz-divider::before {
  .content-carousel {
   position: relative;
   margin-top: 30px;
-  // responsive
-  @media screen and (max-width: 768px) {
-    position: sticky;
-    top: 0;
-    margin-top: 0px;
-    .container {
-      padding: 0;
-    }
-    .carousel-image {
-      height: 300px;
-      border-radius: 0;
-    }
+  .container {
+   position: relative;
   }
  }
 
-.carousel-image {
+ .carousel-image {
   width: 100%;
-  height: 400px;
-  object-fit: cover;
-  border-radius: 8px;
+  height: auto;
+  border-radius: 12px;
+  cursor: move;
 }
-
+ 
 .content-section {
   padding-top: 24px;
   background-color: #fff;
@@ -58,6 +87,7 @@ nz-divider::before {
   p {
     font-size: 17px;
     color: #72788E;
+    text-align: justify;
   }
   // responsive
   @media screen and (max-width: 768px) {
@@ -109,6 +139,10 @@ nz-divider::before {
 ::ng-deep .ant-card-cover img {
   border-radius: 8px 8px 0 0 !important;
 }
+::ng-deep .ant-btn-icon-only {
+  background: #ede0c090;
+}
+
 
 ::ng-deep .ant-card-body {
   padding-inline-start: 8px;
@@ -133,7 +167,7 @@ nz-divider::before {
       margin-inline-end: 16px;
       .app-icon {
         width: 38px;
-        border-radius: 40px;
+        // border-radius: 40px;
       }
     }
     .card-data-container {
@@ -245,4 +279,135 @@ nz-divider::before {
   nz-tag {
     font-size: 12px;
   }
+}
+.swiper-slide {
+  width: 28%;
+  // responsive
+  @media screen and (max-width: 768px) {
+    width: 40%;
+  }
+  @media screen and (max-width: 480px) {
+    width: 60%;
+  }
+
+  
+
+}
+.swiper-button-next,
+.swiper-button-prev {
+  inset-inline-start: 0;
+  color: #7c4332;
+  background-color: #fff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  &:hover {
+    background-color: #f5f5f5;
+  }
+  &.swiper-button-disabled {
+    display: none;
+  }
+
+  svg {
+    transform: rotate(0deg);
+  }
+  // responsive
+  @media screen and (max-width: 768px) {
+    width: 40px;
+    height: 40px;
+    inset-inline-start: 8px;
+    svg {
+      width: 10px;
+      height: auto;
+    }
+  }
+}
+.swiper-button-next {
+  inset-inline-start: unset;
+  inset-inline-end: 0;
+  // responsive
+  @media screen and (max-width: 768px) {
+    inset-inline-end: 8px;
+  }
+}
+
+/* RTL Support */
+.swiper-button-next[dir="rtl"],
+.swiper-button-prev[dir="rtl"] {
+
+     svg {
+      transform: rotate(180deg);
+    }
+}
+.swiper-loader {
+  width: 100%;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  span {
+    display: block;
+    width: 50px;
+  padding: 8px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #7c4332;
+  --_m: 
+    conic-gradient(#0000 10%,#000),
+    linear-gradient(#000 0 0) content-box;
+  -webkit-mask: var(--_m);
+          mask: var(--_m);
+  -webkit-mask-composite: source-out;
+          mask-composite: subtract;
+  animation: spin .5s infinite linear;
+  }
+}
+ /* HTML: <div class="loader"></div> */
+ 
+@keyframes spin {to{transform: rotate(1turn)}}
+
+
+.app-description {
+  position: relative;
+  margin-bottom: 16px;
+
+  p{
+    margin: 0;
+  }
+}
+
+.truncated {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  max-height: 90px; /* Fallback for browsers that don't support -webkit-line-clamp */
+}
+
+.read-more-button {
+  background: none;
+  border: none;
+  color: #7c4332;
+  font-weight: 500;
+  padding: 4px 0;
+  cursor: pointer;
+  font-size: 15px;
+  display: inline-block;
+  transition: color 0.3s;
+}
+
+.read-more-button:hover {
+  color: #995441;
+  text-decoration: underline;
 }
