@@ -13,7 +13,7 @@
   .content {
     .contact-info {
       margin-bottom: 2rem;
-      text-align: center;
+      text-align: justify;
 
       h2 {
         color: #2c3e50;
@@ -30,9 +30,14 @@
 
       .contact-details {
         display: flex;
-        justify-content: center;
+        justify-content: justify;
         gap: 3rem;
         margin-bottom: 2rem;
+
+        @media (max-width: 768px) {
+          flex-direction: column;
+          gap: 3rem;
+        }
 
         .contact-item {
           text-align: center;
