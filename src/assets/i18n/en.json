@@ -87,7 +87,9 @@
     "title": "Contact Us",
     "message": "We are delighted to hear from you to answer your inquiries or receive your suggestions for improving Quran Apps Directory. You can also join the ITQAN community for Quran technologies to contribute to the development of this project or participate in our other open source initiatives aimed at serving the Holy Quran.",
     "email": "Contact Us via Email",
-    "appRequests": "Join ITQAN Community"
+    "appRequests": "Join ITQAN Community",
+    "app-request": "Request App",
+    "app-request-form": "Request Form"
   },
   "aboutUs": {
     "title": "About Us",
