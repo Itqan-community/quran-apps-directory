@@ -1,3 +1,6 @@
+
+![َQuran Apps Directory](https://github.com/user-attachments/assets/89c4e2a3-2330-450f-b816-d6cd73041206)
+
 [![Netlify Status](https://api.netlify.com/api/v1/badges/7ceb3341-c3a5-49fc-b154-518c6884262a/deploy-status)](https://app.netlify.com/sites/quran-apps-directory/deploys)
 
 https://quran-apps.itqan.dev
