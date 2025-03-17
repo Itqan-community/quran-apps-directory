@@ -948,7 +948,7 @@ export const applicationsData = [
         "Description_En": "Al-Fanoos is like Google for the internet but is a specialized and advanced search engine for the Quran. Just as you can search the web for the most precise details in various ways, Al-Fanoos will assist you in searching for intricate details in multiple forms. You will navigate through the Quran like never before, helping you find what you seek in the Book of Allah, God willing.",
         "status": "Done",
         "sort": 23,
-        "Apps_Avg_Rating": 4.7,
+        "Apps_Avg_Rating": 4.5,
         "categories": [
             "tools",
             "tafsir"
@@ -976,7 +976,7 @@ export const applicationsData = [
         "Developer_Name_En": "Islam phone",
         "Developer_Name_Ar": "إسلام فون",
         "Developer_Website": "",
-        "Google_Play_Link": "",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.unchained.alfanous",
         "AppStore_Link": "https://apps.apple.com/us/app/id543646326?l=ar",
         "App_Gallery_Link": ""
     },
