@@ -9,6 +9,53 @@
   .app-header {
     display: none !important;
   }
+
+  // Swiper pagination dots positioning
+  swiper-container {
+    // Override global Swiper variables for this component
+    --swiper-pagination-bottom: 24px !important;
+    
+    .swiper-pagination {
+      position: absolute !important;
+      bottom: 24px !important; // Moved dots higher within the carousel
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      z-index: 10 !important;
+      
+      .swiper-pagination-bullet {
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        opacity: 0.8 !important;
+        margin: 0 4px !important; // Add spacing between dots
+        
+        &.swiper-pagination-bullet-active {
+          background-color: #7c4332 !important;
+          opacity: 1 !important;
+        }
+      }
+    }
+
+    // RTL-specific pagination positioning
+    &[dir="rtl"] {
+      .swiper-pagination {
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
+      }
+    }
+  }
+  
+  // Global RTL selector for when document has rtl direction
+  html[dir="rtl"] & swiper-container {
+    --swiper-pagination-bottom: 24px !important;
+    
+    .swiper-pagination {
+      position: absolute !important;
+      bottom: 24px !important;
+      left: 50% !important;
+      right: auto !important;
+      transform: translateX(-50%) !important;
+    }
+  }
 }
 .category-badge {
   padding: 6px 12px;
@@ -74,10 +121,27 @@ nz-divider::before {
  .content-carousel {
   position: relative;
   margin-top: 30px;
+  margin-bottom: 60px; // Increased bottom margin to create more space between carousel and description
   .container {
    position: relative;
   }
+  
+  // responsive
+  @media screen and (max-width: 768px) {
+    margin-bottom: 50px; // Increased bottom margin on mobile for better spacing
+  }
  }
+
+// RTL-specific carousel adjustments
+[dir="rtl"] .content-carousel,
+html[dir="rtl"] .content-carousel {
+  // Extra bottom margin for RTL layout
+  margin-bottom: 90px; // Increased from 70px to 90px for more spacing
+  
+  @media screen and (max-width: 768px) {
+    margin-bottom: 75px; // Increased from 60px to 75px for mobile RTL
+  }
+}
 
  .carousel-image {
   width: 100%;
@@ -102,7 +166,7 @@ nz-divider::before {
   }
   // responsive
   @media screen and (max-width: 768px) {
-    padding-top: 0;
+    padding-top: 30px; // Increased padding to ensure more spacing on mobile
     &::before {
       content: "";
         width: 100%;
@@ -113,6 +177,22 @@ nz-divider::before {
         position: absolute;
         top: -40px;
     }
+  }
+}
+
+// RTL-specific content section adjustments
+[dir="rtl"] .content-section,
+html[dir="rtl"] .content-section {
+  padding-top: 40px; // Extra padding for RTL layout on all screen sizes
+  
+  p {
+    text-align: justify;
+    direction: rtl;
+  }
+  
+  // Additional spacing for RTL layout on mobile
+  @media screen and (max-width: 768px) {
+    padding-top: 50px; // Increased from 40px to 50px for RTL mobile layout
   }
 }
 
@@ -402,8 +482,17 @@ nz-divider::before {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3; /* Standard property for compatibility */
   -webkit-box-orient: vertical;
   max-height: 90px; /* Fallback for browsers that don't support -webkit-line-clamp */
+  
+  /* Very subtle approach: slightly reduce width to give ellipsis breathing room */
+  width: calc(100% - 4px);
+  
+  /* For RTL text (Arabic), ensure same spacing */
+  [dir="rtl"] & {
+    width: calc(100% - 4px);
+  }
 }
 
 .read-more-button {

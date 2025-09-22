@@ -52,7 +52,10 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
   swiperParams = {
     slidesPerView: "auto",
     spaceBetween: 20,
-    pagination: false,
+    pagination: {
+      clickable: true,
+      dynamicBullets: false,
+    },
     navigation: {
       nextEl: '.swiper-button-next',
       prevEl: '.swiper-button-prev',
