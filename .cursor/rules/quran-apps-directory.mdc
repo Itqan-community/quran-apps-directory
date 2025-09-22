@@ -48,6 +48,7 @@ Use exactly this shape when converting inputs:
 ### Rules
 - Always display the JSON version of the user's input before acting and act on that
 - Always wait for answers to clarifying questions before taking any action.
+- **NEVER commit changes to Git** - user handles all commits manually
 - Keep language direct and clear.
 - Keep questions proportionate to complexity.
 
