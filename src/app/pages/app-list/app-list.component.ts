@@ -12,6 +12,7 @@ import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { AppService, QuranApp } from "../../services/app.service";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { categories } from "../../services/applicationsData";
+import { combineLatest } from "rxjs";
 
 const CATEGORIES = categories;
 
@@ -66,16 +67,30 @@ export class AppListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      const lang = params.get('lang');
-      if (lang) {
-        this.currentLang = lang as "en" | "ar";
-      }
-    });
-
+    // Load apps data first
     this.appService.getApps().subscribe((apps) => {
       this.apps = apps;
       this.filteredApps = apps;
+      
+      // Now that apps are loaded, subscribe to route changes
+      this.route.paramMap.subscribe(params => {
+        const lang = params.get('lang');
+        const category = params.get('category');
+
+        if (lang) {
+          this.currentLang = lang as "en" | "ar";
+        }
+
+        // If we're on a category-specific route, use that category
+        // If we're on the base route (no category), show all apps
+        if (category) {
+          this.selectedCategory = category.toLowerCase();
+          this.filterByCategory(this.selectedCategory);
+        } else {
+          this.selectedCategory = 'all';
+          this.filteredApps = this.apps; // Show all apps
+        }
+      });
     });
   }
 
@@ -91,8 +106,12 @@ export class AppListComponent implements OnInit {
 
   filterByCategory(category: string) {
     this.selectedCategory = category.toLowerCase();
+
     this.appService.getAppsByCategory(this.selectedCategory).subscribe((apps) => {
       this.filteredApps = apps;
+
+      // Force change detection
+      this.filteredApps = [...this.filteredApps];
     });
   }
 
