@@ -90,10 +90,10 @@ git push origin main     # 🚀 Auto-deploys to quran-apps.itqan.dev
 ## 🔧 Site IDs and Configuration
 
 ```bash
-# Site IDs
-PROD_SITE_ID="7ceb3341-c3a5-49fc-b154-518c6884262a"
-STAGING_SITE_ID="a5cb2dc3-7a98-4a91-b71e-d9d3d0c67a03"
-DEV_SITE_ID="a4a10bc3-2550-4369-a944-200ed4c7ee27"
+# Site IDs (Replace with your actual site IDs)
+PROD_SITE_ID="your-production-site-id"
+STAGING_SITE_ID="your-staging-site-id"
+DEV_SITE_ID="your-development-site-id"
 
 # Netlify URLs
 Production:  https://quran-apps-directory.netlify.app
@@ -114,7 +114,7 @@ CNAME dev.quran-apps.itqan.dev → quran-apps-dev.netlify.app
 
 Use the Netlify Personal Access Token:
 ```bash
-export NETLIFY_AUTH_TOKEN="nfp_4MyYc8AM4ctKbSmHYbsft4ejDanFtuSv6f95"
+export NETLIFY_AUTH_TOKEN="YOUR_NETLIFY_PAT_HERE"
 ```
 
 ## 📋 Pre-Deployment Checklist
