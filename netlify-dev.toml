@@ -1,0 +1,41 @@
+# Netlify configuration for DEVELOPMENT environment
+# Domain: dev.quran-apps.itqan.dev
+
+[build]
+  command = "ng build --configuration=development"
+  publish = "dist/browser"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[build.environment]
+  NODE_VERSION = "20"
+  ENVIRONMENT = "development"
+
+# Branch-specific deployments
+[context.develop]
+  command = "ng build --configuration=development"
+
+[context.dev]
+  command = "ng build --configuration=development"
+
+# Headers for development environment
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    X-Environment = "development"
+    # No caching for development
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+# Development-specific robots.txt (disallow indexing)
+[[redirects]]
+  from = "/robots.txt"
+  to = "/robots-dev.txt"
+  status = 200
