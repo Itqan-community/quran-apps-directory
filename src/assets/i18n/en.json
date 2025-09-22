@@ -43,6 +43,12 @@
       "sort": "Sort by rating"
     }
   },
+  "developer": {
+    "visitWebsite": "Visit Website",
+    "app": "app",
+    "apps": "apps",
+    "noApps": "No apps found for this developer."
+  },
   "appDetail": {
     "description": "Description",
     "developer": "Developer",

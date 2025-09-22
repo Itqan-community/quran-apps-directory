@@ -52,7 +52,10 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
   swiperParams = {
     slidesPerView: "auto",
     spaceBetween: 20,
-    pagination: false,
+    pagination: {
+      clickable: true,
+      dynamicBullets: false,
+    },
     navigation: {
       nextEl: '.swiper-button-next',
       prevEl: '.swiper-button-prev',
@@ -95,23 +98,47 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
   }
 
   ngOnInit() {
+    // Set language immediately from snapshot
+    const lang = this.route.snapshot.params["lang"];
+    const id = this.route.snapshot.params["id"];
+
+    if (lang) {
+      this.currentLang = lang as "en" | "ar";
+    }
+
+    // Subscribe to route parameter changes (both lang and id)
     this.route.params.subscribe((params) => {
-      const id = params["id"];
-      this.appService.getAppById(id).subscribe((app) => {
-        if (app) {
-          this.app = app;
-          if (app.categories.length > 0) {
-            this.appService
-              .getAppsByCategory(app.categories[0])
-              .subscribe((apps) => {
-                this.relevantApps = apps
-                  .filter((a) => a.id !== app.id)
-                  .slice(0, 3);
-              });
-          }
-          this.loading = false;
+      const newLang = params["lang"];
+      const newId = params["id"];
+      
+      // Update language if changed
+      if (newLang && newLang !== this.currentLang) {
+        this.currentLang = newLang as "en" | "ar";
+      }
+
+      // Load app data when ID changes (or on initial load)
+      if (newId) {
+        this.loading = true;
+        this.loadAppData(newId);
+      }
+    });
+  }
+
+  private loadAppData(id: string) {
+    this.appService.getAppById(id).subscribe((app) => {
+      if (app) {
+        this.app = app;
+        if (app.categories.length > 0) {
+          this.appService
+            .getAppsByCategory(app.categories[0])
+            .subscribe((apps) => {
+              this.relevantApps = apps
+                .filter((a) => a.id !== app.id)
+                .slice(0, 3);
+            });
         }
-      });
+        this.loading = false;
+      }
     });
   }
 
@@ -122,6 +149,32 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       this.isExpanded = false;
     });;
+  }
+
+
+  // Add a method to handle category click navigation
+  navigateToCategory(categoryName: string) {
+    // Try multiple ways to get the language
+    const langFromParamMap = this.route.snapshot.paramMap.get("lang");
+    const langFromParams = this.route.snapshot.params["lang"];
+    const finalLang = langFromParamMap || langFromParams || this.currentLang;
+
+    const targetPath = `/${finalLang}/${categoryName.toLowerCase()}`;
+
+    // Use Angular router for proper navigation with route parameters
+    this.router.navigate([targetPath], {
+      replaceUrl: false // Don't replace the current URL, preserve history
+    }).then((success) => {
+      if (!success) {
+        // Fallback to direct navigation if router fails
+        const fullUrl = `${window.location.origin}${targetPath}`;
+        window.location.href = fullUrl;
+      }
+    }).catch(() => {
+      // Fallback to direct navigation
+      const fullUrl = `${window.location.origin}${targetPath}`;
+      window.location.href = fullUrl;
+    });
   }
 
   ngAfterViewInit() {
@@ -141,5 +194,12 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     if (text === null) return false;
     // Only show read more button if text is long enough
     return text.length > 200; // Adjust character threshold as needed
+  }
+
+  navigateToDeveloper() {
+    if (this.app && this.app.Developer_Name_En) {
+      const developerName = encodeURIComponent(this.app.Developer_Name_En);
+      this.router.navigate([`/${this.currentLang}/developer/${developerName}`]);
+    }
   }
 }
