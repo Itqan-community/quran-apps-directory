@@ -16,14 +16,14 @@ feature/* (Features)  →  Local development
 
 ## 🚀 Deployment Strategy
 
-### Automatic Deployments
-Each branch is configured for automatic deployment when pushed:
+### Automated Deployments
+Each branch is configured for **automatic deployment** when merged:
 
-| Branch | Environment | URL | Auto-Deploy |
-|--------|-------------|-----|-------------|
-| `main` | Production | `https://quran-apps.itqan.dev` | ✅ Yes |
-| `staging` | Staging | `https://staging.quran-apps.itqan.dev` | ✅ Yes |
-| `develop` | Development | `https://dev.quran-apps.itqan.dev` | ✅ Yes |
+| Branch | Environment | URL | Trigger |
+|--------|-------------|-----|---------|
+| `main` | Production | `https://quran-apps.itqan.dev` | ✅ **Merge from staging** |
+| `staging` | Staging | `https://staging.quran-apps.itqan.dev` | ✅ **Merge from develop** |
+| `develop` | Development | `https://dev.quran-apps.itqan.dev` | ✅ **Direct commits/merges** |
 
 ## 📋 Development Workflow
 
@@ -76,15 +76,15 @@ git push origin main
 # 🚀 Auto-deploys to: https://quran-apps.itqan.dev
 ```
 
-## 🔧 Manual Deployment Options
+## 🔧 Local Testing
 
-If you need to deploy manually without using Git workflow:
+Test different environment configurations locally before deployment:
 
 ```bash
-# Deploy specific environment manually
-./deploy-netlify.sh deploy development
-./deploy-netlify.sh deploy staging  
-./deploy-netlify.sh deploy production
+# Test different configurations locally
+npm run serve:dev       # Test development config
+npm run serve:staging   # Test staging config  
+npm run serve:prod      # Test production config
 ```
 
 ## 🧪 Testing Strategy

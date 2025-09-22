@@ -46,66 +46,46 @@ npm run build:prod            # Build for production
 npm run deploy:prod           # Build production version
 ```
 
-## 🚀 Deployment Methods
+## 🚀 Automated Git Deployment
 
-### Method 1: Automated Git Deployments (Recommended)
+### Deployment Strategy
+All deployments are **automated** and triggered by Git merges:
 
-#### Branch Strategy
 ```
 main/master     → Production (quran-apps.itqan.dev)
 staging         → Staging (staging.quran-apps.itqan.dev)
 develop         → Development (dev.quran-apps.itqan.dev)
 ```
 
-#### Workflow
+### Deployment Workflow
 ```bash
 # 1. Feature development
+git checkout develop
 git checkout -b feature/new-feature
 # ... make changes ...
 git commit -m "Add new feature"
-git push origin feature/new-feature
 
 # 2. Deploy to development
 git checkout develop
 git merge feature/new-feature
-git push origin develop  # Auto-deploys to dev.quran-apps.itqan.dev
+git push origin develop  # 🚀 Auto-deploys to dev.quran-apps.itqan.dev
 
-# 3. Deploy to staging
+# 3. Deploy to staging (after testing in dev)
 git checkout staging
 git merge develop
-git push origin staging  # Auto-deploys to staging.quran-apps.itqan.dev
+git push origin staging  # 🚀 Auto-deploys to staging.quran-apps.itqan.dev
 
-# 4. Deploy to production
+# 4. Deploy to production (after testing in staging)
 git checkout main
 git merge staging
-git push origin main     # Auto-deploys to quran-apps.itqan.dev
+git push origin main     # 🚀 Auto-deploys to quran-apps.itqan.dev
 ```
 
-### Method 2: Manual Deployment Script
-
-Use the provided deployment script:
-
-```bash
-# Setup (one-time)
-./deploy-netlify.sh setup
-
-# Deploy to specific environments
-./deploy-netlify.sh deploy staging
-./deploy-netlify.sh deploy production
-./deploy-netlify.sh deploy development
-```
-
-### Method 3: Netlify CLI Direct
-
-```bash
-# Build and deploy staging
-npm run build:staging
-netlify deploy --prod --dir=dist/browser --site=a5cb2dc3-7a98-4a91-b71e-d9d3d0c67a03
-
-# Build and deploy production
-npm run build:prod
-netlify deploy --prod --dir=dist/browser --site=7ceb3341-c3a5-49fc-b154-518c6884262a
-```
+### Key Benefits
+- ✅ **No manual deployment needed**
+- ✅ **Consistent deployment process**
+- ✅ **Automatic environment configuration**
+- ✅ **Git history tracks deployments**
 
 ## 🔧 Site IDs and Configuration
 
@@ -231,5 +211,3 @@ open https://staging.quran-apps.itqan.dev
 ```
 
 ---
-
-*Last updated: $(date)*
