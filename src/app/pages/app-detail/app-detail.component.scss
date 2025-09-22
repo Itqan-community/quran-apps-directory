@@ -225,6 +225,18 @@ html[dir="rtl"] .content-section {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
+  
+  a {
+    height: 49px; // Set consistent height for all download buttons
+    display: flex;
+    align-items: center;
+    
+    svg {
+      height: 49px; // Maintain original SVG height
+      width: auto; // Let width adjust proportionally
+      max-width: 100%; // Prevent overflow
+    }
+  }
 }
 
 ::ng-deep .ant-card-cover img {
