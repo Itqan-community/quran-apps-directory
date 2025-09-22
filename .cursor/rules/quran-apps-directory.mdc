@@ -1,4 +1,109 @@
 ---
 alwaysApply: true
 ---
+### Quran Apps Directory – Global Cursor Rules
 
+### Objective
+Enforce a structured flow: clarify first, convert input to JSON, then act.
+
+### Tone
+Direct and clear.
+
+### Interaction protocol
+1) First response to any user message:
+- Ask clarifying questions needed to fully understand the task.
+- Number of questions depends on complexity; ask only what is necessary.
+- Do not take any action (no edits, commands, or irreversible steps) until answers are received.
+
+2) After clarifications are provided:
+- Convert the request and clarifications into a single JSON object using the schema below.
+- Display the JSON to the user before acting, in a fenced json code block.
+- Then act on the task, using the JSON as the source of truth. If anything remains ambiguous, ask a brief follow-up before acting.
+
+3) Ongoing:
+- If new information arrives, update and redisplay the JSON before any further action.
+
+### JSON schema
+Use exactly this shape when converting inputs:
+```json
+{
+  "task": "",
+  "context": "",
+  "requirements": [],
+  "constraints": [],
+  "inputs": [],
+  "assumptions": [],
+  "deliverables": [],
+  "acceptance_criteria": [],
+  "priority": "low|medium|high",
+  "risk_flags": []
+}
+```
+
+### Output structure
+- Clarifying questions
+- User Input JSON (only after clarifications are answered)
+- Actions (executed only after the JSON is shown)
+
+### Rules
+- Always display the JSON version of the user's input before acting and act on that
+- Always wait for answers to clarifying questions before taking any action.
+- **NEVER commit changes to Git** - user handles all commits manually
+- Keep language direct and clear.
+- Keep questions proportionate to complexity.
+
+## 🎯 Project-Specific Guidelines
+
+### Angular 19 Development Patterns
+- **Standalone Components**: Use standalone components with explicit imports
+- **Component Structure**: Place page components in `src/app/pages/[page-name]/`
+- **Services**: Place in `src/app/services/` with clear naming (`*.service.ts`)
+- **Pipes**: Place custom pipes in `src/app/pipes/`
+
+### Bilingual Support (Arabic/English)
+- **Property Naming**: Use `_Ar` and `_En` suffixes for bilingual content
+  ```typescript
+  Name_Ar: "وَحي"
+  Name_En: "Wahy"
+  Description_Ar: "..."
+  Description_En: "..."
+  ```
+- **Translation Files**: Use `assets/i18n/ar.json` and `assets/i18n/en.json`
+- **RTL/LTR**: Handle direction changes with `document.documentElement.dir`
+- **Images**: Support language-specific images (`screenshots_ar`, `screenshots_en`)
+
+### Data Management
+- **Static Data**: Use `src/app/services/applicationsData.ts` for app listings
+- **Data Structure**: Follow existing schema for consistency
+- **Categories**: Use predefined categories array for filtering
+
+### Environment Configuration
+- **Development**: `ng serve --configuration=development`
+- **Staging**: `ng serve --configuration=staging` 
+- **Production**: `ng serve --configuration=production`
+- **Environment Files**: 
+  - `src/environments/environment.ts` (development)
+  - `src/environments/environment.staging.ts` (staging)
+  - `src/environments/environment.prod.ts` (production)
+
+### Deployment Workflow
+- **Git Flow**: `develop` → `staging` → `main`
+- **Auto-deploy**: Merges trigger automatic Netlify deployments
+- **Environments**:
+  - `develop` → `dev.quran-apps.itqan.dev`
+  - `staging` → `staging.quran-apps.itqan.dev`
+  - `main` → `quran-apps.itqan.dev`
+
+### File Organization
+- **Components**: Kebab-case naming (`app-list`, `app-detail`)
+- **Documentation**: Place in `docs/` folder (except `README.md`)
+- **Assets**: Language-specific assets in appropriate folders
+- **Scripts**: Use `dev-start.sh` for local development setup
+
+### Development Commands
+```bash
+npm run dev          # Start development server
+npm run build:dev    # Build for development
+npm run build:staging # Build for staging  
+npm run build:prod   # Build for production
+```

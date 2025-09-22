@@ -73,21 +73,27 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.updateMetaTags();
     });
 
-    // Listen for URL changes
+    // Language service will handle language detection and RTL/LTR settings
+    // Just update the currentLang property when language changes
+    this.translate.onLangChange.subscribe((event) => {
+      this.currentLang = event.lang as "en" | "ar";
+      this.isRtl = this.currentLang === 'ar';
+      document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+    });
+
+    // Also listen for route changes to update language
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
       const lang = this.route.snapshot.firstChild?.paramMap.get('lang') || this.translate.getDefaultLang();
-      this.isRtl = lang === 'ar';
-      document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
-      this.translate.use(lang);
-      this.currentLang = lang as "en" | "ar";
+      if (lang !== this.currentLang) {
+        this.currentLang = lang as "en" | "ar";
+        this.isRtl = this.currentLang === 'ar';
+        document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+      }
     });
   }
 
   ngAfterViewInit() {
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
-      const currentUrl = (event as NavigationEnd).url;
-      console.log('Updated URL:', currentUrl);
-    });
+    // Language service will handle URL changes
     this.languageService.setLanguageFromUrl();
   }
 
