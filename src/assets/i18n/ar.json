@@ -43,6 +43,12 @@
       "sort": "ترتيب حسب التقييم"
     }
   },
+  "developer": {
+    "visitWebsite": "زيارة الموقع",
+    "app": "تطبيق",
+    "apps": "تطبيقات",
+    "noApps": "لم يتم العثور على تطبيقات لهذا المطور."
+  },
   "appDetail": {
     "developer": "المطور",
     "description": "الوصف",
