@@ -4,9 +4,17 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
     "dev": "ng serve",
-    "deploy": "ng build && cp dist/demo/browser/* dist/demo/"
+    "build": "ng build",
+    "build:dev": "ng build --configuration=development",
+    "build:staging": "ng build --configuration=staging",
+    "build:prod": "ng build --configuration=production",
+    "serve:dev": "ng serve --configuration=development",
+    "serve:staging": "ng serve --configuration=staging",
+    "serve:prod": "ng serve --configuration=production",
+    "deploy": "ng build && cp dist/demo/browser/* dist/demo/",
+    "deploy:staging": "ng build --configuration=staging",
+    "deploy:prod": "ng build --configuration=production"
   },
   "dependencies": {
     "@angular/animations": "^19.0.6",

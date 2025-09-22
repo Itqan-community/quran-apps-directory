@@ -1,0 +1,41 @@
+# Netlify configuration for STAGING environment
+# Domain: staging.quran-apps.itqan.dev
+
+[build]
+  command = "ng build --configuration=staging"
+  publish = "dist/browser"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[build.environment]
+  NODE_VERSION = "20"
+  ENVIRONMENT = "staging"
+
+# Branch-specific deployments
+[context.staging]
+  command = "ng build --configuration=staging"
+
+[context.develop]
+  command = "ng build --configuration=staging"
+
+# Headers for staging environment
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    X-Environment = "staging"
+    # Disable caching for staging to always get latest changes
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+# Staging-specific robots.txt (disallow indexing)
+[[redirects]]
+  from = "/robots.txt"
+  to = "/robots-staging.txt"
+  status = 200

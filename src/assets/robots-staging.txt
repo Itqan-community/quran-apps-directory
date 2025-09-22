@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+
+# Staging environment - prevent indexing
+# Domain: staging.quran-apps.itqan.dev

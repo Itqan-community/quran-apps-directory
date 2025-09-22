@@ -16,6 +16,14 @@
               "optimization": false,
               "sourceMap": true
             },
+            "staging": {
+              "aot": true,
+              "extractLicenses": true,
+              "namedChunks": true,
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true
+            },
             "production": {
               "aot": true,
               "extractLicenses": true,

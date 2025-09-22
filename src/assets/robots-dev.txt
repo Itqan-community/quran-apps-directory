@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+
+# Development environment - prevent indexing
+# Domain: dev.quran-apps.itqan.dev
