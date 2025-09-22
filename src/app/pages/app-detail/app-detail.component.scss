@@ -16,6 +16,17 @@
   border-radius: 20px;
   transition: all 0.3s;
   border: 1px solid #e8e8e8;
+  cursor: pointer;
+  
+  &:hover {
+    background: #ede0c04b;
+    border-color: #d0c5a3;
+  }
+  
+  &:focus {
+    outline: 2px solid #7c4332;
+    outline-offset: 2px;
+  }
 }
 
 .badge-name {
