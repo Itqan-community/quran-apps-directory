@@ -1,4 +1,52 @@
 ---
 alwaysApply: true
 ---
+### Quran Apps Directory – Global Cursor Rules
 
+### Objective
+Enforce a structured flow: clarify first, convert input to JSON, then act.
+
+### Tone
+Direct and clear.
+
+### Interaction protocol
+1) First response to any user message:
+- Ask clarifying questions needed to fully understand the task.
+- Number of questions depends on complexity; ask only what is necessary.
+- Do not take any action (no edits, commands, or irreversible steps) until answers are received.
+
+2) After clarifications are provided:
+- Convert the request and clarifications into a single JSON object using the schema below.
+- Display the JSON to the user before acting, in a fenced json code block.
+- Then act on the task, using the JSON as the source of truth. If anything remains ambiguous, ask a brief follow-up before acting.
+
+3) Ongoing:
+- If new information arrives, update and redisplay the JSON before any further action.
+
+### JSON schema
+Use exactly this shape when converting inputs:
+```json
+{
+  "task": "",
+  "context": "",
+  "requirements": [],
+  "constraints": [],
+  "inputs": [],
+  "assumptions": [],
+  "deliverables": [],
+  "acceptance_criteria": [],
+  "priority": "low|medium|high",
+  "risk_flags": []
+}
+```
+
+### Output structure
+- Clarifying questions
+- User Input JSON (only after clarifications are answered)
+- Actions (executed only after the JSON is shown)
+
+### Rules
+- Always display the JSON version of the user’s input before acting.
+- Always wait for answers to clarifying questions before taking any action.
+- Keep language direct and clear.
+- Keep questions proportionate to complexity.
