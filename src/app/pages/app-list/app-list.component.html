@@ -39,9 +39,11 @@
       <div
         class="category-item "
         role="button"
-        [class.selected]="selectedCategory === 'all'"
         aria-label="Filter by All"
-        (click)="filterByCategory('all')"
+        [routerLink]="['/', currentLang]"
+        [routerLinkActive]="'selected'"
+        [routerLinkActiveOptions]="{ exact: true }"
+        data-category="all"
       >
         <span class="category-icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#A0533B" d="M3.75 3.75v4.5h4.5v-4.5zm-2.25 0A2.25 2.25 0 0 1 3.75 1.5h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5A2.25 2.25 0 0 1 1.5 8.25zm2.25 12v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25zm18.75-12h-4.5v4.5h4.5zm-4.5-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25v-4.5a2.25 2.25 0 0 1 2.25-2.25m0 14.25v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25z"/></svg>
@@ -51,10 +53,11 @@
       <div
         class="category-item"
         *ngFor="let category of categories"
-        [class.selected]="selectedCategory === (category.name | lowercase)"
-        (click)="filterByCategory(category.name)"
+        [routerLink]="['/', currentLang, category.name.toLowerCase()]"
+        [routerLinkActive]="'selected'"
         role="button"
         [attr.aria-label]="'Filter by ' + category.name"
+        [attr.data-category]="category.name.toLowerCase()"
       >
         <span class="category-icon" [innerHTML]="category.icon"></span>
         <span class="category-item--title">{{
