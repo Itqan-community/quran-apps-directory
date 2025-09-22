@@ -96,14 +96,14 @@ DNS propagation typically takes 5-60 minutes but can take up to 24 hours.
 
 ### Site IDs
 ```
-Production:  7ceb3341-c3a5-49fc-b154-518c6884262a
-Staging:     a5cb2dc3-7a98-4a91-b71e-d9d3d0c67a03
-Development: a4a10bc3-2550-4369-a944-200ed4c7ee27
+Production:  your-production-site-id
+Staging:     your-staging-site-id
+Development: your-development-site-id
 ```
 
 ### DNS Zone ID
 ```
-itqan.dev: 68584cc744dae3858ff53c03
+your-domain.dev: your-dns-zone-id
 ```
 
 ---
