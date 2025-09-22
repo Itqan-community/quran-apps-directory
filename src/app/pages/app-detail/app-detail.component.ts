@@ -195,4 +195,11 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     // Only show read more button if text is long enough
     return text.length > 200; // Adjust character threshold as needed
   }
+
+  navigateToDeveloper() {
+    if (this.app && this.app.Developer_Name_En) {
+      const developerName = encodeURIComponent(this.app.Developer_Name_En);
+      this.router.navigate([`/${this.currentLang}/developer/${developerName}`]);
+    }
+  }
 }

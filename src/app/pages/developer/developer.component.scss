@@ -1,0 +1,266 @@
+// App grid and card styles (copied from app-list component to avoid @import deprecation)
+:host ::ng-deep {
+  nz-rate {
+    .ant-rate-star:not(:last-child) {
+      margin-right: 3px;
+    }
+    .anticon svg {
+      width: 14px;
+      height: auto;
+    }
+  }
+  .ant-card-meta-description {
+    line-height: 1.3;
+  }
+}
+
+.app-grid {
+  margin-top: 20px;
+}
+
+.app-grid-row {
+  margin-bottom: 40px;
+}
+
+.app-card {
+  border-radius: 12px;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+  cursor: pointer;
+  height: 100%;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .ant-card-body {
+    padding: 16px;
+  }
+}
+
+.app-icon-container {
+  width: 60px;
+  height: 60px;
+  margin-right: 12px;
+  flex-shrink: 0;
+
+  .app-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+}
+
+.card-data-container {
+  flex: 1;
+  min-width: 0;
+
+  .ant-card-meta-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .ant-card-meta-description {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+}
+
+.app-rating {
+  gap: 8px;
+  margin-top: 8px;
+
+  .rating-number {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+  }
+}
+
+.developer-page {
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+
+    .header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+      gap: 16px;
+
+      button {
+        font-size: 18px;
+        color: #A0533B;
+        
+        &:hover {
+          color: #8B4429;
+        }
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 600;
+        color: #333;
+      }
+    }
+
+    .developer-info {
+      margin-bottom: 30px;
+
+      .dev-container {
+        gap: 20px;
+
+        .icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .developer-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #f0f0f0;
+          }
+
+          .default-logo {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f8f8;
+            border-radius: 50%;
+            border: 2px solid #f0f0f0;
+          }
+        }
+
+        .dev-data {
+          flex: 1;
+
+          h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+          }
+
+          p {
+            font-size: 16px;
+            color: #666;
+          }
+
+          button {
+            color: #A0533B;
+            font-size: 14px;
+
+            &:hover {
+              color: #8B4429;
+            }
+
+            span {
+              margin-right: 4px;
+            }
+          }
+        }
+      }
+    }
+
+    .apps-count {
+      margin-bottom: 20px;
+
+      h3 {
+        font-size: 18px;
+        font-weight: 500;
+        color: #666;
+        margin: 0;
+      }
+    }
+
+    .no-apps {
+      text-align: center;
+      padding: 60px 20px;
+      
+      p {
+        font-size: 16px;
+        color: #999;
+        margin: 0;
+      }
+    }
+  }
+}
+
+.loading-container {
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      button {
+        font-size: 18px;
+        color: #A0533B;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 600;
+        color: #333;
+      }
+    }
+  }
+}
+
+// RTL support
+[dir="rtl"] {
+  .developer-page .container {
+    .dev-container .dev-data button span {
+      margin-right: 0;
+      margin-left: 4px;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .developer-page .container {
+    padding: 16px;
+
+    .header {
+      h1 {
+        font-size: 22px;
+      }
+    }
+
+    .developer-info .dev-container {
+      gap: 16px;
+
+      .icon {
+        .developer-logo,
+        .default-logo {
+          width: 60px;
+          height: 60px;
+        }
+      }
+
+      .dev-data h2 {
+        font-size: 20px;
+      }
+    }
+  }
+}
