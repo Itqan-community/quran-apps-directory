@@ -61,4 +61,22 @@ export class AppService {
       return of(this.apps.filter((app) => app.categories.includes(category)));
     }
   }
+
+  getAppsByDeveloper(developerName: string): Observable<QuranApp[]> {
+    // Decode URI component to handle URL encoding
+    const decodedDeveloperName = decodeURIComponent(developerName);
+    
+    return of(this.apps.filter((app) => {
+      const englishName = app.Developer_Name_En?.toLowerCase();
+      const arabicName = app.Developer_Name_Ar?.toLowerCase();
+      const searchName = decodedDeveloperName.toLowerCase();
+      
+      return englishName === searchName || arabicName === searchName;
+    }));
+  }
+
+  getDeveloperNameForUrl(app: QuranApp): string {
+    // Use English name for URL, encode it properly
+    return encodeURIComponent(app.Developer_Name_En || app.Developer_Name_Ar || '');
+  }
 }

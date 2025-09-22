@@ -214,6 +214,26 @@ html[dir="rtl"] .content-section {
 }
 
 .dev-container{
+  cursor: pointer;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  margin: -12px; // Negative margin to account for the padding
+  
+  &:hover {
+    background-color: #f5f5f5;
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &:focus {
+    outline: 2px solid #A0533B;
+    outline-offset: 2px;
+  }
+  
   .icon{
     margin-top: 6px;
     margin-inline-end: 10px;
@@ -228,13 +248,14 @@ html[dir="rtl"] .content-section {
   
   a {
     height: 49px; // Set consistent height for all download buttons
+    width: 163px; // Set consistent width to match the widest button
     display: flex;
     align-items: center;
+    justify-content: center; // Center the SVG within the fixed width
     
     svg {
-      height: 49px; // Maintain original SVG height
-      width: auto; // Let width adjust proportionally
-      max-width: 100%; // Prevent overflow
+      height: 49px !important; // Set to max height
+      width: 163px !important; // Set to max width - force all icons to same dimensions
     }
   }
 }
@@ -373,10 +394,16 @@ html[dir="rtl"] .content-section {
   .download-links {
     margin: 16px 0;
     gap: 12px;
-  }
-
-  .download-links a {
-    flex-basis: 46%;
+    
+    a {
+      width: 163px; // Maintain consistent width on mobile
+      height: 49px; // Maintain consistent height on mobile
+      
+      svg {
+        height: 49px !important; // Set to max height on mobile
+        width: 163px !important; // Set to max width on mobile - force all icons to same dimensions
+      }
+    }
   }
 
   nz-tag {

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -16,6 +17,7 @@ import { Title } from '@angular/platform-browser';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     RouterModule,
     NzCardModule,
     NzButtonModule,

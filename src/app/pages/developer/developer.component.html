@@ -1,0 +1,116 @@
+<!-- Developer page content -->
+<div *ngIf="!loading && developerInfo" class="developer-page">
+  <div class="container">
+    <!-- Header with back button -->
+    <div class="header">
+      <button
+        nz-button
+        nzType="text"
+        (click)="goBack()"
+        aria-label="Back to apps list"
+      >
+        <span nz-icon [nzType]="currentLang === 'en' ? 'left' : 'right'"></span>
+      </button>
+      <h1>{{ currentLang === 'en' ? 'Apps by' : 'تطبيقات' }} {{ currentLang === 'en' ? developerInfo.name_en : developerInfo.name_ar }}</h1>
+    </div>
+
+    <!-- Developer information section -->
+    <div class="developer-info">
+      <div class="dev-container ant-flex ant-flex-align-center">
+        <div class="icon">
+          <img
+            *ngIf="developerInfo.logo && !developerInfo.logo.includes('Not Found')"
+            [src]="developerInfo.logo"
+            [alt]="(currentLang === 'en' ? developerInfo.name_en : developerInfo.name_ar) + ' logo'"
+            class="developer-logo"
+          />
+          <div *ngIf="!developerInfo.logo || developerInfo.logo.includes('Not Found')" class="default-logo">
+            <svg width="60" height="61" viewBox="0 0 60 61" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect y="0.5" width="60" height="60" rx="30" fill="#F8F8F8"/>
+              <path d="M21 44.5V42.5C21 41.4391 21.4214 40.4217 22.1716 39.6716C22.9217 38.9214 23.9391 38.5 25 38.5H32.25M42 44.5L44 42.5L42 40.5M37.5 40.5L35.5 42.5L37.5 44.5M24 30.5C24 31.5609 24.4214 32.5783 25.1716 33.3284C25.9217 34.0786 26.9391 34.5 28 34.5C29.0609 34.5 30.0783 34.0786 30.8284 33.3284C31.5786 32.5783 32 31.5609 32 30.5C32 29.4391 31.5786 28.4217 30.8284 27.6716C30.0783 26.9214 29.0609 26.5 28 26.5C26.9391 26.5 25.9217 26.9214 25.1716 27.6716C24.4214 28.4217 24 29.4391 24 30.5Z" stroke="#A0533B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="dev-data">
+          <h2 style="margin-bottom: 8px;">{{ currentLang === 'en' ? developerInfo.name_en : developerInfo.name_ar }}</h2>
+          <p style="margin-bottom: 8px; color: #666;">{{ "appDetail.developer" | translate }}</p>
+          <button
+            *ngIf="developerInfo.website"
+            nz-button
+            nzType="link"
+            (click)="visitDeveloperWebsite()"
+            style="padding: 0; height: auto;"
+          >
+            <span nz-icon nzType="global"></span>
+            {{ "developer.visitWebsite" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <nz-divider></nz-divider>
+
+    <!-- Apps count -->
+    <div class="apps-count">
+      <h3>{{ developerApps.length }} {{ developerApps.length === 1 ? ("developer.app" | translate) : ("developer.apps" | translate) }}</h3>
+    </div>
+
+    <!-- Apps grid -->
+    <div class="app-grid">
+      <div nz-row [nzGutter]="[24, 24]" class="app-grid-row">
+        <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="6" nzXl="6" *ngFor="let app of developerApps">
+          <nz-card
+            (click)="navigateToApp(app.id)"
+            [attr.aria-label]="'View details for ' + app.Name_En"
+            class="app-card"
+            [nzCover]="coverTemplate"
+          >
+            <ng-template #coverTemplate>
+              <div style="max-height: 220px; overflow: hidden;">
+                <img
+                  [alt]="app.Name_En + ' screenshot'"
+                  [src]="currentLang === 'en' ? app.mainImage_en : app.mainImage_ar"
+                  style="width: 100%;"
+                />
+              </div>
+            </ng-template>
+
+            <div class="ant-flex">
+              <div class="app-icon-container">
+                <img class="app-icon" [src]="app.applicationIcon" [alt]="app.Name_En + ' icon'">
+              </div>
+              <div class="card-data-container">
+                <nz-card-meta
+                  [nzTitle]="currentLang == 'en' ? app.Name_En : app.Name_Ar"
+                  [nzDescription]="currentLang == 'en' ? app.Short_Description_En : app.Short_Description_Ar"
+                ></nz-card-meta>
+                <!-- Rating display -->
+                <div class="app-rating ant-flex ant-flex-align-center">
+                  <span class="rating-number">{{ app.Apps_Avg_Rating }}</span>
+                  <nz-rate [ngModel]="app.Apps_Avg_Rating" [nzDisabled]="true" [nzAllowHalf]="true"></nz-rate>
+                </div>
+              </div>
+            </div>
+          </nz-card>
+        </div>
+      </div>
+    </div>
+
+    <!-- No apps message -->
+    <div *ngIf="developerApps.length === 0" class="no-apps">
+      <p>{{ "developer.noApps" | translate }}</p>
+    </div>
+  </div>
+</div>
+
+<!-- Loading state -->
+<div *ngIf="loading" class="loading-container">
+  <div class="container">
+    <div class="header">
+      <button nz-button nzType="text" aria-label="Back to apps list">
+        <span nz-icon [nzType]="currentLang === 'en' ? 'left' : 'right'"></span>
+      </button>
+      <h1>{{ "common.loading" | translate }}</h1>
+    </div>
+  </div>
+</div>
