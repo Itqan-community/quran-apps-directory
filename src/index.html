@@ -2,37 +2,103 @@
 <html lang="ar">
   <!-- Deployment timestamp: September 22, 2025 - 2025-09-22T00:00:00Z -->
   <head>
-    <title>دليل التطبيقات القرآنية</title>
+    <title>دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://pub-e11717db663c469fb51c65995892b449.r2.dev">
+    
+    <!-- Fonts with display=swap for better performance -->
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/assets/images/logo-with-text.svg" as="image">
+    <link rel="preload" href="/assets/images/banner.png" as="image">
+    <link rel="preload" href="/assets/i18n/ar.json" as="fetch" type="application/json" crossorigin>
+    <link rel="preload" href="/assets/i18n/en.json" as="fetch" type="application/json" crossorigin>
+    
+    <!-- Favicons and Icons -->
     <link rel="icon" type="image/x-icon" href="/assets/images/fav/favicon.ico">
     <link rel="icon" type="image/svg+xml" href="/assets/images/fav/favicon.svg">
     <link rel="icon" type="image/png" sizes="96x96" href="/assets/images/fav/favicon-96x96.png">
-    <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="/assets/images/fav/apple-touch-icon.png">
-    <!-- Web App Manifest -->
     <link rel="manifest" href="/assets/images/fav/site.webmanifest">
-    <!-- Theme Color -->
+    
+    <!-- Theme and Browser Configuration -->
     <meta name="theme-color" content="#A0533B">
-    <meta property="og:image" content="https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" />
-    <meta name="title" content="دليل التطبيقات القرآنية" />
-    <meta name="description" content="نساعدك للوصول لأهم التطبيقات القرآنية للقراءة والتسميع والتدبر .... وغيرها الكثير، مقدم من مجتمع إتقان لتقنيات القرآن" />
-    <meta name="keywords" content="مصحف,Mushaf,ترجمات القرآن,Quran Translations,تسميع,Recite,تسميع القرآن,Quran Recite,قرآن للأطفال,Quran for Kids,تحفيظ الأطفال,Kids’ Memorization,تحفيظ الصغار,Children’s Memorization,تفسير,Tafsir,تدبر,Tadabbur,رواية القرآن,Quran Narrations,روايات القرآن,Quran Riwayah,رواية ورش,Warsh,رواية قالون,Qalun,صوتيات قرآنية,Quranic Audio,استماع قرآن,Quran Listening,تلاوات,Recitations,تحبير,Tahbeer,تجويد,Tajweed,القاعدة النورانية,Norania,المصحف للصم,Mushaf for the Deaf,المصحف للعمي,Mushaf for the Blind,إتقان,Itqan,مجتمع إتقان,Itqan Community,تقنيات القران,Quran Technologies,برامج القران,Quran Programs,تطبيقات القران,Quran Applications,دليل القران,Quran Guide" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    
+    <!-- SEO and Language Configuration -->
+    <meta name="google-site-verification" content="your-verification-code-here">
+    <link rel="alternate" hreflang="ar" href="https://quran-apps.itqan.dev/ar">
+    <link rel="alternate" hreflang="en" href="https://quran-apps.itqan.dev/en">
+    <link rel="alternate" hreflang="x-default" href="https://quran-apps.itqan.dev/en">
+    <link rel="canonical" href="https://quran-apps.itqan.dev/">
+    <!-- SEO Meta Tags -->
+    <meta name="title" content="دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم" />
+    <meta name="description" content="الدليل الشامل لأفضل تطبيقات القرآن الكريم - تطبيقات المصحف، التفسير، التلاوة، التحفيظ والتدبر. اكتشف أكثر من 100 تطبيق قرآني مجاني ومدفوع لجميع الأجهزة من مجتمع إتقان لتقنيات القرآن" />
+    <meta name="keywords" content="دليل التطبيقات القرآنية, دليل قرآني شامل, Comprehensive Quranic Directory, Quranic Directory, تطبيقات القرآن, مصحف إلكتروني, تفسير القرآن, تلاوة القرآن, تحفيظ القرآن, تطبيقات إسلامية, Best Quran Apps, Islamic Apps, Quran Reading Apps, Quran Memorization, Tafsir Apps, إتقان, ITQAN, تقنيات القرآن, Quran Technology" />
     <meta name="language" content="Arabic" />
     <meta name="author" content="مجتمع إتقان لتقنيات القرآن" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="bingbot" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    
+    <!-- Structured Data for Website -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "دليل التطبيقات القرآنية الشامل",
+      "alternateName": "Comprehensive Quranic Directory",
+      "url": "https://quran-apps.itqan.dev/",
+      "description": "الدليل الشامل لأفضل تطبيقات القرآن الكريم - تطبيقات المصحف، التفسير، التلاوة، التحفيظ والتدبر",
+      "inLanguage": ["ar", "en"],
+      "publisher": {
+        "@type": "Organization",
+        "name": "مجتمع إتقان لتقنيات القرآن",
+        "alternateName": "ITQAN Community for Quran Technologies",
+        "url": "https://quran-apps.itqan.dev/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://quran-apps.itqan.dev/assets/images/logo-with-text.svg"
+        }
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://quran-apps.itqan.dev/{lang}?search={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://quran-apps.itqan.dev/" />
-    <meta property="og:title" content="دليل التطبيقات القرآنية" />
-    <meta property="og:description" content="نساعدك للوصول لأهم التطبيقات القرآنية للقراءة والتسميع والتدبر .... وغيرها الكثير، مقدم من مجتمع إتقان لتقنيات القرآن" />
+    <meta property="og:title" content="دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم" />
+    <meta property="og:description" content="الدليل الشامل لأفضل تطبيقات القرآن الكريم - تطبيقات المصحف، التفسير، التلاوة، التحفيظ والتدبر. اكتشف أكثر من 100 تطبيق قرآني مجاني ومدفوع" />
     <meta property="og:image" content="https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" />
+    <meta property="og:image:alt" content="دليل التطبيقات القرآنية الشامل" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="ar_SA" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:site_name" content="دليل التطبيقات القرآنية" />
+    
+    <!-- Twitter Card Meta Tags -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://quran-apps.itqan.dev/" />
-    <meta property="twitter:title" content="دليل التطبيقات القرآنية" />
-    <meta property="twitter:description" content="نساعدك للوصول لأهم التطبيقات القرآنية للقراءة والتسميع والتدبر .... وغيرها الكثير، مقدم من مجتمع إتقان لتقنيات القرآن" />
+    <meta property="twitter:title" content="دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم" />
+    <meta property="twitter:description" content="الدليل الشامل لأفضل تطبيقات القرآن الكريم - تطبيقات المصحف، التفسير، التلاوة، التحفيظ والتدبر" />
     <meta property="twitter:image" content="https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" />
+    <meta property="twitter:image:alt" content="دليل التطبيقات القرآنية الشامل" />
 
     <!-- Google tag (gtag.js)  -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PM1CMKHFQ9"></script>

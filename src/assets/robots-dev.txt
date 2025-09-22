@@ -1,5 +1,20 @@
+# Development Environment - Block Search Engine Indexing
 User-agent: *
 Disallow: /
+
+# Specific bot instructions
+User-agent: Googlebot
+Disallow: /
+
+User-agent: Bingbot
+Disallow: /
+
+# Allow crawling of assets for testing
+User-agent: *
+Allow: /assets/images/fav/
+
+# No sitemap for development
+# Sitemap: https://dev.quran-apps.itqan.dev/sitemap.xml
 
 # Development environment - prevent indexing
 # Domain: dev.quran-apps.itqan.dev
