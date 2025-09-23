@@ -1,28 +1,163 @@
 <div class="about-us-container">
-    <div class="logo-container flex justify-center items-center full-width mb-4">
-        <img src="assets/images/logo-with-text.svg" alt="Quran Apps Directory" class="logo">
-      </div>
-  <h1>{{ "aboutUs.title" | translate }}</h1>
+  <div class="hero-section">
+    <div class="logo-container">
+      <img src="assets/images/logo-with-text.svg" alt="Comprehensive Quranic Directory" class="logo">
+    </div>
+    <h1>{{ "aboutUs.title" | translate }}</h1>
+    <p class="subtitle">{{ "aboutUs.subtitle" | translate }}</p>
+    <p class="intro">{{ "aboutUs.intro" | translate }}</p>
+  </div>
 
   <div class="content">
-    <section class="mission">
-      <!-- <h2>{{ "aboutUs.mission" | translate }}</h2> -->
+    <!-- Mission Section -->
+    <section class="mission-section">
+      <h2>{{ "aboutUs.mission" | translate }}</h2>
       <p>{{ "aboutUs.missionDescription" | translate }}</p>
     </section>
 
-    <!-- <section class="vision">
+    <!-- Vision Section -->
+    <section class="vision-section">
       <h2>{{ "aboutUs.vision" | translate }}</h2>
       <p>{{ "aboutUs.visionDescription" | translate }}</p>
     </section>
 
-    <section class="values">
-      <h2>{{ "aboutUs.values" | translate }}</h2>
-      <ul>
-        <li>{{ "aboutUs.values_list.accuracyAndAuthenticity" | translate }}</li>
-        <li>{{ "aboutUs.values_list.userCentricDesignAndAccessibility" | translate }}</li>
-        <li>{{ "aboutUs.values_list.continuousImprovementAndInnovation" | translate }}</li>
-        <li>{{ "aboutUs.values_list.communityEngagementAndSupport" | translate }}</li>
+    <!-- What We Do Section -->
+    <section class="what-we-do-section">
+      <h2>{{ "aboutUs.whatWeDo" | translate }}</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>{{ "aboutUs.whatWeDoList.comprehensive" | translate }}</h3>
+        </div>
+        <div class="feature-card">
+          <h3>{{ "aboutUs.whatWeDoList.categories" | translate }}</h3>
+        </div>
+        <div class="feature-card">
+          <h3>{{ "aboutUs.whatWeDoList.bilingual" | translate }}</h3>
+        </div>
+        <div class="feature-card">
+          <h3>{{ "aboutUs.whatWeDoList.quality" | translate }}</h3>
+        </div>
+        <div class="feature-card">
+          <h3>{{ "aboutUs.whatWeDoList.search" | translate }}</h3>
+        </div>
+        <div class="feature-card">
+          <h3>{{ "aboutUs.whatWeDoList.community" | translate }}</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="why-section">
+      <h2>{{ "aboutUs.why" | translate }}</h2>
+      <ul class="benefits-list">
+        <li>
+          <span class="check-icon">✓</span>
+          {{ "aboutUs.whyList.largest" | translate }}
+        </li>
+        <li>
+          <span class="check-icon">✓</span>
+          {{ "aboutUs.whyList.verified" | translate }}
+        </li>
+        <li>
+          <span class="check-icon">✓</span>
+          {{ "aboutUs.whyList.expert" | translate }}
+        </li>
+        <li>
+          <span class="check-icon">✓</span>
+          {{ "aboutUs.whyList.updated" | translate }}
+        </li>
+        <li>
+          <span class="check-icon">✓</span>
+          {{ "aboutUs.whyList.free" | translate }}
+        </li>
+        <li>
+          <span class="check-icon">✓</span>
+          {{ "aboutUs.whyList.opensource" | translate }}
+        </li>
       </ul>
-    </section> -->
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-section">
+      <h2>{{ "aboutUs.categories" | translate }}</h2>
+      <p>{{ "aboutUs.categoriesDescription" | translate }}</p>
+      <div class="categories-grid">
+        <div class="category-item">{{ "appList.categories.mushaf" | translate }}</div>
+        <div class="category-item">{{ "appList.categories.tafsir" | translate }}</div>
+        <div class="category-item">{{ "appList.categories.translations" | translate }}</div>
+        <div class="category-item">{{ "appList.categories.audio" | translate }}</div>
+        <div class="category-item">{{ "appList.categories.recite" | translate }}</div>
+        <div class="category-item">{{ "appList.categories.memorize" | translate }}</div>
+        <div class="category-item">{{ "appList.categories.tajweed" | translate }}</div>
+        <div class="category-item">{{ "appList.categories.kids" | translate }}</div>
+        <div class="category-item">{{ "appList.categories.riwayat" | translate }}</div>
+        <div class="category-item">{{ "appList.categories.accessibility" | translate }}</div>
+      </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values-section">
+      <h2>{{ "aboutUs.values" | translate }}</h2>
+      <div class="values-grid">
+        <div class="value-card">
+          <h4>{{ "aboutUs.values_list.accuracyAndAuthenticity" | translate }}</h4>
+        </div>
+        <div class="value-card">
+          <h4>{{ "aboutUs.values_list.userCentricDesignAndAccessibility" | translate }}</h4>
+        </div>
+        <div class="value-card">
+          <h4>{{ "aboutUs.values_list.continuousImprovementAndInnovation" | translate }}</h4>
+        </div>
+        <div class="value-card">
+          <h4>{{ "aboutUs.values_list.communityEngagementAndSupport" | translate }}</h4>
+        </div>
+        <div class="value-card">
+          <h4>{{ "aboutUs.values_list.transparency" | translate }}</h4>
+        </div>
+        <div class="value-card">
+          <h4>{{ "aboutUs.values_list.innovation" | translate }}</h4>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Projects Section -->
+    <section class="related-projects">
+      <h2>{{ "footer.itqan_projects" | translate }}</h2>
+      <p>
+        {{ currentLang === 'ar' ? 'دليل التطبيقات القرآنية هو جزء من مجموعة مشاريع إتقان الهادفة لخدمة القرآن الكريم عبر التقنية. تشمل مشاريعنا الأخرى:' : 'The Quran Apps Directory is part of ITQAN\'s suite of projects aimed at serving the Holy Quran through technology. Our other projects include:' }}
+      </p>
+      <ul class="projects-list">
+        <li>
+          <a [href]="'https://itqan.dev/' + currentLang" target="_blank" rel="noopener noreferrer">
+            {{ "footer.main_site" | translate }}
+            <nz-icon nzType="export" nzTheme="outline"></nz-icon>
+          </a>
+        </li>
+        <li>
+          <a href="https://itqan.dev/projects" target="_blank" rel="noopener noreferrer">
+            {{ "footer.content_management" | translate }}
+            <nz-icon nzType="export" nzTheme="outline"></nz-icon>
+          </a>
+        </li>
+        <li>
+          <a href="https://itqan.dev/resources" target="_blank" rel="noopener noreferrer">
+            {{ "footer.resources" | translate }}
+            <nz-icon nzType="export" nzTheme="outline"></nz-icon>
+          </a>
+        </li>
+        <li>
+          <a href="https://itqan.dev/resources/fonts" target="_blank" rel="noopener noreferrer">
+            {{ "footer.mushaf_fonts" | translate }}
+            <nz-icon nzType="export" nzTheme="outline"></nz-icon>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Acknowledgments Section -->
+    <section class="acknowledgments-section">
+      <h2>{{ "aboutUs.acknowledgments" | translate }}</h2>
+      <p>{{ "aboutUs.acknowledgementsText" | translate }}</p>
+    </section>
   </div>
 </div> 
