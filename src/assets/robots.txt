@@ -1,0 +1,88 @@
+# Production Environment - Full Search Engine Optimization
+# Comprehensive Quranic Directory - https://quran-apps.itqan.dev
+
+User-agent: *
+Allow: /
+Disallow: /assets/*.js$
+Disallow: /assets/*.css$
+Disallow: /assets/*.map$
+Disallow: /*?*
+Disallow: /*/*?*
+
+# Allow important assets for rich snippets
+Allow: /assets/images/
+Allow: /assets/i18n/
+
+# Google-specific optimizations
+User-agent: Googlebot
+Allow: /
+Disallow: /assets/*.js$
+Disallow: /assets/*.css$
+Disallow: /assets/*.map$
+Crawl-delay: 1
+
+# Bing-specific optimizations
+User-agent: Bingbot
+Allow: /
+Disallow: /assets/*.js$
+Disallow: /assets/*.css$
+Disallow: /assets/*.map$
+Crawl-delay: 1
+
+# Other search engines
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2
+
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 3
+
+# Social media crawlers
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+# SEO and monitoring tools
+User-agent: AhrefsBot
+Allow: /
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Allow: /
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Allow: /
+Crawl-delay: 10
+
+# Block unwanted bots
+User-agent: ia_archiver
+Disallow: /
+
+User-agent: ScrapyBot
+Disallow: /
+
+User-agent: spbot
+Disallow: /
+
+User-agent: MegaIndex
+Disallow: /
+
+# Sitemap location
+Sitemap: https://quran-apps.itqan.dev/sitemap.xml
+
+# Host preference (optional)
+Host: quran-apps.itqan.dev
