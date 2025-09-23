@@ -21,6 +21,10 @@
               <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/', currentLang]">
                 {{ "header.home" | translate }}
               </a>
+              <a *nzSpaceItem nz-button nzType="link" [href]="'https://itqan.dev/' + currentLang" target="_blank" rel="noopener noreferrer">
+                {{ "header.itqan_community" | translate }}
+                <nz-icon nzType="export" nzTheme="outline" style="margin-left: 4px; margin-right: 4px;"></nz-icon>
+              </a>
               <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/', currentLang, 'about-us']">
                 {{ "header.about" | translate }}
               </a>
@@ -56,6 +60,15 @@
             {{ "header.home" | translate }}
           </a>
           <a
+            [href]="'https://itqan.dev/' + currentLang"
+            target="_blank"
+            rel="noopener noreferrer"
+            (click)="toggleMobileMenu()"
+          >
+            {{ "header.itqan_community" | translate }}
+            <nz-icon nzType="export" nzTheme="outline" style="margin-left: 4px; margin-right: 4px;"></nz-icon>
+          </a>
+          <a
           [routerLink]="['/', currentLang, 'about-us']"
             (click)="toggleMobileMenu()"
           >
@@ -79,5 +92,40 @@
   <nz-content>
     <router-outlet></router-outlet>
   </nz-content>
-  <nz-footer>{{ "footer.copyright" | translate }}</nz-footer>
+  <nz-footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <p class="copyright">{{ "footer.copyright" | translate }}</p>
+      </div>
+      <div class="footer-section">
+        <h4>{{ "footer.itqan_projects" | translate }}</h4>
+        <ul class="footer-links">
+          <li>
+            <a [href]="'https://itqan.dev/' + currentLang" target="_blank" rel="noopener noreferrer">
+              {{ "footer.main_site" | translate }}
+              <nz-icon nzType="export" nzTheme="outline"></nz-icon>
+            </a>
+          </li>
+          <li>
+            <a href="https://itqan.dev/projects" target="_blank" rel="noopener noreferrer">
+              {{ "footer.content_management" | translate }}
+              <nz-icon nzType="export" nzTheme="outline"></nz-icon>
+            </a>
+          </li>
+          <li>
+            <a href="https://itqan.dev/resources" target="_blank" rel="noopener noreferrer">
+              {{ "footer.resources" | translate }}
+              <nz-icon nzType="export" nzTheme="outline"></nz-icon>
+            </a>
+          </li>
+          <li>
+            <a href="https://itqan.dev/resources/fonts" target="_blank" rel="noopener noreferrer">
+              {{ "footer.mushaf_fonts" | translate }}
+              <nz-icon nzType="export" nzTheme="outline"></nz-icon>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nz-footer>
 </nz-layout>

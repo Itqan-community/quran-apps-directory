@@ -35,11 +35,9 @@
           },
           "options": {
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "src/assets",
-                "output": "/assets"
-              }
+              "src/favicon.ico",
+              "src/sitemap.xml",
+              "src/assets"
             ],
             "index": "src/index.html",
             "browser": "src/main.ts",

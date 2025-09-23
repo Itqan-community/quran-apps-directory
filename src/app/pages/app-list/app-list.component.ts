@@ -10,9 +10,10 @@ import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { AppService, QuranApp } from "../../services/app.service";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml, Title, Meta } from "@angular/platform-browser";
 import { categories } from "../../services/applicationsData";
 import { combineLatest } from "rxjs";
+import { SeoService } from "../../services/seo.service";
 
 const CATEGORIES = categories;
 
@@ -51,7 +52,10 @@ export class AppListComponent implements OnInit {
     private appService: AppService,
     private sanitizer: DomSanitizer,
     private translateService: TranslateService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private seoService: SeoService,
+    private titleService: Title,
+    private metaService: Meta
   ) {
     this.categories = CATEGORIES.map((category) => ({
       name: category.name,
@@ -90,6 +94,9 @@ export class AppListComponent implements OnInit {
           this.selectedCategory = 'all';
           this.filteredApps = this.apps; // Show all apps
         }
+        
+        // Update SEO data after apps and route parameters are set
+        this.updateSeoData();
       });
     });
   }
@@ -136,5 +143,103 @@ export class AppListComponent implements OnInit {
     const x = e.pageX;
     const walk = x - this.startX;
     this.categoriesContainer.scrollLeft = this.scrollLeft - walk;
+  }
+
+  private updateSeoData() {
+    const categoryMap = {
+      'ar': {
+        'mushaf': 'تطبيقات المصحف',
+        'tafsir': 'تطبيقات التفسير',
+        'translations': 'تطبيقات الترجمة',
+        'audio': 'التلاوات الصوتية',
+        'recite': 'تطبيقات التسميع',
+        'kids': 'تطبيقات الأطفال',
+        'riwayat': 'الروايات القرآنية',
+        'tajweed': 'تطبيقات التجويد',
+        'all': 'جميع تطبيقات القرآن الكريم'
+      },
+      'en': {
+        'mushaf': 'Mushaf Apps',
+        'tafsir': 'Tafsir Apps',
+        'translations': 'Translation Apps',
+        'audio': 'Audio Recitations',
+        'recite': 'Recitation Apps',
+        'kids': 'Kids Apps',
+        'riwayat': 'Quran Narrations',
+        'tajweed': 'Tajweed Apps',
+        'all': 'All Quran Applications'
+      }
+    };
+
+    const categoryName = categoryMap[this.currentLang][this.selectedCategory as keyof typeof categoryMap[typeof this.currentLang]] || 
+                         (this.currentLang === 'ar' ? 'تطبيقات القرآن الكريم' : 'Quran Applications');
+
+    // Update page title and meta tags
+    if (this.selectedCategory === 'all') {
+      if (this.currentLang === 'ar') {
+        this.titleService.setTitle('دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم');
+        this.metaService.updateTag({ name: 'description', content: 'استكشف أكثر من 100 تطبيق قرآني مجاني ومدفوع للمصحف والتفسير والتلاوة والتحفيظ. الدليل الشامل لتطبيقات القرآن الكريم من مجتمع إتقان' });
+      } else {
+        this.titleService.setTitle('Comprehensive Quranic Directory - Best Quran Apps Collection');
+        this.metaService.updateTag({ name: 'description', content: 'Explore 100+ free and premium Quran apps for reading, memorization, tafsir, and recitation. The most comprehensive directory of Islamic mobile applications.' });
+      }
+    } else {
+      if (this.currentLang === 'ar') {
+        this.titleService.setTitle(`${categoryName} - دليل التطبيقات القرآنية`);
+        this.metaService.updateTag({ name: 'description', content: `أفضل ${categoryName} للقرآن الكريم - تطبيقات مجانية ومدفوعة مختارة بعناية من مجتمع إتقان لتقنيات القرآن` });
+      } else {
+        this.titleService.setTitle(`${categoryName} - Comprehensive Quranic Directory`);
+        this.metaService.updateTag({ name: 'description', content: `Best ${categoryName} for Holy Quran - Carefully curated free and premium Islamic mobile applications by ITQAN Community.` });
+      }
+    }
+
+    // Add structured data for rich snippets
+    const websiteData = this.seoService.generateWebsiteStructuredData(this.currentLang);
+    const itemListData = this.seoService.generateItemListStructuredData(
+      this.filteredApps, 
+      this.selectedCategory === 'all' ? null : this.selectedCategory, 
+      this.currentLang
+    );
+    const organizationData = this.seoService.generateOrganizationStructuredData(this.currentLang);
+
+    // Combine structured data
+    const combinedData = [
+      websiteData,
+      itemListData,
+      organizationData
+    ];
+
+    this.seoService.addStructuredData(combinedData);
+
+    // Add breadcrumb structured data
+    const breadcrumbs = [
+      {
+        name: this.currentLang === 'ar' ? 'الرئيسية' : 'Home',
+        url: `https://quran-apps.itqan.dev/${this.currentLang}`
+      }
+    ];
+    
+    if (this.selectedCategory !== 'all') {
+      breadcrumbs.push({
+        name: categoryName,
+        url: `https://quran-apps.itqan.dev/${this.currentLang}/${this.selectedCategory}`
+      });
+    }
+
+    const breadcrumbData = this.seoService.generateBreadcrumbStructuredData(breadcrumbs, this.currentLang);
+    
+    // Add breadcrumb data separately to avoid conflicts
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(breadcrumbData);
+    
+    // Remove existing breadcrumb script
+    const existingBreadcrumb = document.querySelector('script[type="application/ld+json"][data-type="breadcrumb"]');
+    if (existingBreadcrumb) {
+      existingBreadcrumb.remove();
+    }
+    
+    script.setAttribute('data-type', 'breadcrumb');
+    document.head.appendChild(script);
   }
 }

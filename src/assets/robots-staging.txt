@@ -1,5 +1,29 @@
+# Staging Environment - Limited Search Engine Indexing
 User-agent: *
 Disallow: /
+Allow: /ar
+Allow: /en
+
+# Specific bot instructions for staging
+User-agent: Googlebot
+Disallow: /
+Allow: /ar
+Allow: /en
+Crawl-delay: 5
+
+User-agent: Bingbot
+Disallow: /
+Allow: /ar
+Allow: /en
+Crawl-delay: 5
+
+# Allow essential assets
+User-agent: *
+Allow: /assets/images/
+Allow: /assets/i18n/
+
+# Staging sitemap
+Sitemap: https://staging.quran-apps.itqan.dev/sitemap.xml
 
 # Staging environment - prevent indexing
 # Domain: staging.quran-apps.itqan.dev
