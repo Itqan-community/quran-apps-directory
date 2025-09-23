@@ -8,7 +8,7 @@ import { NzTagModule } from "ng-zorro-antd/tag";
 import { NzGridModule } from "ng-zorro-antd/grid";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { AppService, QuranApp } from "../../services/app.service";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { DomSanitizer, SafeHtml, Title, Meta } from "@angular/platform-browser";
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { categories } from "../../services/applicationsData";
 import { NzRateModule } from "ng-zorro-antd/rate";
@@ -16,6 +16,7 @@ import { FormsModule } from "@angular/forms";
 // import function to register Swiper custom elements
 import { register } from 'swiper/element/bundle';
 import {Nl2brPipe} from "../../pipes/nl2br.pipe";
+import { SeoService } from "../../services/seo.service";
 // register Swiper custom elements
 register();
 
@@ -70,7 +71,10 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     private appService: AppService,
     private sanitizer: DomSanitizer,
     private translateService: TranslateService,
-    private router: Router // Add Router to the constructor
+    private router: Router,
+    private seoService: SeoService,
+    private titleService: Title,
+    private metaService: Meta
   ) {
     this.currentLang = this.translateService.currentLang as 'ar' | 'en';
     // Subscribe to language changes
@@ -137,6 +141,9 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
                 .slice(0, 3);
             });
         }
+        
+        // Update SEO data after app is loaded
+        this.updateSeoData();
         this.loading = false;
       }
     });
@@ -201,5 +208,75 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
       const developerName = encodeURIComponent(this.app.Developer_Name_En);
       this.router.navigate([`/${this.currentLang}/developer/${developerName}`]);
     }
+  }
+
+  private updateSeoData() {
+    if (!this.app) return;
+
+    const appName = this.currentLang === 'ar' ? this.app.Name_Ar : this.app.Name_En;
+    const appDescription = this.currentLang === 'ar' ? this.app.Short_Description_Ar : this.app.Short_Description_En;
+    const fullDescription = this.currentLang === 'ar' ? this.app.Description_Ar : this.app.Description_En;
+
+    // Update page title and meta tags
+    const title = this.currentLang === 'ar' 
+      ? `${appName} - تطبيق قرآني من دليل التطبيقات القرآنية`
+      : `${appName} - Quran App from Comprehensive Quranic Directory`;
+    
+    this.titleService.setTitle(title);
+    this.metaService.updateTag({ name: 'title', content: title });
+    this.metaService.updateTag({ name: 'description', content: `${appDescription} - ${fullDescription?.substring(0, 150)}...` });
+    
+    // Update Open Graph tags
+    this.metaService.updateTag({ property: 'og:title', content: title });
+    this.metaService.updateTag({ property: 'og:description', content: appDescription || '' });
+    this.metaService.updateTag({ property: 'og:image', content: this.app.applicationIcon || '' });
+    this.metaService.updateTag({ property: 'og:url', content: `https://quran-apps.itqan.dev/${this.currentLang}/app/${this.app.id}` });
+    this.metaService.updateTag({ property: 'og:type', content: 'website' });
+    
+    // Update Twitter Card tags
+    this.metaService.updateTag({ property: 'twitter:card', content: 'summary_large_image' });
+    this.metaService.updateTag({ property: 'twitter:title', content: title });
+    this.metaService.updateTag({ property: 'twitter:description', content: appDescription || '' });
+    this.metaService.updateTag({ property: 'twitter:image', content: this.app.applicationIcon || '' });
+
+    // Add app-specific keywords
+    const keywords = [
+      this.currentLang === 'ar' ? 'تطبيق قرآني' : 'Quran app',
+      this.currentLang === 'ar' ? 'تطبيق إسلامي' : 'Islamic app',
+      appName,
+      ...this.app.categories.map(cat => this.currentLang === 'ar' ? `تطبيقات ${cat}` : `${cat} apps`)
+    ];
+    this.metaService.updateTag({ name: 'keywords', content: keywords.join(', ') });
+
+    // Add structured data for the app
+    const appStructuredData = this.seoService.generateAppStructuredData(this.app, this.currentLang);
+    
+    // Add breadcrumb structured data
+    const breadcrumbs = [
+      {
+        name: this.currentLang === 'ar' ? 'الرئيسية' : 'Home',
+        url: `https://quran-apps.itqan.dev/${this.currentLang}`
+      },
+      {
+        name: this.currentLang === 'ar' ? 'التطبيقات' : 'Apps',
+        url: `https://quran-apps.itqan.dev/${this.currentLang}`
+      },
+      {
+        name: appName,
+        url: `https://quran-apps.itqan.dev/${this.currentLang}/app/${this.app.id}`
+      }
+    ];
+    
+    const breadcrumbData = this.seoService.generateBreadcrumbStructuredData(breadcrumbs, this.currentLang);
+    const organizationData = this.seoService.generateOrganizationStructuredData(this.currentLang);
+
+    // Combine structured data
+    const combinedData = [
+      appStructuredData,
+      breadcrumbData,
+      organizationData
+    ];
+
+    this.seoService.addStructuredData(combinedData);
   }
 }
