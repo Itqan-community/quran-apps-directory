@@ -10,13 +10,19 @@
     "home": "Home",
     "about": "About",
     "contact": "Contact Us",
+    "itqan_community": "ITQAN Community",
     "language": {
       "ar": "العربية",
       "en": "English"
     }
   },
   "footer": {
-    "copyright": "an Open Source Project, by ITQAN community for Quran technologies, 1447 H"
+    "copyright": "an Open Source Project, by ITQAN community for Quran technologies, 1447 H",
+    "itqan_projects": "Other ITQAN Projects",
+    "content_management": "Quran Content Management System",
+    "main_site": "ITQAN Community Main Site",
+    "resources": "Developer Resources",
+    "mushaf_fonts": "Uthmanic Script Fonts"
   },
   "appList": {
     "search": {
@@ -98,17 +104,43 @@
     "app-request-form": "Request Form"
   },
   "aboutUs": {
-    "title": "About Us",
+    "title": "About the Comprehensive Quranic Directory",
+    "subtitle": "The World's Most Complete Guide to the Best Quran Applications",
+    "intro": "Welcome to the Comprehensive Quranic Directory - the leading platform for discovering and evaluating the finest Islamic applications dedicated to serving the Holy Quran. With over 100 diverse free and premium applications, we're here to facilitate your journey in learning and contemplating the Book of Allah.",
     "mission": "Our Mission",
     "vision": "Our Vision",
-    "missionDescription": "The Quran Apps Directory is an open-source project designed to serve Muslims worldwide by providing a platform to collect and categorize digital applications related to the Quran. The project aims to make it easier to access the best technological solutions that serve the Book of Allah, whether in recitation, memorization, tafser, tajweed, or other Quranic fields.",
-    "visionDescription": "To become the most reliable and user-friendly digital resource for Quranic studies, helping people worldwide connect with and understand the divine message.",
+    "missionDescription": "The Comprehensive Quranic Directory is an open-source project designed to serve Muslims worldwide by providing a comprehensive and trusted platform for collecting, categorizing, and evaluating digital applications related to the Holy Quran. We strive to facilitate access to the best technological solutions that serve the Book of Allah, whether in recitation, memorization, tafsir, tajweed, or other Quranic fields.",
+    "visionDescription": "Our vision is to become the world's foremost and most trusted digital resource for Quranic applications, helping millions of Muslims worldwide connect with the Holy Quran and understand and contemplate it through the best modern technological methods.",
+    "whatWeDo": "What We Provide",
+    "whatWeDoList": {
+      "comprehensive": "Comprehensive evaluation of over 100 Quranic applications",
+      "categories": "Expert categorization by field (Mushaf, Tafsir, Recitation, Memorization)",
+      "bilingual": "Bilingual service (Arabic and English)",
+      "quality": "Rigorous quality testing to ensure reliability",
+      "search": "Advanced search and intelligent filtering",
+      "community": "Active community of developers and users"
+    },
+    "why": "Why Choose the Quranic Directory?",
+    "whyList": {
+      "largest": "The largest collection of Quranic applications in one place",
+      "verified": "All applications are tested and verified by specialists",
+      "expert": "Professional evaluations from experts in Quranic technology",
+      "updated": "Continuous updates and addition of new applications",
+      "free": "Completely free service with no advertisements",
+      "opensource": "Open-source and transparent project"
+    },
+    "categories": "Application Categories",
+    "categoriesDescription": "We provide diverse applications across all fields of Quranic studies and Islamic sciences:",
     "values": "Our Values",
     "values_list": {
-      "accuracyAndAuthenticity": "Accuracy and authenticity in Quranic content",
-      "userCentricDesignAndAccessibility": "User-centric design and accessibility",
-      "continuousImprovementAndInnovation": "Continuous improvement and innovation",
-      "communityEngagementAndSupport": "Community engagement and support"
-    }
+      "accuracyAndAuthenticity": "Accuracy and reliability in Quranic content",
+      "userCentricDesignAndAccessibility": "User-centered design and ease of access",
+      "continuousImprovementAndInnovation": "Continuous improvement and innovation in service",
+      "communityEngagementAndSupport": "Building a strong community and mutual support",
+      "transparency": "Complete transparency and accountability",
+      "innovation": "Leadership in modern Quranic technologies"
+    },
+    "acknowledgments": "Acknowledgments",
+    "acknowledgementsText": "We thank all developers and creators who dedicate their efforts to serving the Holy Quran through technology. We especially thank our colleagues in the Islamic Applications project for sharing with us the initial list of applications."
   }
 }
