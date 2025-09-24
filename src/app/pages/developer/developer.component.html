@@ -87,9 +87,14 @@
                   [nzDescription]="currentLang == 'en' ? app.Short_Description_En : app.Short_Description_Ar"
                 ></nz-card-meta>
                 <!-- Rating display -->
-                <div class="app-rating ant-flex ant-flex-align-center">
-                  <span class="rating-number">{{ app.Apps_Avg_Rating }}</span>
-                  <nz-rate [ngModel]="app.Apps_Avg_Rating" [nzDisabled]="true" [nzAllowHalf]="true"></nz-rate>
+                <div class="app-rating">
+                  <span class="rating-number" [ngClass]="getRatingClass(app.Apps_Avg_Rating)">{{ (app.Apps_Avg_Rating || 0) | number:'1.1-1' }}</span>
+                  <div class="custom-stars" [ngClass]="getRatingClass(app.Apps_Avg_Rating)">
+                    <div class="star-container" *ngFor="let star of getStarArray(app.Apps_Avg_Rating); let i = index">
+                      <div class="star-base">★</div>
+                      <div class="star-fill" [style.width.%]="star.fillPercent">★</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
