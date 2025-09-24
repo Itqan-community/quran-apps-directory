@@ -1,6 +1,41 @@
 .search-section {
   margin-bottom: 32px;
   margin-top: 30px;
+  
+  // Search input base styling - theme overrides in themes.scss
+  :host ::ng-deep {
+    .ant-input-group {
+      border-radius: 6px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      
+      .ant-input {
+        font-size: 16px;
+        padding: 8px 12px;
+        transition: all 0.3s ease;
+      }
+      
+      .ant-input-group-addon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 12px;
+        
+        .anticon {
+          font-size: 14px;
+          transition: all 0.3s ease;
+        }
+        
+        span[nz-icon] {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 14px;
+          height: 14px;
+        }
+      }
+    }
+  }
 }
 .search-section-wrapper {
   display: flex;
@@ -9,6 +44,7 @@
   margin-top: 30px;
   h1 {
     margin: 0;
+    color: var(--text-color, #000);
   }
   // responsive
   @media screen and (max-width: 768px) {
@@ -42,7 +78,7 @@
   h2 {
     font-size: 18px;
     font-weight: 500;
-    color: #72788e;
+    color: var(--text-secondary, #72788e);
     margin-bottom: 0;
   }
   // responsive

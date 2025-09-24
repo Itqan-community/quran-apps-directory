@@ -4,14 +4,17 @@ import { NzLayoutModule } from "ng-zorro-antd/layout";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzSpaceModule } from "ng-zorro-antd/space";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
-import { NzIconModule } from "ng-zorro-antd/icon";
-import { MenuOutline } from '@ant-design/icons-angular/icons';
+import { NzIconModule, NzIconService } from "ng-zorro-antd/icon";
+import { MenuOutline, SunOutline, MoonOutline, BgColorsOutline, SearchOutline } from '@ant-design/icons-angular/icons';
 import { Title, Meta } from '@angular/platform-browser';
 import { LanguageService } from "./services/language.service";
+import { ThemeService } from "./services/theme.service";
+import { ThemeToggleComponent } from "./components/theme-toggle/theme-toggle.component";
+import { PerformanceService } from "./services/performance.service";
 import { filter } from "rxjs";
 
 // Import what icons you need
-const icons = [MenuOutline];
+const icons = [MenuOutline, SunOutline, MoonOutline, BgColorsOutline, SearchOutline];
 
 @Component({
   selector: "app-root",
@@ -26,6 +29,7 @@ const icons = [MenuOutline];
     NzSpaceModule,
     TranslateModule,
     NzIconModule,
+    ThemeToggleComponent,
   ],
 })
 export class AppComponent implements OnInit, AfterViewInit {
@@ -38,7 +42,14 @@ export class AppComponent implements OnInit, AfterViewInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  constructor(private languageService: LanguageService) {
+  constructor(
+    private languageService: LanguageService, 
+    private themeService: ThemeService,
+    private performanceService: PerformanceService,
+    private iconService: NzIconService
+  ) {
+    // Register icons for theme toggle
+    this.iconService.addIcon(...icons);
     // Get browser language
     const browserLang = navigator.language;
     const defaultLang = browserLang.startsWith("ar") ? "ar" : "en";
@@ -95,6 +106,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     // Language service will handle URL changes
     this.languageService.setLanguageFromUrl();
+    
+    // Initialize performance monitoring
+    setTimeout(() => {
+      this.performanceService.measurePerformance();
+      this.performanceService.optimizeImages();
+    }, 1000);
   }
 
   toggleLanguage() {

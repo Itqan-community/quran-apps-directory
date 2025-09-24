@@ -67,7 +67,8 @@
             "scripts": [],
             "styles": [
               "node_modules/ng-zorro-antd/ng-zorro-antd.css",
-              "src/global_styles.less"
+              "src/global_styles.less",
+              "./src/themes.scss"
             ],
             "tsConfig": "tsconfig.app.json"
           }
