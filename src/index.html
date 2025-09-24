@@ -72,12 +72,8 @@
     <!-- Enhanced preload directives for critical resources -->
     <link rel="preload" href="/assets/images/logo-with-text.svg" as="image" fetchpriority="high">
     <link rel="preload" href="/assets/images/banner.png" as="image" fetchpriority="high">
-    <link rel="preload" href="/assets/i18n/ar.json" as="fetch" type="application/json" crossorigin>
-    <link rel="preload" href="/assets/i18n/en.json" as="fetch" type="application/json" crossorigin>
     
-    <!-- Preload critical app chunks -->
-    <link rel="modulepreload" href="/main.js">
-    <link rel="modulepreload" href="/polyfills.js">
+    <!-- Note: Translation files are loaded on-demand, no need to preload -->
     
     <!-- Favicons and Icons -->
     <link rel="icon" type="image/x-icon" href="/assets/images/fav/favicon.ico">
