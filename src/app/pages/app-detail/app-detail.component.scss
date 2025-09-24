@@ -59,15 +59,15 @@
 }
 .category-badge {
   padding: 6px 12px;
-  background-color: #f8f8f8;
+  background-color: var(--surface-color, #f8f8f8);
   border-radius: 20px;
   transition: all 0.3s;
-  border: 1px solid #e8e8e8;
+  border: 1px solid var(--border-color, #e8e8e8);
   cursor: pointer;
   
   &:hover {
-    background: #ede0c04b;
-    border-color: #d0c5a3;
+    background: var(--hover-bg, #ede0c04b);
+    border-color: var(--primary-color, #d0c5a3);
   }
   
   &:focus {
@@ -79,7 +79,7 @@
 .badge-name {
   font-weight: 500;
   font-size: 14px;
-  color: #272424;
+  color: var(--text-color, #272424);
 }
 
 /* Mobile adjustments */
@@ -116,6 +116,7 @@ nz-divider::before {
   margin-bottom: 15px;
   h1 {
     margin: 0;
+    color: var(--text-color, #000);
   }
 }
  .content-carousel {
@@ -152,31 +153,31 @@ html[dir="rtl"] .content-carousel {
  
 .content-section {
   padding-top: 24px;
-  background-color: #fff;
+  background-color: var(--bg-color, #fff);
   position: relative;
   z-index: 99;
   h2 {
     font-size: 20px;
-    color: #272424;
+    color: var(--text-color, #272424);
   }
   p {
     font-size: 17px;
-    color: #72788E;
+    color: var(--text-secondary, #72788E);
     text-align: justify;
   }
   // responsive
   @media screen and (max-width: 768px) {
     padding-top: 30px; // Increased padding to ensure more spacing on mobile
-    &::before {
-      content: "";
-        width: 100%;
-        height: 40px;
-        display: block;
-        background: rgb(255, 255, 255);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgb(255, 255, 255) 39%);
-        position: absolute;
-        top: -40px;
-    }
+      &::before {
+        content: "";
+          width: 100%;
+          height: 40px;
+          display: block;
+          background: var(--bg-color, rgb(255, 255, 255));
+          background: linear-gradient(180deg, transparent 0%, var(--bg-color, rgb(255, 255, 255)) 39%);
+          position: absolute;
+          top: -40px;
+      }
   }
 }
 
@@ -221,7 +222,7 @@ html[dir="rtl"] .content-section {
   margin: -12px; // Negative margin to account for the padding
   
   &:hover {
-    background-color: #f5f5f5;
+    background-color: var(--hover-bg, #f5f5f5);
     transform: translateY(-1px);
   }
   
@@ -584,8 +585,9 @@ html[dir="rtl"] .content-section {
 .swiper-button-next,
 .swiper-button-prev {
   inset-inline-start: 0;
-  color: #7c4332;
-  background-color: #fff;
+  color: var(--primary-color, #7c4332);
+  background-color: var(--card-bg, #fff);
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
   border-radius: 50%;
   width: 60px;
   height: 60px;
@@ -597,10 +599,13 @@ html[dir="rtl"] .content-section {
   transform: translateY(-50%);
   z-index: 10;
   cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   &:hover {
-    background-color: #f5f5f5;
+    background-color: var(--primary-color, #7c4332);
+    color: #ffffff;
+    border-color: var(--primary-color, #7c4332);
+    transform: translateY(-50%) scale(1.1);
   }
   &.swiper-button-disabled {
     display: none;
@@ -608,6 +613,11 @@ html[dir="rtl"] .content-section {
 
   svg {
     transform: rotate(0deg);
+    transition: color 0.3s ease;
+    
+    path {
+      fill: currentColor;
+    }
   }
   // responsive
   @media screen and (max-width: 768px) {
