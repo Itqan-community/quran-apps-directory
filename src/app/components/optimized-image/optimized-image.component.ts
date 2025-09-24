@@ -6,40 +6,85 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <picture>
-      <!-- AVIF source (best compression, ~50% smaller than JPEG) -->
-      <source 
-        *ngIf="shouldUseAvif"
-        [srcset]="avifSrc" 
-        type="image/avif">
+    <div class="image-container" [style.aspect-ratio]="aspectRatio">
+      <!-- Loading placeholder for LCP optimization -->
+      <div 
+        *ngIf="showPlaceholder" 
+        class="image-placeholder"
+        [style.background-color]="placeholderColor">
+      </div>
       
-      <!-- WebP source (fallback, ~25% smaller than JPEG) -->
-      <source 
-        *ngIf="shouldUseWebp"
-        [srcset]="webpSrc" 
-        type="image/webp">
-      
-      <!-- Original format fallback (for older browsers) -->
-      <img 
-        [src]="originalSrc"
-        [alt]="alt"
-        [loading]="loading"
-        [attr.fetchpriority]="fetchpriority"
-        [width]="width"
-        [height]="height"
-        [class]="cssClass"
-        [style]="cssStyle"
-        decoding="async">
-    </picture>
+      <picture 
+        class="image-picture"
+        [class.image-loaded]="!showPlaceholder">
+        <!-- AVIF source (best compression, ~50% smaller than JPEG) -->
+        <source 
+          *ngIf="shouldUseAvif"
+          [srcset]="avifSrc" 
+          type="image/avif">
+        
+        <!-- WebP source (fallback, ~25% smaller than JPEG) -->
+        <source 
+          *ngIf="shouldUseWebp"
+          [srcset]="webpSrc" 
+          type="image/webp">
+        
+        <!-- Original format fallback (for older browsers) -->
+        <img 
+          [src]="originalSrc"
+          [alt]="alt"
+          [loading]="loading"
+          [attr.fetchpriority]="fetchpriority"
+          [width]="width"
+          [height]="height"
+          [class]="cssClass"
+          [style]="cssStyle"
+          (load)="onImageLoad()"
+          (error)="onImageError()"
+          decoding="async">
+      </picture>
+    </div>
   `,
   styles: [`
-    picture {
-      display: contents;
+    .image-container {
+      position: relative;
+      display: block;
+      width: 100%;
+      overflow: hidden;
     }
     
-    img {
-      max-width: 100%;
-      height: auto;
+    .image-placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      transition: opacity 0.3s ease;
+    }
+    
+    .image-picture {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+    }
+    
+    .image-picture img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.3s ease;
+    }
+    
+    .image-loaded .image-placeholder {
+      opacity: 0;
+      pointer-events: none;
     }
   `]
 })
@@ -52,6 +97,10 @@ export class OptimizedImageComponent {
   @Input() height?: string;
   @Input() cssClass?: string;
   @Input() cssStyle?: string;
+  @Input() aspectRatio: string = '16/9'; // Default aspect ratio for cover images
+  @Input() placeholderColor: string = '#f5f5f5';
+  
+  showPlaceholder = true;
 
   get originalSrc(): string {
     return this.src || '';
@@ -79,5 +128,14 @@ export class OptimizedImageComponent {
     if (!this.src) return false;
     // Only use WebP for local assets, not CDN images (until CDN transformation is set up)
     return this.src.startsWith('/assets/') || this.src.startsWith('assets/');
+  }
+
+  onImageLoad(): void {
+    this.showPlaceholder = false;
+  }
+
+  onImageError(): void {
+    this.showPlaceholder = false;
+    console.warn(`Failed to load image: ${this.src}`);
   }
 }

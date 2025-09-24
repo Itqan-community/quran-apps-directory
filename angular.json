@@ -31,7 +31,8 @@
               "optimization": {
                 "styles": {
                   "minify": true,
-                  "inlineCritical": true
+                  "inlineCritical": true,
+                  "removeUnusedCss": true
                 },
                 "scripts": true,
                 "fonts": {
@@ -41,16 +42,23 @@
               "outputHashing": "all",
               "sourceMap": false,
               "crossOrigin": "anonymous",
+              "preloadStrategy": "all",
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1mb",
-                  "maximumError": "1.5mb"
+                  "maximumWarning": "800kb",
+                  "maximumError": "1.2mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "20kb",
-                  "maximumError": "50kb"
+                  "maximumWarning": "15kb",
+                  "maximumError": "30kb"
+                },
+                {
+                  "type": "bundle",
+                  "name": "main",
+                  "maximumWarning": "600kb",
+                  "maximumError": "1mb"
                 }
               ]
             }
