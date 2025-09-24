@@ -11,6 +11,9 @@ import { LanguageService } from "./services/language.service";
 import { ThemeService } from "./services/theme.service";
 import { ThemeToggleComponent } from "./components/theme-toggle/theme-toggle.component";
 import { PerformanceService } from "./services/performance.service";
+import { DeferredAnalyticsService } from "./services/deferred-analytics.service";
+import { LcpMonitorService } from "./services/lcp-monitor.service";
+import { CacheOptimizationService } from "./services/cache-optimization.service";
 import { filter } from "rxjs";
 
 // Import what icons you need
@@ -46,6 +49,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     private languageService: LanguageService, 
     private themeService: ThemeService,
     private performanceService: PerformanceService,
+    private deferredAnalytics: DeferredAnalyticsService,
+    private lcpMonitor: LcpMonitorService,
+    private cacheOptimization: CacheOptimizationService,
     private iconService: NzIconService
   ) {
     // Register icons for theme toggle
@@ -111,7 +117,19 @@ export class AppComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.performanceService.measurePerformance();
       this.performanceService.optimizeImages();
+      
+      // Initialize cache optimization monitoring
+      this.cacheOptimization.monitorCachePerformance();
+      this.cacheOptimization.preloadCriticalResources();
     }, 1000);
+
+    // Track route changes for analytics (when analytics is ready)
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      // Track page view with deferred analytics
+      this.deferredAnalytics.trackPageView(event.urlAfterRedirects);
+    });
   }
 
   toggleLanguage() {
@@ -142,13 +160,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.metaService.updateTag({ property: "og:url", content: currentUrl });
       this.metaService.updateTag({ property: "og:title", content: "دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم" });
       this.metaService.updateTag({ property: "og:description", content: "الدليل الشامل لأفضل تطبيقات القرآن الكريم - تطبيقات المصحف، التفسير، التلاوة، التحفيظ والتدبر. اكتشف أكثر من 100 تطبيق قرآني مجاني ومدفوع" });
-      this.metaService.updateTag({ property: "og:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" });
+      this.metaService.updateTag({ property: "og:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.webp" });
       this.metaService.updateTag({ property: "og:locale", content: "ar_SA" });
       this.metaService.updateTag({ property: "twitter:card", content: "summary_large_image" });
       this.metaService.updateTag({ property: "twitter:url", content: currentUrl });
       this.metaService.updateTag({ property: "twitter:title", content: "دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم" });
       this.metaService.updateTag({ property: "twitter:description", content: "الدليل الشامل لأفضل تطبيقات القرآن الكريم - تطبيقات المصحف، التفسير، التلاوة، التحفيظ والتدبر" });
-      this.metaService.updateTag({ property: "twitter:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" });
+      this.metaService.updateTag({ property: "twitter:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.webp" });
     } else {
       // English SEO optimization
       this.titleService.setTitle("Comprehensive Quranic Directory - Best Quran Apps Collection");
@@ -163,13 +181,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.metaService.updateTag({ property: "og:url", content: currentUrl });
       this.metaService.updateTag({ property: "og:title", content: "Comprehensive Quranic Directory - Best Quran Apps Collection" });
       this.metaService.updateTag({ property: "og:description", content: "The most comprehensive Quranic directory featuring the best Quran apps for reading, memorization, translation, tafsir, and recitation. Discover 100+ Islamic mobile applications." });
-      this.metaService.updateTag({ property: "og:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" });
+      this.metaService.updateTag({ property: "og:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.webp" });
       this.metaService.updateTag({ property: "og:locale", content: "en_US" });
       this.metaService.updateTag({ property: "twitter:card", content: "summary_large_image" });
       this.metaService.updateTag({ property: "twitter:url", content: currentUrl });
       this.metaService.updateTag({ property: "twitter:title", content: "Comprehensive Quranic Directory - Best Quran Apps Collection" });
       this.metaService.updateTag({ property: "twitter:description", content: "The most comprehensive Quranic directory featuring the best Quran apps for reading, memorization, translation, tafsir, and recitation." });
-      this.metaService.updateTag({ property: "twitter:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" });
+      this.metaService.updateTag({ property: "twitter:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.webp" });
     }
     
     // Add canonical URL
