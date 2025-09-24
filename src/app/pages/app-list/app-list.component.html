@@ -90,6 +90,8 @@
                   [alt]="app.Name_En+ ' screenshot'"
                   [src]="currentLang === 'en' ? app.mainImage_en : app.mainImage_ar"
                   style="width: 100%"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </ng-template>
@@ -100,6 +102,8 @@
                   class="app-icon"
                   [src]="app.applicationIcon"
                   [alt]="app.Name_En + ' icon'"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div class="card-data-container">
