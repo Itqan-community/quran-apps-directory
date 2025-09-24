@@ -142,13 +142,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.metaService.updateTag({ property: "og:url", content: currentUrl });
       this.metaService.updateTag({ property: "og:title", content: "دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم" });
       this.metaService.updateTag({ property: "og:description", content: "الدليل الشامل لأفضل تطبيقات القرآن الكريم - تطبيقات المصحف، التفسير، التلاوة، التحفيظ والتدبر. اكتشف أكثر من 100 تطبيق قرآني مجاني ومدفوع" });
-      this.metaService.updateTag({ property: "og:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" });
+      this.metaService.updateTag({ property: "og:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.webp" });
       this.metaService.updateTag({ property: "og:locale", content: "ar_SA" });
       this.metaService.updateTag({ property: "twitter:card", content: "summary_large_image" });
       this.metaService.updateTag({ property: "twitter:url", content: currentUrl });
       this.metaService.updateTag({ property: "twitter:title", content: "دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم" });
       this.metaService.updateTag({ property: "twitter:description", content: "الدليل الشامل لأفضل تطبيقات القرآن الكريم - تطبيقات المصحف، التفسير، التلاوة، التحفيظ والتدبر" });
-      this.metaService.updateTag({ property: "twitter:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" });
+      this.metaService.updateTag({ property: "twitter:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.webp" });
     } else {
       // English SEO optimization
       this.titleService.setTitle("Comprehensive Quranic Directory - Best Quran Apps Collection");
@@ -163,13 +163,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.metaService.updateTag({ property: "og:url", content: currentUrl });
       this.metaService.updateTag({ property: "og:title", content: "Comprehensive Quranic Directory - Best Quran Apps Collection" });
       this.metaService.updateTag({ property: "og:description", content: "The most comprehensive Quranic directory featuring the best Quran apps for reading, memorization, translation, tafsir, and recitation. Discover 100+ Islamic mobile applications." });
-      this.metaService.updateTag({ property: "og:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" });
+      this.metaService.updateTag({ property: "og:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.webp" });
       this.metaService.updateTag({ property: "og:locale", content: "en_US" });
       this.metaService.updateTag({ property: "twitter:card", content: "summary_large_image" });
       this.metaService.updateTag({ property: "twitter:url", content: currentUrl });
       this.metaService.updateTag({ property: "twitter:title", content: "Comprehensive Quranic Directory - Best Quran Apps Collection" });
       this.metaService.updateTag({ property: "twitter:description", content: "The most comprehensive Quranic directory featuring the best Quran apps for reading, memorization, translation, tafsir, and recitation." });
-      this.metaService.updateTag({ property: "twitter:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" });
+      this.metaService.updateTag({ property: "twitter:image", content: "https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.webp" });
     }
     
     // Add canonical URL
