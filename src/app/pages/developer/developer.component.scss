@@ -76,13 +76,178 @@
 }
 
 .app-rating {
-  gap: 8px;
-  margin-top: 8px;
+  margin-top: auto; /* Push to bottom */
+  padding-top: 16px; /* Increased space from description */
+  display: flex;
+  align-items: center;
+  height: 24px; /* Fixed height for consistent alignment */
+  gap: 8px; /* Consistent spacing */
 
   .rating-number {
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    min-width: 36px; /* Ensures consistent width for ratings */
+    padding: 2px 6px;
+    border-radius: 4px;
+    
+    /* Color coding based on rating ranges */
+    &.excellent {
+      background-color: #52c41a;
+      color: white;
+    }
+    
+    &.very-good {
+      background-color: #73d13d;
+      color: white;
+    }
+    
+    &.good {
+      background-color: #faad14;
+      color: white;
+    }
+    
+    &.fair {
+      background-color: #fa8c16;
+      color: white;
+    }
+    
+    &.poor {
+      background-color: #ff4d4f;
+      color: white;
+    }
+  }
+}
+
+:host ::ng-deep {
+  nz-rate {
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    .ant-rate-star:not(:last-child) {
+      margin-right: 3px;
+    }
+    .anticon svg {
+      width: 14px;
+      height: 14px;
+    }
+    .ant-rate-star {
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    /* Color stars based on rating quality */
+    &.excellent .ant-rate-star-full .anticon {
+      color: #52c41a !important;
+    }
+    
+    &.very-good .ant-rate-star-full .anticon {
+      color: #73d13d !important;
+    }
+    
+    &.good .ant-rate-star-full .anticon {
+      color: #faad14 !important;
+    }
+    
+    &.fair .ant-rate-star-full .anticon {
+      color: #fa8c16 !important;
+    }
+    
+    &.poor .ant-rate-star-full .anticon {
+      color: #ff4d4f !important;
+    }
+    
+    /* Half stars also get colored */
+    &.excellent .ant-rate-star-half .anticon {
+      color: #52c41a !important;
+    }
+    
+    &.very-good .ant-rate-star-half .anticon {
+      color: #73d13d !important;
+    }
+    
+    &.good .ant-rate-star-half .anticon {
+      color: #faad14 !important;
+    }
+    
+    &.fair .ant-rate-star-half .anticon {
+      color: #fa8c16 !important;
+    }
+    
+    &.poor .ant-rate-star-half .anticon {
+      color: #ff4d4f !important;
+    }
+  }
+  
+  /* Custom star system for precise ratings */
+  .custom-stars {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    
+    .star-container {
+      position: relative;
+      width: 14px;
+      height: 14px;
+      overflow: hidden;
+      
+      .star-base {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 14px;
+        line-height: 1;
+        color: #f0f0f0;
+        user-select: none;
+      }
+      
+      .star-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 14px;
+        line-height: 1;
+        overflow: hidden;
+        user-select: none;
+        transition: width 0.3s ease;
+      }
+    }
+    
+    /* Color the filled stars based on rating quality */
+    &.excellent .star-fill {
+      color: #52c41a;
+    }
+    
+    &.very-good .star-fill {
+      color: #73d13d;
+    }
+    
+    &.good .star-fill {
+      color: #faad14;
+    }
+    
+    &.fair .star-fill {
+      color: #fa8c16;
+    }
+    
+    &.poor .star-fill {
+      color: #ff4d4f;
+    }
+  }
+}
+
+::ng-deep .ant-card-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  
+  .ant-flex {
+    flex: 1;
+    display: flex;
+    height: 100%;
   }
 }
 
