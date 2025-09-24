@@ -11,6 +11,7 @@ import { LanguageService } from "./services/language.service";
 import { ThemeService } from "./services/theme.service";
 import { ThemeToggleComponent } from "./components/theme-toggle/theme-toggle.component";
 import { PerformanceService } from "./services/performance.service";
+import { DeferredAnalyticsService } from "./services/deferred-analytics.service";
 import { filter } from "rxjs";
 
 // Import what icons you need
@@ -46,6 +47,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private languageService: LanguageService, 
     private themeService: ThemeService,
     private performanceService: PerformanceService,
+    private deferredAnalytics: DeferredAnalyticsService,
     private iconService: NzIconService
   ) {
     // Register icons for theme toggle
@@ -112,6 +114,14 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.performanceService.measurePerformance();
       this.performanceService.optimizeImages();
     }, 1000);
+
+    // Track route changes for analytics (when analytics is ready)
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      // Track page view with deferred analytics
+      this.deferredAnalytics.trackPageView(event.urlAfterRedirects);
+    });
   }
 
   toggleLanguage() {
