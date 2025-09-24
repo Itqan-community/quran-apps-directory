@@ -252,4 +252,36 @@ export class AppListComponent implements OnInit {
     script.setAttribute('data-type', 'breadcrumb');
     document.head.appendChild(script);
   }
+
+  getRatingClass(rating: number): string {
+    if (!rating || rating === 0) return 'poor';
+    if (rating >= 4.5) return 'excellent';
+    if (rating >= 4.0) return 'very-good';
+    if (rating >= 3.5) return 'good';
+    if (rating >= 2.5) return 'fair';
+    return 'poor';
+  }
+
+  getStarArray(rating: number): { fillPercent: number }[] {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const remainder = rating % 1;
+    
+    // Add full stars
+    for (let i = 0; i < fullStars; i++) {
+      stars.push({ fillPercent: 100 });
+    }
+    
+    // Add partial star if needed
+    if (remainder > 0 && fullStars < 5) {
+      stars.push({ fillPercent: remainder * 100 });
+    }
+    
+    // Add empty stars to reach 5 total
+    while (stars.length < 5) {
+      stars.push({ fillPercent: 0 });
+    }
+    
+    return stars;
+  }
 }
