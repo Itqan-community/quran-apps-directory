@@ -242,6 +242,4 @@
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
-
-  <!-- NOTE: This is a foundational sitemap. A build script should be created to generate a complete sitemap with all 29 apps dynamically. -->
 </urlset>
