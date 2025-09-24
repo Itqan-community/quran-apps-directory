@@ -59,6 +59,7 @@
             "assets": [
               "src/favicon.ico",
               "src/sitemap.xml",
+              "src/robots.txt",
               "src/assets"
             ],
             "index": "src/index.html",
