@@ -288,20 +288,30 @@ export class AppListComponent implements OnInit {
   }
 
   /**
-   * Smart loading strategy based on web.dev LCP recommendations
-   * Load first 6 images eagerly (likely above the fold), lazy load the rest
+   * Aggressive loading strategy for LCP optimization
+   * Load first 4 images eagerly with high priority for immediate above-the-fold content
    */
   getImageLoadingStrategy(index: number): 'eager' | 'lazy' {
-    // First 6 images are likely above the fold on most screen sizes
-    // Based on web.dev research: https://web.dev/lcp-lazy-loading/
-    return index < 6 ? 'eager' : 'lazy';
+    // More aggressive eager loading for better LCP
+    // First 4 images (top row on desktop) load eagerly
+    return index < 4 ? 'eager' : 'lazy';
   }
 
   /**
-   * Set high priority for first few images to improve LCP
+   * Aggressive priority strategy for LCP improvement
    */
   getImagePriority(index: number): 'high' | 'low' | 'auto' {
-    // First 3 images get high priority for LCP optimization
-    return index < 3 ? 'high' : 'low';
+    // First image gets highest priority for LCP
+    // Next 2 images get high priority for above-the-fold
+    if (index === 0) return 'high'; // LCP candidate
+    if (index < 3) return 'high';   // Above-the-fold
+    return 'low';
+  }
+
+  /**
+   * Get appropriate aspect ratio for different image types
+   */
+  getImageAspectRatio(imageType: 'cover' | 'icon'): string {
+    return imageType === 'cover' ? '16/9' : '1/1';
   }
 }
