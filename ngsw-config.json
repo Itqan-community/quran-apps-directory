@@ -39,6 +39,18 @@
         "timeout": "5s",
         "strategy": "performance"
       }
+    },
+    {
+      "name": "optimized-images",
+      "urls": [
+        "https://pub-e11717db663c469fb51c65995892b449.r2.dev/**"
+      ],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 200,
+        "maxAge": "7d",
+        "timeout": "10s"
+      }
     }
   ],
   "navigationUrls": [
