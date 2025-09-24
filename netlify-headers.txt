@@ -1,0 +1,55 @@
+# Performance headers for Netlify
+
+/*
+  # Security headers
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  
+  # Performance headers
+  X-DNS-Prefetch-Control: on
+
+# Static assets with long cache time
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Images with compression
+*.jpg
+  Content-Encoding: gzip
+  Cache-Control: public, max-age=31536000, immutable
+
+*.png
+  Content-Encoding: gzip
+  Cache-Control: public, max-age=31536000, immutable
+
+*.svg
+  Content-Encoding: gzip
+  Cache-Control: public, max-age=31536000, immutable
+
+# JavaScript with compression  
+*.js
+  Content-Encoding: gzip
+  Cache-Control: public, max-age=31536000, immutable
+
+*.js.br
+  Content-Encoding: brotli
+  Cache-Control: public, max-age=31536000, immutable
+
+# CSS with compression
+*.css
+  Content-Encoding: gzip
+  Cache-Control: public, max-age=31536000, immutable
+
+*.css.br
+  Content-Encoding: brotli
+  Cache-Control: public, max-age=31536000, immutable
+
+# HTML files
+*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Sitemap
+/sitemap.xml
+  Content-Type: application/xml
+  Cache-Control: public, max-age=86400
