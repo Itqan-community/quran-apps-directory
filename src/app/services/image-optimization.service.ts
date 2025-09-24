@@ -23,12 +23,13 @@ export class ImageOptimizationService {
       };
     }
 
-    // For R2 CDN images, use Cloudflare Image Resizing
+    // For R2 CDN images, check if Image Resizing is available
     if (originalUrl.includes('pub-e11717db663c469fb51c65995892b449.r2.dev')) {
-      const baseUrl = originalUrl.split('?')[0]; // Remove any existing query params
+      // R2 doesn't have automatic image transformation
+      // Return original URL for all formats until CDN transformation is set up
       return {
-        avif: `${baseUrl}?format=avif&quality=75`,
-        webp: `${baseUrl}?format=webp&quality=80`,
+        avif: originalUrl,
+        webp: originalUrl,
         original: originalUrl
       };
     }
