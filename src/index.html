@@ -71,7 +71,10 @@
     
     <!-- Enhanced preload directives for critical resources -->
     <link rel="preload" href="/assets/images/logo-with-text.svg" as="image" fetchpriority="high">
-    <link rel="preload" href="/assets/images/banner.png" as="image" fetchpriority="high">
+    <!-- Preload next-gen image formats with fallbacks -->
+    <link rel="preload" href="/assets/images/banner.avif" as="image" type="image/avif" fetchpriority="high">
+    <link rel="preload" href="/assets/images/banner.webp" as="image" type="image/webp" fetchpriority="high">
+    <link rel="preload" href="/assets/images/banner.png" as="image" type="image/png" fetchpriority="high">
     
     <!-- Note: Translation files are loaded on-demand, no need to preload -->
     
@@ -176,7 +179,7 @@
     <meta property="og:url" content="https://quran-apps.itqan.dev/" />
     <meta property="og:title" content="دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم" />
     <meta property="og:description" content="الدليل الشامل لأفضل تطبيقات القرآن الكريم - تطبيقات المصحف، التفسير، التلاوة، التحفيظ والتدبر. اكتشف أكثر من 100 تطبيق قرآني مجاني ومدفوع" />
-    <meta property="og:image" content="https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" />
+    <meta property="og:image" content="https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.webp" />
     <meta property="og:image:alt" content="دليل التطبيقات القرآنية الشامل" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -189,7 +192,7 @@
     <meta property="twitter:url" content="https://quran-apps.itqan.dev/" />
     <meta property="twitter:title" content="دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم" />
     <meta property="twitter:description" content="الدليل الشامل لأفضل تطبيقات القرآن الكريم - تطبيقات المصحف، التفسير، التلاوة، التحفيظ والتدبر" />
-    <meta property="twitter:image" content="https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.png" />
+    <meta property="twitter:image" content="https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.webp" />
     <meta property="twitter:image:alt" content="دليل التطبيقات القرآنية الشامل" />
 
     <!-- Google tag (gtag.js)  -->
