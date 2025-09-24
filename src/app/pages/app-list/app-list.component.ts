@@ -14,6 +14,7 @@ import { DomSanitizer, SafeHtml, Title, Meta } from "@angular/platform-browser";
 import { categories } from "../../services/applicationsData";
 import { combineLatest } from "rxjs";
 import { SeoService } from "../../services/seo.service";
+import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 
 const CATEGORIES = categories;
 
@@ -31,6 +32,7 @@ const CATEGORIES = categories;
     NzIconModule,
     NzButtonModule,
     TranslateModule,
+    OptimizedImageComponent,
   ],
   templateUrl: "./app-list.component.html",
   styleUrls: ["./app-list.component.scss"],

@@ -22,7 +22,7 @@ import { CommonModule } from '@angular/common';
         [src]="originalSrc"
         [alt]="alt"
         [loading]="loading"
-        [fetchpriority]="fetchpriority"
+        [attr.fetchpriority]="fetchpriority"
         [width]="width"
         [height]="height"
         [class]="cssClass"
@@ -42,7 +42,7 @@ import { CommonModule } from '@angular/common';
   `]
 })
 export class OptimizedImageComponent {
-  @Input() src!: string;
+  @Input() src!: string | null;
   @Input() alt: string = '';
   @Input() loading: 'lazy' | 'eager' = 'lazy';
   @Input() fetchpriority: 'high' | 'low' | 'auto' = 'auto';
@@ -52,15 +52,17 @@ export class OptimizedImageComponent {
   @Input() cssStyle?: string;
 
   get originalSrc(): string {
-    return this.src;
+    return this.src || '';
   }
 
   get webpSrc(): string {
+    if (!this.src) return '';
     const baseName = this.src.substring(0, this.src.lastIndexOf('.')) || this.src;
     return `${baseName}.webp`;
   }
 
   get avifSrc(): string {
+    if (!this.src) return '';
     const baseName = this.src.substring(0, this.src.lastIndexOf('.')) || this.src;
     return `${baseName}.avif`;
   }
