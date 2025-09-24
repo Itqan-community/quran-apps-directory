@@ -23,16 +23,21 @@
 [build.processing.images]
   compress = true
 
-# Headers for performance
+# HTTP/2 and performance optimizations
 [[headers]]
   for = "/*"
   [headers.values]
+    # Security headers
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    # Let Netlify handle compression automatically
+    # HTTP/2 and modern protocols
+    Alt-Svc = 'h2=":443"; ma=2592000'
+    Connection = "keep-alive"
     Vary = "Accept-Encoding"
+    # Default cache for HTML pages
+    Cache-Control = "public, max-age=300, s-maxage=300"
 
 [[headers]]
   for = "/assets/*"
@@ -47,6 +52,32 @@
 
 [[headers]]
   for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Specific patterns for Angular build outputs
+[[headers]]
+  for = "/main*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/polyfills*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/chunk*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/styles*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*component*.js"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
@@ -138,6 +169,80 @@
   [headers.values]
     Cache-Control = "public, max-age=3600"
     Content-Type = "application/json; charset=utf-8"
+
+# Media files
+[[headers]]
+  for = "*.mp4"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.mp3"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.wav"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.ogg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Document files
+[[headers]]
+  for = "*.pdf"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Additional image formats
+[[headers]]
+  for = "*.gif"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.bmp"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Web assembly
+[[headers]]
+  for = "*.wasm"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Data files with longer cache
+[[headers]]
+  for = "/assets/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# Service worker (shorter cache for updates)
+[[headers]]
+  for = "/ngsw-worker.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/ngsw.json"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Manifest and config files
+[[headers]]
+  for = "*.manifest"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# Index.html override (ensure it's not cached too long)
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=300, must-revalidate"
+    # Override the global cache-control for HTML
 
 [[redirects]]
   from = "/*"
