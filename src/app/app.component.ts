@@ -4,8 +4,8 @@ import { NzLayoutModule } from "ng-zorro-antd/layout";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzSpaceModule } from "ng-zorro-antd/space";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
-import { NzIconModule, NzIconService } from "ng-zorro-antd/icon";
-import { MenuOutline, SunOutline, MoonOutline, BgColorsOutline, SearchOutline } from '@ant-design/icons-angular/icons';
+import { NzIconModule } from "ng-zorro-antd/icon";
+// Icons are now globally registered in main.ts for better tree-shaking
 import { Title, Meta } from '@angular/platform-browser';
 import { LanguageService } from "./services/language.service";
 import { ThemeService } from "./services/theme.service";
@@ -18,8 +18,7 @@ import { CacheValidatorService } from "./services/cache-validator.service";
 import { Http2OptimizationService } from "./services/http2-optimization.service";
 import { filter } from "rxjs";
 
-// Import what icons you need
-const icons = [MenuOutline, SunOutline, MoonOutline, BgColorsOutline, SearchOutline];
+// Icons globally registered in main.ts
 
 @Component({
   selector: "app-root",
@@ -55,11 +54,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     private lcpMonitor: LcpMonitorService,
     private cacheOptimization: CacheOptimizationService,
     private cacheValidator: CacheValidatorService,
-    private http2Optimization: Http2OptimizationService,
-    private iconService: NzIconService
+    private http2Optimization: Http2OptimizationService
   ) {
-    // Register icons for theme toggle
-    this.iconService.addIcon(...icons);
+    // Icons are globally registered in main.ts
     // Get browser language
     const browserLang = navigator.language;
     const defaultLang = browserLang.startsWith("ar") ? "ar" : "en";

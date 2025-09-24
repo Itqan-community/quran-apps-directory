@@ -1,0 +1,64 @@
+/* Ultra-lean critical CSS - optimized for performance */
+/* Uses CSS custom properties instead of LESS for faster compilation */
+
+:root {
+  --primary-color: #A0533B;
+  --border-radius: 8px;
+  --font-weight-bold: 700;
+  --transition-fast: 0.2s ease;
+  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --swiper-pagination-bottom: 20px;
+  --swiper-pagination-color: var(--primary-color);
+  --swiper-pagination-color-active: var(--primary-color);
+  --swiper-pagination-color-inactive: #e8e8e8;
+}
+
+/* Critical layout styles only */
+body {
+  margin: 0;
+  font-family: 'Rubik', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: var(--font-weight-bold);
+}
+
+.ant-layout {
+  background: #ffffff !important;
+  display: unset !important;
+}
+
+/* Essential container styles */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 1.5rem;
+  margin: auto;
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0 1rem; }
+}
+
+/* Utility classes - minimal set */
+.flex { display: flex; }
+.justify-center { justify-content: center; }
+.items-center { align-items: center; }
+.full-width { width: 100%; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-5 { margin-bottom: 2rem; }
+.mb-6 { margin-bottom: 2.5rem; }
+
+/* RTL Support - critical only */
+[dir="rtl"] .ant-input { text-align: right; }
+[dir="rtl"] .ant-card-meta-title { text-align: right; }
+
+/* Input spacing fix */
+.ant-input-prefix {
+  margin: 0 !important;
+  margin-inline-end: 6px !important;
+}

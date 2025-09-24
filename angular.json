@@ -41,16 +41,17 @@
               "outputHashing": "all",
               "sourceMap": false,
               "crossOrigin": "anonymous",
+              "serviceWorker": "ngsw-config.json",
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1mb",
-                  "maximumError": "1.5mb"
+                  "maximumWarning": "1.1mb",
+                  "maximumError": "1.3mb"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "20kb",
-                  "maximumError": "50kb"
+                  "maximumError": "40kb"
                 }
               ]
             }
@@ -60,6 +61,7 @@
               "src/favicon.ico",
               "src/sitemap.xml",
               "src/robots.txt",
+              "src/sw.js",
               "src/assets"
             ],
             "index": "src/index.html",
@@ -69,7 +71,7 @@
             "scripts": [],
             "styles": [
               "node_modules/ng-zorro-antd/ng-zorro-antd.css",
-              "src/global_styles.less",
+              "src/global_styles.css",
               "./src/themes.scss"
             ],
             "tsConfig": "tsconfig.app.json"
