@@ -24,6 +24,8 @@
             [src]="screenshot"
             [alt]="app.Name_En + ' screenshot ' + (i + 1)"
             class="carousel-image"
+            loading="lazy"
+            decoding="async"
             (load)="loading = false"
           />
         </swiper-slide>
@@ -268,13 +270,15 @@
                     [alt]="relatedApp.Name_En + ' screenshot'"
                     [src]="currentLang === 'en' ? relatedApp.mainImage_en : relatedApp.mainImage_ar"
                     style="width: 100%;"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
               </ng-template>
 
               <div class="ant-flex">
                 <div class="app-icon-container">
-                  <img class="app-icon" [src]="relatedApp.applicationIcon" [alt]="relatedApp.Name_En + ' icon'">
+                  <img class="app-icon" [src]="relatedApp.applicationIcon" [alt]="relatedApp.Name_En + ' icon'" loading="lazy" decoding="async">
                 </div>
                 <div class="card-data-container">
                   <nz-card-meta
