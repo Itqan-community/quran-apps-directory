@@ -5,16 +5,18 @@
     "ng": "ng",
     "start": "ng serve",
     "dev": "ng serve",
-    "build": "ng build",
-    "build:dev": "ng build --configuration=development",
-    "build:staging": "ng build --configuration=staging",
-    "build:prod": "ng build --configuration=production",
+    "build": "node generate-sitemap.js && ng build",
+    "build:dev": "node generate-sitemap.js && ng build --configuration=development",
+    "build:staging": "node generate-sitemap.js && ng build --configuration=staging",
+    "build:prod": "node generate-sitemap.js && ng build --configuration=production",
     "serve:dev": "ng serve --configuration=development",
     "serve:staging": "ng serve --configuration=staging",
     "serve:prod": "ng serve --configuration=production",
     "deploy": "ng build && cp dist/demo/browser/* dist/demo/",
     "deploy:staging": "ng build --configuration=staging",
-    "deploy:prod": "ng build --configuration=production"
+    "deploy:prod": "ng build --configuration=production",
+    "generate-sitemap": "node generate-sitemap.js",
+    "sitemap": "node generate-sitemap.js"
   },
   "dependencies": {
     "@angular/animations": "^19.0.6",
