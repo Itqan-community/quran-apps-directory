@@ -87,12 +87,16 @@
             itemtype="https://schema.org/SoftwareApplication"
           >
             <ng-template #coverTemplate>
-              <div style="max-height: 220px; overflow: hidden">
+              <div style="max-height: 220px; overflow: hidden; aspect-ratio: 300/220;">
                 <!-- Use optimized images with smart loading strategy -->
                 <app-optimized-image
                   [src]="(currentLang === 'en' ? app.mainImage_en : app.mainImage_ar) || ''"
                   [alt]="app.Name_En + ' screenshot'"
-                  cssStyle="width: 100%"
+                  cssStyle="width: 100%; height: 100%; object-fit: cover;"
+                  cssClass="cover-image"
+                  width="300"
+                  height="220"
+                  aspectRatio="300/220"
                   [loading]="getImageLoadingStrategy(i)"
                   [fetchpriority]="getImagePriority(i)">
                 </app-optimized-image>
@@ -106,6 +110,9 @@
                   [src]="app.applicationIcon || ''"
                   [alt]="app.Name_En + ' icon'"
                   cssClass="app-icon"
+                  width="38"
+                  height="38"
+                  aspectRatio="1/1"
                   loading="lazy"
                   fetchpriority="low">
                 </app-optimized-image>

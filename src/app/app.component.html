@@ -6,10 +6,13 @@
           <div class="logo-container">
             <div class="logo-wrapper">
               <img
+                width="120"
                 height="40"
                 src="../assets/images/logo-svg.svg"
-                alt=""
+                alt="Quran Apps Directory Logo"
                 [routerLink]="['/', currentLang]"
+                decoding="async"
+                fetchpriority="high"
               />
               <span class="beta-label">{{ "header.beta" | translate }}</span>
             </div>
