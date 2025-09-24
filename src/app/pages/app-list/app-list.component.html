@@ -76,7 +76,7 @@
     <!-- Grid of app cards -->
     <div class="app-grid">
       <div nz-row [nzGutter]="[24, 24]" class="app-grid-row"> 
-        <div nz-col nzXs="18" nzSm="12" nzMd="8" nzLg="6" nzXl="6" *ngFor="let app of filteredApps">
+        <div nz-col nzXs="18" nzSm="12" nzMd="8" nzLg="6" nzXl="6" *ngFor="let app of filteredApps; let i = index">
           <!-- App card with cover image -->
           <nz-card
             [nzCover]="coverTemplate"
@@ -88,25 +88,27 @@
           >
             <ng-template #coverTemplate>
               <div style="max-height: 220px; overflow: hidden">
-                <img
-                  [alt]="app.Name_En+ ' screenshot'"
-                  [src]="currentLang === 'en' ? app.mainImage_en : app.mainImage_ar"
-                  style="width: 100%"
-                  loading="lazy"
-                  decoding="async"
-                />
+                <!-- Use optimized images with smart loading strategy -->
+                <app-optimized-image
+                  [src]="(currentLang === 'en' ? app.mainImage_en : app.mainImage_ar) || ''"
+                  [alt]="app.Name_En + ' screenshot'"
+                  cssStyle="width: 100%"
+                  [loading]="getImageLoadingStrategy(i)"
+                  [fetchpriority]="getImagePriority(i)">
+                </app-optimized-image>
               </div>
             </ng-template>
     
             <div class="ant-flex">
               <div class="app-icon-container">
-                <img
-                  class="app-icon"
-                  [src]="app.applicationIcon"
+                <!-- Use optimized images for app icons -->
+                <app-optimized-image
+                  [src]="app.applicationIcon || ''"
                   [alt]="app.Name_En + ' icon'"
+                  cssClass="app-icon"
                   loading="lazy"
-                  decoding="async"
-                />
+                  fetchpriority="low">
+                </app-optimized-image>
               </div>
               <div class="card-data-container">
                 <nz-card-meta
