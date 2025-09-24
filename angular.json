@@ -31,7 +31,8 @@
               "optimization": {
                 "styles": {
                   "minify": true,
-                  "inlineCritical": true
+                  "inlineCritical": true,
+                  "removeUnusedCss": true
                 },
                 "scripts": true,
                 "fonts": {
@@ -40,6 +41,7 @@
               },
               "outputHashing": "all",
               "sourceMap": false,
+              "crossOrigin": "anonymous",
               "budgets": [
                 {
                   "type": "initial",

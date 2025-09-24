@@ -32,6 +32,83 @@
           justify-content: center;
           width: 14px;
           height: 14px;
+          
+          // Ensure search icon is visible in both light and dark modes
+          svg {
+            width: 14px !important;
+            height: 14px !important;
+            fill: currentColor !important;
+          }
+        }
+      }
+    }
+  }
+  
+  // Enhanced dark mode search icon visibility
+  :host-context(.dark-theme) ::ng-deep {
+    .ant-input-group {
+      .ant-input-group-addon {
+        span[nz-icon] {
+          color: #000000 !important;
+          opacity: 1 !important;
+          
+          svg {
+            fill: #000000 !important;
+            color: #000000 !important;
+          }
+          
+          .anticon {
+            color: #000000 !important;
+            
+            svg {
+              fill: #000000 !important;
+              color: #000000 !important;
+            }
+          }
+        }
+      }
+      
+      &:hover {
+        .ant-input-group-addon {
+          span[nz-icon] {
+            color: #ff8c42 !important;
+            
+            svg {
+              fill: #ff8c42 !important;
+              color: #ff8c42 !important;
+            }
+            
+            .anticon {
+              color: #ff8c42 !important;
+              
+              svg {
+                fill: #ff8c42 !important;
+                color: #ff8c42 !important;
+              }
+            }
+          }
+        }
+      }
+      
+      &:focus-within {
+        .ant-input-group-addon {
+          span[nz-icon] {
+            color: #ff8c42 !important;
+            
+            svg {
+              fill: #ff8c42 !important;
+              color: #ff8c42 !important;
+            }
+            
+            .anticon {
+              color: #ff8c42 !important;
+              
+              svg {
+                fill: #ff8c42 !important;
+                color: #ff8c42 !important;
+              }
+            }
+          }
         }
       }
     }
@@ -108,9 +185,6 @@
 
 .categories-grid:active {
   cursor: grabbing;
-}
-.main-content {
- 
 }
 :host ::ng-deep {
   nz-rate {
