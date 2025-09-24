@@ -90,9 +90,15 @@ export class CacheOptimizationService {
     );
     
     if (uncachedAssets.length > 0) {
+      const totalSize = uncachedAssets.reduce((sum, asset) => sum + (asset.transferSize || 0), 0);
       recommendations.push(
-        `Found ${uncachedAssets.length} uncached static assets. Consider implementing proper cache headers.`
+        `Found ${uncachedAssets.length} uncached static assets (${Math.round(totalSize / 1024)} KB). Consider implementing proper cache headers.`
       );
+      
+      // List specific problematic assets
+      uncachedAssets.slice(0, 5).forEach(asset => {
+        recommendations.push(`  - ${asset.resourceUrl} (${Math.round((asset.transferSize || 0) / 1024)} KB)`);
+      });
     }
     
     // Check for assets that could benefit from longer cache times
@@ -102,8 +108,22 @@ export class CacheOptimizationService {
     );
     
     if (shortCachedAssets.length > 0) {
+      const totalSize = shortCachedAssets.reduce((sum, asset) => sum + (asset.transferSize || 0), 0);
       recommendations.push(
-        'Large static assets detected. Ensure they have long cache durations (1 year for immutable assets).'
+        `Large static assets detected (${Math.round(totalSize / 1024)} KB). Ensure they have long cache durations (1 year for immutable assets).`
+      );
+    }
+    
+    // Check for third-party resources
+    const thirdPartyAssets = reports.filter(report =>
+      !report.resourceUrl.startsWith(window.location.origin) &&
+      report.transferSize && report.transferSize > 5000
+    );
+    
+    if (thirdPartyAssets.length > 0) {
+      const totalSize = thirdPartyAssets.reduce((sum, asset) => sum + (asset.transferSize || 0), 0);
+      recommendations.push(
+        `Third-party resources detected (${Math.round(totalSize / 1024)} KB). Consider optimizing or self-hosting critical assets.`
       );
     }
     
