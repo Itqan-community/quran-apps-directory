@@ -5,18 +5,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <!-- Enhanced resource hints for performance -->
+    <!-- HTTP/2 optimized resource hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="dns-prefetch" href="https://pub-e11717db663c469fb51c65995892b449.r2.dev">
-    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-    <link rel="dns-prefetch" href="https://www.google-analytics.com">
-    <link rel="dns-prefetch" href="https://googletagmanager.com">
-    <link rel="dns-prefetch" href="https://google-analytics.com">
-    
-    <!-- Performance hints for critical third-party resources -->
+    <link rel="preconnect" href="https://pub-e11717db663c469fb51c65995892b449.r2.dev" crossorigin>
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
     <link rel="preconnect" href="https://google-analytics.com" crossorigin>
+    
+    <!-- HTTP/2 benefits: Multiple requests over single connection -->
+    <!-- DNS prefetch for additional domains (HTTP/2 multiplexing ready) -->
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
+    <link rel="dns-prefetch" href="https://googletagmanager.com">
     
     <!-- Optimized font loading with font-display:swap and preload -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">

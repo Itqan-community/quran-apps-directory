@@ -14,6 +14,8 @@ import { PerformanceService } from "./services/performance.service";
 import { DeferredAnalyticsService } from "./services/deferred-analytics.service";
 import { LcpMonitorService } from "./services/lcp-monitor.service";
 import { CacheOptimizationService } from "./services/cache-optimization.service";
+import { CacheValidatorService } from "./services/cache-validator.service";
+import { Http2OptimizationService } from "./services/http2-optimization.service";
 import { filter } from "rxjs";
 
 // Import what icons you need
@@ -52,6 +54,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     private deferredAnalytics: DeferredAnalyticsService,
     private lcpMonitor: LcpMonitorService,
     private cacheOptimization: CacheOptimizationService,
+    private cacheValidator: CacheValidatorService,
+    private http2Optimization: Http2OptimizationService,
     private iconService: NzIconService
   ) {
     // Register icons for theme toggle
@@ -114,14 +118,18 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.languageService.setLanguageFromUrl();
     
     // Initialize performance monitoring
-    setTimeout(() => {
-      this.performanceService.measurePerformance();
-      this.performanceService.optimizeImages();
-      
-      // Initialize cache optimization monitoring
-      this.cacheOptimization.monitorCachePerformance();
-      this.cacheOptimization.preloadCriticalResources();
-    }, 1000);
+        setTimeout(() => {
+          this.performanceService.measurePerformance();
+          this.performanceService.optimizeImages();
+          
+          // Initialize cache optimization monitoring
+          this.cacheOptimization.monitorCachePerformance();
+          this.cacheOptimization.preloadCriticalResources();
+          
+          // Initialize HTTP/2 optimization monitoring
+          this.http2Optimization.generateHTTP2Report();
+          this.http2Optimization.monitorHTTP2Usage();
+        }, 1000);
 
     // Track route changes for analytics (when analytics is ready)
     this.router.events.pipe(
