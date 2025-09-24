@@ -9,11 +9,13 @@ import { CommonModule } from '@angular/common';
     <picture>
       <!-- AVIF source (best compression, ~50% smaller than JPEG) -->
       <source 
+        *ngIf="shouldUseAvif"
         [srcset]="avifSrc" 
         type="image/avif">
       
       <!-- WebP source (fallback, ~25% smaller than JPEG) -->
       <source 
+        *ngIf="shouldUseWebp"
         [srcset]="webpSrc" 
         type="image/webp">
       
@@ -65,5 +67,17 @@ export class OptimizedImageComponent {
     if (!this.src) return '';
     const baseName = this.src.substring(0, this.src.lastIndexOf('.')) || this.src;
     return `${baseName}.avif`;
+  }
+
+  get shouldUseAvif(): boolean {
+    if (!this.src) return false;
+    // Only use AVIF for local assets, not CDN images (until CDN transformation is set up)
+    return this.src.startsWith('/assets/') || this.src.startsWith('assets/');
+  }
+
+  get shouldUseWebp(): boolean {
+    if (!this.src) return false;
+    // Only use WebP for local assets, not CDN images (until CDN transformation is set up)
+    return this.src.startsWith('/assets/') || this.src.startsWith('assets/');
   }
 }

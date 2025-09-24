@@ -286,4 +286,22 @@ export class AppListComponent implements OnInit {
     
     return stars;
   }
+
+  /**
+   * Smart loading strategy based on web.dev LCP recommendations
+   * Load first 6 images eagerly (likely above the fold), lazy load the rest
+   */
+  getImageLoadingStrategy(index: number): 'eager' | 'lazy' {
+    // First 6 images are likely above the fold on most screen sizes
+    // Based on web.dev research: https://web.dev/lcp-lazy-loading/
+    return index < 6 ? 'eager' : 'lazy';
+  }
+
+  /**
+   * Set high priority for first few images to improve LCP
+   */
+  getImagePriority(index: number): 'high' | 'low' | 'auto' {
+    // First 3 images get high priority for LCP optimization
+    return index < 3 ? 'high' : 'low';
+  }
 }

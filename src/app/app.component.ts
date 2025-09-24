@@ -12,6 +12,8 @@ import { ThemeService } from "./services/theme.service";
 import { ThemeToggleComponent } from "./components/theme-toggle/theme-toggle.component";
 import { PerformanceService } from "./services/performance.service";
 import { DeferredAnalyticsService } from "./services/deferred-analytics.service";
+import { LcpMonitorService } from "./services/lcp-monitor.service";
+import { CacheOptimizationService } from "./services/cache-optimization.service";
 import { filter } from "rxjs";
 
 // Import what icons you need
@@ -48,6 +50,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     private themeService: ThemeService,
     private performanceService: PerformanceService,
     private deferredAnalytics: DeferredAnalyticsService,
+    private lcpMonitor: LcpMonitorService,
+    private cacheOptimization: CacheOptimizationService,
     private iconService: NzIconService
   ) {
     // Register icons for theme toggle
@@ -113,6 +117,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.performanceService.measurePerformance();
       this.performanceService.optimizeImages();
+      
+      // Initialize cache optimization monitoring
+      this.cacheOptimization.monitorCachePerformance();
+      this.cacheOptimization.preloadCriticalResources();
     }, 1000);
 
     // Track route changes for analytics (when analytics is ready)
