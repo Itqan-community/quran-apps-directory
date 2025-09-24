@@ -201,12 +201,22 @@ export class AppListComponent implements OnInit {
       this.currentLang
     );
     const organizationData = this.seoService.generateOrganizationStructuredData(this.currentLang);
+    
+    // Add FAQ data for the homepage
+    const faqData = this.selectedCategory === 'all' ? 
+      this.seoService.generateFAQStructuredData(this.currentLang) : null;
+    
+    // Add CollectionPage data for category pages
+    const collectionData = this.selectedCategory !== 'all' ? 
+      this.seoService.generateCollectionPageStructuredData(this.selectedCategory, this.filteredApps, this.currentLang) : null;
 
     // Combine structured data
     const combinedData = [
       websiteData,
       itemListData,
-      organizationData
+      organizationData,
+      ...(faqData ? [faqData] : []),
+      ...(collectionData ? [collectionData] : [])
     ];
 
     this.seoService.addStructuredData(combinedData);
