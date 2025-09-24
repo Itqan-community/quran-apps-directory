@@ -16,6 +16,7 @@ import { LcpMonitorService } from "./services/lcp-monitor.service";
 import { CacheOptimizationService } from "./services/cache-optimization.service";
 import { CacheValidatorService } from "./services/cache-validator.service";
 import { Http2OptimizationService } from "./services/http2-optimization.service";
+import { CriticalResourcePreloaderService } from "./services/critical-resource-preloader.service";
 import { filter } from "rxjs";
 
 // Import what icons you need
@@ -56,6 +57,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private cacheOptimization: CacheOptimizationService,
     private cacheValidator: CacheValidatorService,
     private http2Optimization: Http2OptimizationService,
+    private criticalPreloader: CriticalResourcePreloaderService,
     private iconService: NzIconService
   ) {
     // Register icons for theme toggle
@@ -72,6 +74,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.translate.setDefaultLang(defaultLang);
     this.translate.use(defaultLang);
     this.currentLang = defaultLang;
+
+    // Initialize critical resource preloading immediately for LCP optimization
+    this.criticalPreloader.optimizeForLCP();
   }
 
   getCurrentRouteParams(): any {
