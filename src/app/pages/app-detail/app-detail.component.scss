@@ -718,3 +718,18 @@ html[dir="rtl"] .content-section {
   color: #995441;
   text-decoration: underline;
 }
+
+/* Ensure related apps cards have uniform rating placement */
+:host ::ng-deep .app-grid .app-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+:host ::ng-deep .app-grid .card-data-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+:host ::ng-deep .app-grid .app-rating {
+  margin-top: auto;
+}
