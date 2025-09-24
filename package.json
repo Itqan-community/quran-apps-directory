@@ -11,6 +11,8 @@
     "build:prod": "node generate-sitemap.js && ng build --configuration=production && node compress-assets.js",
     "analyze": "npx webpack-bundle-analyzer dist/stats.json",
     "lighthouse": "npx lighthouse http://localhost:4200 --output html --output-path ./lighthouse-report.html",
+    "lighthouse:prod": "npx lighthouse https://quran-apps.itqan.dev --output html --output-path ./lighthouse-prod-report.html",
+    "performance:test": "npm run build:prod && npx lighthouse https://quran-apps.itqan.dev --output json --output-path ./performance-results.json",
     "serve:dev": "ng serve --configuration=development",
     "serve:staging": "ng serve --configuration=staging",
     "serve:prod": "ng serve --configuration=production",
