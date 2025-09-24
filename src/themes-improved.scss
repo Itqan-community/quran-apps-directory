@@ -1,0 +1,208 @@
+// CSS Custom Properties for theming
+:root {
+  // Light theme colors
+  --bg-color: #ffffff;
+  --surface-color: #f8f9fa;
+  --text-color: #212529;
+  --text-secondary: #6c757d;
+  --border-color: #dee2e6;
+  --card-bg: #ffffff;
+  --hover-bg: rgba(0, 0, 0, 0.06);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --primary-color: #a0533b;
+  --primary-hover: #8a462f;
+}
+
+.dark-theme {
+  // Improved dark theme colors for better contrast and readability
+  --bg-color: #0f0f0f;
+  --surface-color: #1a1a1a;
+  --text-color: #ffffff;
+  --text-secondary: #b3b3b3;
+  --border-color: #333333;
+  --card-bg: #1e1e1e;
+  --hover-bg: rgba(255, 255, 255, 0.05);
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --primary-color: #ff8c42;
+  --primary-hover: #ff7b2e;
+  
+  // Override ant design colors for dark theme
+  .ant-card {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-color) !important;
+    box-shadow: var(--shadow);
+  }
+  
+  .ant-card-meta-title {
+    color: var(--text-color) !important;
+    font-weight: 600;
+  }
+  
+  .ant-card-meta-description {
+    color: var(--text-secondary) !important;
+  }
+  
+  .ant-card-cover img {
+    border-radius: 8px 8px 0 0;
+  }
+  
+  .ant-input {
+    background: var(--surface-color) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+    
+    &::placeholder {
+      color: var(--text-secondary) !important;
+    }
+    
+    &:focus {
+      border-color: var(--primary-color) !important;
+      box-shadow: 0 0 0 2px rgba(255, 140, 66, 0.3) !important;
+    }
+    
+    &:hover {
+      border-color: var(--primary-color) !important;
+    }
+  }
+  
+  .ant-btn {
+    border-color: var(--border-color) !important;
+    
+    &:not(.ant-btn-primary) {
+      background: var(--surface-color) !important;
+      color: var(--text-color) !important;
+      
+      &:hover {
+        background: var(--primary-color) !important;
+        color: #ffffff !important;
+        border-color: var(--primary-color) !important;
+      }
+    }
+    
+    &.ant-btn-primary {
+      background: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+      
+      &:hover {
+        background: var(--primary-hover) !important;
+        border-color: var(--primary-hover) !important;
+      }
+    }
+  }
+  
+  .ant-divider {
+    border-color: var(--border-color) !important;
+  }
+  
+  .ant-typography {
+    color: var(--text-color) !important;
+  }
+  
+  // Dark theme specific adjustments for app components
+  .app-card {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    
+    &:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+      transform: translateY(-2px);
+      border-color: var(--primary-color) !important;
+    }
+  }
+  
+  .category-item {
+    background: var(--surface-color) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color) !important;
+    
+    &:hover {
+      background: var(--primary-color) !important;
+      color: #ffffff !important;
+      border-color: var(--primary-color) !important;
+    }
+    
+    &.selected {
+      background: var(--primary-color) !important;
+      color: #ffffff !important;
+      border-color: var(--primary-color) !important;
+    }
+  }
+  
+  // Improve navigation styling
+  .ant-layout-header {
+    background: var(--surface-color) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+  }
+  
+  // Better search box styling
+  .ant-input-group-addon {
+    background: var(--surface-color) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+  }
+  
+  .ant-input-search .ant-input-group .ant-input-group-addon {
+    background: var(--surface-color) !important;
+  }
+  
+  .ant-input-search-button {
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    
+    &:hover {
+      background: var(--primary-hover) !important;
+      border-color: var(--primary-hover) !important;
+    }
+  }
+
+  .section-title h2 {
+    color: var(--text-color) !important;
+  }
+  
+  .search-section input {
+    background: var(--surface-color) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+  }
+}
+
+// Smooth transitions for theme changes
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+// Apply theme colors to body
+html, body {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+}
+
+// Ensure layout components follow theme
+.ant-layout {
+  background: var(--bg-color) !important;
+}
+
+.ant-layout-content {
+  background: var(--bg-color) !important;
+}
+
+// Custom scrollbar for dark theme
+.dark-theme {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--surface-color);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+    
+    &:hover {
+      background: var(--primary-color);
+    }
+  }
+}
