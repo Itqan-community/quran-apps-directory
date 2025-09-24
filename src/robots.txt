@@ -3,9 +3,9 @@
 
 User-agent: *
 Allow: /
-Disallow: /assets/*.js$
-Disallow: /assets/*.css$
-Disallow: /assets/*.map$
+Disallow: /assets/*.js
+Disallow: /assets/*.css
+Disallow: /assets/*.map
 Disallow: /*?*
 Disallow: /*/*?*
 
@@ -16,31 +16,26 @@ Allow: /assets/i18n/
 # Google-specific optimizations
 User-agent: Googlebot
 Allow: /
-Disallow: /assets/*.js$
-Disallow: /assets/*.css$
-Disallow: /assets/*.map$
-Crawl-delay: 1
+Disallow: /assets/*.js
+Disallow: /assets/*.css
+Disallow: /assets/*.map
 
 # Bing-specific optimizations
 User-agent: Bingbot
 Allow: /
-Disallow: /assets/*.js$
-Disallow: /assets/*.css$
-Disallow: /assets/*.map$
-Crawl-delay: 1
+Disallow: /assets/*.js
+Disallow: /assets/*.css
+Disallow: /assets/*.map
 
 # Other search engines
 User-agent: Slurp
 Allow: /
-Crawl-delay: 2
 
 User-agent: DuckDuckBot
 Allow: /
-Crawl-delay: 1
 
 User-agent: Baiduspider
 Allow: /
-Crawl-delay: 3
 
 # Social media crawlers
 User-agent: facebookexternalhit
@@ -58,15 +53,12 @@ Allow: /
 # SEO and monitoring tools
 User-agent: AhrefsBot
 Allow: /
-Crawl-delay: 10
 
 User-agent: SemrushBot
 Allow: /
-Crawl-delay: 10
 
 User-agent: MJ12bot
 Allow: /
-Crawl-delay: 10
 
 # Block unwanted bots
 User-agent: ia_archiver
@@ -83,6 +75,3 @@ Disallow: /
 
 # Sitemap location
 Sitemap: https://quran-apps.itqan.dev/sitemap.xml
-
-# Host preference (optional)
-Host: quran-apps.itqan.dev
