@@ -10,7 +10,8 @@ import { NzRateModule } from 'ng-zorro-antd/rate';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppService, QuranApp } from '../../services/app.service';
-import { Title } from '@angular/platform-browser';
+import { Title, Meta } from '@angular/platform-browser';
+import { SeoService } from '../../services/seo.service';
 
 @Component({
   selector: 'app-developer',
@@ -42,7 +43,9 @@ export class DeveloperComponent implements OnInit {
     private router: Router,
     private appService: AppService,
     private translateService: TranslateService,
-    private titleService: Title
+    private titleService: Title,
+    private metaService: Meta,
+    private seoService: SeoService
   ) {
     this.currentLang = this.translateService.currentLang as 'ar' | 'en';
     // Subscribe to language changes
@@ -96,6 +99,7 @@ export class DeveloperComponent implements OnInit {
       }
       
       this.updatePageTitle();
+      this.updateSeoData();
       this.loading = false;
     });
   }
@@ -119,6 +123,66 @@ export class DeveloperComponent implements OnInit {
 
   goBack() {
     this.router.navigate([`/${this.currentLang}`]);
+  }
+
+  private updateSeoData() {
+    if (!this.developerInfo) return;
+
+    const developerName = this.currentLang === 'en' ? this.developerInfo.name_en : this.developerInfo.name_ar;
+    const title = this.currentLang === 'ar' ? 
+      `تطبيقات ${developerName} - دليل التطبيقات القرآنية` : 
+      `${developerName} Apps - Quran Apps Directory`;
+    
+    const description = this.currentLang === 'ar' ?
+      `اكتشف ${this.developerApps.length} تطبيق قرآني من تطوير ${developerName}. تطبيقات القرآن الكريم المتاحة للتحميل المجاني.` :
+      `Discover ${this.developerApps.length} Quran apps developed by ${developerName}. Free Quran applications available for download.`;
+
+    // Set page title and meta tags
+    this.titleService.setTitle(title);
+    this.metaService.updateTag({ name: 'description', content: description });
+    this.metaService.updateTag({ property: 'og:title', content: title });
+    this.metaService.updateTag({ property: 'og:description', content: description });
+    this.metaService.updateTag({ property: 'twitter:title', content: title });
+    this.metaService.updateTag({ property: 'twitter:description', content: description });
+
+    // Add developer structured data
+    const developerData = this.seoService.generateDeveloperStructuredData(this.developerInfo, this.currentLang);
+    
+    // Add breadcrumb structured data
+    const breadcrumbs = [
+      {
+        name: this.currentLang === 'ar' ? 'الرئيسية' : 'Home',
+        url: `https://quran-apps.itqan.dev/${this.currentLang}`
+      },
+      {
+        name: this.currentLang === 'ar' ? 'المطورون' : 'Developers',
+        url: `https://quran-apps.itqan.dev/${this.currentLang}`
+      },
+      {
+        name: developerName,
+        url: `https://quran-apps.itqan.dev/${this.currentLang}/developer/${this.developerName}`
+      }
+    ];
+    
+    const breadcrumbData = this.seoService.generateBreadcrumbStructuredData(breadcrumbs, this.currentLang);
+    const organizationData = this.seoService.generateOrganizationStructuredData(this.currentLang);
+
+    // Add ItemList for developer's apps
+    const itemListData = this.seoService.generateItemListStructuredData(
+      this.developerApps,
+      null,
+      this.currentLang
+    );
+
+    // Combine structured data
+    const combinedData = [
+      developerData,
+      breadcrumbData,
+      organizationData,
+      itemListData
+    ];
+
+    this.seoService.addStructuredData(combinedData);
   }
 
   visitDeveloperWebsite() {

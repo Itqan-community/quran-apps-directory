@@ -248,8 +248,8 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     ];
     this.metaService.updateTag({ name: 'keywords', content: keywords.join(', ') });
 
-    // Add structured data for the app
-    const appStructuredData = this.seoService.generateAppStructuredData(this.app, this.currentLang);
+    // Add enhanced structured data for the app
+    const appStructuredData = this.seoService.generateEnhancedAppStructuredData(this.app, this.currentLang);
     
     // Add breadcrumb structured data
     const breadcrumbs = [
