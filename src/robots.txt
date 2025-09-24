@@ -1,6 +1,3 @@
-# Production Environment - Full Search Engine Optimization
-# Comprehensive Quranic Directory - https://quran-apps.itqan.dev
-
 User-agent: *
 Allow: /
 Disallow: /assets/*.js
