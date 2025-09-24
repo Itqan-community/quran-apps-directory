@@ -19,7 +19,7 @@
         </nz-input-group>
         <!-- Search icon template -->
         <ng-template #searchPrefix>
-          <span nz-icon nzType="search"></span>
+          <span nz-icon nzType="search" nzTheme="outline"></span>
         </ng-template>
       </div>
     </div>
@@ -83,6 +83,8 @@
             [routerLink]="['/', currentLang, 'app', app.id]"
             [attr.aria-label]="'View details for ' + app.Name_En"
             class="app-card"
+            itemscope
+            itemtype="https://schema.org/SoftwareApplication"
           >
             <ng-template #coverTemplate>
               <div style="max-height: 220px; overflow: hidden">
@@ -111,6 +113,13 @@
                   [nzTitle]="currentLang === 'en' ? app.Name_En : app.Name_Ar"
                   [nzDescription]="currentLang === 'en' ? app.Short_Description_En : app.Short_Description_Ar"
                 ></nz-card-meta>
+                <meta itemprop="name" [content]="currentLang === 'en' ? app.Name_En : app.Name_Ar">
+                <meta itemprop="description" [content]="currentLang === 'en' ? app.Short_Description_En : app.Short_Description_Ar">
+                <meta itemprop="applicationCategory" content="Islamic Application">
+                <meta itemprop="operatingSystem" [content]="'Mobile App'">
+                <meta itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
+                <meta itemprop="ratingValue" [content]="app.Apps_Avg_Rating">
+                <meta itemprop="ratingCount" content="100">
                 <!-- Rating display -->
                 <div class="app-rating">
                   <span class="rating-number" [ngClass]="getRatingClass(app.Apps_Avg_Rating)">{{ (app.Apps_Avg_Rating || 0) | number:'1.1-1' }}</span>

@@ -31,6 +31,7 @@
               <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/', currentLang, 'contact-us']">
                 {{ "header.contact" | translate }}
               </a>
+              <app-theme-toggle *nzSpaceItem></app-theme-toggle>
               <button
                 *nzSpaceItem
                 nz-button
@@ -80,6 +81,9 @@
           >
               {{ "header.contact" | translate }}
           </a>
+          <div class="mobile-theme-toggle">
+            <app-theme-toggle></app-theme-toggle>
+          </div>
           <a
             (click)="toggleLanguage(); toggleMobileMenu()"
           >

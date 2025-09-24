@@ -1,0 +1,613 @@
+// CSS Custom Properties for theming
+:root {
+  // Light theme colors
+  --bg-color: #ffffff;
+  --surface-color: #f8f9fa;
+  --text-color: #212529;
+  --text-secondary: #6c757d;
+  --border-color: #dee2e6;
+  --card-bg: #ffffff;
+  --hover-bg: rgba(0, 0, 0, 0.06);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --primary-color: #a0533b;
+  --primary-hover: #8a462f;
+}
+
+.dark-theme {
+  // Improved dark theme colors for better contrast and readability
+  --bg-color: #0f0f0f;
+  --surface-color: #1a1a1a;
+  --text-color: #ffffff;
+  --text-secondary: #b3b3b3;
+  --border-color: #333333;
+  --card-bg: #1e1e1e;
+  --hover-bg: rgba(255, 255, 255, 0.05);
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --primary-color: #ff8c42;
+  --primary-hover: #ff7b2e;
+  
+  // Override ant design colors for dark theme
+  .ant-card {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-color) !important;
+    box-shadow: var(--shadow);
+  }
+  
+  .ant-card-meta-title {
+    color: var(--text-color) !important;
+    font-weight: 600;
+  }
+  
+  .ant-card-meta-description {
+    color: var(--text-secondary) !important;
+  }
+  
+  .ant-card-cover img {
+    border-radius: 8px 8px 0 0;
+  }
+  
+  // Global input styling for dark mode with search box priority
+  .ant-input {
+    background: var(--surface-color) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+    
+    &::placeholder {
+      color: var(--text-secondary) !important;
+      opacity: 0.7;
+    }
+    
+    &:focus {
+      border-color: var(--primary-color) !important;
+      box-shadow: 0 0 0 2px rgba(255, 140, 66, 0.2) !important;
+      background: var(--surface-color) !important;
+      color: var(--text-color) !important;
+    }
+    
+    &:hover {
+      border-color: var(--primary-color) !important;
+    }
+  }
+  
+  // Additional search input overrides
+  input[nz-input] {
+    background: var(--surface-color) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+    
+    &::placeholder {
+      color: var(--text-secondary) !important;
+      opacity: 0.7;
+    }
+  }
+  
+  // Input group styling
+  .ant-input-group {
+    .ant-input-group-addon {
+      background: var(--surface-color) !important;
+      border-color: var(--border-color) !important;
+      color: var(--text-secondary) !important;
+    }
+    
+    &:hover {
+      .ant-input-group-addon {
+        border-color: var(--primary-color) !important;
+      }
+    }
+  }
+  
+  .ant-btn {
+    border-color: var(--border-color) !important;
+    
+    &:not(.ant-btn-primary) {
+      background: var(--surface-color) !important;
+      color: var(--text-color) !important;
+      
+      &:hover {
+        background: var(--primary-color) !important;
+        color: #ffffff !important;
+        border-color: var(--primary-color) !important;
+      }
+    }
+    
+    &.ant-btn-primary {
+      background: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+      
+      &:hover {
+        background: var(--primary-hover) !important;
+        border-color: var(--primary-hover) !important;
+      }
+    }
+  }
+  
+  .ant-divider {
+    border-color: var(--border-color) !important;
+  }
+  
+  .ant-typography {
+    color: var(--text-color) !important;
+  }
+  
+  // Dark theme specific adjustments for app components
+  .app-card {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    
+    &:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+      transform: translateY(-2px);
+      border-color: var(--primary-color) !important;
+    }
+  }
+  
+  .category-item {
+    background: var(--surface-color) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color) !important;
+    
+    &:hover {
+      background: var(--primary-color) !important;
+      color: #ffffff !important;
+      border-color: var(--primary-color) !important;
+    }
+    
+    &.selected {
+      background: var(--primary-color) !important;
+      color: #ffffff !important;
+      border-color: var(--primary-color) !important;
+    }
+  }
+  
+  // Improve navigation styling
+  .ant-layout-header {
+    background: var(--surface-color) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+  }
+  
+  // Better search box styling
+  .ant-input-group-addon {
+    background: var(--surface-color) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+  }
+  
+  .ant-input-search .ant-input-group .ant-input-group-addon {
+    background: var(--surface-color) !important;
+  }
+  
+  .ant-input-search-button {
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    
+    &:hover {
+      background: var(--primary-hover) !important;
+      border-color: var(--primary-hover) !important;
+    }
+  }
+
+  // Fix heading and text visibility in dark mode
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text-color) !important;
+  }
+  
+  .section-title h2 {
+    color: var(--text-color) !important;
+  }
+  
+  .search-section-wrapper h1 {
+    color: var(--text-color) !important;
+  }
+  
+  // Enhanced search input styling for dark mode - comprehensive fix
+  .search-section {
+    .ant-input-group {
+      background: var(--surface-color) !important;
+      border: 1px solid var(--border-color) !important;
+      border-radius: 6px !important;
+      overflow: hidden;
+      
+      .ant-input {
+        background: transparent !important;
+        color: var(--text-color) !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        
+        &::placeholder {
+          color: var(--text-secondary) !important;
+          opacity: 0.7;
+        }
+        
+        &:focus {
+          background: transparent !important;
+          color: var(--text-color) !important;
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+        }
+        
+        &:hover {
+          background: transparent !important;
+          border: none !important;
+        }
+      }
+      
+      .ant-input-group-addon {
+        background: var(--surface-color) !important;
+        border: none !important;
+        border-left: 1px solid var(--border-color) !important;
+        color: var(--text-secondary) !important;
+        
+        .anticon {
+          color: var(--text-secondary) !important;
+          opacity: 1 !important;
+          font-size: 14px !important;
+        }
+        
+        span[nz-icon] {
+          color: var(--text-secondary) !important;
+          opacity: 1 !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          
+          svg {
+            fill: var(--text-secondary) !important;
+            color: var(--text-secondary) !important;
+            opacity: 1 !important;
+          }
+        }
+      }
+      
+      &:hover {
+        border-color: var(--primary-color) !important;
+        background: var(--surface-color) !important;
+        
+        .ant-input-group-addon {
+          .anticon, span[nz-icon] {
+            color: var(--primary-color) !important;
+            
+            svg {
+              fill: var(--primary-color) !important;
+              color: var(--primary-color) !important;
+            }
+          }
+        }
+      }
+      
+      &:focus-within {
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 0 0 2px rgba(255, 140, 66, 0.2) !important;
+        background: var(--surface-color) !important;
+        
+        .ant-input-group-addon {
+          .anticon, span[nz-icon] {
+            color: var(--primary-color) !important;
+            
+            svg {
+              fill: var(--primary-color) !important;
+              color: var(--primary-color) !important;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Enhanced search icon visibility fix for dark mode
+  .search-section {
+    nz-input-group .ant-input-group-addon {
+      [nz-icon] {
+        color: var(--text-secondary) !important;
+        opacity: 1 !important;
+        display: flex !important;
+        
+        svg {
+          fill: var(--text-secondary) !important;
+          stroke: var(--text-secondary) !important;
+          color: var(--text-secondary) !important;
+          opacity: 1 !important;
+          width: 14px !important;
+          height: 14px !important;
+          display: block !important;
+        }
+        
+        .anticon {
+          color: var(--text-secondary) !important;
+          opacity: 1 !important;
+          
+          svg {
+            fill: var(--text-secondary) !important;
+            color: var(--text-secondary) !important;
+          }
+        }
+      }
+    }
+    
+    // More specific targeting
+    .ant-input-group-addon span[nz-icon] {
+      color: var(--text-secondary) !important;
+      opacity: 1 !important;
+      
+      svg {
+        fill: var(--text-secondary) !important;
+        color: var(--text-secondary) !important;
+      }
+    }
+  }
+  
+  // Fix any other text elements that might have dark colors
+  p, span, div {
+    color: var(--text-color);
+  }
+  
+  // Enhanced category icons for dark mode visibility
+  .category-item {
+    background: var(--surface-color) !important;
+    border: 1px solid var(--border-color) !important;
+    
+    .category-icon svg {
+      // Override hardcoded SVG fill colors for better dark mode visibility
+      fill: var(--primary-color) !important;
+      transition: fill 0.3s ease;
+    }
+    
+    &--title {
+      color: var(--text-color) !important;
+    }
+    
+    &:hover {
+      background: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+      
+      .category-icon svg {
+        fill: #ffffff !important;
+      }
+      
+      .category-item--title {
+        color: #ffffff !important;
+      }
+    }
+    
+    &.selected {
+      background: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+      
+      .category-icon svg {
+        fill: #ffffff !important;
+      }
+      
+      .category-item--title {
+        color: #ffffff !important;
+      }
+    }
+  }
+  
+  // App Detail Page Dark Mode Fixes
+  .content-section {
+    background-color: var(--bg-color) !important;
+    
+    h2 {
+      color: var(--text-color) !important;
+    }
+    
+    p {
+      color: var(--text-secondary) !important;
+    }
+    
+    &::before {
+      background: var(--bg-color) !important;
+      background: linear-gradient(180deg, transparent 0%, var(--bg-color) 39%) !important;
+    }
+  }
+  
+  .header {
+    h1 {
+      color: var(--text-color) !important;
+    }
+    
+    // Fix back button in dark mode
+    .ant-btn {
+      background: var(--surface-color) !important;
+      border-color: var(--border-color) !important;
+      color: var(--text-color) !important;
+      
+      &:hover {
+        background: var(--primary-color) !important;
+        border-color: var(--primary-color) !important;
+        color: #ffffff !important;
+      }
+      
+      .anticon {
+        color: inherit !important;
+      }
+    }
+  }
+  
+  .category-badge {
+    background-color: var(--surface-color) !important;
+    border-color: var(--border-color) !important;
+    
+    &:hover {
+      background: var(--hover-bg) !important;
+      border-color: var(--primary-color) !important;
+    }
+  }
+  
+  .badge-name {
+    color: var(--text-color) !important;
+  }
+  
+  .dev-container {
+    &:hover {
+      background-color: var(--hover-bg) !important;
+    }
+  }
+  
+  // App cards in related apps section
+  .app-card {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    
+    &:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+      border-color: var(--primary-color) !important;
+    }
+  }
+  
+  // Fix dividers
+  nz-divider::after,
+  nz-divider::before {
+    border-color: var(--border-color) !important;
+  }
+  
+  // Fix carousel pagination for dark mode
+  .swiper-pagination-bullet {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    
+    &.swiper-pagination-bullet-active {
+      background-color: var(--primary-color) !important;
+    }
+  }
+  
+  // Fix carousel navigation arrows for dark mode
+  .swiper-button-next,
+  .swiper-button-prev {
+    background-color: var(--surface-color) !important;
+    color: var(--text-color) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid var(--border-color) !important;
+    
+    &:hover {
+      background-color: var(--primary-color) !important;
+      color: #ffffff !important;
+      border-color: var(--primary-color) !important;
+      transform: translateY(-50%) scale(1.1) !important;
+    }
+    
+    svg {
+      color: inherit !important;
+      
+      path {
+        fill: currentColor !important;
+      }
+    }
+  }
+  
+  // Fix buttons and icons
+  .ant-btn-icon-only {
+    background: var(--surface-color) !important;
+    border-color: var(--border-color) !important;
+    
+    &:hover {
+      background: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+    }
+  }
+  
+  // Fix carousel loader for dark mode
+  .swiper-loader {
+    span {
+      background: var(--primary-color) !important;
+    }
+  }
+  
+  // App rating display
+  .app-rating {
+    .rating-number {
+      color: var(--text-color) !important;
+    }
+  }
+  
+  // Footer Dark Mode Styling
+  nz-footer.main-footer {
+    background-color: var(--surface-color) !important;
+    color: var(--text-secondary) !important;
+    border-top: 1px solid var(--border-color) !important;
+    
+    .footer-section {
+      h4 {
+        color: var(--text-color) !important;
+      }
+      
+      .copyright {
+        color: var(--text-secondary) !important;
+      }
+    }
+    
+    .footer-links {
+      a {
+        color: var(--text-secondary) !important;
+        
+        &:hover {
+          color: var(--primary-color) !important;
+          text-decoration: underline;
+        }
+        
+        nz-icon {
+          color: var(--text-secondary) !important;
+        }
+        
+        &:hover nz-icon {
+          color: var(--primary-color) !important;
+        }
+      }
+    }
+  }
+}
+
+// Smooth transitions for theme changes
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+// Apply theme colors to body and ensure text is always visible
+html, body {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+}
+
+// Ensure layout components follow theme
+.ant-layout {
+  background: var(--bg-color) !important;
+  color: var(--text-color) !important;
+}
+
+.ant-layout-content {
+  background: var(--bg-color) !important;
+  color: var(--text-color) !important;
+}
+
+// Ensure container elements inherit theme colors
+.container {
+  color: var(--text-color) !important;
+}
+
+// Override any Angular/Ant Design defaults that might cause invisible text
+* {
+  &:not(.ant-btn):not(.ant-card):not(.ant-input) {
+    color: inherit;
+  }
+}
+
+// Custom scrollbar for dark theme
+.dark-theme {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--surface-color);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+    
+    &:hover {
+      background: var(--primary-color);
+    }
+  }
+}
