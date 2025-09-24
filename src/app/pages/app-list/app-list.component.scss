@@ -78,12 +78,122 @@
 }
 :host ::ng-deep {
   nz-rate {
+    line-height: 1;
+    display: flex;
+    align-items: center;
     .ant-rate-star:not(:last-child) {
       margin-right: 3px;
     }
     .anticon svg {
       width: 14px;
-      height: auto;
+      height: 14px; /* Fixed height for consistent alignment */
+    }
+    .ant-rate-star {
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    /* Color stars based on rating quality */
+    &.excellent .ant-rate-star-full .anticon {
+      color: #52c41a !important; /* Bright green stars for excellent */
+    }
+    
+    &.very-good .ant-rate-star-full .anticon {
+      color: #73d13d !important; /* Light green stars for very good */
+    }
+    
+    &.good .ant-rate-star-full .anticon {
+      color: #faad14 !important; /* Yellow stars for good */
+    }
+    
+    &.fair .ant-rate-star-full .anticon {
+      color: #fa8c16 !important; /* Orange stars for fair */
+    }
+    
+    &.poor .ant-rate-star-full .anticon {
+      color: #ff4d4f !important; /* Red stars for poor */
+    }
+    
+    /* Half stars also get colored */
+    &.excellent .ant-rate-star-half .anticon {
+      color: #52c41a !important;
+    }
+    
+    &.very-good .ant-rate-star-half .anticon {
+      color: #73d13d !important;
+    }
+    
+    &.good .ant-rate-star-half .anticon {
+      color: #faad14 !important;
+    }
+    
+    &.fair .ant-rate-star-half .anticon {
+      color: #fa8c16 !important;
+    }
+    
+    &.poor .ant-rate-star-half .anticon {
+      color: #ff4d4f !important;
+    }
+    
+    /* Empty stars get subtle background color */
+    .ant-rate-star-zero .anticon {
+      color: #f0f0f0 !important;
+    }
+  }
+  
+  /* Custom star system for precise ratings */
+  .custom-stars {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    
+    .star-container {
+      position: relative;
+      width: 14px;
+      height: 14px;
+      overflow: hidden;
+      
+      .star-base {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 14px;
+        line-height: 1;
+        color: #f0f0f0;
+        user-select: none;
+      }
+      
+      .star-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 14px;
+        line-height: 1;
+        overflow: hidden;
+        user-select: none;
+        transition: width 0.3s ease;
+      }
+    }
+    
+    /* Color the filled stars based on rating quality */
+    &.excellent .star-fill {
+      color: #52c41a;
+    }
+    
+    &.very-good .star-fill {
+      color: #73d13d;
+    }
+    
+    &.good .star-fill {
+      color: #faad14;
+    }
+    
+    &.fair .star-fill {
+      color: #fa8c16;
+    }
+    
+    &.poor .star-fill {
+      color: #ff4d4f;
     }
   }
   .ant-card-meta-description {
@@ -144,6 +254,8 @@
     height: 100%;
     cursor: pointer;
     transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
     .app-icon-container {
       margin-inline-end: 16px;
       .app-icon {
@@ -153,6 +265,10 @@
     }
     .card-data-container {
       min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     &:hover {
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -185,20 +301,61 @@
 
 ::ng-deep .ant-card-body {
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  
+  .ant-flex {
+    flex: 1;
+    display: flex;
+    height: 100%;
+  }
 }
 
 .app-rating {
-  margin-top: 6px;
+  margin-top: auto; /* Push to bottom */
+  padding-top: 16px; /* Increased space from description */
   display: flex;
   align-items: center;
+  height: 24px; /* Fixed height for consistent alignment */
+  gap: 8px; /* Consistent spacing */
 }
 
 .rating-number {
   font-size: 16px;
-  font-weight: 500;
-  margin-inline-end: 8px;
-  padding-top: 2px;
-  color: #272424;
+  font-weight: 600;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  min-width: 36px; /* Ensures consistent width for ratings */
+  padding: 2px 6px;
+  border-radius: 4px;
+  
+  /* Color coding based on rating ranges */
+  &.excellent {
+    background-color: #52c41a;
+    color: white;
+  }
+  
+  &.very-good {
+    background-color: #73d13d;
+    color: white;
+  }
+  
+  &.good {
+    background-color: #faad14;
+    color: white;
+  }
+  
+  &.fair {
+    background-color: #fa8c16;
+    color: white;
+  }
+  
+  &.poor {
+    background-color: #ff4d4f;
+    color: white;
+  }
 }
 
 /* RTL Support */
