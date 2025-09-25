@@ -262,7 +262,7 @@ html[dir="rtl"] .content-section {
 }
 
 ::ng-deep .ant-card-cover img {
-  border-radius: 8px 8px 0 0 !important;
+  border-radius: 16px 16px 0 0 !important;
 }
 ::ng-deep .ant-btn-icon-only {
   background: #ede0c090;
@@ -283,23 +283,36 @@ html[dir="rtl"] .content-section {
   margin-bottom: 30px;
 
   .app-card {
-    border-radius: 8px;
-    background-color: #f8f8f8;
+    border-radius: 16px;
+    background-color: #ffffff;
+    border: 1px solid #e8e8e8;
     height: 100%;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
     .app-icon-container {
       margin-inline-end: 16px;
       .app-icon {
-        width: 38px;
-        // border-radius: 40px;
+        width: 57px;
+        height: 57px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       }
     }
     .card-data-container {
       min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     &:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-color: #d0d0d0;
     }
   }
 
@@ -314,7 +327,7 @@ html[dir="rtl"] .content-section {
 }
 
 ::ng-deep .ant-card-cover img {
-  border-radius: 8px 8px 0 0 !important;
+  border-radius: 16px 16px 0 0 !important;
 }
 
 ::ng-deep .ant-input-affix-wrapper:hover {
@@ -330,10 +343,10 @@ html[dir="rtl"] .content-section {
   display: none;
 }
 ::ng-deep .ant-card-body {
-  padding: 16px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 60%;
   
   .ant-flex {
     flex: 1;
@@ -349,6 +362,12 @@ html[dir="rtl"] .content-section {
     align-items: center;
     .ant-rate-star:not(:last-child) {
       margin-right: 3px;
+    }
+    
+    /* RTL: Fix star spacing */
+    [dir="rtl"] & .ant-rate-star:not(:last-child) {
+      margin-right: 0;
+      margin-left: 3px;
     }
     .anticon svg {
       width: 14px;
@@ -433,6 +452,15 @@ html[dir="rtl"] .content-section {
         overflow: hidden;
         user-select: none;
         transition: width 0.3s ease;
+      }
+    }
+    
+    /* RTL: Fix partial star fill direction - stars should fill from right to left */
+    [dir="rtl"] & .star-container {
+      .star-fill {
+        left: auto;
+        right: 0;
+        direction: rtl;
       }
     }
     
@@ -734,24 +762,24 @@ html[dir="rtl"] .content-section {
   margin-top: auto;
 }
 
-/* RTL adjustment: clean layout for Arabic */
-:host-context(html[dir="rtl"]) ::ng-deep .app-rating {
-  flex-direction: row !important;
-  gap: 0 !important;
+/* Dark theme card styling for similar apps */
+:host-context(.dark-theme) .app-grid .app-card {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  
+  &:hover {
+    border-color: rgba(255, 140, 66, 0.4) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  }
 }
 
-/* In RTL: stars first, then number with proper spacing */
-:host-context(html[dir="rtl"]) ::ng-deep .app-rating .custom-stars {
-  order: 1 !important;
-  display: flex !important;
-  flex-direction: row-reverse !important; /* reverse stars so partial star is near number */
-  direction: ltr !important; /* keep fill left-to-right inside each star */
-  margin-left: 0 !important;
-  margin-right: 8px !important;
+/* RTL: Position rating number on the right side of stars in Arabic */
+[dir="rtl"] .app-rating {
+  flex-direction: row-reverse;
 }
 
-:host-context(html[dir="rtl"]) ::ng-deep .app-rating .rating-number {
-  order: 2 !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+[dir="rtl"] .app-rating .rating-number {
+  margin-left: 8px;
+  margin-right: 0;
 }

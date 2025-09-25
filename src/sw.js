@@ -92,9 +92,48 @@ self.addEventListener('fetch', (event) => {
           .catch(() => {
             // Return offline fallback for HTML requests
             if (event.request.destination === 'document') {
-              return caches.match('/offline.html');
+              return new Response(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <title>Offline - Quran Apps Directory</title>
+                  <style>
+                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                    .offline-message { max-width: 400px; margin: 0 auto; }
+                  </style>
+                </head>
+                <body>
+                  <div class="offline-message">
+                    <h1>You're Offline</h1>
+                    <p>Please check your internet connection and try again.</p>
+                    <button onclick="window.location.reload()">Retry</button>
+                  </div>
+                </body>
+                </html>
+              `, {
+                status: 200,
+                statusText: 'OK',
+                headers: new Headers({
+                  'Content-Type': 'text/html'
+                })
+              });
             }
+            // Return a generic network error response for other requests
+            return new Response('Network Error', {
+              status: 408,
+              statusText: 'Request Timeout'
+            });
           });
+      })
+      .catch((error) => {
+        // Final safety net - ensure we never return undefined
+        console.error('Service Worker: Fetch handler error', error);
+        return new Response('Service Worker Error', {
+          status: 503,
+          statusText: 'Service Unavailable'
+        });
       })
   );
 });

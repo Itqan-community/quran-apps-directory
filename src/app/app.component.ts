@@ -3,9 +3,10 @@ import { RouterOutlet, RouterLink, ActivatedRoute, Router, ActivatedRouteSnapsho
 import { NzLayoutModule } from "ng-zorro-antd/layout";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzSpaceModule } from "ng-zorro-antd/space";
+import { NzDividerModule } from "ng-zorro-antd/divider";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
-import { NzIconModule, NzIconService } from "ng-zorro-antd/icon";
-import { MenuOutline, SunOutline, MoonOutline, BgColorsOutline, SearchOutline } from '@ant-design/icons-angular/icons';
+import { NzIconModule } from "ng-zorro-antd/icon";
+// Icons are now globally registered in main.ts for better tree-shaking
 import { Title, Meta } from '@angular/platform-browser';
 import { LanguageService } from "./services/language.service";
 import { ThemeService } from "./services/theme.service";
@@ -19,8 +20,7 @@ import { Http2OptimizationService } from "./services/http2-optimization.service"
 import { CriticalResourcePreloaderService } from "./services/critical-resource-preloader.service";
 import { filter } from "rxjs";
 
-// Import what icons you need
-const icons = [MenuOutline, SunOutline, MoonOutline, BgColorsOutline, SearchOutline];
+// Icons globally registered in main.ts
 
 @Component({
   selector: "app-root",
@@ -33,6 +33,7 @@ const icons = [MenuOutline, SunOutline, MoonOutline, BgColorsOutline, SearchOutl
     NzLayoutModule,
     NzButtonModule,
     NzSpaceModule,
+    NzDividerModule,
     TranslateModule,
     NzIconModule,
     ThemeToggleComponent,
@@ -56,12 +57,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     private lcpMonitor: LcpMonitorService,
     private cacheOptimization: CacheOptimizationService,
     private cacheValidator: CacheValidatorService,
-    private http2Optimization: Http2OptimizationService,
-    private criticalPreloader: CriticalResourcePreloaderService,
-    private iconService: NzIconService
+    private http2Optimization: Http2OptimizationService
   ) {
-    // Register icons for theme toggle
-    this.iconService.addIcon(...icons);
+    // Icons are globally registered in main.ts
     // Get browser language
     const browserLang = navigator.language;
     const defaultLang = browserLang.startsWith("ar") ? "ar" : "en";
@@ -75,8 +73,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.translate.use(defaultLang);
     this.currentLang = defaultLang;
 
-    // Initialize critical resource preloading immediately for LCP optimization
-    this.criticalPreloader.optimizeForLCP();
+    // Critical resource preloading removed - handled by optimized image component
   }
 
   getCurrentRouteParams(): any {

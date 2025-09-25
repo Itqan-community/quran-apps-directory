@@ -6,44 +6,16 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="image-container" [style.aspect-ratio]="aspectRatio">
-      <!-- Loading placeholder for LCP optimization -->
-      <div 
-        *ngIf="showPlaceholder" 
-        class="image-placeholder"
-        [style.background-color]="placeholderColor">
-      </div>
-      
-      <picture 
-        class="image-picture"
-        [class.image-loaded]="!showPlaceholder">
-        <!-- AVIF source (best compression, ~50% smaller than JPEG) -->
-        <source 
-          *ngIf="shouldUseAvif"
-          [srcset]="avifSrc" 
-          type="image/avif">
-        
-        <!-- WebP source (fallback, ~25% smaller than JPEG) -->
-        <source 
-          *ngIf="shouldUseWebp"
-          [srcset]="webpSrc" 
-          type="image/webp">
-        
-        <!-- Original format fallback (for older browsers) -->
-        <img 
-          [src]="originalSrc"
-          [alt]="alt"
-          [loading]="loading"
-          [attr.fetchpriority]="fetchpriority"
-          [width]="width"
-          [height]="height"
-          [class]="cssClass"
-          [style]="cssStyle"
-          (load)="onImageLoad()"
-          (error)="onImageError()"
-          decoding="async">
-      </picture>
-    </div>
+    <img 
+      [src]="originalSrc"
+      [alt]="alt"
+      [loading]="loading"
+      [attr.fetchpriority]="fetchpriority"
+      [width]="computedWidth"
+      [height]="computedHeight"
+      [class]="cssClass"
+      [style]="computedStyle"
+      decoding="async">
   `,
   styles: [`
     .image-container {
@@ -53,38 +25,11 @@ import { CommonModule } from '@angular/common';
       overflow: hidden;
     }
     
-    .image-placeholder {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #f5f5f5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1;
-      transition: opacity 0.3s ease;
-    }
-    
-    .image-picture {
-      position: relative;
-      display: block;
-      width: 100%;
-      height: 100%;
-      z-index: 2;
-    }
-    
-    .image-picture img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: opacity 0.3s ease;
-    }
-    
-    .image-loaded .image-placeholder {
-      opacity: 0;
-      pointer-events: none;
+    img {
+      max-width: 100%;
+      height: auto;
+      /* Prevent layout shift during load */
+      aspect-ratio: attr(width) / attr(height);
     }
   `]
 })
@@ -97,10 +42,7 @@ export class OptimizedImageComponent {
   @Input() height?: string;
   @Input() cssClass?: string;
   @Input() cssStyle?: string;
-  @Input() aspectRatio: string = '16/9'; // Default aspect ratio for cover images
-  @Input() placeholderColor: string = '#f5f5f5';
-  
-  showPlaceholder = true;
+  @Input() aspectRatio?: string; // e.g., "16/9", "4/3", "1/1"
 
   get originalSrc(): string {
     return this.src || '';
@@ -130,12 +72,40 @@ export class OptimizedImageComponent {
     return this.src.startsWith('/assets/') || this.src.startsWith('assets/');
   }
 
-  onImageLoad(): void {
-    this.showPlaceholder = false;
+  get computedWidth(): string {
+    if (this.width) return this.width;
+    // Default dimensions for different image types to prevent CLS
+    if (this.cssClass?.includes('app-icon')) return '38';
+    if (this.cssClass?.includes('cover-image')) return '300';
+    return 'auto';
   }
 
-  onImageError(): void {
-    this.showPlaceholder = false;
-    console.warn(`Failed to load image: ${this.src}`);
+  get computedHeight(): string {
+    if (this.height) return this.height;
+    // Default dimensions for different image types to prevent CLS
+    if (this.cssClass?.includes('app-icon')) return '38';
+    if (this.cssClass?.includes('cover-image')) return '220';
+    return 'auto';
+  }
+
+  get computedStyle(): string {
+    const styles: string[] = [];
+    
+    // Add existing custom styles if provided
+    if (this.cssStyle && this.cssStyle.trim()) {
+      let customStyle = this.cssStyle.trim();
+      // Ensure the custom style ends with semicolon
+      if (!customStyle.endsWith(';')) {
+        customStyle += ';';
+      }
+      styles.push(customStyle);
+    }
+    
+    // Add aspect-ratio if provided
+    if (this.aspectRatio && this.aspectRatio.trim()) {
+      styles.push(`aspect-ratio: ${this.aspectRatio.trim()};`);
+    }
+    
+    return styles.join(' ');
   }
 }
