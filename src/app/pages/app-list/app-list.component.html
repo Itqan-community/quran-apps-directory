@@ -76,7 +76,7 @@
     <!-- Grid of app cards -->
     <div class="app-grid">
       <div nz-row [nzGutter]="[24, 24]" class="app-grid-row"> 
-        <div nz-col nzXs="18" nzSm="12" nzMd="8" nzLg="6" nzXl="6" *ngFor="let app of filteredApps; let i = index">
+        <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="6" nzXl="6" class="app-grid-col" *ngFor="let app of filteredApps; let i = index">
           <!-- App card with cover image -->
           <nz-card
             [nzCover]="coverTemplate"
@@ -87,15 +87,20 @@
             itemtype="https://schema.org/SoftwareApplication"
           >
             <ng-template #coverTemplate>
-              <!-- Optimized cover image with fixed aspect ratio for CLS prevention -->
-              <app-optimized-image
-                [src]="(currentLang === 'en' ? app.mainImage_en : app.mainImage_ar) || ''"
-                [alt]="app.Name_En + ' screenshot'"
-                [loading]="getImageLoadingStrategy(i)"
-                [fetchpriority]="getImagePriority(i)"
-                [aspectRatio]="getImageAspectRatio('cover')"
-                cssClass="cover-image">
-              </app-optimized-image>
+              <div style="max-height: 220px; overflow: hidden; aspect-ratio: 300/220;">
+                <!-- Use optimized images with smart loading strategy -->
+                <app-optimized-image
+                  [src]="(currentLang === 'en' ? app.mainImage_en : app.mainImage_ar) || ''"
+                  [alt]="app.Name_En + ' screenshot'"
+                  cssStyle="width: 100%; height: 100%; object-fit: cover;"
+                  cssClass="cover-image"
+                  width="300"
+                  height="220"
+                  aspectRatio="300/220"
+                  [loading]="getImageLoadingStrategy(i)"
+                  [fetchpriority]="getImagePriority(i)">
+                </app-optimized-image>
+              </div>
             </ng-template>
     
             <div class="ant-flex">
@@ -106,6 +111,9 @@
                   [alt]="app.Name_En + ' icon'"
                   [aspectRatio]="getImageAspectRatio('icon')"
                   cssClass="app-icon"
+                  width="38"
+                  height="38"
+                  aspectRatio="1/1"
                   loading="lazy"
                   fetchpriority="low">
                 </app-optimized-image>
