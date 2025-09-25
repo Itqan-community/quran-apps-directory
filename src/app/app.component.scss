@@ -300,6 +300,13 @@
       &::before { left: -12px; }
       &::after { right: -12px; transform: scaleX(-1); }
 
+      // Dark theme specific: ensure items don't clip at edges and allow internal padding
+      .dark-theme & {
+        padding-left: 12px;
+        padding-right: 12px;
+        overflow-x: hidden;
+      }
+
       .mobile-menu-header {
         display: flex;
         align-items: center;
