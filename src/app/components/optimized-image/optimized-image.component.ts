@@ -6,32 +6,16 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="image-container" [style.aspect-ratio]="aspectRatio">
-      <!-- Loading placeholder for LCP optimization -->
-      <div 
-        *ngIf="showPlaceholder" 
-        class="image-placeholder"
-        [style.background-color]="placeholderColor">
-      </div>
-      
-      <!-- WebP source (fallback, ~25% smaller than JPEG) -->
-      <source 
-        *ngIf="shouldUseWebp"
-        [srcset]="webpSrc" 
-        type="image/webp">
-      
-      <!-- Original format fallback (for older browsers) -->
-      <img 
-        [src]="originalSrc"
-        [alt]="alt"
-        [loading]="loading"
-        [attr.fetchpriority]="fetchpriority"
-        [width]="computedWidth"
-        [height]="computedHeight"
-        [class]="cssClass"
-        [style]="computedStyle"
-        decoding="async">
-    </picture>
+    <img 
+      [src]="originalSrc"
+      [alt]="alt"
+      [loading]="loading"
+      [attr.fetchpriority]="fetchpriority"
+      [width]="computedWidth"
+      [height]="computedHeight"
+      [class]="cssClass"
+      [style]="computedStyle"
+      decoding="async">
   `,
   styles: [`
     .image-container {

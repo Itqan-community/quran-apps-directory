@@ -73,8 +73,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.translate.use(defaultLang);
     this.currentLang = defaultLang;
 
-    // Initialize critical resource preloading immediately for LCP optimization
-    this.criticalPreloader.optimizeForLCP();
+    // Critical resource preloading removed - handled by optimized image component
   }
 
   getCurrentRouteParams(): any {
