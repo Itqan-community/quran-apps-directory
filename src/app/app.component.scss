@@ -75,15 +75,24 @@
             box-shadow: 0 2px 4px rgba(255, 140, 66, 0.3);
             line-height: 1.2;
             min-height: unset;
-            
-            // RTL positioning - bottom left for Arabic
-            [dir="rtl"] & {
-              right: auto;
-              left: -6px;
-            }
+          z-index: 30;
           }
         }
       }
+
+    // RTL: place beta badge on the bottom-left of logo
+    [dir="rtl"] .logo-wrapper .beta-badge,
+    :host-context([dir="rtl"]) .logo-wrapper .beta-badge {
+      right: auto;
+      left: -6px;
+    }
+
+    // Ensure logo wrapper is above other header elements so badge overlaps
+    .logo-wrapper {
+      z-index: 20;
+      position: relative;
+      overflow: visible;
+    }
 
     // Desktop Navigation
     .desktop-nav {
@@ -250,12 +259,11 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.5);
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
     z-index: 999;
-    backdrop-filter: blur(4px);
 
     &.visible {
       opacity: 1;
@@ -270,20 +278,27 @@
       position: absolute;
       top: env(safe-area-inset-top, 0);
       right: 0;
-      width: 100%;
-      max-width: 320px;
+      width: 320px;
       height: calc(100vh - env(safe-area-inset-top, 0));
       background: var(--bg-color);
       border-left: 1px solid var(--border-color);
       transform: translateX(100%);
       transition: transform 0.3s ease;
       overflow-y: auto;
-      
-      @media (max-width: 480px) {
-        width: 100vw;
-        max-width: none;
-        border-left: none;
+
+      /* remove bleeding rounded decorative shapes at edges */
+      &::before, &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 12px;
+        pointer-events: none;
+        background: linear-gradient(to right, rgba(0,0,0,0.02), transparent);
       }
+
+      &::before { left: -12px; }
+      &::after { right: -12px; transform: scaleX(-1); }
 
       .mobile-menu-header {
         display: flex;
@@ -295,11 +310,14 @@
         .mobile-logo {
           display: flex;
           align-items: center;
-
-          .logo-wrapper {
-            padding: 4px;
-            box-shadow: 0 2px 12px rgba(15, 23, 42, 0.08);
-          }
+        
+        .logo-wrapper {
+          padding: 4px;
+          box-shadow: 0 2px 12px rgba(15, 23, 42, 0.08);
+          z-index: 20;
+          position: relative;
+          overflow: visible;
+        }
         }
 
         .mobile-menu-close {
@@ -406,15 +424,13 @@
     }
 
     .mobile-menu-overlay .mobile-menu-content {
-      width: 90%;
-      max-width: 280px;
+      width: 280px;
     }
   }
 
   @media (max-width: 480px) {
     .mobile-menu-overlay .mobile-menu-content {
-      width: 100vw;
-      max-width: none;
+      width: 100%;
     }
   }
 }
