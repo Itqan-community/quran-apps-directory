@@ -194,6 +194,12 @@
     .ant-rate-star:not(:last-child) {
       margin-right: 3px;
     }
+    
+    /* RTL: Fix star spacing */
+    [dir="rtl"] & .ant-rate-star:not(:last-child) {
+      margin-right: 0;
+      margin-left: 3px;
+    }
     .anticon svg {
       width: 14px;
       height: 14px; /* Fixed height for consistent alignment */
@@ -285,6 +291,15 @@
       }
     }
     
+    /* RTL: Fix partial star fill direction - stars should fill from right to left */
+    [dir="rtl"] & .star-container {
+      .star-fill {
+        left: auto;
+        right: 0;
+        direction: rtl;
+      }
+    }
+    
     /* Color the filled stars based on rating quality */
     &.excellent .star-fill {
       color: #52c41a;
@@ -359,18 +374,23 @@
   margin-bottom: 30px;
 
   .app-card {
-    border-radius: 8px;
-    background-color: #f8f8f8;
+    border-radius: 16px;
+    background-color: #ffffff;
+    border: 1px solid #e8e8e8;
     height: 100%;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
     .app-icon-container {
       margin-inline-end: 16px;
       .app-icon {
-        width: 38px;
-        border-radius: 40px;
+        width: 57px;
+        height: 57px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       }
     }
     .card-data-container {
@@ -381,22 +401,48 @@
       justify-content: space-between;
     }
     &:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-color: #d0d0d0;
     }
   }
 
   // responsive
   @media screen and (max-width: 768px) {
     .app-grid-row {
-      overflow-x: auto !important;
-      flex-flow: row nowrap !important;
-      margin-inline-end: -1rem;
+      margin: 0 -12px;
+      row-gap: 16px;
+    }
+
+    .app-grid-col {
+      width: 100%;
+      padding: 0 12px;
+    }
+
+    .app-card {
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid #e8e8e8;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+      .ant-card-cover {
+        margin: -16px -16px 16px;
+      }
+
+      .ant-card-body {
+        padding: 0;
+      }
+
+      .card-data-container {
+        margin-top: 12px;
+      }
     }
   }
 }
 
 ::ng-deep .ant-card-cover img {
-  border-radius: 8px 8px 0 0 !important;
+  border-radius: 16px 16px 0 0 !important;
 }
 
 ::ng-deep .ant-input-affix-wrapper:hover {
@@ -410,10 +456,10 @@
 }
 
 ::ng-deep .ant-card-body {
-  padding: 16px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 60%;
   
   .ant-flex {
     flex: 1;
@@ -427,7 +473,7 @@
   padding-top: 16px; /* Increased space from description */
   display: flex;
   align-items: center;
-  height: 24px; /* Fixed height for consistent alignment */
+  height: auto; /* Let content determine height */
   gap: 8px; /* Consistent spacing */
 }
 
@@ -528,5 +574,17 @@
 
   .rating-number {
     font-size: 14px;
+  }
+}
+
+/* Dark theme card styling */
+:host-context(.dark-theme) .app-card {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  
+  &:hover {
+    border-color: rgba(255, 140, 66, 0.4) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
   }
 }

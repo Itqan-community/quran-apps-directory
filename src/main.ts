@@ -9,7 +9,19 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app/app.component';
 import { NzIconModule } from 'ng-zorro-antd/icon';
-import { MenuOutline, ArrowUpOutline, ArrowDownOutline, SearchOutline } from '@ant-design/icons-angular/icons';
+import { 
+  MenuOutline, 
+  ArrowUpOutline, 
+  ArrowDownOutline, 
+  SearchOutline,
+  SunOutline,
+  MoonOutline,
+  BgColorsOutline,
+  ExportOutline,
+  GlobalOutline,
+  LeftOutline,
+  RightOutline
+} from '@ant-design/icons-angular/icons';
 
 
 // AoT requires an exported function for factories
@@ -19,7 +31,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 
 const ngZorroConfig: NzConfig = {
   theme: {
-    primaryColor: '#23433d'
+    primaryColor: '#A0533B'
   }
 };
 
@@ -30,7 +42,7 @@ bootstrapApplication(AppComponent, {
     provideNzConfig(ngZorroConfig),
     importProvidersFrom(
       HttpClientModule,
-      NzIconModule.forRoot([MenuOutline, ArrowUpOutline, ArrowDownOutline, SearchOutline]),
+      NzIconModule.forRoot([MenuOutline, ArrowUpOutline, ArrowDownOutline, SearchOutline, SunOutline, MoonOutline, BgColorsOutline, ExportOutline, GlobalOutline, LeftOutline, RightOutline]),
       TranslateModule.forRoot({
         loader: {
           provide: TranslateLoader,

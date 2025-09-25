@@ -1,98 +1,246 @@
 <nz-layout class="app-layout" [dir]="isRtl ? 'rtl' : 'ltr'">
-  <div class="app-header">
-    <div class="container">
-      <div class="app-header--content">
- 
-          <div class="logo-container">
-            <div class="logo-wrapper">
-              <img
-                height="40"
-                src="../assets/images/logo-svg.svg"
-                alt=""
-                [routerLink]="['/', currentLang]"
-              />
-              <span class="beta-label">{{ "header.beta" | translate }}</span>
-            </div>
-          </div>
-    
-          <!-- Desktop Menu -->
-          <div class="desktop-menu">
-            <nz-space>
-              <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/', currentLang]">
-                {{ "header.home" | translate }}
-              </a>
-              <a *nzSpaceItem nz-button nzType="link" [href]="'https://itqan.dev/' + currentLang" target="_blank" rel="noopener noreferrer">
-                {{ "header.itqan_community" | translate }}
-                <nz-icon nzType="export" nzTheme="outline" style="margin-left: 4px; margin-right: 4px;"></nz-icon>
-              </a>
-              <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/', currentLang, 'about-us']">
-                {{ "header.about" | translate }}
-              </a>
-              <a *nzSpaceItem nz-button nzType="link" [routerLink]="['/', currentLang, 'contact-us']">
-                {{ "header.contact" | translate }}
-              </a>
-              <app-theme-toggle *nzSpaceItem></app-theme-toggle>
-              <button
-                *nzSpaceItem
-                nz-button
-                nzType="primary"
-                (click)="toggleLanguage()"
-              >
-                {{ "header.language." + (isRtl ? "en" : "ar") | translate }}
-              </button>
-            </nz-space>
-          </div>
-    
-          <!-- Mobile Menu Button -->
-          <button
-            class="mobile-menu-btn"
-            (click)="toggleMobileMenu()"
-          >
-            <span class="mobile-menu-btn--bars" [class.expanded]="isMobileMenuVisible"></span>
-          </button>
-        
-    
-        <!-- Mobile Menu -->
-        <div class="mobile-menu" [class.mobile-menu-active]="isMobileMenuVisible">
+  <!-- Modern Header -->
+  <nz-header class="modern-header">
+    <div class="header-container">
+      <!-- Logo Section -->
+      <div class="logo-section">
+        <div class="logo-wrapper" [routerLink]="['/', currentLang]">
+          <img
+            height="40"
+            src="../assets/images/logo-svg.svg"
+            alt="Quran Apps Directory"
+            class="logo-image"
+          />
+          <span class="beta-badge">{{ "header.beta" | translate }}</span>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="desktop-nav">
+        <nav class="nav-menu">
           <a
-          [routerLink]="['/', currentLang]"
-            (click)="toggleMobileMenu()"
+            nz-button
+            nzType="text"
+            [routerLink]="['/', currentLang]"
+            class="nav-link"
           >
+            <span class="nav-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              </svg>
+            </span>
             {{ "header.home" | translate }}
           </a>
           <a
+            nz-button
+            nzType="text"
+            [href]="'https://itqan.dev/' + currentLang"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="nav-link external-link"
+          >
+            <span class="nav-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 7h-3V6a4 4 0 1 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 1 1 4 0v1h-4V6zm8 15a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v12z"/>
+              </svg>
+            </span>
+            {{ "header.itqan_community" | translate }}
+            <span class="external-icon">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7z"/>
+              </svg>
+            </span>
+          </a>
+          <a
+            nz-button
+            nzType="text"
+            [routerLink]="['/', currentLang, 'about-us']"
+            class="nav-link"
+          >
+            <span class="nav-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            </span>
+            {{ "header.about" | translate }}
+          </a>
+          <a
+            nz-button
+            nzType="text"
+            [routerLink]="['/', currentLang, 'contact-us']"
+            class="nav-link"
+          >
+            <span class="nav-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+            </span>
+            {{ "header.contact" | translate }}
+          </a>
+        </nav>
+
+        <!-- Action Buttons -->
+        <div class="header-actions">
+          <app-theme-toggle></app-theme-toggle>
+          <button
+            nz-button
+            nzType="primary"
+            nzSize="large"
+            (click)="toggleLanguage()"
+            class="language-toggle"
+          >
+            <span class="language-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+              </svg>
+            </span>
+            {{ "header.language." + (isRtl ? "en" : "ar") | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        nz-button
+        nzType="text"
+        class="mobile-menu-toggle"
+        (click)="toggleMobileMenu()"
+        [class.active]="isMobileMenuVisible"
+        aria-label="Toggle mobile menu"
+      >
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+
+    <!-- Modern Mobile Menu -->
+    <div class="mobile-menu-overlay" [class.visible]="isMobileMenuVisible">
+      <div class="mobile-menu-content">
+        <div class="mobile-menu-header">
+          <div class="mobile-logo">
+            <div class="logo-wrapper" [routerLink]="['/', currentLang]">
+              <img
+                height="40"
+                src="../assets/images/logo-svg.svg"
+                alt="Quran Apps Directory"
+                class="logo-image"
+              />
+              <span class="beta-badge">{{ "header.beta" | translate }}</span>
+            </div>
+          </div>
+          <button
+            nz-button
+            nzType="text"
+            class="mobile-menu-close"
+            (click)="toggleMobileMenu()"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </svg>
+          </button>
+        </div>
+
+        <nav class="mobile-nav">
+          <a
+            nz-button
+            nzType="text"
+            nzBlock
+            nzSize="large"
+            [routerLink]="['/', currentLang]"
+            (click)="toggleMobileMenu()"
+            class="mobile-nav-link"
+          >
+            <span class="mobile-nav-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              </svg>
+            </span>
+            {{ "header.home" | translate }}
+          </a>
+          <a
+            nz-button
+            nzType="text"
+            nzBlock
+            nzSize="large"
             [href]="'https://itqan.dev/' + currentLang"
             target="_blank"
             rel="noopener noreferrer"
             (click)="toggleMobileMenu()"
+            class="mobile-nav-link"
           >
+            <span class="mobile-nav-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 7h-3V6a4 4 0 1 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 1 1 4 0v1h-4V6zm8 15a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v12z"/>
+              </svg>
+            </span>
             {{ "header.itqan_community" | translate }}
-            <nz-icon nzType="export" nzTheme="outline" style="margin-left: 4px; margin-right: 4px;"></nz-icon>
+            <span class="external-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7z"/>
+              </svg>
+            </span>
           </a>
           <a
-          [routerLink]="['/', currentLang, 'about-us']"
+            nz-button
+            nzType="text"
+            nzBlock
+            nzSize="large"
+            [routerLink]="['/', currentLang, 'about-us']"
             (click)="toggleMobileMenu()"
+            class="mobile-nav-link"
           >
-              {{ "header.about" | translate }}
+            <span class="mobile-nav-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            </span>
+            {{ "header.about" | translate }}
           </a>
           <a
-          [routerLink]="['/', currentLang, 'contact-us']"
+            nz-button
+            nzType="text"
+            nzBlock
+            nzSize="large"
+            [routerLink]="['/', currentLang, 'contact-us']"
             (click)="toggleMobileMenu()"
+            class="mobile-nav-link"
           >
-              {{ "header.contact" | translate }}
+            <span class="mobile-nav-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+            </span>
+            {{ "header.contact" | translate }}
           </a>
-          <div class="mobile-theme-toggle">
+        </nav>
+
+        <div class="mobile-actions">
+          <div class="mobile-theme-section">
+            <span class="mobile-action-label">&nbsp;</span>
             <app-theme-toggle></app-theme-toggle>
           </div>
-          <a
+          <button
+            nz-button
+            nzType="primary"
+            nzBlock
+            nzSize="large"
             (click)="toggleLanguage(); toggleMobileMenu()"
+            class="mobile-language-btn"
           >
+            <span class="mobile-nav-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+              </svg>
+            </span>
             {{ "header.language." + (isRtl ? "en" : "ar") | translate }}
-          </a>
+          </button>
         </div>
       </div>
     </div>
-  </div>
+  </nz-header>
   <nz-content>
     <router-outlet></router-outlet>
   </nz-content>
