@@ -129,6 +129,12 @@
     .ant-rate-star:not(:last-child) {
       margin-right: 3px;
     }
+    
+    /* RTL: Fix star spacing */
+    [dir="rtl"] & .ant-rate-star:not(:last-child) {
+      margin-right: 0;
+      margin-left: 3px;
+    }
     .anticon svg {
       width: 14px;
       height: 14px;
@@ -212,6 +218,15 @@
         overflow: hidden;
         user-select: none;
         transition: width 0.3s ease;
+      }
+    }
+    
+    /* RTL: Fix partial star fill direction - stars should fill from right to left */
+    [dir="rtl"] & .star-container {
+      .star-fill {
+        left: auto;
+        right: 0;
+        direction: rtl;
       }
     }
     
