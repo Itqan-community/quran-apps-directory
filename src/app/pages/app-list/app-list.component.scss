@@ -374,18 +374,23 @@
   margin-bottom: 30px;
 
   .app-card {
-    border-radius: 8px;
-    background-color: #f8f8f8;
+    border-radius: 16px;
+    background-color: #ffffff;
+    border: 1px solid #e8e8e8;
     height: 100%;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
     .app-icon-container {
       margin-inline-end: 16px;
       .app-icon {
-        width: 38px;
-        border-radius: 40px;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       }
     }
     .card-data-container {
@@ -396,7 +401,9 @@
       justify-content: space-between;
     }
     &:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border-color: #d0d0d0;
     }
   }
 
@@ -415,10 +422,12 @@
     .app-card {
       border-radius: 16px;
       background: #ffffff;
-      padding: 12px;
+      border: 1px solid #e8e8e8;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 
       .ant-card-cover {
-        margin: -12px -12px 12px;
+        margin: -16px -16px 16px;
       }
 
       .ant-card-body {
@@ -433,7 +442,7 @@
 }
 
 ::ng-deep .ant-card-cover img {
-  border-radius: 8px 8px 0 0 !important;
+  border-radius: 16px 16px 0 0 !important;
 }
 
 ::ng-deep .ant-input-affix-wrapper:hover {
@@ -447,7 +456,7 @@
 }
 
 ::ng-deep .ant-card-body {
-  padding: 16px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -464,7 +473,7 @@
   padding-top: 16px; /* Increased space from description */
   display: flex;
   align-items: center;
-  height: 24px; /* Fixed height for consistent alignment */
+  height: auto; /* Let content determine height */
   gap: 8px; /* Consistent spacing */
 }
 
@@ -565,5 +574,17 @@
 
   .rating-number {
     font-size: 14px;
+  }
+}
+
+/* Dark theme card styling */
+:host-context(.dark-theme) .app-card {
+  background: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  
+  &:hover {
+    border-color: rgba(255, 140, 66, 0.4) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
   }
 }
