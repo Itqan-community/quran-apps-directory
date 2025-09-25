@@ -1,5 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
   "cli": {
     "analytics": "1e1de97b-a744-405a-8b5a-0397bb3d01ce"
   },
@@ -31,8 +32,7 @@
               "optimization": {
                 "styles": {
                   "minify": true,
-                  "inlineCritical": true,
-                  "removeUnusedCss": true
+                  "inlineCritical": true
                 },
                 "scripts": true,
                 "fonts": {
@@ -42,23 +42,17 @@
               "outputHashing": "all",
               "sourceMap": false,
               "crossOrigin": "anonymous",
-              "preloadStrategy": "all",
+              "serviceWorker": "ngsw-config.json",
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "800kb",
-                  "maximumError": "1.2mb"
+                  "maximumWarning": "1.1mb",
+                  "maximumError": "1.3mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "15kb",
-                  "maximumError": "30kb"
-                },
-                {
-                  "type": "bundle",
-                  "name": "main",
-                  "maximumWarning": "600kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "20kb",
+                  "maximumError": "40kb"
                 }
               ]
             }
@@ -68,6 +62,7 @@
               "src/favicon.ico",
               "src/sitemap.xml",
               "src/robots.txt",
+              "src/sw.js",
               "src/assets"
             ],
             "index": "src/index.html",
@@ -77,7 +72,7 @@
             "scripts": [],
             "styles": [
               "node_modules/ng-zorro-antd/ng-zorro-antd.css",
-              "src/global_styles.less",
+              "src/global_styles.css",
               "./src/themes.scss"
             ],
             "tsConfig": "tsconfig.app.json"
@@ -102,6 +97,5 @@
       "schematics": {},
       "sourceRoot": "src"
     }
-  },
-  "version": 1
+  }
 }

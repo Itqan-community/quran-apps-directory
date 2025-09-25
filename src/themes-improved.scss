@@ -135,6 +135,69 @@
     border-bottom: 1px solid var(--border-color) !important;
   }
   
+  // Dark theme header styling
+  .app-header--content {
+    background-color: rgba(26, 26, 26, 0.9) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-color) !important;
+  }
+  
+  // Navigation button styling for dark theme
+  .desktop-menu .ant-btn-link {
+    color: var(--text-color) !important;
+    
+    &:hover {
+      background: var(--hover-bg) !important;
+      color: var(--primary-color) !important;
+    }
+  }
+  
+  // Mobile menu styling for dark theme
+  .mobile-menu {
+    background-color: var(--surface-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px;
+    margin-top: 8px;
+    
+    a {
+      color: var(--text-color) !important;
+      
+      &:hover {
+        background: var(--hover-bg) !important;
+        color: var(--primary-color) !important;
+      }
+    }
+  }
+  
+  // Mobile menu button styling for dark theme
+  .mobile-menu-btn {
+    .mobile-menu-btn--bars,
+    .mobile-menu-btn--bars::before,
+    .mobile-menu-btn--bars::after {
+      background: var(--text-color) !important;
+    }
+  }
+  
+  // Theme toggle button styling for dark theme
+  .theme-toggle-btn {
+    color: var(--text-color) !important;
+    
+    &:hover {
+      background: var(--hover-bg) !important;
+    }
+    
+    .anticon {
+      color: var(--text-color) !important;
+    }
+  }
+  
+  // Beta label styling for dark theme
+  .beta-label {
+    background: var(--primary-color) !important;
+    color: #ffffff !important;
+  }
+  
   // Better search box styling
   .ant-input-group-addon {
     background: var(--surface-color) !important;

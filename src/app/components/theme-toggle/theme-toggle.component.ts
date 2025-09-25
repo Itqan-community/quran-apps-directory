@@ -23,29 +23,30 @@ import { ThemeService, Theme } from '../../services/theme.service';
   `,
   styles: [`
     .theme-toggle-btn {
-      /* Match the style of other navigation buttons (nzType="link") */
+      /* Match the style of other navigation buttons */
       border: none !important;
       background: transparent !important;
-      color: inherit !important;
-      transition: all 0.3s ease;
+      color: #666666 !important;
+      transition: all 0.2s ease;
       display: flex !important;
       align-items: center;
       justify-content: center;
-      border-radius: 6px;
-      padding: 4px 15px !important;
-      height: auto !important;
-      min-height: 32px;
+      border-radius: 8px;
+      padding: 8px !important;
+      height: 36px !important;
+      width: 36px !important;
+      min-height: 36px;
       opacity: 1 !important;
       visibility: visible !important;
       
       &:hover {
-        background: rgba(0, 0, 0, 0.06) !important;
-        color: inherit !important;
+        background: rgba(24, 144, 255, 0.06) !important;
+        color: #1890ff !important;
       }
       
       &:focus {
-        background: rgba(0, 0, 0, 0.06) !important;
-        color: inherit !important;
+        background: rgba(24, 144, 255, 0.06) !important;
+        color: #1890ff !important;
       }
       
       .anticon {
@@ -68,16 +69,33 @@ import { ThemeService, Theme } from '../../services/theme.service';
       background-color: rgba(0, 0, 0, 0.85) !important;
     }
     
-    /* Dark theme hover effects to match other buttons */
-    :host-context(.dark-theme) .theme-toggle-btn {
+    /* Light theme specific styling */
+    :host:not([class*="dark-theme"]) .theme-toggle-btn {
+      color: #495057 !important;
+      
       &:hover {
-        background: rgba(255, 255, 255, 0.1) !important;
-        color: inherit !important;
+        background: rgba(24, 144, 255, 0.06) !important;
+        color: #1890ff !important;
       }
       
       &:focus {
-        background: rgba(255, 255, 255, 0.1) !important;
-        color: inherit !important;
+        background: rgba(24, 144, 255, 0.06) !important;
+        color: #1890ff !important;
+      }
+    }
+    
+    /* Dark theme hover effects to match other buttons */
+    :host-context(.dark-theme) .theme-toggle-btn {
+      color: #b3b3b3 !important;
+      
+      &:hover {
+        background: rgba(255, 140, 66, 0.1) !important;
+        color: #ff8c42 !important;
+      }
+      
+      &:focus {
+        background: rgba(255, 140, 66, 0.1) !important;
+        color: #ff8c42 !important;
       }
     }
   `]
