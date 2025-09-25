@@ -87,6 +87,7 @@
             itemtype="https://schema.org/SoftwareApplication"
           >
             <ng-template #coverTemplate>
+<<<<<<< HEAD
               <div style="max-height: 220px; overflow: hidden; aspect-ratio: 300/220;">
                 <!-- Use optimized images with smart loading strategy -->
                 <app-optimized-image
@@ -101,14 +102,26 @@
                   [fetchpriority]="getImagePriority(i)">
                 </app-optimized-image>
               </div>
+=======
+              <!-- Optimized cover image with fixed aspect ratio for CLS prevention -->
+              <app-optimized-image
+                [src]="(currentLang === 'en' ? app.mainImage_en : app.mainImage_ar) || ''"
+                [alt]="app.Name_En + ' screenshot'"
+                [loading]="getImageLoadingStrategy(i)"
+                [fetchpriority]="getImagePriority(i)"
+                [aspectRatio]="getImageAspectRatio('cover')"
+                cssClass="cover-image">
+              </app-optimized-image>
+>>>>>>> 3252557233585e5f2da41ee8876e9b8e97679b8b
             </ng-template>
     
             <div class="ant-flex">
               <div class="app-icon-container">
-                <!-- Use optimized images for app icons -->
+                <!-- Optimized app icon with fixed aspect ratio -->
                 <app-optimized-image
                   [src]="app.applicationIcon || ''"
                   [alt]="app.Name_En + ' icon'"
+                  [aspectRatio]="getImageAspectRatio('icon')"
                   cssClass="app-icon"
                   width="38"
                   height="38"

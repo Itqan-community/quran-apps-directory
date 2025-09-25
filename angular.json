@@ -31,7 +31,8 @@
               "optimization": {
                 "styles": {
                   "minify": true,
-                  "inlineCritical": true
+                  "inlineCritical": true,
+                  "removeUnusedCss": true
                 },
                 "scripts": true,
                 "fonts": {
@@ -41,6 +42,7 @@
               "outputHashing": "all",
               "sourceMap": false,
               "crossOrigin": "anonymous",
+<<<<<<< HEAD
               "serviceWorker": "ngsw-config.json",
               "budgets": [
                 {
@@ -52,6 +54,25 @@
                   "type": "anyComponentStyle",
                   "maximumWarning": "20kb",
                   "maximumError": "40kb"
+=======
+              "preloadStrategy": "all",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "800kb",
+                  "maximumError": "1.2mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "15kb",
+                  "maximumError": "30kb"
+                },
+                {
+                  "type": "bundle",
+                  "name": "main",
+                  "maximumWarning": "600kb",
+                  "maximumError": "1mb"
+>>>>>>> 3252557233585e5f2da41ee8876e9b8e97679b8b
                 }
               ]
             }

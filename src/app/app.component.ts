@@ -17,6 +17,7 @@ import { LcpMonitorService } from "./services/lcp-monitor.service";
 import { CacheOptimizationService } from "./services/cache-optimization.service";
 import { CacheValidatorService } from "./services/cache-validator.service";
 import { Http2OptimizationService } from "./services/http2-optimization.service";
+import { CriticalResourcePreloaderService } from "./services/critical-resource-preloader.service";
 import { filter } from "rxjs";
 
 // Icons globally registered in main.ts
@@ -56,7 +57,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     private lcpMonitor: LcpMonitorService,
     private cacheOptimization: CacheOptimizationService,
     private cacheValidator: CacheValidatorService,
+<<<<<<< HEAD
     private http2Optimization: Http2OptimizationService
+=======
+    private http2Optimization: Http2OptimizationService,
+    private criticalPreloader: CriticalResourcePreloaderService,
+    private iconService: NzIconService
+>>>>>>> 3252557233585e5f2da41ee8876e9b8e97679b8b
   ) {
     // Icons are globally registered in main.ts
     // Get browser language
@@ -71,6 +78,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.translate.setDefaultLang(defaultLang);
     this.translate.use(defaultLang);
     this.currentLang = defaultLang;
+
+    // Initialize critical resource preloading immediately for LCP optimization
+    this.criticalPreloader.optimizeForLCP();
   }
 
   getCurrentRouteParams(): any {
