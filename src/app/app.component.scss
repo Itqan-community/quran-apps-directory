@@ -84,7 +84,7 @@
     [dir="rtl"] .logo-wrapper .beta-badge,
     :host-context([dir="rtl"]) .logo-wrapper .beta-badge {
       right: auto;
-      left: -6px;
+      right: 36px;
     }
 
     // Ensure logo wrapper is above other header elements so badge overlaps
@@ -362,7 +362,7 @@
           [dir="rtl"] & .logo-wrapper .beta-badge,
           :host-context([dir="rtl"]) .logo-wrapper .beta-badge {
             right: auto;
-            left: -6px;
+            right: 36px !important;
           }
         }
 
