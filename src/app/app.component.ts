@@ -57,13 +57,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private lcpMonitor: LcpMonitorService,
     private cacheOptimization: CacheOptimizationService,
     private cacheValidator: CacheValidatorService,
-<<<<<<< HEAD
     private http2Optimization: Http2OptimizationService
-=======
-    private http2Optimization: Http2OptimizationService,
-    private criticalPreloader: CriticalResourcePreloaderService,
-    private iconService: NzIconService
->>>>>>> 3252557233585e5f2da41ee8876e9b8e97679b8b
   ) {
     // Icons are globally registered in main.ts
     // Get browser language
