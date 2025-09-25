@@ -388,9 +388,31 @@
   // responsive
   @media screen and (max-width: 768px) {
     .app-grid-row {
-      overflow-x: auto !important;
-      flex-flow: row nowrap !important;
-      margin-inline-end: -1rem;
+      margin: 0 -12px;
+      row-gap: 16px;
+    }
+
+    .app-grid-col {
+      width: 100%;
+      padding: 0 12px;
+    }
+
+    .app-card {
+      border-radius: 16px;
+      background: #ffffff;
+      padding: 12px;
+
+      .ant-card-cover {
+        margin: -12px -12px 12px;
+      }
+
+      .ant-card-body {
+        padding: 0;
+      }
+
+      .card-data-container {
+        margin-top: 12px;
+      }
     }
   }
 }

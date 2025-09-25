@@ -3,6 +3,7 @@ import { RouterOutlet, RouterLink, ActivatedRoute, Router, ActivatedRouteSnapsho
 import { NzLayoutModule } from "ng-zorro-antd/layout";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzSpaceModule } from "ng-zorro-antd/space";
+import { NzDividerModule } from "ng-zorro-antd/divider";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { NzIconModule } from "ng-zorro-antd/icon";
 // Icons are now globally registered in main.ts for better tree-shaking
@@ -31,6 +32,7 @@ import { filter } from "rxjs";
     NzLayoutModule,
     NzButtonModule,
     NzSpaceModule,
+    NzDividerModule,
     TranslateModule,
     NzIconModule,
     ThemeToggleComponent,
