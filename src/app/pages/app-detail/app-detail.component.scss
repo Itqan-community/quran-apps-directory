@@ -749,24 +749,12 @@ html[dir="rtl"] .content-section {
   margin-top: auto;
 }
 
-/* RTL adjustment: clean layout for Arabic */
-:host-context(html[dir="rtl"]) ::ng-deep .app-rating {
-  flex-direction: row !important;
-  gap: 0 !important;
+/* RTL: Position rating number on the right side of stars in Arabic */
+[dir="rtl"] .app-rating {
+  flex-direction: row-reverse;
 }
 
-/* In RTL: stars first, then number with proper spacing */
-:host-context(html[dir="rtl"]) ::ng-deep .app-rating .custom-stars {
-  order: 1 !important;
-  display: flex !important;
-  flex-direction: row-reverse !important; /* reverse stars so partial star is near number */
-  direction: ltr !important; /* keep fill left-to-right inside each star */
-  margin-left: 0 !important;
-  margin-right: 8px !important;
-}
-
-:host-context(html[dir="rtl"]) ::ng-deep .app-rating .rating-number {
-  order: 2 !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+[dir="rtl"] .app-rating .rating-number {
+  margin-left: 8px;
+  margin-right: 0;
 }
