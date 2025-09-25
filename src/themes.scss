@@ -587,9 +587,18 @@ html, body {
 
 // Override any Angular/Ant Design defaults that might cause invisible text
 * {
-  &:not(.ant-btn):not(.ant-card):not(.ant-input) {
+  &:not(.ant-btn):not(.ant-card):not(.ant-input):not(.ant-tooltip) {
     color: inherit;
   }
+}
+
+// Force tooltip text to always be white
+.ant-tooltip .ant-tooltip-inner {
+  color: #ffffff !important;
+}
+
+.ant-tooltip .ant-tooltip-inner * {
+  color: #ffffff !important;
 }
 
 // Custom scrollbar for dark theme
