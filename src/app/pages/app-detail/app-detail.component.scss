@@ -733,3 +733,25 @@ html[dir="rtl"] .content-section {
 :host ::ng-deep .app-grid .app-rating {
   margin-top: auto;
 }
+
+/* RTL adjustment: clean layout for Arabic */
+:host-context(html[dir="rtl"]) ::ng-deep .app-rating {
+  flex-direction: row !important;
+  gap: 0 !important;
+}
+
+/* In RTL: stars first, then number with proper spacing */
+:host-context(html[dir="rtl"]) ::ng-deep .app-rating .custom-stars {
+  order: 1 !important;
+  display: flex !important;
+  flex-direction: row-reverse !important; /* reverse stars so partial star is near number */
+  direction: ltr !important; /* keep fill left-to-right inside each star */
+  margin-left: 0 !important;
+  margin-right: 8px !important;
+}
+
+:host-context(html[dir="rtl"]) ::ng-deep .app-rating .rating-number {
+  order: 2 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
