@@ -32,8 +32,7 @@
               "optimization": {
                 "styles": {
                   "minify": true,
-                  "inlineCritical": true,
-                  "removeUnusedCss": true
+                  "inlineCritical": true
                 },
                 "scripts": true,
                 "fonts": {
