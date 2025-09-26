@@ -111,7 +111,10 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
   ngOnInit() {
     // Set language immediately from snapshot
     const lang = this.route.snapshot.params["lang"];
-    const id = this.route.snapshot.params["id"];
+    const rawId = this.route.snapshot.params["id"];
+    
+    // Convert URL-safe ID back to original ID (replace hyphens with spaces)
+    const id = rawId ? rawId.replace(/-/g, ' ') : rawId;
 
     if (lang) {
       this.currentLang = lang as "en" | "ar";
@@ -120,7 +123,10 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     // Subscribe to route parameter changes (both lang and id)
     this.route.params.subscribe((params) => {
       const newLang = params["lang"];
-      const newId = params["id"];
+      const rawId = params["id"];
+      
+      // Convert URL-safe ID back to original ID (replace hyphens with spaces)
+      const newId = rawId ? rawId.replace(/-/g, ' ') : rawId;
       
       // Update language if changed
       if (newLang && newLang !== this.currentLang) {

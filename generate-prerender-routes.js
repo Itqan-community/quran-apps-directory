@@ -110,7 +110,9 @@ function generateRoutes() {
   // Application detail routes
   applications.forEach(app => {
     languages.forEach(lang => {
-      routes.push(`/${lang}/app/${app.id}`);
+      // Make app ID URL-safe by replacing spaces with hyphens
+      const urlSafeId = app.id.replace(/\s+/g, '-');
+      routes.push(`/${lang}/app/${urlSafeId}`);
     });
   });
 

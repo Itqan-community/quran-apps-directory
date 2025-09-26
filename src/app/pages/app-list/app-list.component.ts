@@ -267,6 +267,11 @@ export class AppListComponent implements OnInit {
     return 'poor';
   }
 
+  // Make app ID URL-safe for routing
+  makeUrlSafeId(appId: string): string {
+    return appId.replace(/\s+/g, '-');
+  }
+
   getStarArray(rating: number): { fillPercent: number }[] {
     const stars = [];
     const fullStars = Math.floor(rating);
