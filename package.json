@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration=production",
     "dev": "ng serve",
     "deploy": "ng build && cp dist/demo/browser/* dist/demo/"
   },
