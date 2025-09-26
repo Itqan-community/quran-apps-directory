@@ -1,5 +1,5 @@
 // Auto-generated routes for prerendering
-// Generated on 2025-09-26T12:54:04.143Z
+// Generated on 2025-09-26T13:01:18.972Z
 export const prerenderRoutes = [
   "/",
   "/ar",
