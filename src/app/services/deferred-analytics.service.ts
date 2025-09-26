@@ -104,6 +104,10 @@ export class DeferredAnalyticsService {
    * Track page view (called automatically on initialization)
    */
   trackPageView(page?: string): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return; // Don't track on server
+    }
+
     const data = {
       page_title: document.title,
       page_location: window.location.href,

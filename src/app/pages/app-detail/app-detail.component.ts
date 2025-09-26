@@ -1,5 +1,5 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA, Inject, PLATFORM_ID } from "@angular/core";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import { ActivatedRoute, RouterModule, Router } from "@angular/router";
 import { NzCardModule } from "ng-zorro-antd/card";
 import { NzButtonModule } from "ng-zorro-antd/button";
@@ -17,8 +17,6 @@ import { FormsModule } from "@angular/forms";
 import { register } from 'swiper/element/bundle';
 import {Nl2brPipe} from "../../pipes/nl2br.pipe";
 import { SeoService } from "../../services/seo.service";
-// register Swiper custom elements
-register();
 
 @Component({
   selector: "app-detail",
@@ -74,8 +72,13 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     private router: Router,
     private seoService: SeoService,
     private titleService: Title,
-    private metaService: Meta
+    private metaService: Meta,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
+    // Register Swiper custom elements only in browser
+    if (isPlatformBrowser(this.platformId)) {
+      register();
+    }
     this.currentLang = this.translateService.currentLang as 'ar' | 'en';
     // Subscribe to language changes
     this.translateService.onLangChange.subscribe((event) => {
@@ -97,8 +100,12 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
   }
 
   private getBrowserLanguage(): "en" | "ar" {
-    const browserLang = navigator.language.toLowerCase().split("-")[0];
-    return browserLang === "ar" ? "ar" : "en";
+    if (isPlatformBrowser(this.platformId)) {
+      const browserLang = navigator.language.toLowerCase().split("-")[0];
+      return browserLang === "ar" ? "ar" : "en";
+    }
+    // Default to English on server
+    return "en";
   }
 
   ngOnInit() {

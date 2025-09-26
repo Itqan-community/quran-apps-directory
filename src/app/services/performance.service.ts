@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -6,7 +7,7 @@ import { Injectable } from '@angular/core';
 export class PerformanceService {
   private performanceObserver?: PerformanceObserver;
 
-  constructor() {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.setupPerformanceMonitoring();
   }
 
@@ -112,6 +113,10 @@ export class PerformanceService {
    * Optimize images with lazy loading and WebP support
    */
   optimizeImages(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return; // Skip on server
+    }
+
     const images = document.querySelectorAll('img[data-src]');
     
     if ('IntersectionObserver' in window) {
@@ -172,6 +177,10 @@ export class PerformanceService {
    * Prefetch next pages for faster navigation
    */
   prefetchPage(url: string): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return; // Skip on server
+    }
+
     const link = document.createElement('link');
     link.rel = 'prefetch';
     link.href = url;

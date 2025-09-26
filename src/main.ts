@@ -1,55 +1,13 @@
-import { bootstrapApplication } from '@angular/platform-browser';
-import { provideRouter } from '@angular/router';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { routes } from './app/app.routes';
-import { NzConfig, provideNzConfig } from 'ng-zorro-antd/core/config';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { importProvidersFrom } from '@angular/core';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { bootstrapApplication, provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { 
-  MenuOutline, 
-  ArrowUpOutline, 
-  ArrowDownOutline, 
-  SearchOutline,
-  SunOutline,
-  MoonOutline,
-  BgColorsOutline,
-  ExportOutline,
-  GlobalOutline,
-  LeftOutline,
-  RightOutline
-} from '@ant-design/icons-angular/icons';
+import { appConfig } from './app/app.config';
+import { mergeApplicationConfig } from '@angular/core';
 
-
-// AoT requires an exported function for factories
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
-
-const ngZorroConfig: NzConfig = {
-  theme: {
-    primaryColor: '#A0533B'
-  }
-};
-
-bootstrapApplication(AppComponent, {
+const clientConfig = mergeApplicationConfig(appConfig, {
   providers: [
-    provideRouter(routes),
-    provideAnimations(),
-    provideNzConfig(ngZorroConfig),
-    importProvidersFrom(
-      HttpClientModule,
-      NzIconModule.forRoot([MenuOutline, ArrowUpOutline, ArrowDownOutline, SearchOutline, SunOutline, MoonOutline, BgColorsOutline, ExportOutline, GlobalOutline, LeftOutline, RightOutline]),
-      TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [HttpClient]
-        }
-      })
-    )
+    provideClientHydration(withEventReplay())
   ]
-}).catch(err => console.error(err));
+});
+
+bootstrapApplication(AppComponent, clientConfig)
+  .catch(err => console.error(err));

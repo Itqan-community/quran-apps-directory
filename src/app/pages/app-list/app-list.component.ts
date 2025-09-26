@@ -1,5 +1,5 @@
-import { Component, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, OnInit, Inject, PLATFORM_ID } from "@angular/core";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import { RouterModule, ActivatedRoute } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { NzGridModule } from "ng-zorro-antd/grid";
@@ -57,7 +57,8 @@ export class AppListComponent implements OnInit {
     private route: ActivatedRoute,
     private seoService: SeoService,
     private titleService: Title,
-    private metaService: Meta
+    private metaService: Meta,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.categories = CATEGORIES.map((category) => ({
       name: category.name,
@@ -240,19 +241,21 @@ export class AppListComponent implements OnInit {
 
     const breadcrumbData = this.seoService.generateBreadcrumbStructuredData(breadcrumbs, this.currentLang);
     
-    // Add breadcrumb data separately to avoid conflicts
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.textContent = JSON.stringify(breadcrumbData);
-    
-    // Remove existing breadcrumb script
-    const existingBreadcrumb = document.querySelector('script[type="application/ld+json"][data-type="breadcrumb"]');
-    if (existingBreadcrumb) {
-      existingBreadcrumb.remove();
+    // Add breadcrumb data separately to avoid conflicts (only in browser)
+    if (isPlatformBrowser(this.platformId)) {
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(breadcrumbData);
+      
+      // Remove existing breadcrumb script
+      const existingBreadcrumb = document.querySelector('script[type="application/ld+json"][data-type="breadcrumb"]');
+      if (existingBreadcrumb) {
+        existingBreadcrumb.remove();
+      }
+      
+      script.setAttribute('data-type', 'breadcrumb');
+      document.head.appendChild(script);
     }
-    
-    script.setAttribute('data-type', 'breadcrumb');
-    document.head.appendChild(script);
   }
 
   getRatingClass(rating: number): string {

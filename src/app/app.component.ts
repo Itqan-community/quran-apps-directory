@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, inject, OnInit } from "@angular/core";
+import { AfterViewInit, Component, inject, OnInit, Inject, PLATFORM_ID } from "@angular/core";
 import { RouterOutlet, RouterLink, ActivatedRoute, Router, ActivatedRouteSnapshot, NavigationEnd } from "@angular/router";
+import { isPlatformBrowser } from "@angular/common";
 import { NzLayoutModule } from "ng-zorro-antd/layout";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzSpaceModule } from "ng-zorro-antd/space";
@@ -57,16 +58,24 @@ export class AppComponent implements OnInit, AfterViewInit {
     private lcpMonitor: LcpMonitorService,
     private cacheOptimization: CacheOptimizationService,
     private cacheValidator: CacheValidatorService,
-    private http2Optimization: Http2OptimizationService
+    private http2Optimization: Http2OptimizationService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     // Icons are globally registered in main.ts
-    // Get browser language
-    const browserLang = navigator.language;
-    const defaultLang = browserLang.startsWith("ar") ? "ar" : "en";
+    // Get browser language (SSR-safe)
+    let defaultLang: "en" | "ar" = "en";
+    if (isPlatformBrowser(this.platformId)) {
+      const browserLang = navigator.language;
+      defaultLang = browserLang.startsWith("ar") ? "ar" : "en";
+    }
 
     // Set initial RTL state based on language
     this.isRtl = defaultLang === "ar";
-    document.documentElement.dir = this.isRtl ? "rtl" : "ltr";
+    
+    // Set document direction (SSR-safe)
+    if (isPlatformBrowser(this.platformId)) {
+      document.documentElement.dir = this.isRtl ? "rtl" : "ltr";
+    }
 
     // Set up translations
     this.translate.setDefaultLang(defaultLang);
@@ -101,7 +110,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.translate.onLangChange.subscribe((event) => {
       this.currentLang = event.lang as "en" | "ar";
       this.isRtl = this.currentLang === 'ar';
-      document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+      if (isPlatformBrowser(this.platformId)) {
+        document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+      }
     });
 
     // Also listen for route changes to update language
@@ -110,7 +121,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (lang !== this.currentLang) {
         this.currentLang = lang as "en" | "ar";
         this.isRtl = this.currentLang === 'ar';
-        document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+        if (isPlatformBrowser(this.platformId)) {
+          document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+        }
       }
     });
   }

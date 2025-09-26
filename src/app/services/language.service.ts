@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { filter } from 'rxjs';
@@ -10,9 +11,18 @@ export class LanguageService {
   private supportedLanguages = ['en', 'ar'];
   private defaultLanguage = 'en';
 
-  constructor(private route: ActivatedRoute, private router: Router, private translate: TranslateService) {
-    const browserLang = navigator.language;
-    this.defaultLanguage = browserLang.startsWith("ar") ? "ar" : "en";
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private translate: TranslateService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    let defaultLang = 'en';
+    if (isPlatformBrowser(this.platformId)) {
+      const browserLang = navigator.language;
+      defaultLang = browserLang.startsWith("ar") ? "ar" : "en";
+    }
+    this.defaultLanguage = defaultLang;
     this.translate.setDefaultLang(this.defaultLanguage);
     this.translate.use(this.defaultLanguage);
     this.setLanguageFromUrl();
@@ -31,8 +41,10 @@ export class LanguageService {
       if (this.supportedLanguages.includes(lang)) {
         this.translate.setDefaultLang(lang);
         this.translate.use(lang);
-        document.documentElement.lang = lang;
-        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'; // Adjust direction
+        if (isPlatformBrowser(this.platformId)) {
+          document.documentElement.lang = lang;
+          document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'; // Adjust direction
+        }
       } else {
         // Redirect to default language (preserve any additional path segments)
         const remainingPath = pathSegments.slice(1).join('/');

@@ -1,4 +1,5 @@
-import { Injectable, signal, effect } from '@angular/core';
+import { Injectable, signal, effect, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 export type Theme = 'light' | 'dark' | 'auto';
 
@@ -12,20 +13,27 @@ export class ThemeService {
   public theme = signal<Theme>('auto');
   public isDark = signal<boolean>(false);
 
-  constructor() {
-    // Load saved theme preference
-    this.loadThemeFromStorage();
-    
-    // Apply initial theme immediately
-    this.applyTheme(this.theme());
-    
-    // React to theme changes
-    effect(() => {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    // Only initialize browser-specific functionality if we're in the browser
+    if (isPlatformBrowser(this.platformId)) {
+      // Load saved theme preference
+      this.loadThemeFromStorage();
+      
+      // Apply initial theme immediately
       this.applyTheme(this.theme());
-    });
-    
-    // Listen for system theme changes
-    this.setupSystemThemeListener();
+      
+      // React to theme changes
+      effect(() => {
+        this.applyTheme(this.theme());
+      });
+      
+      // Listen for system theme changes
+      this.setupSystemThemeListener();
+    } else {
+      // Default fallback for server-side rendering
+      this.theme.set('light');
+      this.isDark.set(false);
+    }
   }
 
   /**
@@ -33,7 +41,9 @@ export class ThemeService {
    */
   setTheme(theme: Theme): void {
     this.theme.set(theme);
-    localStorage.setItem(this.THEME_STORAGE_KEY, theme);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.THEME_STORAGE_KEY, theme);
+    }
   }
 
   /**
@@ -54,22 +64,38 @@ export class ThemeService {
   getEffectiveTheme(): 'light' | 'dark' {
     const theme = this.theme();
     if (theme === 'auto') {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      if (isPlatformBrowser(this.platformId)) {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      } else {
+        // Default to light theme on server
+        return 'light';
+      }
     }
     return theme;
   }
 
   private loadThemeFromStorage(): void {
-    const savedTheme = localStorage.getItem(this.THEME_STORAGE_KEY) as Theme;
-    if (savedTheme && ['light', 'dark', 'auto'].includes(savedTheme)) {
-      this.theme.set(savedTheme);
+    if (isPlatformBrowser(this.platformId)) {
+      const savedTheme = localStorage.getItem(this.THEME_STORAGE_KEY) as Theme;
+      if (savedTheme && ['light', 'dark', 'auto'].includes(savedTheme)) {
+        this.theme.set(savedTheme);
+      } else {
+        // Default to light theme if no preference saved
+        this.theme.set('light');
+      }
     } else {
-      // Default to light theme if no preference saved
+      // Default theme for server-side rendering
       this.theme.set('light');
     }
   }
 
   private applyTheme(theme: Theme): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      // On server, just update the signals with default values
+      this.isDark.set(theme === 'dark');
+      return;
+    }
+
     const effectiveTheme = theme === 'auto' 
       ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
       : theme;
@@ -87,6 +113,10 @@ export class ThemeService {
   }
 
   private setupSystemThemeListener(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     mediaQuery.addEventListener('change', () => {
       if (this.theme() === 'auto') {
@@ -96,6 +126,10 @@ export class ThemeService {
   }
 
   private updateMetaThemeColor(theme: 'light' | 'dark'): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const themeColorMeta = document.querySelector('meta[name="theme-color"]');
     if (themeColorMeta) {
       const color = theme === 'dark' ? '#1a1a1a' : '#ffffff';
