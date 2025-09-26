@@ -1,6 +1,22 @@
 .app-layout {
   min-height: 100vh;
 }
+
+.version-label {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: rgba(160, 83, 59, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(160, 83, 59, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 .app-header {
   margin-top: 30px;
   z-index: 1000;
