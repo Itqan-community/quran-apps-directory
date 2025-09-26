@@ -244,7 +244,4 @@
     Cache-Control = "public, max-age=300, must-revalidate"
     # Override the global cache-control for HTML
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# SPA routing is handled by _redirects file created during build
