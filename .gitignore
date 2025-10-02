@@ -114,3 +114,4 @@ Thumbs.db
 .bmad-core/workflows/greenfield-fullstack.yaml
 .bmad-core/workflows/greenfield-service.yaml
 .bmad-core/workflows/greenfield-ui.yaml
+.roo/mcp.json
