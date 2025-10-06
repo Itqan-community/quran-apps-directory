@@ -29,7 +29,9 @@ Development Phase (IDE-based):
 @dev - Implement features following stories
 @qa - Test architecture & quality gates
 
-Follow a Iterative development cycle
+Follow a Iterative development cycle.
+
+When you create documentation, the owner should always be: Abubakr Abduraghman, a.abduraghman@itqan.dev
 
 
 ### Objective
