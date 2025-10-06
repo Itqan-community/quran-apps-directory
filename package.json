@@ -1,5 +1,7 @@
 {
   "name": "quran-apps-directory",
+  "version": "1.0.0",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "ng": "ng",
