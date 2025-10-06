@@ -43,5 +43,79 @@ Create viral growth mechanisms through easy sharing across social platforms and 
 - US7.4: Implement Share Analytics Tracking
 - US7.5: Create Custom Sharing Messages
 
+## .NET 9 Implementation Details
+### Share Analytics Backend
+```csharp
+// SharesController
+[HttpPost("track")]
+public async Task<IActionResult> TrackShare([FromBody] TrackShareRequest request)
+{
+    var share = new ShareEvent
+    {
+        AppId = request.AppId,
+        Platform = request.Platform, // "whatsapp", "twitter", etc.
+        UserId = User.Identity?.IsAuthenticated == true ? GetUserId() : null,
+        Timestamp = DateTime.UtcNow,
+        IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString()
+    };
+    
+    await _context.ShareEvents.AddAsync(share);
+    await _context.SaveChangesAsync();
+    
+    return Ok();
+}
+
+[HttpGet("{appId}/share-count")]
+public async Task<ActionResult<int>> GetShareCount(Guid appId)
+{
+    var count = await _context.ShareEvents
+        .Where(s => s.AppId == appId)
+        .CountAsync();
+    
+    return Ok(count);
+}
+```
+
+### Frontend Social Sharing
+```typescript
+// Share service
+@Injectable({ providedIn: 'root' })
+export class ShareService {
+  shareApp(app: App, platform: string): void {
+    const shareData = {
+      title: this.translate.currentLang === 'ar' ? app.nameAr : app.nameEn,
+      text: this.translate.currentLang === 'ar' ? app.shortDescriptionAr : app.shortDescriptionEn,
+      url: `https://quran-apps.itqan.dev/app/${app.id}`
+    };
+    
+    // Track share event
+    this.apiService.trackShare(app.id, platform).subscribe();
+    
+    // Native Web Share API
+    if (navigator.share) {
+      navigator.share(shareData);
+    } else {
+      // Fallback to platform-specific URLs
+      const shareUrl = this.buildShareUrl(platform, shareData);
+      window.open(shareUrl, '_blank');
+    }
+  }
+  
+  private buildShareUrl(platform: string, data: any): string {
+    const encodedUrl = encodeURIComponent(data.url);
+    const encodedText = encodeURIComponent(`${data.title} - ${data.text}`);
+    
+    const urls = {
+      whatsapp: `https://wa.me/?text=${encodedText}%20${encodedUrl}`,
+      twitter: `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+      telegram: `https://t.me/share/url?url=${encodedUrl}&text=${encodedText}`
+    };
+    
+    return urls[platform] || '';
+  }
+}
+```
+
 ## Priority
 priority-4

@@ -46,5 +46,53 @@ Transform the frontend from static data consumption to dynamic API-driven archit
 - US5.4: Add Intelligent Caching Strategies for Performance
 - US5.5: Frontend Performance Optimization
 
+## .NET 9 Integration Details
+### Angular Service Layer
+```typescript
+// src/app/services/api.service.ts
+@Injectable({ providedIn: 'root' })
+export class ApiService {
+  private readonly baseUrl = environment.apiUrl; // https://api.quran-apps.itqan.dev
+  
+  constructor(private http: HttpClient) {}
+  
+  getApps(params: GetAppsParams): Observable<PaginatedResponse<App>> {
+    const queryParams = new HttpParams({ fromObject: params as any });
+    return this.http.get<PaginatedResponse<App>>(`${this.baseUrl}/api/v1/apps`, {
+      params: queryParams
+    });
+  }
+  
+  getAppById(id: string): Observable<App> {
+    return this.http.get<App>(`${this.baseUrl}/api/v1/apps/${id}`);
+  }
+}
+
+// TypeScript interfaces matching .NET DTOs
+export interface App {
+  id: string;
+  nameAr: string;
+  nameEn: string;
+  developer: Developer;
+  categories: Category[];
+  appsAvgRating: number;
+}
+```
+
+### HTTP Interceptors
+- **AuthInterceptor:** Adds JWT Bearer token to requests
+- **CacheInterceptor:** Implements HTTP caching (5-minute TTL)
+- **ErrorInterceptor:** Global error handling with user notifications
+
+### Component Update Pattern
+```typescript
+// Replace static imports
+// OLD: import { applications } from '../../services/applicationsData';
+// NEW: apps$ = this.apiService.getApps();
+
+// Use async pipe in templates
+// <div *ngFor="let app of apps$ | async">
+```
+
 ## Priority
 priority-2

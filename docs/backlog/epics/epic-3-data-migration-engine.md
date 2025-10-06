@@ -13,12 +13,13 @@ Successfully migrate all 44 Quran applications and related data without any loss
 - Migration completes in <30 minutes
 - Data validation passes for all migrated records
 
-## 🏗️ Technical Scope
-- Data extraction from applicationsData.ts
-- Data transformation and validation scripts
-- Automated migration pipeline
-- Rollback mechanisms for failed migrations
-- Data integrity verification tools
+## 🏗️ Technical Scope (.NET 9)
+- Data extraction from applicationsData.ts (TypeScript parsing in C#)
+- Data transformation and validation scripts (C# with FluentValidation)
+- Automated migration pipeline (C# console app or API endpoint)
+- Rollback mechanisms for failed migrations (EF Core transactions)
+- Data integrity verification tools (xUnit tests for validation)
+- Use System.Text.Json for TypeScript data parsing
 
 ## 🔗 Dependencies
 - Epic 1: Schema design must be complete
@@ -40,11 +41,52 @@ Successfully migrate all 44 Quran applications and related data without any loss
 - Performance benchmarks for migrated data met
 
 ## Related Stories
-- US3.1: Data Structure Analysis (#155)
-- US3.2: Transform Data to Match New Schema
-- US3.3: Create Automated Migration Scripts
-- US3.4: Validate Data Integrity
-- US3.5: Handle Complex Many-to-Many Relationships
+- US3.1: Data Structure Analysis (Parse TypeScript in C#) (#155)
+- US3.2: Transform Data to Match New Schema (C# DTOs + AutoMapper)
+- US3.3: Create Automated Migration Scripts (C# Console App)
+- US3.4: Validate Data Integrity (xUnit Validation Tests)
+- US3.5: Handle Complex Many-to-Many Relationships (EF Core Navigation)
+
+## .NET 9 Implementation Details
+### Migration Approach
+```csharp
+// Migration Console App
+public class DataMigrationService
+{
+    private readonly ApplicationDbContext _context;
+    
+    public async Task<MigrationResult> MigrateAppsAsync(string jsonFilePath)
+    {
+        // 1. Read and parse applicationsData.ts
+        var apps = await ParseStaticDataAsync(jsonFilePath);
+        
+        // 2. Transform to entities
+        var entities = apps.Select(MapToEntity);
+        
+        // 3. Validate
+        var validationResults = await ValidateAsync(entities);
+        
+        // 4. Save with transaction
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            await _context.Apps.AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+}
+```
+
+### Validation Strategy
+- Use FluentValidation for entity validation
+- xUnit tests to verify migration accuracy
+- Comparison reports (source vs. migrated)
 
 ## Priority
 priority-1

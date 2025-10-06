@@ -41,5 +41,71 @@ Enable users to discover Quran applications through multiple filter dimensions i
 - US6.4: Search by Target Audience (#139)
 - US6.5: Advanced Filter UI Components
 
+## .NET 9 Implementation Details
+### Backend Filter Implementation
+```csharp
+// AppsController - Advanced filtering
+[HttpGet("search")]
+public async Task<ActionResult<PaginatedResponse<AppResponse>>> AdvancedSearch(
+    [FromQuery] AdvancedSearchRequest request)
+{
+    var query = _context.Apps.AsQueryable();
+    
+    // Filter by Mushaf types
+    if (request.MushabTypes?.Any() == true)
+    {
+        query = query.Where(a => a.Features
+            .Any(f => f.MushabTypes.Any(mt => request.MushabTypes.Contains(mt))));
+    }
+    
+    // Filter by Riwayat
+    if (request.Riwayat?.Any() == true)
+    {
+        query = query.Where(a => a.Features
+            .Any(f => f.Riwayat.Any(r => request.Riwayat.Contains(r))));
+    }
+    
+    // Filter by languages
+    if (request.Languages?.Any() == true)
+    {
+        query = query.Where(a => a.SupportedLanguages
+            .Any(l => request.Languages.Contains(l)));
+    }
+    
+    // Filter by target audience
+    if (request.TargetAudiences?.Any() == true)
+    {
+        query = query.Where(a => a.TargetAudiences
+            .Any(ta => request.TargetAudiences.Contains(ta)));
+    }
+    
+    var results = await query
+        .Include(a => a.Developer)
+        .Include(a => a.Categories)
+        .ToPagedListAsync(request.Page, request.PageSize);
+    
+    return Ok(results);
+}
+```
+
+### Frontend Implementation
+```typescript
+// Advanced search service
+@Injectable({ providedIn: 'root' })
+export class SearchService {
+  advancedSearch(filters: AdvancedSearchFilters): Observable<PaginatedResponse<App>> {
+    return this.http.get<PaginatedResponse<App>>(`${this.baseUrl}/api/v1/apps/search`, {
+      params: this.buildSearchParams(filters)
+    });
+  }
+}
+
+// UI Component with Ng-Zorro filters
+<nz-select [(ngModel)]="selectedMushafTypes" [nzMode]="'multiple'">
+  <nz-option nzValue="hafs" nzLabel="Hafs"></nz-option>
+  <nz-option nzValue="warsh" nzLabel="Warsh"></nz-option>
+</nz-select>
+```
+
 ## Priority
 priority-3
