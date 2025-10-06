@@ -18,7 +18,7 @@ This backlog directory contains comprehensive analysis and strategic planning fo
 **Read First:** [`comprehensive-backlog-proposal.md`](./comprehensive-backlog-proposal.md)
 - Executive summary of entire initiative
 - 16-epic roadmap proposal
-- Investment requirements ($156K-217K over 12 months)
+- Resource requirements (team size, infrastructure)
 - Expected ROI and success metrics
 - Decision points and recommendations
 
@@ -31,7 +31,7 @@ This backlog directory contains comprehensive analysis and strategic planning fo
 **Purpose:** Deep-dive into existing platform capabilities and limitations
 
 **Key Sections:**
-- Current data architecture (static TypeScript, 100+ apps)
+- Current data architecture (static TypeScript, 44 apps)
 - Frontend architecture (Angular 19, services, components)
 - Performance metrics (Desktop: 85/100, Mobile: 68/100)
 - Technical strengths and limitations
@@ -89,7 +89,7 @@ This backlog directory contains comprehensive analysis and strategic planning fo
 
 **Timeline:** 12 weeks (6 two-week sprints)  
 **Team:** 6-7 FTE  
-**Budget:** ~$50K-70K + ~$600 infrastructure
+**Resources:** 15-20 FTE + infrastructure
 
 **Epics Covered:**
 - ✅ Epic 1: Database Architecture Foundation (Weeks 1-2)
@@ -117,7 +117,7 @@ This backlog directory contains comprehensive analysis and strategic planning fo
 
 **Timeline:** 9 months (Months 4-12)  
 **Team:** 5-6 FTE average  
-**Budget:** ~$105K-145K + ~$900 infrastructure
+**Resources:** 12-18 FTE + infrastructure
 
 **Epics Covered:**
 
