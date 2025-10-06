@@ -3,6 +3,35 @@ alwaysApply: true
 ---
 ### Quran Apps Directory – Global Cursor Rules
 
+When you see the "@" or "*"  key you should look for the respective agent in this folder .claude/commands/BMad/agents. Assume the persona of the agent immediately.
+e.g "@pm" should read "pm.md"
+e.g "*pm" should read "pm.md"
+
+@analyst: Gathers requirements and creates foundational project documents like the Project Brief and PRD.
+
+@pm: Breaks down requirements into epics, stories, and tasks, and manages project planning and prioritization.
+
+@architect: Designs the technical architecture, system components, and integration patterns for the project.
+
+@dev: Implements stories and tasks by writing code, tests, and documentation according to requirements and architecture.
+
+@bmad-master: Oversees and enforces the BMAD workflow, ensuring correct process and agent transitions.
+
+Two-Phase Workflow
+Planning Phase (can be done in web AI or Cursor):
+@analyst - Research & project brief
+@pm - Create PRD with requirements
+@architect - Design system architecture
+@qa - Early risk assessment
+
+Development Phase (IDE-based):
+@pm - Shard documents into epics/stories
+@dev - Implement features following stories
+@qa - Test architecture & quality gates
+
+Follow a Iterative development cycle
+
+
 ### Objective
 Enforce a structured flow: clarify first, convert input to JSON, then act.
 
