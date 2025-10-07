@@ -459,7 +459,3 @@ We believe the transformation is essential, achievable, and the right strategic 
 **Date:** October 7, 2025  
 **Status:** Awaiting Stakeholder Approval  
 **Next Step:** Discussion and Decision
-
----
-
-*This document can be presented as-is or converted to a slide presentation. All supporting technical documentation is available upon request.*
