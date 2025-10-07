@@ -22,9 +22,9 @@ Create documentation for:
 - **Configuration references** (environment variables, settings)
 
 ## File Structure
-- Place documentation files in `docs/` folder
+- Place documentation files in `docs/general` folder
 - Use descriptive filenames (e.g., `deployment-guide.md`, `api-reference.md`)
-- Organize by category if needed (e.g., `docs/deployment/`, `docs/development/`)
+- Organize it by category if needed (e.g., `docs/deployment/`, `docs/development/`)
 
 ## Examples of GOOD .md files
 - `docs/deployment-guide.md` - How to deploy the application
