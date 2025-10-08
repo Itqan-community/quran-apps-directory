@@ -32,7 +32,7 @@
         "label": "Quran Apps - Desktop"
       },
       {
-        "src": "/screenshots/mobile.png",
+        "src": "/assets/images/screenshots/mobile.png",
         "sizes": "525x917",
         "type": "image/png",
         "platform": "narrow",
