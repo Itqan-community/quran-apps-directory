@@ -3,7 +3,7 @@
 
 [build]
   command = "ng build --configuration=development"
-  publish = "dist"
+  publish = "dist/browser"
 
 [[redirects]]
   from = "/*"
