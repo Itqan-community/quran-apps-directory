@@ -1,6 +1,6 @@
 [build]
   command = "npm run build:prod"
-  publish = "dist/browser"
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
