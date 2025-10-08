@@ -9,7 +9,7 @@ const zlib = require('zlib');
  * This enables better compression on supported servers
  */
 
-const distPath = 'dist';
+const distPath = 'dist/browser';
 const extensions = ['.js', '.css', '.html', '.json', '.svg'];
 
 function compressFile(filePath) {
