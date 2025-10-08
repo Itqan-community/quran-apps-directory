@@ -98,11 +98,14 @@
     .desktop-nav {
       display: flex;
       align-items: center;
+      justify-content: center;
+      flex: 1;
       gap: 32px;
 
       .nav-menu {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 18px;
         padding: 0;
         background: transparent;
