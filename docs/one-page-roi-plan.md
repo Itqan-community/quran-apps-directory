@@ -16,7 +16,6 @@ A community-run directory that helps people find trustworthy curated advert free
 | Findability | Broad categories | Filters: age, offline, ads-free, tajweed level, teacher tools, language |
 | Decision speed | Many clicks | 2-3 app compare + short "Why this app" |
 | Community | Passive | Discord help, review drives, weekly top picks |
-| Accountability | No goals | Public scorecard with targets |
 
 ## Engagement Stats
 
