@@ -67,8 +67,8 @@ export class CriticalResourcePreloaderService {
 
     // Preload critical Rubik font weights
     const criticalFonts = [
-      'https://fonts.gstatic.com/s/rubik/v28/iJWZBXyIfDnIV5PNhY1KTN7Z-Yh-B4iFVUUzdYPFkaVNA6w.woff2', // Regular 400
-      'https://fonts.gstatic.com/s/rubik/v28/iJWZBXyIfDnIV5PNhY1KTN7Z-Yh-B4iFVkUydYPFkaVNA6w.woff2', // Medium 500
+      'https://fonts.gstatic.com/s/rubik/v31/iJWEBXyIfDnIV7nEnXu61F3f.woff2', // Regular 400
+      'https://fonts.gstatic.com/s/rubik/v31/iJWEBXyIfDnIV7nEnXu61F3f.woff2', // Medium 500
     ];
 
     criticalFonts.forEach(fontUrl => {
