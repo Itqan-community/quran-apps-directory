@@ -1,5 +1,5 @@
 {
-  "id":"6a025547325931e73c73d66a7ece4a96",
+  "id": "6a025547325931e73c73d66a7ece4a96",
   "name": "Quran Apps Directory",
   "short_name": "Quran Apps",
   "description": "Comprehensive collection of verified Quran mobile applications",
@@ -9,6 +9,12 @@
   "background_color": "#000000",
   "display": "standalone",
   "icons": [
+    {
+      "src": "/assets/images/favicon/web-app-manifest-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "/assets/images/favicon/web-app-manifest-192x192.png",
       "sizes": "192x192",
@@ -23,34 +29,47 @@
     }
   ],
   "screenshots": [
-      {
-        "src": "/assets/images/screenshots/desktop.png",
-        "sizes": "1849x917",
-        "type": "image/png",
-        "platform": "wide",
-        "form_factor": "wide",
-        "label": "Quran Apps - Desktop"
-      },
-      {
-        "src": "/assets/images/screenshots/mobile.png",
-        "sizes": "525x917",
-        "type": "image/png",
-        "platform": "narrow",
-        "form_factor": "narrow",
-        "label": "Quran Apps - Mobile"
-      }
-    ],
-    "shortcuts": [
-      {
-        "name": "Contact us",
-        "url": "/contact-us",
-        "description": "Contact us page"        
-      },
-      {
-        "name": "About us",
-        "url": "/about-us",
-        "description": "About us page"
-      }
-    ]
-
+    {
+      "src": "/assets/images/screenshots/desktop.png",
+      "sizes": "1849x917",
+      "type": "image/png",
+      "platform": "wide",
+      "form_factor": "wide",
+      "label": "Quran Apps - Desktop"
+    },
+    {
+      "src": "/assets/images/screenshots/mobile.png",
+      "sizes": "525x917",
+      "type": "image/png",
+      "platform": "narrow",
+      "form_factor": "narrow",
+      "label": "Quran Apps - Mobile"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Contact us",
+      "url": "/contact-us",
+      "description": "Contact us page",
+      "icons": [
+        {
+          "src": "/assets/images/favicon/contact-us.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "About us",
+      "url": "/about-us",
+      "description": "About us page",
+      "icons": [
+        {
+          "src": "/assets/images/favicon/about-us.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
 }
