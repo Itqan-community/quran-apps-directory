@@ -49,7 +49,7 @@ Create a robust, scalable database schema and API architecture that can support 
 ### Technology Stack
 - **Database:** PostgreSQL 15+
 - **Driver:** psycopg2-binary 2.9
-- **ORM:** Django ORM 5.1
+- **ORM:** Django ORM 5.2
 - **Migrations:** Django Migrations (python manage.py)
 - **Validation:** Django Model Validation
 

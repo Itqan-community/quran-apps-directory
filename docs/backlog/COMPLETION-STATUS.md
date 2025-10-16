@@ -16,7 +16,7 @@
 || **In Progress** | 0 |
 || **Completion** | **100%** 🎉 |
 || **Story Files** | 59 |
-|| **Technology** | Django 5.1, Python 3.12+, Django ORM, Angular 19 |
+|| **Technology** | Django 5.2, Python 3.12+, Django ORM, Angular 19 |
 
 ---
 

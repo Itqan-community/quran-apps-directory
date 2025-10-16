@@ -19,7 +19,7 @@ This document supplements the main architecture document with Django backend API
 
 ### Core Stack
 ```
-- Framework: Django 5.1 (latest LTS)
+- Framework: Django 5.2 (latest LTS)
 - Language: Python 3.12+
 - ORM: Django ORM
 - Database Driver: psycopg2-binary (PostgreSQL)
@@ -36,7 +36,7 @@ This document supplements the main architecture document with Django backend API
 ### Key Python Packages (requirements.txt)
 ```txt
 # Core Django
-Django==5.1.*
+Django==5.2.*
 djangorestframework==3.15.*
 psycopg2-binary==2.9.*
 

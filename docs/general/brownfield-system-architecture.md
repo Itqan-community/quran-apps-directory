@@ -23,7 +23,7 @@ This document defines the complete system architecture for migrating the Quran A
 
 ### Key Architectural Decisions
 - **Database:** PostgreSQL 16+ (relational, ACID compliant, proven at scale)
-- **Backend:** Django 5.1 with Django REST Framework (Python 3.12+, high-performance, enterprise-ready)
+- **Backend:** Django 5.2 with Django REST Framework (Python 3.12+, high-performance, enterprise-ready)
 - **ORM:** Django ORM (type-safe, migrations, query optimization)
 - **API:** RESTful with OpenAPI/Swagger specification
 - **Frontend:** Angular 19 (existing, maintain and enhance)
@@ -132,7 +132,7 @@ This document defines the complete system architecture for migrating the Quran A
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                       │
 │  ┌─────────────────────────────────────────────────────────────┐   │
-│  │           Django REST API Server (Django 5.1)               │   │
+│  │           Django REST API Server (Django 5.2)               │   │
 │  │                                                               │   │
 │  │  ┌──────────────────────────────────────────────────────┐   │   │
 │  │  │  Controllers (REST Endpoints)                         │   │   │

@@ -309,7 +309,7 @@
 - 15-20 FTE team
 - Parallel execution
 - AI-assisted development
-- Proven tech stack (Django 5.1, Angular 19)
+- Proven tech stack (Django 5.2, Angular 19)
 
 ---
 
@@ -412,7 +412,7 @@ Cloudflare R2 (image storage)
 **Recommendation:** All 15 epics (complete transformation)
 
 ### 3. Technology Stack
-- ✅ Backend: Django 5.1 (Python 3.12+)
+- ✅ Backend: Django 5.2 (Python 3.12+)
 - ✅ Frontend: Angular 19
 - ✅ Database: PostgreSQL 16+
 - ✅ Hosting: Railway/Digital Ocean + Netlify
