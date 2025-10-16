@@ -16,7 +16,7 @@
 || **In Progress** | 0 |
 || **Completion** | **100%** 🎉 |
 || **Story Files** | 59 |
-|| **Technology** | .NET 9, C# 13, EF Core 9, Angular 19 |
+|| **Technology** | Django 5.1, Python 3.12+, Django ORM, Angular 19 |
 
 ---
 
@@ -125,11 +125,11 @@
 All 87 stories include:
 - ✅ Complete user story format (As a... I want... So that...)
 - ✅ Comprehensive acceptance criteria (6-12 AC average per story)
-- ✅ Detailed technical implementation with .NET 9 + C# 13 code examples
+- ✅ Detailed technical implementation with Django + Python code examples
 - ✅ Complete Angular 19 frontend code examples
-- ✅ Entity definitions with EF Core 9 configurations
-- ✅ Controller implementations with proper HTTP verbs
-- ✅ Service layer patterns (Repository, CQRS, Result)
+- ✅ Model definitions with Django ORM configurations
+- ✅ ViewSet implementations with proper HTTP verbs
+- ✅ Service layer patterns (Repository, Service, Result)
 - ✅ Dependencies clearly listed
 - ✅ Definition of Done checklist
 - ✅ Story points estimated

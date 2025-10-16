@@ -41,7 +41,7 @@ Enable users to discover Quran applications through multiple filter dimensions i
 - US6.4: Search by Target Audience (#139)
 - US6.5: Advanced Filter UI Components
 
-## .NET 9 Implementation Details
+## Django Implementation Details
 ### Backend Filter Implementation
 ```csharp
 // AppsController - Advanced filtering

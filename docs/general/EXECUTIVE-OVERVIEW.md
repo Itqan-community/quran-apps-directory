@@ -309,7 +309,7 @@
 - 15-20 FTE team
 - Parallel execution
 - AI-assisted development
-- Proven tech stack (.NET 9, Angular 19)
+- Proven tech stack (Django 5.1, Angular 19)
 
 ---
 
@@ -376,7 +376,7 @@ Cloudflare R2 (image storage)
 ### Aggressive Timeline (2-3 Months)
 - **Team Size:** 15-20 FTE
 - **Composition:**
-  - 5-6 Backend Developers (.NET 9)
+  - 5-6 Backend Developers (Django/Python)
   - 4-5 Frontend Developers (Angular 19)
   - 2 Full Stack Developers
   - 1 Database Architect
@@ -412,12 +412,12 @@ Cloudflare R2 (image storage)
 **Recommendation:** All 15 epics (complete transformation)
 
 ### 3. Technology Stack
-- ✅ Backend: ASP.NET Core 9 (.NET 9)
+- ✅ Backend: Django 5.1 (Python 3.12+)
 - ✅ Frontend: Angular 19
 - ✅ Database: PostgreSQL 16+
 - ✅ Hosting: Railway/Digital Ocean + Netlify
 
-**Confirmation Needed:** Team comfortable with .NET 9?
+**Confirmation Needed:** Team comfortable with Django/Python?
 
 ### 4. Business Model
 - ✅ Start free, community-first
@@ -486,7 +486,7 @@ This is more than a directory. This is about:
 
 1. Do the goals and vision align with organizational objectives?
 2. Is the 2-3 month aggressive timeline acceptable?
-3. Are we comfortable with .NET 9 technology stack?
+3. Are we comfortable with Django/Python technology stack?
 4. Is the community-first, delayed monetization approach acceptable?
 5. What are the success metrics we care most about?
 6. Any concerns about risks or mitigation strategies?

@@ -1,4 +1,4 @@
-# .NET 9 Architecture Supplement
+# Django Backend API Architecture Supplement
 # Quran Apps Directory - Backend Implementation Guide
 
 **Document Version:** 2.0  
@@ -11,59 +11,59 @@
 
 ## 🎯 Purpose
 
-This document supplements the main architecture document with .NET 9 specific implementation details, code examples, and best practices.
+This document supplements the main architecture document with Django backend API implementation details, code examples, and best practices, including Django Admin integration.
 
 ---
 
-## 📦 Technology Stack (.NET 8)
+## 📦 Technology Stack (Django)
 
 ### Core Stack
 ```
-- Runtime: .NET 8 LTS (latest stable)
-- Framework: ASP.NET Core 8
-- Language: C# 12
-- ORM: Entity Framework Core 8
-- Database Driver: Npgsql (PostgreSQL driver for .NET)
-- API Documentation: Swashbuckle (Swagger/OpenAPI)
-- Authentication: ASP.NET Core Identity + JWT
-- Caching: StackExchange.Redis
-- Logging: Serilog
-- Testing: xUnit + Moq
+- Framework: Django 5.1 (latest LTS)
+- Language: Python 3.12+
+- ORM: Django ORM
+- Database Driver: psycopg2-binary (PostgreSQL)
+- API Framework: Django REST Framework (DRF)
+- Admin Interface: Django Admin (built-in)
+- Authentication: Django Auth + JWT (djangorestframework-simplejwt)
+- Caching: Django Redis cache
+- Task Queue: Celery (optional, for background tasks)
+- API Documentation: drf-spectacular (OpenAPI/Swagger)
+- Testing: Django Test Framework + pytest
+- Environment: Poetry (dependency management)
 ```
 
-### Key NuGet Packages
-```xml
-<ItemGroup>
-  <!-- Core Framework -->
-  <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
-  
-  <!-- Entity Framework Core -->
-  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
-  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0" />
-  <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
-  
-  <!-- Authentication -->
-  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
-  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.0" />
-  
-  <!-- Redis Caching -->
-  <PackageReference Include="StackExchange.Redis" Version="2.7.0" />
-  <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.0" />
-  
-  <!-- Logging -->
-  <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
-  <PackageReference Include="Serilog.Sinks.Console" Version="5.0.0" />
-  <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-  
-  <!-- API Documentation -->
-  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-  
-  <!-- Rate Limiting -->
-  <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
-  
-  <!-- Validation -->
-  <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-</ItemGroup>
+### Key Python Packages (requirements.txt)
+```txt
+# Core Django
+Django==5.1.*
+djangorestframework==3.15.*
+psycopg2-binary==2.9.*
+
+# Authentication & Security
+djangorestframework-simplejwt==5.3.*
+django-cors-headers==4.4.*
+
+# API Documentation
+drf-spectacular==0.27.*
+
+# Caching & Performance
+django-redis==5.4.*
+Pillow==10.4.*  # Image handling
+
+# Development & Testing
+pytest==8.3.*
+pytest-django==4.8.*
+factory-boy==3.3.*  # Test data generation
+
+# Optional: Background Tasks
+celery==5.4.*
+redis==5.0.*
+
+# Environment & Deployment
+python-decouple==3.8.*  # Environment variables
+gunicorn==22.0.*       # WSGI server
+whitenoise==6.7.*      # Static files in production
 ```
 
 ---
@@ -71,739 +71,853 @@ This document supplements the main architecture document with .NET 9 specific im
 ## 🏗️ Project Structure
 
 ```
-QuranAppsDirectory.Api/
-├── Controllers/
-│   ├── AppsController.cs
-│   ├── CategoriesController.cs
-│   ├── DevelopersController.cs
-│   ├── UsersController.cs
-│   └── ReviewsController.cs
+quran_apps_directory/
+├── quran_apps/                    # Main Django project
+│   ├── __init__.py
+│   ├── settings.py               # Django settings
+│   ├── urls.py                   # Main URL configuration
+│   ├── wsgi.py                   # WSGI application
+│   └── asgi.py                   # ASGI application
 │
-├── Data/
-│   ├── ApplicationDbContext.cs
-│   ├── Entities/
-│   │   ├── App.cs
-│   │   ├── Category.cs
-│   │   ├── Developer.cs
-│   │   ├── User.cs
-│   │   └── Review.cs
-│   ├── Configurations/
-│   │   ├── AppConfiguration.cs
-│   │   └── UserConfiguration.cs
-│   └── Migrations/
-│       └── (auto-generated)
+├── apps/                         # Django apps (modular components)
+│   ├── apps/                     # Apps management
+│   │   ├── __init__.py
+│   │   ├── admin.py             # Django Admin configuration
+│   │   ├── models.py            # Django models
+│   │   ├── views.py             # API views (DRF)
+│   │   ├── serializers.py       # DRF serializers
+│   │   ├── urls.py              # App URLs
+│   │   ├── tests.py             # Unit tests
+│   │   └── migrations/          # Database migrations
+│   │
+│   ├── users/                    # User management
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── serializers.py
+│   │   ├── urls.py
+│   │   ├── tests.py
+│   │   └── migrations/
+│   │
+│   ├── categories/               # Categories management
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── serializers.py
+│   │   ├── urls.py
+│   │   ├── tests.py
+│   │   └── migrations/
+│   │
+│   ├── developers/               # Developer profiles
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── serializers.py
+│   │   ├── urls.py
+│   │   ├── tests.py
+│   │   └── migrations/
+│   │
+│   └── reviews/                  # Reviews and ratings
+│       ├── __init__.py
+│       ├── admin.py
+│       ├── models.py
+│       ├── views.py
+│       ├── serializers.py
+│       ├── urls.py
+│       ├── tests.py
+│       └── migrations/
 │
-├── Services/
-│   ├── Interfaces/
-│   │   ├── IAppsService.cs
-│   │   ├── IAuthService.cs
-│   │   └── ICacheService.cs
-│   └── Implementations/
-│       ├── AppsService.cs
-│       ├── AuthService.cs
-│       └── CacheService.cs
+├── core/                         # Shared/core functionality
+│   ├── __init__.py
+│   ├── models.py                 # Base models, mixins
+│   ├── serializers.py            # Base serializers
+│   ├── permissions.py            # Custom permissions
+│   ├── pagination.py             # Custom pagination
+│   ├── filters.py                # Custom filters
+│   └── utils.py                  # Utility functions
 │
-├── DTOs/
-│   ├── Requests/
-│   │   ├── CreateAppRequest.cs
-│   │   └── UpdateAppRequest.cs
-│   └── Responses/
-│       ├── AppResponse.cs
-│       └── PaginatedResponse.cs
+├── config/                       # Configuration files
+│   ├── __init__.py
+│   ├── settings/
+│   │   ├── __init__.py
+│   │   ├── base.py               # Base settings
+│   │   ├── local.py              # Local development
+│   │   ├── staging.py            # Staging environment
+│   │   └── production.py         # Production settings
+│   └── urls.py
 │
-├── Middleware/
-│   ├── ExceptionHandlingMiddleware.cs
-│   ├── RequestLoggingMiddleware.cs
-│   └── RateLimitingMiddleware.cs
-│
-├── Validators/
-│   ├── CreateAppValidator.cs
-│   └── UpdateAppValidator.cs
-│
-├── Helpers/
-│   ├── JwtHelper.cs
-│   └── PaginationHelper.cs
-│
-├── Program.cs
-├── appsettings.json
-├── appsettings.Development.json
-└── appsettings.Production.json
+├── static/                       # Static files
+├── media/                        # User uploaded files
+├── templates/                    # Django templates (for admin)
+├── docs/                         # API documentation
+├── requirements/                 # Dependencies
+│   ├── base.txt
+│   ├── local.txt
+│   ├── staging.txt
+│   └── production.txt
+├── manage.py                     # Django management script
+├── pytest.ini                    # pytest configuration
+├── docker-compose.yml            # Docker services
+├── Dockerfile                    # Docker image
+└── .env.example                  # Environment variables template
 ```
 
 ---
 
-## 💾 Entity Framework Core Implementation
+## 💾 Django Models Implementation
 
-### DbContext
+### Django Settings Configuration
 
-```csharp
-using Microsoft.EntityFrameworkCore;
-using QuranAppsDirectory.Api.Data.Entities;
+```python
+# config/settings/base.py
+import os
+from pathlib import Path
+from decouple import config
 
-namespace QuranAppsDirectory.Api.Data;
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-public class ApplicationDbContext : DbContext
-{
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
-    {
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost').split(',')
+
+# Database
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
     }
+}
 
-    // DbSets
-    public DbSet<App> Apps => Set<App>();
-    public DbSet<Category> Categories => Set<Category>();
-    public DbSet<AppCategory> AppCategories => Set<AppCategory>();
-    public DbSet<Developer> Developers => Set<Developer>();
-    public DbSet<Screenshot> Screenshots => Set<Screenshot>();
-    public DbSet<User> Users => Set<User>();
-    public DbSet<Review> Reviews => Set<Review>();
-    public DbSet<Favorite> Favorites => Set<Favorite>();
-    public DbSet<Collection> Collections => Set<Collection>();
+# Installed Apps
+INSTALLED_APPS = [
+    'django.contrib.admin',          # Django Admin
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
+    # Third-party apps
+    'rest_framework',                # DRF for API
+    'rest_framework_simplejwt',      # JWT authentication
+    'corsheaders',                   # CORS headers
+    'drf_spectacular',              # API documentation
 
-        // Apply configurations
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+    # Project apps
+    'core',
+    'apps.apps.AppsConfig',
+    'users',
+    'categories',
+    'developers',
+    'reviews',
+]
 
-        // Global query filters (soft delete, etc.)
-        modelBuilder.Entity<App>()
-            .HasQueryFilter(a => a.Status == "published");
-
-        // Indexes
-        modelBuilder.Entity<App>()
-            .HasIndex(a => a.Slug)
-            .IsUnique();
-
-        modelBuilder.Entity<App>()
-            .HasIndex(a => a.AvgRating);
-
-        // Many-to-many: Apps <-> Categories
-        modelBuilder.Entity<AppCategory>()
-            .HasKey(ac => new { ac.AppId, ac.CategoryId });
-
-        modelBuilder.Entity<AppCategory>()
-            .HasOne(ac => ac.App)
-            .WithMany(a => a.AppCategories)
-            .HasForeignKey(ac => ac.AppId);
-
-        modelBuilder.Entity<AppCategory>()
-            .HasOne(ac => ac.Category)
-            .WithMany(c => c.AppCategories)
-            .HasForeignKey(ac => ac.CategoryId);
-
-        // Ensure one review per user per app
-        modelBuilder.Entity<Review>()
-            .HasIndex(r => new { r.AppId, r.UserId })
-            .IsUnique();
-    }
+# REST Framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'core.pagination.StandardResultsSetPagination',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 ```
 
-### Entity Example: App
+### Core Models (Base Classes)
 
-```csharp
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+```python
+# core/models.py
+from django.db import models
+from django.utils import timezone
+from django.contrib.auth.models import AbstractUser
 
-namespace QuranAppsDirectory.Api.Data.Entities;
+class BaseModel(models.Model):
+    """Base model with common fields"""
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
+    updated_at = models.DateTimeField(auto_now=True)
 
-[Table("apps")]
-public class App
-{
-    [Key]
-    [Column("id")]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    class Meta:
+        abstract = True
 
-    [Required]
-    [MaxLength(255)]
-    [Column("name_ar")]
-    public string NameAr { get; set; } = string.Empty;
+class PublishedModel(BaseModel):
+    """Model with publishing functionality"""
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('archived', 'Archived'),
+    ]
 
-    [Required]
-    [MaxLength(255)]
-    [Column("name_en")]
-    public string NameEn { get; set; } = string.Empty;
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='published'
+    )
+    published_at = models.DateTimeField(null=True, blank=True)
 
-    [Required]
-    [Column("short_description_ar", TypeName = "text")]
-    public string ShortDescriptionAr { get; set; } = string.Empty;
+    class Meta:
+        abstract = True
 
-    [Required]
-    [Column("short_description_en", TypeName = "text")]
-    public string ShortDescriptionEn { get; set; } = string.Empty;
+    def publish(self):
+        self.status = 'published'
+        self.published_at = timezone.now()
+        self.save()
 
-    [Required]
-    [Column("description_ar", TypeName = "text")]
-    public string DescriptionAr { get; set; } = string.Empty;
+class User(AbstractUser):
+    """Custom user model"""
+    ROLE_CHOICES = [
+        ('user', 'User'),
+        ('developer', 'Developer'),
+        ('admin', 'Admin'),
+    ]
 
-    [Required]
-    [Column("description_en", TypeName = "text")]
-    public string DescriptionEn { get; set; } = string.Empty;
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default='user'
+    )
 
-    [Required]
-    [MaxLength(255)]
-    [Column("slug")]
-    public string Slug { get; set; } = string.Empty;
-
-    [MaxLength(50)]
-    [Column("status")]
-    public string Status { get; set; } = "published";
-
-    [Column("sort_order")]
-    public int? SortOrder { get; set; }
-
-    [Column("avg_rating", TypeName = "decimal(3,2)")]
-    public decimal AvgRating { get; set; } = 0.0m;
-
-    [Column("review_count")]
-    public int ReviewCount { get; set; } = 0;
-
-    [Column("view_count")]
-    public int ViewCount { get; set; } = 0;
-
-    [MaxLength(500)]
-    [Column("application_icon")]
-    public string? ApplicationIcon { get; set; }
-
-    [MaxLength(500)]
-    [Column("main_image_ar")]
-    public string? MainImageAr { get; set; }
-
-    [MaxLength(500)]
-    [Column("main_image_en")]
-    public string? MainImageEn { get; set; }
-
-    [MaxLength(500)]
-    [Column("google_play_link")]
-    public string? GooglePlayLink { get; set; }
-
-    [MaxLength(500)]
-    [Column("app_store_link")]
-    public string? AppStoreLink { get; set; }
-
-    [MaxLength(500)]
-    [Column("app_gallery_link")]
-    public string? AppGalleryLink { get; set; }
-
-    [Column("developer_id")]
-    public Guid? DeveloperId { get; set; }
-
-    [Column("created_at")]
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    [Column("updated_at")]
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-
-    [Column("published_at")]
-    public DateTime? PublishedAt { get; set; }
-
-    // Navigation properties
-    [ForeignKey("DeveloperId")]
-    public Developer? Developer { get; set; }
-
-    public ICollection<AppCategory> AppCategories { get; set; } = new List<AppCategory>();
-    public ICollection<Screenshot> Screenshots { get; set; } = new List<Screenshot>();
-    public ICollection<Review> Reviews { get; set; } = new List<Review>();
-    public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
-}
+    class Meta:
+        db_table = 'users'
 ```
 
-### Fluent API Configuration
+### App Model Example
 
-```csharp
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using QuranAppsDirectory.Api.Data.Entities;
+```python
+# apps/models.py
+from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.text import slugify
+from core.models import PublishedModel
 
-namespace QuranAppsDirectory.Api.Data.Configurations;
+class App(PublishedModel):
+    """Quran application model"""
+    name_ar = models.CharField(max_length=255, verbose_name="Arabic Name")
+    name_en = models.CharField(max_length=255, verbose_name="English Name")
 
-public class AppConfiguration : IEntityTypeConfiguration<App>
-{
-    public void Configure(EntityTypeBuilder<App> builder)
-    {
-        builder.ToTable("apps");
+    short_description_ar = models.TextField(verbose_name="Arabic Short Description")
+    short_description_en = models.TextField(verbose_name="English Short Description")
 
-        builder.HasKey(a => a.Id);
+    description_ar = models.TextField(verbose_name="Arabic Description")
+    description_en = models.TextField(verbose_name="English Description")
 
-        builder.Property(a => a.Id)
-            .HasColumnName("id")
-            .HasDefaultValueSql("gen_random_uuid()");
+    slug = models.SlugField(unique=True, max_length=255)
 
-        builder.Property(a => a.NameAr)
-            .IsRequired()
-            .HasMaxLength(255)
-            .HasColumnName("name_ar");
+    sort_order = models.PositiveIntegerField(null=True, blank=True)
 
-        builder.Property(a => a.NameEn)
-            .IsRequired()
-            .HasMaxLength(255)
-            .HasColumnName("name_en");
+    avg_rating = models.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        default=0.00,
+        validators=[MinValueValidator(0), MaxValueValidator(5)]
+    )
+    review_count = models.PositiveIntegerField(default=0)
+    view_count = models.PositiveIntegerField(default=0)
 
-        builder.Property(a => a.Slug)
-            .IsRequired()
-            .HasMaxLength(255)
-            .HasColumnName("slug");
+    # Media fields
+    application_icon = models.URLField(blank=True, null=True)
+    main_image_ar = models.URLField(blank=True, null=True)
+    main_image_en = models.URLField(blank=True, null=True)
 
-        builder.HasIndex(a => a.Slug)
-            .IsUnique();
+    # Store links
+    google_play_link = models.URLField(blank=True, null=True)
+    app_store_link = models.URLField(blank=True, null=True)
+    app_gallery_link = models.URLField(blank=True, null=True)
 
-        builder.HasIndex(a => a.AvgRating);
-        builder.HasIndex(a => a.Status);
-        builder.HasIndex(a => a.DeveloperId);
+    # Relationships
+    developer = models.ForeignKey(
+        'developers.Developer',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='apps'
+    )
+    categories = models.ManyToManyField(
+        'categories.Category',
+        related_name='apps',
+        blank=True
+    )
 
-        // Relationships
-        builder.HasOne(a => a.Developer)
-            .WithMany(d => d.Apps)
-            .HasForeignKey(a => a.DeveloperId)
-            .OnDelete(DeleteBehavior.SetNull);
+    class Meta:
+        db_table = 'apps'
+        ordering = ['-avg_rating', 'name_en']
+        indexes = [
+            models.Index(fields=['slug']),
+            models.Index(fields=['avg_rating']),
+            models.Index(fields=['status']),
+            models.Index(fields=['developer']),
+        ]
 
-        builder.HasMany(a => a.Screenshots)
-            .WithOne(s => s.App)
-            .HasForeignKey(s => s.AppId)
-            .OnDelete(DeleteBehavior.Cascade);
-    }
-}
+    def __str__(self):
+        return self.name_en
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name_en)
+        super().save(*args, **kwargs)
+
+    @property
+    def rating_display(self):
+        return f"{self.avg_rating:.1f}"
+```
+
+### Django Admin Configuration
+
+```python
+# apps/admin.py
+from django.contrib import admin
+from django.utils.html import format_html
+from .models import App
+
+@admin.register(App)
+class AppAdmin(admin.ModelAdmin):
+    list_display = [
+        'name_en', 'name_ar', 'developer', 'avg_rating',
+        'review_count', 'status', 'published_at'
+    ]
+    list_filter = ['status', 'categories', 'developer', 'avg_rating']
+    search_fields = ['name_en', 'name_ar', 'slug']
+    readonly_fields = ['avg_rating', 'review_count', 'view_count', 'created_at', 'updated_at']
+    ordering = ['-avg_rating', 'name_en']
+
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('name_en', 'name_ar', 'slug', 'status')
+        }),
+        ('Descriptions', {
+            'fields': ('short_description_en', 'short_description_ar',
+                      'description_en', 'description_ar'),
+            'classes': ('collapse',)
+        }),
+        ('Media', {
+            'fields': ('application_icon', 'main_image_en', 'main_image_ar'),
+            'classes': ('collapse',)
+        }),
+        ('Store Links', {
+            'fields': ('google_play_link', 'app_store_link', 'app_gallery_link'),
+            'classes': ('collapse',)
+        }),
+        ('Relationships', {
+            'fields': ('developer', 'categories')
+        }),
+        ('Statistics', {
+            'fields': ('avg_rating', 'review_count', 'view_count', 'sort_order'),
+            'classes': ('collapse',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at', 'published_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('developer')
 ```
 
 ---
 
-## 🔌 API Controller Implementation
+## 🔌 Django REST Framework API Implementation
 
-### AppsController Example
+### DRF Serializers
 
-```csharp
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using QuranAppsDirectory.Api.Services.Interfaces;
-using QuranAppsDirectory.Api.DTOs.Requests;
-using QuranAppsDirectory.Api.DTOs.Responses;
+```python
+# apps/serializers.py
+from rest_framework import serializers
+from django.utils.text import slugify
+from .models import App
 
-namespace QuranAppsDirectory.Api.Controllers;
+class CategorySerializer(serializers.Serializer):
+    """Category serializer for app responses"""
+    id = serializers.UUIDField()
+    name_en = serializers.CharField()
+    name_ar = serializers.CharField()
+    slug = serializers.CharField()
 
-[ApiController]
-[Route("api/v1/[controller]")]
-[Produces("application/json")]
-public class AppsController : ControllerBase
-{
-    private readonly IAppsService _appsService;
-    private readonly ILogger<AppsController> _logger;
+class DeveloperSerializer(serializers.Serializer):
+    """Developer serializer for app responses"""
+    id = serializers.UUIDField()
+    name_en = serializers.CharField()
+    name_ar = serializers.CharField()
+    slug = serializers.CharField()
 
-    public AppsController(IAppsService appsService, ILogger<AppsController> logger)
-    {
-        _appsService = appsService;
-        _logger = logger;
-    }
+class ScreenshotSerializer(serializers.Serializer):
+    """Screenshot serializer"""
+    id = serializers.UUIDField()
+    url = serializers.URLField()
+    language = serializers.CharField()
 
-    /// <summary>
-    /// Get all apps with filtering and pagination
-    /// </summary>
-    /// <param name="request">Query parameters for filtering and pagination</param>
-    /// <returns>Paginated list of apps</returns>
-    [HttpGet]
-    [ProducesResponseType(typeof(PaginatedResponse<AppResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<PaginatedResponse<AppResponse>>> GetApps(
-        [FromQuery] GetAppsRequest request)
-    {
-        var result = await _appsService.GetAppsAsync(request);
-        return Ok(result);
-    }
+class AppListSerializer(serializers.ModelSerializer):
+    """Serializer for app list views"""
+    developer = DeveloperSerializer(read_only=True)
+    categories = CategorySerializer(many=True, read_only=True)
+    rating_display = serializers.ReadOnlyField()
 
-    /// <summary>
-    /// Get a specific app by ID
-    /// </summary>
-    /// <param name="id">App ID</param>
-    /// <returns>App details</returns>
-    [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(AppResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<AppResponse>> GetAppById(Guid id)
-    {
-        var app = await _appsService.GetAppByIdAsync(id);
-        if (app == null)
-            return NotFound(new { error = "App not found" });
+    class Meta:
+        model = App
+        fields = [
+            'id', 'name_en', 'name_ar', 'slug',
+            'short_description_en', 'short_description_ar',
+            'avg_rating', 'rating_display', 'review_count',
+            'application_icon', 'developer', 'categories',
+            'created_at', 'status'
+        ]
 
-        return Ok(app);
-    }
+class AppDetailSerializer(serializers.ModelSerializer):
+    """Serializer for app detail views"""
+    developer = DeveloperSerializer(read_only=True)
+    categories = CategorySerializer(many=True, read_only=True)
+    screenshots = ScreenshotSerializer(many=True, read_only=True)
+    rating_display = serializers.ReadOnlyField()
 
-    /// <summary>
-    /// Get app by slug
-    /// </summary>
-    /// <param name="slug">App slug</param>
-    /// <returns>App details</returns>
-    [HttpGet("slug/{slug}")]
-    [ProducesResponseType(typeof(AppResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<AppResponse>> GetAppBySlug(string slug)
-    {
-        var app = await _appsService.GetAppBySlugAsync(slug);
-        if (app == null)
-            return NotFound(new { error = "App not found" });
+    class Meta:
+        model = App
+        fields = [
+            'id', 'name_en', 'name_ar', 'slug',
+            'short_description_en', 'short_description_ar',
+            'description_en', 'description_ar',
+            'avg_rating', 'rating_display', 'review_count', 'view_count',
+            'application_icon', 'main_image_en', 'main_image_ar',
+            'google_play_link', 'app_store_link', 'app_gallery_link',
+            'developer', 'categories', 'screenshots',
+            'created_at', 'updated_at', 'published_at', 'status'
+        ]
 
-        return Ok(app);
-    }
+class AppCreateUpdateSerializer(serializers.ModelSerializer):
+    """Serializer for creating/updating apps"""
+    slug = serializers.CharField(read_only=True)
 
-    /// <summary>
-    /// Create a new app (Admin only)
-    /// </summary>
-    /// <param name="request">App creation data</param>
-    /// <returns>Created app</returns>
-    [HttpPost]
-    [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(AppResponse), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<AppResponse>> CreateApp(
-        [FromBody] CreateAppRequest request)
-    {
-        var app = await _appsService.CreateAppAsync(request);
-        return CreatedAtAction(nameof(GetAppById), new { id = app.Id }, app);
-    }
+    class Meta:
+        model = App
+        fields = [
+            'name_en', 'name_ar', 'slug',
+            'short_description_en', 'short_description_ar',
+            'description_en', 'description_ar',
+            'application_icon', 'main_image_en', 'main_image_ar',
+            'google_play_link', 'app_store_link', 'app_gallery_link',
+            'developer', 'categories', 'status', 'sort_order'
+        ]
 
-    /// <summary>
-    /// Update an existing app (Admin/Developer)
-    /// </summary>
-    /// <param name="id">App ID</param>
-    /// <param name="request">Updated app data</param>
-    /// <returns>Updated app</returns>
-    [HttpPut("{id:guid}")]
-    [Authorize(Roles = "Admin,Developer")]
-    [ProducesResponseType(typeof(AppResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<AppResponse>> UpdateApp(
-        Guid id,
-        [FromBody] UpdateAppRequest request)
-    {
-        var app = await _appsService.UpdateAppAsync(id, request);
-        if (app == null)
-            return NotFound(new { error = "App not found" });
+    def create(self, validated_data):
+        validated_data['slug'] = slugify(validated_data['name_en'])
+        return super().create(validated_data)
 
-        return Ok(app);
-    }
+    def update(self, instance, validated_data):
+        if 'name_en' in validated_data:
+            validated_data['slug'] = slugify(validated_data['name_en'])
+        return super().update(instance, validated_data)
+```
 
-    /// <summary>
-    /// Delete an app (Admin only)
-    /// </summary>
-    /// <param name="id">App ID</param>
-    /// <returns>No content</returns>
-    [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "Admin")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> DeleteApp(Guid id)
-    {
-        var result = await _appsService.DeleteAppAsync(id);
-        if (!result)
-            return NotFound(new { error = "App not found" });
+### DRF Views and ViewSets
 
-        return NoContent();
-    }
+```python
+# apps/views.py
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from django_filters.rest_framework import DjangoFilterBackend
+from django.core.cache import cache
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.db.models import Q, Prefetch
+
+from core.permissions import IsAdminOrDeveloper, IsAdmin
+from core.pagination import StandardResultsSetPagination
+from .models import App
+from .serializers import (
+    AppListSerializer, AppDetailSerializer,
+    AppCreateUpdateSerializer
+)
+from .filters import AppFilter
+
+class AppViewSet(viewsets.ModelViewSet):
+    """ViewSet for Quran applications"""
+    queryset = App.objects.select_related('developer').prefetch_related(
+        'categories', 'screenshots'
+    ).filter(status='published')
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = AppFilter
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return AppCreateUpdateSerializer
+        elif self.action == 'retrieve':
+            return AppDetailSerializer
+        return AppListSerializer
+
+    def get_permissions(self):
+        if self.action in ['create', 'destroy']:
+            return [IsAdmin()]
+        elif self.action in ['update', 'partial_update']:
+            return [IsAdminOrDeveloper()]
+        return super().get_permissions()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        # Allow admins to see all apps including drafts
+        if self.request.user.is_staff or self.request.user.role == 'admin':
+            queryset = App.objects.select_related('developer').prefetch_related(
+                'categories', 'screenshots'
+            )
+
+        # Apply search
+        search = self.request.query_params.get('search', '')
+        if search:
+            queryset = queryset.filter(
+                Q(name_en__icontains=search) |
+                Q(name_ar__icontains=search) |
+                Q(description_en__icontains=search) |
+                Q(description_ar__icontains=search)
+            )
+
+        return queryset
+
+    @method_decorator(cache_page(60 * 5))  # Cache for 5 minutes
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        # Increment view count
+        instance = self.get_object()
+        instance.view_count += 1
+        instance.save(update_fields=['view_count'])
+
+        # Cache individual app details
+        cache_key = f'app:{instance.id}'
+        cached_data = cache.get(cache_key)
+        if cached_data:
+            return Response(cached_data)
+
+        response = super().retrieve(request, *args, **kwargs)
+        cache.set(cache_key, response.data, 60 * 5)  # Cache for 5 minutes
+        return response
+
+    @action(detail=True, methods=['get'])
+    def by_slug(self, request, pk=None):
+        """Get app by slug"""
+        try:
+            app = self.get_queryset().get(slug=pk)
+            serializer = self.get_serializer(app)
+            return Response(serializer.data)
+        except App.DoesNotExist:
+            return Response(
+                {'error': 'App not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+    def perform_create(self, serializer):
+        # Clear cache when creating new app
+        cache.delete_pattern('app:*')
+        serializer.save()
+
+    def perform_update(self, serializer):
+        # Clear cache when updating app
+        instance = serializer.instance
+        cache.delete(f'app:{instance.id}')
+        cache.delete(f'app:slug:{instance.slug}')
+        cache.delete_pattern('app:*')
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        # Clear cache when deleting app
+        cache.delete(f'app:{instance.id}')
+        cache.delete(f'app:slug:{instance.slug}')
+        cache.delete_pattern('app:*')
+        instance.delete()
+```
+
+### Custom Filters
+
+```python
+# apps/filters.py
+import django_filters
+from .models import App
+
+class AppFilter(django_filters.FilterSet):
+    """Custom filters for apps"""
+    category = django_filters.CharFilter(
+        field_name='categories__slug',
+        lookup_expr='iexact'
+    )
+    developer = django_filters.UUIDFilter(
+        field_name='developer_id'
+    )
+    rating_min = django_filters.NumberFilter(
+        field_name='avg_rating',
+        lookup_expr='gte'
+    )
+    rating_max = django_filters.NumberFilter(
+        field_name='avg_rating',
+        lookup_expr='lte'
+    )
+    status = django_filters.ChoiceFilter(
+        choices=App.STATUS_CHOICES
+    )
+
+    class Meta:
+        model = App
+        fields = ['category', 'developer', 'rating_min', 'rating_max', 'status']
+```
+
+---
+
+## 🔐 Django JWT Authentication Implementation
+
+### JWT Settings Configuration
+
+```python
+# config/settings/base.py
+from datetime import timedelta
+
+# JWT Settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'core.pagination.StandardResultsSetPagination',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# Simple JWT Configuration
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+
+    'JTI_CLAIM': 'jti',
 }
 ```
 
-### Service Implementation
+### Custom User Manager
 
-```csharp
-using Microsoft.EntityFrameworkCore;
-using QuranAppsDirectory.Api.Data;
-using QuranAppsDirectory.Api.Data.Entities;
-using QuranAppsDirectory.Api.DTOs.Requests;
-using QuranAppsDirectory.Api.DTOs.Responses;
-using QuranAppsDirectory.Api.Services.Interfaces;
+```python
+# core/managers.py
+from django.contrib.auth.models import BaseUserManager
+from django.utils import timezone
 
-namespace QuranAppsDirectory.Api.Services.Implementations;
+class UserManager(BaseUserManager):
+    """Custom user manager"""
 
-public class AppsService : IAppsService
-{
-    private readonly ApplicationDbContext _context;
-    private readonly ICacheService _cacheService;
-    private readonly ILogger<AppsService> _logger;
+    def _create_user(self, email, password, **extra_fields):
+        if not email:
+            raise ValueError('The Email must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save()
+        return user
 
-    public AppsService(
-        ApplicationDbContext context,
-        ICacheService cacheService,
-        ILogger<AppsService> logger)
-    {
-        _context = context;
-        _cacheService = cacheService;
-        _logger = logger;
-    }
+    def create_user(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
 
-    public async Task<PaginatedResponse<AppResponse>> GetAppsAsync(GetAppsRequest request)
-    {
-        var query = _context.Apps
-            .Include(a => a.Developer)
-            .Include(a => a.AppCategories)
-                .ThenInclude(ac => ac.Category)
-            .AsQueryable();
+    def create_superuser(self, email, password, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('role', 'admin')
 
-        // Apply filters
-        if (!string.IsNullOrEmpty(request.Category))
-        {
-            query = query.Where(a => a.AppCategories
-                .Any(ac => ac.Category.Name == request.Category));
-        }
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
 
-        if (!string.IsNullOrEmpty(request.Search))
-        {
-            query = query.Where(a =>
-                a.NameEn.Contains(request.Search) ||
-                a.NameAr.Contains(request.Search) ||
-                a.DescriptionEn.Contains(request.Search) ||
-                a.DescriptionAr.Contains(request.Search));
-        }
+        return self._create_user(email, password, **extra_fields)
+```
 
-        if (request.RatingMin.HasValue)
-        {
-            query = query.Where(a => a.AvgRating >= request.RatingMin.Value);
-        }
+### Authentication Views
 
-        if (request.DeveloperId.HasValue)
-        {
-            query = query.Where(a => a.DeveloperId == request.DeveloperId.Value);
-        }
+```python
+# users/views.py
+from rest_framework import status, generics
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
+from django.utils.translation import gettext_lazy as _
 
-        // Get total count
-        var total = await query.CountAsync();
+from .serializers import (
+    LoginSerializer, RegisterSerializer,
+    TokenRefreshSerializer, UserSerializer
+)
 
-        // Apply sorting
-        query = request.Sort?.ToLower() switch
-        {
-            "rating" => request.Order == "asc"
-                ? query.OrderBy(a => a.AvgRating)
-                : query.OrderByDescending(a => a.AvgRating),
-            "created" => request.Order == "asc"
-                ? query.OrderBy(a => a.CreatedAt)
-                : query.OrderByDescending(a => a.CreatedAt),
-            "name" => request.Order == "asc"
-                ? query.OrderBy(a => a.NameEn)
-                : query.OrderByDescending(a => a.NameEn),
-            _ => query.OrderByDescending(a => a.AvgRating)
-        };
+class LoginView(generics.GenericAPIView):
+    """User login view"""
+    permission_classes = [AllowAny]
+    serializer_class = LoginSerializer
 
-        // Apply pagination
-        var apps = await query
-            .Skip((request.Page - 1) * request.Limit)
-            .Take(request.Limit)
-            .Select(a => MapToAppResponse(a))
-            .ToListAsync();
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        return new PaginatedResponse<AppResponse>
-        {
-            Data = apps,
-            Meta = new PaginationMeta
-            {
-                Total = total,
-                Page = request.Page,
-                Limit = request.Limit,
-                TotalPages = (int)Math.Ceiling(total / (double)request.Limit)
+        email = serializer.validated_data['email']
+        password = serializer.validated_data['password']
+
+        user = authenticate(email=email, password=password)
+
+        if user is None:
+            return Response(
+                {'error': _('Invalid credentials')},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        if not user.is_active:
+            return Response(
+                {'error': _('User account is disabled')},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        refresh = RefreshToken.for_user(user)
+        user_serializer = UserSerializer(user)
+
+        return Response({
+            'user': user_serializer.data,
+            'tokens': {
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
             }
-        };
-    }
+        })
 
-    public async Task<AppResponse?> GetAppByIdAsync(Guid id)
-    {
-        // Check cache first
-        var cacheKey = $"app:{id}";
-        var cached = await _cacheService.GetAsync<AppResponse>(cacheKey);
-        if (cached != null)
-            return cached;
+class RegisterView(generics.GenericAPIView):
+    """User registration view"""
+    permission_classes = [AllowAny]
+    serializer_class = RegisterSerializer
 
-        var app = await _context.Apps
-            .Include(a => a.Developer)
-            .Include(a => a.AppCategories)
-                .ThenInclude(ac => ac.Category)
-            .Include(a => a.Screenshots)
-            .FirstOrDefaultAsync(a => a.Id == id);
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        if (app == null)
-            return null;
+        user = serializer.save()
 
-        var response = MapToAppResponse(app);
+        refresh = RefreshToken.for_user(user)
+        user_serializer = UserSerializer(user)
 
-        // Cache for 5 minutes
-        await _cacheService.SetAsync(cacheKey, response, TimeSpan.FromMinutes(5));
-
-        return response;
-    }
-
-    public async Task<AppResponse?> GetAppBySlugAsync(string slug)
-    {
-        var cacheKey = $"app:slug:{slug}";
-        var cached = await _cacheService.GetAsync<AppResponse>(cacheKey);
-        if (cached != null)
-            return cached;
-
-        var app = await _context.Apps
-            .Include(a => a.Developer)
-            .Include(a => a.AppCategories)
-                .ThenInclude(ac => ac.Category)
-            .Include(a => a.Screenshots)
-            .FirstOrDefaultAsync(a => a.Slug == slug);
-
-        if (app == null)
-            return null;
-
-        var response = MapToAppResponse(app);
-        await _cacheService.SetAsync(cacheKey, response, TimeSpan.FromMinutes(5));
-
-        return response;
-    }
-
-    private static AppResponse MapToAppResponse(App app)
-    {
-        return new AppResponse
-        {
-            Id = app.Id,
-            NameAr = app.NameAr,
-            NameEn = app.NameEn,
-            Slug = app.Slug,
-            ShortDescriptionAr = app.ShortDescriptionAr,
-            ShortDescriptionEn = app.ShortDescriptionEn,
-            DescriptionAr = app.DescriptionAr,
-            DescriptionEn = app.DescriptionEn,
-            AvgRating = app.AvgRating,
-            ReviewCount = app.ReviewCount,
-            ApplicationIcon = app.ApplicationIcon,
-            MainImageAr = app.MainImageAr,
-            MainImageEn = app.MainImageEn,
-            GooglePlayLink = app.GooglePlayLink,
-            AppStoreLink = app.AppStoreLink,
-            AppGalleryLink = app.AppGalleryLink,
-            Developer = app.Developer != null
-                ? new DeveloperResponse
-                {
-                    Id = app.Developer.Id,
-                    NameEn = app.Developer.NameEn,
-                    NameAr = app.Developer.NameAr,
-                    Slug = app.Developer.Slug
-                }
-                : null,
-            Categories = app.AppCategories
-                .Select(ac => ac.Category.Name)
-                .ToList(),
-            Screenshots = app.Screenshots
-                .Select(s => new ScreenshotResponse
-                {
-                    Url = s.Url,
-                    Language = s.Language
-                })
-                .ToList(),
-            CreatedAt = app.CreatedAt
-        };
-    }
-}
-```
-
----
-
-## 🔐 Authentication Implementation
-
-### JWT Configuration in Program.cs
-
-```csharp
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-
-var builder = WebApplication.CreateBuilder(args);
-
-// Add JWT Authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!))
-    };
-
-    options.Events = new JwtBearerEvents
-    {
-        OnAuthenticationFailed = context =>
-        {
-            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-            {
-                context.Response.Headers.Add("Token-Expired", "true");
+        return Response({
+            'user': user_serializer.data,
+            'tokens': {
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
             }
-            return Task.CompletedTask;
-        }
-    };
-});
+        }, status=status.HTTP_201_CREATED)
 
-builder.Services.AddAuthorization();
+class TokenRefreshView(generics.GenericAPIView):
+    """Token refresh view"""
+    permission_classes = [AllowAny]
+    serializer_class = TokenRefreshSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
 ```
 
-### JWT Helper
+### Authentication Serializers
 
-```csharp
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+```python
+# users/serializers.py
+from rest_framework import serializers
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.utils.translation import gettext_lazy as _
 
-namespace QuranAppsDirectory.Api.Helpers;
+User = get_user_model()
 
-public class JwtHelper
-{
-    private readonly IConfiguration _configuration;
+class UserSerializer(serializers.ModelSerializer):
+    """User serializer"""
+    class Meta:
+        model = User
+        fields = [
+            'id', 'email', 'first_name', 'last_name',
+            'role', 'is_active', 'date_joined'
+        ]
+        read_only_fields = ['id', 'is_active', 'date_joined']
 
-    public JwtHelper(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
+class LoginSerializer(serializers.Serializer):
+    """Login serializer"""
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
 
-    public string GenerateToken(User user)
-    {
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role),
-            new Claim("name", user.Name ?? user.Email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
+class RegisterSerializer(serializers.ModelSerializer):
+    """Registration serializer"""
+    password = serializers.CharField(
+        write_only=True,
+        required=True,
+        validators=[validate_password]
+    )
+    password_confirm = serializers.CharField(write_only=True, required=True)
 
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]!));
+    class Meta:
+        model = User
+        fields = [
+            'email', 'first_name', 'last_name',
+            'password', 'password_confirm', 'role'
+        ]
 
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password_confirm']:
+            raise serializers.ValidationError(
+                {'password_confirm': _("Passwords don't match")}
+            )
+        return attrs
 
-        var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(15), // 15 minutes
-            signingCredentials: credentials
-        );
+    def create(self, validated_data):
+        validated_data.pop('password_confirm')
+        user = User.objects.create_user(**validated_data)
+        return user
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
+class TokenRefreshSerializer(serializers.Serializer):
+    """Token refresh serializer"""
+    refresh = serializers.CharField()
 
-    public string GenerateRefreshToken()
-    {
-        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-    }
-}
+    def validate(self, attrs):
+        from rest_framework_simplejwt.tokens import RefreshToken
+        refresh_token = attrs['refresh']
+
+        try:
+            refresh = RefreshToken(refresh_token)
+            attrs['access'] = str(refresh.access_token)
+        except Exception:
+            raise serializers.ValidationError(
+                {'refresh': _('Invalid refresh token')}
+            )
+
+        return attrs
 ```
 
 ---
 
-## 🚀 Deployment Configuration
+## 🚀 Django Deployment Configuration
 
 ### Railway Deployment
 
@@ -813,39 +927,56 @@ public class JwtHelper
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildCommand": "dotnet restore && dotnet publish -c Release -o out"
+    "buildCommand": "pip install -r requirements/production.txt"
   },
   "deploy": {
-    "startCommand": "cd out && dotnet QuranAppsDirectory.Api.dll",
+    "startCommand": "python manage.py migrate && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT",
     "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 10
+    "restartPolicyMaxRetries": 10,
+    "healthcheckPath": "/api/health/"
   }
 }
 ```
 
-**Dockerfile (alternative):**
+**Dockerfile:**
 ```dockerfile
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /source
+FROM python:3.12-slim
 
-# Copy csproj and restore dependencies
-COPY *.csproj .
-RUN dotnet restore
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV DJANGO_SETTINGS_MODULE=config.settings.production
 
-# Copy everything else and build
-COPY . .
-RUN dotnet publish -c Release -o /app
-
-# Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Set work directory
 WORKDIR /app
-COPY --from=build /app .
 
-# Set environment
-ENV ASPNETCORE_URLS=http://+:8080
-EXPOSE 8080
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
 
-ENTRYPOINT ["dotnet", "QuranAppsDirectory.Api.dll"]
+# Install Python dependencies
+COPY requirements/ requirements/
+RUN pip install --upgrade pip
+RUN pip install -r requirements/production.txt
+
+# Copy project
+COPY . .
+
+# Collect static files
+RUN python manage.py collectstatic --noinput
+
+# Create non-root user
+RUN useradd --create-home --shell /bin/bash app \
+    && chown -R app:app /app
+USER app
+
+# Expose port
+EXPOSE 8000
+
+# Run the application
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
 ```
 
 ### Digital Ocean App Platform
@@ -860,84 +991,187 @@ services:
       repo: your-org/quran-apps-directory
       branch: main
       deploy_on_push: true
-    build_command: dotnet publish -c Release -o out
-    run_command: cd out && dotnet QuranAppsDirectory.Api.dll
-    environment_slug: dotnet
-    http_port: 8080
+    build_command: pip install -r requirements/production.txt
+    run_command: python manage.py migrate && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
+    environment_slug: python
+    http_port: 8000
     instance_count: 1
     instance_size_slug: basic-xs
     routes:
       - path: /
     envs:
-      - key: ASPNETCORE_ENVIRONMENT
-        value: Production
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+      - key: SECRET_KEY
+        type: SECRET
       - key: DATABASE_URL
         type: SECRET
-      - key: JWT_SECRET
+      - key: REDIS_URL
         type: SECRET
+    health_check:
+      http_path: /api/health/
 databases:
   - name: quran-apps-db
     engine: PG
     version: "15"
+    size: basic
+```
+
+### Environment Variables Template (.env.example)
+
+```bash
+# Django Configuration
+SECRET_KEY=your-secret-key-here
+DEBUG=False
+DJANGO_SETTINGS_MODULE=config.settings.production
+
+# Database
+DB_NAME=quran_apps
+DB_USER=your_db_user
+DB_PASSWORD=your_db_password
+DB_HOST=localhost
+DB_PORT=5432
+
+# Redis (for caching and sessions)
+REDIS_URL=redis://localhost:6379/1
+
+# Email (optional)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-app-password
+
+# CORS
+CORS_ALLOWED_ORIGINS=https://quran-apps.itqan.dev,https://www.quran-apps.itqan.dev
+
+# File Storage (optional - for cloud storage)
+AWS_ACCESS_KEY_ID=your-aws-key
+AWS_SECRET_ACCESS_KEY=your-aws-secret
+AWS_STORAGE_BUCKET_NAME=your-bucket-name
+AWS_S3_REGION_NAME=us-east-1
 ```
 
 ---
 
-## 📋 Performance Optimizations
+## 📋 Django Performance Optimizations
 
-### Response Caching
+### Caching Strategy
 
-```csharp
-builder.Services.AddResponseCaching();
-
-app.UseResponseCaching();
-
-// In controller
-[ResponseCache(Duration = 300, VaryByQueryKeys = new[] { "page", "category" })]
-[HttpGet]
-public async Task<ActionResult<PaginatedResponse<AppResponse>>> GetApps(...)
-{
-    // ...
+```python
+# config/settings/base.py - Redis Cache Configuration
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': config('REDIS_URL', default='redis://127.0.0.1:6379/1'),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {
+                'max_connections': 20,
+                'decode_responses': True,
+            }
+        }
+    }
 }
+
+# API-level caching
+CACHE_MIDDLEWARE_ALIAS = 'default'
+CACHE_MIDDLEWARE_SECONDS = 300  # 5 minutes
+CACHE_MIDDLEWARE_KEY_PREFIX = 'quran_apps'
 ```
 
 ### Database Query Optimization
 
-```csharp
-// Use AsNoTracking for read-only queries
-var apps = await _context.Apps
-    .AsNoTracking()
-    .Include(a => a.Developer)
-    .ToListAsync();
+```python
+# Use select_related for ForeignKey relationships
+apps = App.objects.select_related('developer').filter(status='published')
 
-// Use Select to project only needed fields
-var apps = await _context.Apps
-    .Select(a => new AppResponse
-    {
-        Id = a.Id,
-        NameEn = a.NameEn,
-        // Only fields you need
-    })
-    .ToListAsync();
+# Use prefetch_related for ManyToMany and reverse ForeignKey
+apps = App.objects.prefetch_related('categories', 'screenshots').all()
 
-// Use compiled queries for frequently executed queries
-private static readonly Func<ApplicationDbContext, Guid, Task<App?>> GetAppByIdQuery =
-    EF.CompileAsyncQuery((ApplicationDbContext context, Guid id) =>
-        context.Apps
-            .Include(a => a.Developer)
-            .FirstOrDefault(a => a.Id == id));
+# Use only() to select specific fields
+apps = App.objects.only('id', 'name_en', 'slug', 'avg_rating').filter(status='published')
+
+# Use defer() to exclude heavy fields
+apps = App.objects.defer('description_en', 'description_ar').filter(status='published')
+
+# Database indexes in models
+class App(PublishedModel):
+    name_en = models.CharField(max_length=255, db_index=True)
+    avg_rating = models.DecimalField(db_index=True)
+    status = models.CharField(db_index=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['avg_rating', 'status']),
+            models.Index(fields=['created_at', 'status']),
+        ]
+```
+
+### QuerySet Optimization Examples
+
+```python
+# Optimized app list query
+def get_apps_list(self):
+    return App.objects.select_related('developer').prefetch_related(
+        'categories'
+    ).only(
+        'id', 'name_en', 'name_ar', 'slug', 'short_description_en',
+        'short_description_ar', 'avg_rating', 'review_count',
+        'application_icon', 'status', 'created_at'
+    ).filter(status='published')
+
+# Optimized app detail query
+def get_app_detail(self, app_id):
+    return App.objects.select_related('developer').prefetch_related(
+        'categories', 'screenshots'
+    ).get(id=app_id, status='published')
+```
+
+### View-Level Caching
+
+```python
+# apps/views.py
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
+
+class AppViewSet(viewsets.ModelViewSet):
+    @method_decorator(cache_page(60 * 5))  # Cache for 5 minutes
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        # Custom caching logic
+        app = self.get_object()
+        cache_key = f'app_detail:{app.id}'
+
+        # Try to get from cache
+        cached_data = cache.get(cache_key)
+        if cached_data:
+            return Response(cached_data)
+
+        # Generate response
+        response = super().retrieve(request, *args, **kwargs)
+
+        # Cache the response data
+        cache.set(cache_key, response.data, 60 * 5)  # 5 minutes
+
+        return response
 ```
 
 ---
 
-**This supplement provides .NET-specific implementation details to complement the main architecture document.**
+**This supplement provides Django backend API implementation details with Django Admin integration to complement the main architecture document.**
 
 **Next Steps:**
-1. Initialize .NET project: `dotnet new webapi -n QuranAppsDirectory.Api`
-2. Install NuGet packages
-3. Create Entity classes
-4. Setup DbContext and migrations
-5. Implement controllers and services
+1. Initialize Django project: `django-admin startproject config .`
+2. Create Django apps: `python manage.py startapp apps`
+3. Install Python packages: `pip install -r requirements/base.txt`
+4. Create models and run migrations: `python manage.py makemigrations && python manage.py migrate`
+5. Configure Django Admin interface
+6. Implement DRF views and serializers
+7. Setup JWT authentication
 
 **Document Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
 **Status:** Ready for Implementation

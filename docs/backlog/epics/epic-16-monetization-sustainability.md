@@ -13,7 +13,7 @@ Generate sustainable revenue to support platform growth, infrastructure costs, a
 - 100% transparency in financial reporting
 - Revenue covers 100% of infrastructure costs
 
-## 🏗️ Technical Scope (.NET 9)
+## 🏗️ Technical Scope (Django)
 - Stripe payment integration
 - Donation system (one-time & recurring)
 - Premium developer features (priority listings, analytics)
@@ -50,7 +50,7 @@ Generate sustainable revenue to support platform growth, infrastructure costs, a
 - US16.5: Financial Transparency Dashboard
 - US16.6: Subscription Management
 
-## .NET 9 Implementation Details
+## Django Implementation Details
 ### Entity Models
 ```csharp
 public class Donation

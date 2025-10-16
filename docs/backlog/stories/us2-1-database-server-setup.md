@@ -87,7 +87,7 @@
 
 ### AC7: Connection Testing
 - [ ] Connection tested from local development machines
-- [ ] Connection tested from .NET 9 application
+- [ ] Connection tested from Django application
 - [ ] Connection latency measured (<50ms acceptable)
 - [ ] Load testing performed (100 concurrent connections)
 - [ ] Connection pooling verified working
@@ -171,7 +171,7 @@ GRANT ALL ON SCHEMA public TO app_user;
 - [ ] Security configuration complete and tested
 - [ ] Backup strategy implemented and tested
 - [ ] Monitoring and alerts configured
-- [ ] Connection tested from .NET 9 application
+- [ ] Connection tested from Django application
 - [ ] Documentation complete (connection guides, runbooks)
 - [ ] Team trained on accessing databases
 - [ ] Credentials securely distributed to team

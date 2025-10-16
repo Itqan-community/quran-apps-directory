@@ -13,7 +13,7 @@ Scale content creation by empowering developers to manage their own app listings
 - 30% of developers submit multiple apps
 - 70% profile completion rate
 
-## 🏗️ Technical Scope (.NET 9)
+## 🏗️ Technical Scope (Django)
 - Developer registration and profiles
 - App submission workflow
 - Image upload to Cloudflare R2
@@ -49,7 +49,7 @@ Scale content creation by empowering developers to manage their own app listings
 - US11.5: Developer Dashboard
 - US11.6: Submission Status Notifications
 
-## .NET 9 Implementation Details
+## Django Implementation Details
 ### Entity Models
 ```csharp
 public class DeveloperProfile

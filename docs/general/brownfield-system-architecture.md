@@ -23,8 +23,8 @@ This document defines the complete system architecture for migrating the Quran A
 
 ### Key Architectural Decisions
 - **Database:** PostgreSQL 16+ (relational, ACID compliant, proven at scale)
-- **Backend:** .NET 9 with ASP.NET Core (C# 13, high-performance, enterprise-ready)
-- **ORM:** Entity Framework Core 9 (type-safe, migrations, LINQ support)
+- **Backend:** Django 5.1 with Django REST Framework (Python 3.12+, high-performance, enterprise-ready)
+- **ORM:** Django ORM (type-safe, migrations, query optimization)
 - **API:** RESTful with OpenAPI/Swagger specification
 - **Frontend:** Angular 19 (existing, maintain and enhance)
 - **Hosting:** Digital Ocean App Platform or Railway (backend) + Netlify (frontend)
@@ -132,7 +132,7 @@ This document defines the complete system architecture for migrating the Quran A
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                       │
 │  ┌─────────────────────────────────────────────────────────────┐   │
-│  │           ASP.NET Core 9 API Server (.NET 9)                 │   │
+│  │           Django REST API Server (Django 5.1)               │   │
 │  │                                                               │   │
 │  │  ┌──────────────────────────────────────────────────────┐   │   │
 │  │  │  Controllers (REST Endpoints)                         │   │   │

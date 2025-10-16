@@ -13,7 +13,7 @@ Create a robust API layer that provides efficient data access, complex filtering
 - Error rate <0.1% in production
 - API documentation coverage 100%
 
-## 🏗️ Technical Scope (.NET 9)
+## 🏗️ Technical Scope (Django)
 - Complete CRUD operations for all entities (ASP.NET Core Controllers)
 - Advanced search and filtering capabilities (LINQ dynamic queries)
 - Pagination and performance optimization (Skip/Take with async)
@@ -50,7 +50,7 @@ Create a robust API layer that provides efficient data access, complex filtering
 - US4.4: Add Comprehensive Error Handling (ExceptionMiddleware + Serilog)
 - US4.5: Create API Documentation (Swashbuckle + XML comments)
 
-## .NET 9 Implementation Details
+## Django Implementation Details
 ### Controller Example
 ```csharp
 [ApiController]

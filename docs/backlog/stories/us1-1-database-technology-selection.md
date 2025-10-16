@@ -45,7 +45,7 @@
 ### AC3: Development Instance Setup
 - [ ] PostgreSQL 16+ installed on development machine
 - [ ] Database server configured with optimal settings
-- [ ] Connection tested from .NET 9 application
+- [ ] Connection tested from Django application
 - [ ] Basic admin tools configured (pgAdmin/DBeaver)
 - [ ] Backup strategy outlined
 
@@ -65,19 +65,27 @@
 
 ## 📝 Technical Notes
 
-### .NET 9 Integration
-```csharp
-// NuGet Package
-Npgsql.EntityFrameworkCore.PostgreSQL 9.0.0
+### Django Integration
+```python
+# requirements.txt
+psycopg2-binary==2.9.*
 
-// Connection String Format
-"Host=localhost;Database=quran_apps;Username=postgres;Password=***"
-
-// appsettings.json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Database=quran_apps;Username=postgres;Password=***;Pooling=true;Minimum Pool Size=5;Maximum Pool Size=100"
-  }
+# settings.py Database Configuration
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'quran_apps',
+        'USER': 'postgres',
+        'PASSWORD': '***',
+        'HOST': 'localhost',
+        'PORT': '5432',
+        'OPTIONS': {
+            'pool': {
+                'minconn': 5,
+                'maxconn': 100,
+            }
+        }
+    }
 }
 ```
 
@@ -117,7 +125,7 @@ Npgsql.EntityFrameworkCore.PostgreSQL 9.0.0
 - [ ] Development instance running and accessible
 - [ ] Hosting platform selected (Railway recommended)
 - [ ] Team onboarded and ready to proceed
-- [ ] Connection from .NET 9 app verified
+- [ ] Connection from Django app verified
 - [ ] Story reviewed and approved by Tech Lead
 
 ---

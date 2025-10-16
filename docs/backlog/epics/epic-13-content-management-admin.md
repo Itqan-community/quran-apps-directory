@@ -13,7 +13,7 @@ Empower admins with efficient tools to manage the platform at scale while mainta
 - Admin satisfaction score >8/10
 - Zero unauthorized access incidents
 
-## 🏗️ Technical Scope (.NET 9)
+## 🏗️ Technical Scope (Django)
 - Admin dashboard with metrics
 - User management (CRUD, roles, bans)
 - Content moderation queue
@@ -50,7 +50,7 @@ Empower admins with efficient tools to manage the platform at scale while mainta
 - US13.5: Audit Log System
 - US13.6: Platform Reports & Analytics
 
-## .NET 9 Implementation Details
+## Django Implementation Details
 ### Entity Models
 ```csharp
 public class AuditLog

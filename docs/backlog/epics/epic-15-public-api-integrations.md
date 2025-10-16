@@ -14,7 +14,7 @@ Expand the ecosystem by enabling third-party integrations, increasing platform r
 - Developer satisfaction score >8/10
 - API documentation clarity >90%
 
-## 🏗️ Technical Scope (.NET 9)
+## 🏗️ Technical Scope (Django)
 - API key generation and management
 - Rate limiting per API key
 - Public API endpoints (read-only initially)
@@ -49,7 +49,7 @@ Expand the ecosystem by enabling third-party integrations, increasing platform r
 - US15.4: TypeScript/JavaScript SDK
 - US15.5: Webhook System
 
-## .NET 9 Implementation Details
+## Django Implementation Details
 ### Entity Models
 ```csharp
 public class ApiKey

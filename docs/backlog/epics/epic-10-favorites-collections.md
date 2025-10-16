@@ -13,7 +13,7 @@ Increase user engagement and retention by allowing personalized app curation and
 - 60% return rate for users with favorites
 - Collection sharing adoption >15%
 
-## 🏗️ Technical Scope (.NET 9)
+## 🏗️ Technical Scope (Django)
 - Favorites system (one-click save/unsave)
 - Custom collections with names and descriptions
 - Collection privacy settings (public/private)
@@ -46,7 +46,7 @@ Increase user engagement and retention by allowing personalized app curation and
 - US10.4: Bulk Operations
 - US10.5: Collection Export Features
 
-## .NET 9 Implementation Details
+## Django Implementation Details
 ### Entity Models
 ```csharp
 public class Favorite

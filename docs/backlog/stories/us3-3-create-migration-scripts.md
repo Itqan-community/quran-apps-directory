@@ -20,7 +20,7 @@
 ## 🎯 Acceptance Criteria
 
 ### AC1: Migration Console App Created
-- [ ] .NET 9 Console application `QuranApps.DataMigration` created
+- [ ] Django management command for data migration created
 - [ ] Command-line arguments supported (file path, connection string)
 - [ ] Progress reporting implemented (console output)
 - [ ] Dry-run mode available (no database writes)

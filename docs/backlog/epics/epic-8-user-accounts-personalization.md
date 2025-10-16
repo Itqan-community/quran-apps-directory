@@ -13,7 +13,7 @@ Transform the platform from anonymous browsing to authenticated user experience 
 - 5-10x user retention increase
 - Email verification >90% completion
 
-## 🏗️ Technical Scope (.NET 9)
+## 🏗️ Technical Scope (Django)
 - User registration and authentication (ASP.NET Core Identity)
 - OAuth 2.0 integration (Google, Apple, Facebook, Twitter)
 - JWT token-based authentication
@@ -57,7 +57,7 @@ Transform the platform from anonymous browsing to authenticated user experience 
 - US8.8: Notification System (Email + In-app)
 - US8.9: GDPR Compliance Features
 
-## .NET 9 Implementation Details
+## Django Implementation Details
 ### ASP.NET Core Identity Setup
 ```csharp
 // User Entity (extends IdentityUser)

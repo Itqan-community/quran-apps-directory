@@ -12,14 +12,14 @@ Create a robust, scalable database schema and API architecture that can support 
 - Schema supports complex filtering and search operations
 - Zero data loss during migration planning
 
-## 🏗️ Technical Scope (.NET 9)
-- PostgreSQL database selection and setup (with Npgsql driver)
-- Complete relational schema design using EF Core Code-First
-- API architecture planning (ASP.NET Core REST API)
-- Data modeling with C# 13 entity classes and DTOs
-- Performance optimization planning (EF Core compiled queries, indexing)
-- Entity Framework Core 9 configuration
-- Migration strategy with EF Core Migrations
+## 🏗️ Technical Scope (Django)
+- PostgreSQL database selection and setup (with psycopg2-binary driver)
+- Complete relational schema design using Django ORM
+- API architecture planning (Django REST Framework)
+- Data modeling with Django models and serializers
+- Performance optimization planning (Django ORM query optimization, indexing)
+- Django ORM configuration
+- Migration strategy with Django migrations
 
 ## 🔗 Dependencies
 - None - This is the foundation epic
@@ -39,49 +39,63 @@ Create a robust, scalable database schema and API architecture that can support 
 - Team review and approval obtained
 
 ## Related Stories
-- US1.1: Database Technology Selection - PostgreSQL + Npgsql (#151)
-- US1.2: Design Complete Relational Schema (EF Core Code-First)
-- US1.3: Plan API Architecture (ASP.NET Core REST)
-- US1.4: Define Data Models (C# Entities, DTOs, Validators)
-- US1.5: Create Database Performance Optimization Strategy (Indexes, Compiled Queries)
+- US1.1: Database Technology Selection - PostgreSQL + psycopg2-binary (#151)
+- US1.2: Design Complete Relational Schema (Django ORM)
+- US1.3: Plan API Architecture (Django REST Framework)
+- US1.4: Define Data Models (Django Models, Serializers, Validators)
+- US1.5: Create Database Performance Optimization Strategy (Indexes, Query Optimization)
 
-## .NET 9 Implementation Details
+## Django Implementation Details
 ### Technology Stack
 - **Database:** PostgreSQL 15+
-- **Driver:** Npgsql.EntityFrameworkCore.PostgreSQL 8.0
-- **ORM:** Entity Framework Core 8
-- **Migrations:** EF Core Migrations (dotnet ef)
-- **Validation:** FluentValidation.AspNetCore 11.3
+- **Driver:** psycopg2-binary 2.9
+- **ORM:** Django ORM 5.1
+- **Migrations:** Django Migrations (python manage.py)
+- **Validation:** Django Model Validation
 
-### Key C# Components
-```csharp
-// Entity Example
-public class App
-{
-    public Guid Id { get; set; }
-    public string NameAr { get; set; }
-    public string NameEn { get; set; }
-    // ... other properties
-    
-    // Navigation properties
-    public Developer? Developer { get; set; }
-    public ICollection<AppCategory> AppCategories { get; set; }
-}
+### Key Django Components
+```python
+# Model Example
+class App(PublishedModel):
+    """Quran application model"""
+    name_ar = models.CharField(max_length=255, verbose_name="Arabic Name")
+    name_en = models.CharField(max_length=255, verbose_name="English Name")
+    slug = models.SlugField(unique=True, max_length=255)
 
-// DbContext
-public class ApplicationDbContext : DbContext
-{
-    public DbSet<App> Apps => Set<App>();
-    public DbSet<Category> Categories => Set<Category>();
-    // ... other DbSets
-}
+    # Relationships
+    developer = models.ForeignKey(
+        'developers.Developer',
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='apps'
+    )
+    categories = models.ManyToManyField(
+        'categories.Category',
+        related_name='apps',
+        blank=True
+    )
+
+    class Meta:
+        db_table = 'apps'
+        ordering = ['-avg_rating', 'name_en']
+
+# Django Apps Configuration
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'rest_framework',
+    'apps.apps.AppsConfig',
+    'categories',
+    'developers',
+    # ... other apps
+]
 ```
 
 ### Architecture Decisions
-- **ADR-001:** PostgreSQL chosen for relational data + excellent .NET support
-- **ADR-002:** EF Core 8 chosen for type-safe LINQ queries and code-first migrations
-- **ADR-003:** Code-First approach for better version control and team collaboration
-- **ADR-004:** Fluent API configuration for complex relationships
+- **ADR-001:** PostgreSQL chosen for relational data + excellent Django/Python support
+- **ADR-002:** Django ORM chosen for type-safe queries and migrations
+- **ADR-003:** Django migrations approach for better version control and team collaboration
+- **ADR-004:** Django model Meta configuration for complex relationships
 
 ## Priority
 priority-1

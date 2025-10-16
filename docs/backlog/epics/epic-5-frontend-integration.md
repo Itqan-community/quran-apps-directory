@@ -46,7 +46,7 @@ Transform the frontend from static data consumption to dynamic API-driven archit
 - US5.4: Add Intelligent Caching Strategies for Performance
 - US5.5: Frontend Performance Optimization
 
-## .NET 9 Integration Details
+## Django Integration Details
 ### Angular Service Layer
 ```typescript
 // src/app/services/api.service.ts

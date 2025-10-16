@@ -13,7 +13,7 @@ Successfully migrate all 44 Quran applications and related data without any loss
 - Migration completes in <30 minutes
 - Data validation passes for all migrated records
 
-## 🏗️ Technical Scope (.NET 9)
+## 🏗️ Technical Scope (Django)
 - Data extraction from applicationsData.ts (TypeScript parsing in C#)
 - Data transformation and validation scripts (C# with FluentValidation)
 - Automated migration pipeline (C# console app or API endpoint)
@@ -47,7 +47,7 @@ Successfully migrate all 44 Quran applications and related data without any loss
 - US3.4: Validate Data Integrity (xUnit Validation Tests)
 - US3.5: Handle Complex Many-to-Many Relationships (EF Core Navigation)
 
-## .NET 9 Implementation Details
+## Django Implementation Details
 ### Migration Approach
 ```csharp
 // Migration Console App

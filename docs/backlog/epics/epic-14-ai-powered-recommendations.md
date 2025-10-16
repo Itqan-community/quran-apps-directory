@@ -13,9 +13,9 @@ Increase app discovery and user engagement through personalized recommendations 
 - A/B test shows 25% improvement in engagement
 - 60% user satisfaction with recommendations
 
-## 🏗️ Technical Scope (.NET 9 + ML.NET)
+## 🏗️ Technical Scope (Django + AI/ML)
 - User behavior tracking for ML
-- ML.NET recommendation model training
+- Python ML libraries (scikit-learn, TensorFlow) recommendation model training
 - Collaborative filtering implementation
 - Content-based filtering
 - Hybrid recommendation system
@@ -43,12 +43,12 @@ Increase app discovery and user engagement through personalized recommendations 
 
 ## Related Stories
 - US14.1: User Behavior Tracking for ML
-- US14.2: ML.NET Model Training Pipeline
+- US14.2: Python ML Model Training Pipeline
 - US14.3: Collaborative Filtering Implementation
 - US14.4: Recommendation API Endpoints
 - US14.5: A/B Testing Framework
 
-## .NET 9 + ML.NET Implementation Details
+## Django + AI/ML Implementation Details
 ### Entity Models
 ```csharp
 public class UserBehavior

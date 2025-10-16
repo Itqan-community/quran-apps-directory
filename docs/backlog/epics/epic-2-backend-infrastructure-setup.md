@@ -12,7 +12,7 @@ Establish a production-ready backend environment that can handle database operat
 - Database queries execute in <50ms average
 - Zero connection timeouts under normal load
 
-## 🏗️ Technical Scope (.NET 9)
+## 🏗️ Technical Scope (Django)
 - PostgreSQL server setup and configuration (Railway/Digital Ocean)
 - Entity Framework Core 8 integration and DbContext setup
 - ASP.NET Core 8 API server implementation
@@ -46,7 +46,7 @@ Establish a production-ready backend environment that can handle database operat
 - US2.4: Configure Npgsql Connection Pooling
 - US2.5: Implement Basic Authentication and Security Middleware (JWT Bearer)
 
-## .NET 9 Implementation Details
+## Django Implementation Details
 ### Project Structure
 ```
 QuranAppsDirectory.Api/

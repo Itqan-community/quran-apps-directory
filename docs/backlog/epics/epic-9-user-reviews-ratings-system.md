@@ -13,7 +13,7 @@ Build trust and community engagement through authentic user reviews and ratings,
 - Spam detection accuracy >95%
 - 50% of users find reviews helpful
 
-## 🏗️ Technical Scope (.NET 9)
+## 🏗️ Technical Scope (Django)
 - Review submission and storage (EF Core entities)
 - Rating aggregation and calculation
 - Review moderation system (Admin dashboard)
@@ -49,7 +49,7 @@ Build trust and community engagement through authentic user reviews and ratings,
 - US9.5: Helpful Votes Feature
 - US9.6: Developer Notifications
 
-## .NET 9 Implementation Details
+## Django Implementation Details
 ### Entity Models
 ```csharp
 public class Review

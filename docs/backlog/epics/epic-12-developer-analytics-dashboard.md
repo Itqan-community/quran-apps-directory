@@ -13,7 +13,7 @@ Increase developer engagement and app quality by providing actionable insights i
 - Dashboard load time <2 seconds
 - Data accuracy >99%
 
-## 🏗️ Technical Scope (.NET 9)
+## 🏗️ Technical Scope (Django)
 - Analytics data collection (page views, clicks, installs)
 - Dashboard UI with charts and metrics
 - Real-time data updates with SignalR
@@ -46,7 +46,7 @@ Increase developer engagement and app quality by providing actionable insights i
 - US12.4: Export Functionality
 - US12.5: Keyword Insights Feature
 
-## .NET 9 Implementation Details
+## Django Implementation Details
 ### Entity Models
 ```csharp
 public class AnalyticsEvent

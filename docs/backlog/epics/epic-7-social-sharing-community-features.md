@@ -43,7 +43,7 @@ Create viral growth mechanisms through easy sharing across social platforms and 
 - US7.4: Implement Share Analytics Tracking
 - US7.5: Create Custom Sharing Messages
 
-## .NET 9 Implementation Details
+## Django Implementation Details
 ### Share Analytics Backend
 ```csharp
 // SharesController
