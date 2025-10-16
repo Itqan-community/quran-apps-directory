@@ -1,4 +1,6 @@
 @echo off
+chcp 65001 >nul
+
 REM Quran Apps Directory - Development Starter Script (Windows)
 REM This script sets up and starts the development environment on Windows
 
@@ -21,18 +23,18 @@ if errorlevel 1 (
     exit /b 1
 ) else (
     echo [INFO] Node.js version detected ✓
-    node --version
+    call node --version
 )
 
 REM Check if npm is installed
-npm --version >nul 2>&1
+call npm --version >nul 2>&1
 if errorlevel 1 (
     echo [ERROR] npm is not installed. Please install npm.
     pause
     exit /b 1
 ) else (
     echo [INFO] npm version detected ✓
-    npm --version
+    call npm --version
 )
 
 echo.
@@ -49,19 +51,19 @@ REM Install dependencies
 echo [INFO] Installing dependencies...
 if not exist "node_modules" (
     echo [INFO] node_modules not found. Running npm install with legacy peer deps...
-    npm install --legacy-peer-deps
+    call npm install --legacy-peer-deps
 ) else (
     echo [INFO] node_modules found. Checking for updates...
-    npm install --legacy-peer-deps
+    call npm install --legacy-peer-deps
 )
 
 if errorlevel 1 (
     echo [WARN] Standard installation failed. Trying clean install...
     rmdir /s /q node_modules 2>nul
     del package-lock.json 2>nul
-    npm cache clean --force
+    call npm cache clean --force
     echo [INFO] Installing fresh dependencies...
-    npm install --legacy-peer-deps
+    call npm install --legacy-peer-deps
 )
 
 echo [INFO] Dependencies installed ✓
