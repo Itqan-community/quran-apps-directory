@@ -1,0 +1,916 @@
+docs/general/about-page-seo-strategy.md | 1:# About Page SEO Strategy - Comprehensive Quranic Directory
+docs/general/about-page-seo-strategy.md | 3:## Overview
+docs/general/about-page-seo-strategy.md | 6:## 🎯 **SEO Transformations Implemented**
+docs/general/about-page-seo-strategy.md | 8:### 1. **Target Keywords Integration**
+docs/general/about-page-seo-strategy.md | 16:### 2. **Content Structure for SEO**
+docs/general/about-page-seo-strategy.md | 30:### 3. **Semantic HTML Structure**
+docs/general/about-page-seo-strategy.md | 37:## 📈 **SEO Benefits & Expected Impact**
+docs/general/about-page-seo-strategy.md | 39:### **Content Depth Score Improvement**
+docs/general/about-page-seo-strategy.md | 44:### **Keyword Density Optimization**
+docs/general/about-page-seo-strategy.md | 49:### **Internal Linking Enhancement**
+docs/general/about-page-seo-strategy.md | 54:### **External Link Authority**
+docs/general/about-page-seo-strategy.md | 59:## 🎨 **User Experience & Engagement Improvements**
+docs/general/about-page-seo-strategy.md | 61:### **Visual Design Enhancements**
+docs/general/about-page-seo-strategy.md | 67:### **Engagement Metrics Improvement**
+docs/general/about-page-seo-strategy.md | 72:### **Accessibility & Usability**
+docs/general/about-page-seo-strategy.md | 77:## 🔍 **Search Engine Optimization Features**
+docs/general/about-page-seo-strategy.md | 79:### **Content Signals**
+docs/general/about-page-seo-strategy.md | 85:### **Technical SEO**
+docs/general/about-page-seo-strategy.md | 91:### **Local/Regional SEO**
+docs/general/about-page-seo-strategy.md | 96:## 📊 **Competitive Analysis**
+docs/general/about-page-seo-strategy.md | 98:### **Advantage Over Competitors**
+docs/general/about-page-seo-strategy.md | 104:### **Differentiation Factors**
+docs/general/about-page-seo-strategy.md | 110:## 🚀 **Expected SEO Results**
+docs/general/about-page-seo-strategy.md | 112:### **Short-term (1-3 months)**
+docs/general/about-page-seo-strategy.md | 118:### **Long-term (3-12 months)**
+docs/general/about-page-seo-strategy.md | 124:## 📈 **Monitoring & Optimization**
+docs/general/about-page-seo-strategy.md | 126:### **Key Metrics to Track**
+docs/general/about-page-seo-strategy.md | 132:### **Ongoing Optimization**
+docs/general/about-page-seo-strategy.md | 138:## 🎯 **Content Marketing Opportunities**
+docs/general/about-page-seo-strategy.md | 140:### **Blog Integration Potential**
+docs/general/about-page-seo-strategy.md | 145:### **Social Media Amplification**
+docs/general/advanced-cache-optimization.md | 1:# Advanced Cache Optimization - 1,191 KiB Savings Resolution
+docs/general/advanced-cache-optimization.md | 3:## Problem Identified
+docs/general/advanced-cache-optimization.md | 6:## Enhanced Solution Strategy
+docs/general/advanced-cache-optimization.md | 8:### 1. Comprehensive Asset Type Coverage
+docs/general/advanced-cache-optimization.md | 11:#### **Media Files** (Long-term cache):
+docs/general/advanced-cache-optimization.md | 13:# Audio/Video files
+docs/general/advanced-cache-optimization.md | 16:# Documents
+docs/general/advanced-cache-optimization.md | 19:# Additional Images
+docs/general/advanced-cache-optimization.md | 22:# Web Assembly
+docs/general/advanced-cache-optimization.md | 26:#### **Angular-Specific Patterns**:
+docs/general/advanced-cache-optimization.md | 28:# Build output patterns
+docs/general/advanced-cache-optimization.md | 36:#### **Special Handling**:
+docs/general/advanced-cache-optimization.md | 38:# Service Worker (no cache for updates)
+docs/general/advanced-cache-optimization.md | 42:# HTML pages (short cache with revalidation)
+docs/general/advanced-cache-optimization.md | 46:# Data directories
+docs/general/advanced-cache-optimization.md | 50:### 2. Cache Validation Service
+docs/general/advanced-cache-optimization.md | 62:#### **Key Features**:
+docs/general/advanced-cache-optimization.md | 68:### 3. Enhanced Cache Optimization Service
+docs/general/advanced-cache-optimization.md | 79:#### **Analysis Categories**:
+docs/general/advanced-cache-optimization.md | 85:### 4. Browser Console Validation Script
+docs/general/advanced-cache-optimization.md | 98:## Potential Savings Sources
+docs/general/advanced-cache-optimization.md | 100:### **Static Assets Without Proper Cache**:
+docs/general/advanced-cache-optimization.md | 106:### **Third-Party Resources**:
+docs/general/advanced-cache-optimization.md | 112:### **Generated Files**:
+docs/general/advanced-cache-optimization.md | 118:## Expected Impact
+docs/general/advanced-cache-optimization.md | 120:### **Before Enhanced Optimization**:
+docs/general/advanced-cache-optimization.md | 125:### **After Enhanced Optimization**:
+docs/general/advanced-cache-optimization.md | 131:## Validation Process
+docs/general/advanced-cache-optimization.md | 133:### **Step 1: Browser Console Analysis**
+docs/general/advanced-cache-optimization.md | 139:### **Step 2: Resource-Specific Investigation**
+docs/general/advanced-cache-optimization.md | 149:### **Step 3: Cache Header Verification**
+docs/general/advanced-cache-optimization.md | 157:## Implementation Files
+docs/general/advanced-cache-optimization.md | 159:### **Modified Files**:
+docs/general/advanced-cache-optimization.md | 166:### **Key Enhancements**:
+docs/general/advanced-cache-optimization.md | 172:## Testing Commands
+docs/general/advanced-cache-optimization.md | 174:### **Cache Header Verification**:
+docs/general/advanced-cache-optimization.md | 176:# Test cache headers for different asset types
+docs/general/advanced-cache-optimization.md | 182:### **Browser Console Analysis**:
+docs/general/advanced-cache-optimization.md | 192:## Next Steps for 1,191 KiB Resolution
+docs/general/advanced-cache-optimization.md | 202:## Cache Policy Summary
+docs/general/brownfield-system-architecture.md | 1:# Brownfield System Architecture
+docs/general/brownfield-system-architecture.md | 2:# Quran Apps Directory - Database Migration & Platform Enhancement
+docs/general/brownfield-system-architecture.md | 13:## 🎯 Executive Summary
+docs/general/brownfield-system-architecture.md | 17:### Architecture Goals
+docs/general/brownfield-system-architecture.md | 24:### Key Architectural Decisions
+docs/general/brownfield-system-architecture.md | 35:## 📊 Current State Analysis
+docs/general/brownfield-system-architecture.md | 37:### Existing Architecture (Before Migration)
+docs/general/brownfield-system-architecture.md | 75:### Current Architecture Strengths ✅
+docs/general/brownfield-system-architecture.md | 83:### Current Architecture Limitations ⚠️
+docs/general/brownfield-system-architecture.md | 93:## 🏗️ Target Architecture (After Migration)
+docs/general/brownfield-system-architecture.md | 95:### High-Level Architecture
+docs/general/brownfield-system-architecture.md | 201:## 💾 Database Architecture
+docs/general/brownfield-system-architecture.md | 203:### Database Technology Selection: PostgreSQL 15+
+docs/general/brownfield-system-architecture.md | 222:### Database Schema Design
+docs/general/brownfield-system-architecture.md | 224:#### Core Tables
+docs/general/brownfield-system-architecture.md | 335:#### User Engagement Tables (Phase 2)
+docs/general/brownfield-system-architecture.md | 458:#### Advanced Features Tables (Phase 3)
+docs/general/brownfield-system-architecture.md | 488:#### Analytics Tables (Phase 3)
+docs/general/brownfield-system-architecture.md | 508:### Database Performance Strategy
+docs/general/brownfield-system-architecture.md | 510:#### Indexing Strategy
+docs/general/brownfield-system-architecture.md | 517:#### Query Optimization
+docs/general/brownfield-system-architecture.md | 523:#### Scaling Strategy
+docs/general/brownfield-system-architecture.md | 531:## 🔌 API Architecture
+docs/general/brownfield-system-architecture.md | 533:### API Design Principles
+docs/general/brownfield-system-architecture.md | 542:### API Endpoints (Phase 1 - Foundation)
+docs/general/brownfield-system-architecture.md | 544:#### Apps Endpoints
+docs/general/brownfield-system-architecture.md | 608:#### Categories Endpoints
+docs/general/brownfield-system-architecture.md | 616:#### Developers Endpoints
+docs/general/brownfield-system-architecture.md | 625:#### Search Endpoint
+docs/general/brownfield-system-architecture.md | 631:### API Endpoints (Phase 2 - User Engagement)
+docs/general/brownfield-system-architecture.md | 633:#### Authentication Endpoints
+docs/general/brownfield-system-architecture.md | 646:#### User Endpoints
+docs/general/brownfield-system-architecture.md | 655:#### Reviews Endpoints
+docs/general/brownfield-system-architecture.md | 665:#### Favorites Endpoints
+docs/general/brownfield-system-architecture.md | 673:#### Collections Endpoints
+docs/general/brownfield-system-architecture.md | 685:### API Authentication & Authorization
+docs/general/brownfield-system-architecture.md | 687:#### JWT Token Strategy
+docs/general/brownfield-system-architecture.md | 713:#### Authorization Levels
+docs/general/brownfield-system-architecture.md | 720:#### Rate Limiting
+docs/general/brownfield-system-architecture.md | 727:### API Error Handling
+docs/general/brownfield-system-architecture.md | 729:#### Standard Error Response
+docs/general/brownfield-system-architecture.md | 748:#### Error Codes
+docs/general/brownfield-system-architecture.md | 759:### API Documentation
+docs/general/brownfield-system-architecture.md | 774:## 🎨 Frontend Architecture
+docs/general/brownfield-system-architecture.md | 776:### Angular 19 Frontend (Enhanced)
+docs/general/brownfield-system-architecture.md | 778:#### Component Structure (Enhanced)
+docs/general/brownfield-system-architecture.md | 829:#### Service Refactoring Example
+docs/general/brownfield-system-architecture.md | 870:#### State Management Strategy
+docs/general/brownfield-system-architecture.md | 881:#### Caching Strategy
+docs/general/brownfield-system-architecture.md | 910:#### Loading States
+docs/general/brownfield-system-architecture.md | 932:#### Error Handling
+docs/general/brownfield-system-architecture.md | 958:## 🚀 Deployment Architecture
+docs/general/brownfield-system-architecture.md | 960:### Environment Strategy
+docs/general/brownfield-system-architecture.md | 962:#### Development
+docs/general/brownfield-system-architecture.md | 970:#### Staging
+docs/general/brownfield-system-architecture.md | 978:#### Production
+docs/general/brownfield-system-architecture.md | 986:### Infrastructure Components
+docs/general/brownfield-system-architecture.md | 988:#### Frontend Hosting (Netlify - Existing)
+docs/general/brownfield-system-architecture.md | 996:#### Backend Hosting (Options)
+docs/general/brownfield-system-architecture.md | 1017:#### Database Hosting (Managed PostgreSQL)
+docs/general/brownfield-system-architecture.md | 1036:#### CDN & Storage (Cloudflare R2 - Existing)
+docs/general/brownfield-system-architecture.md | 1042:#### Monitoring & Logging
+docs/general/brownfield-system-architecture.md | 1058:### CI/CD Pipeline
+docs/general/brownfield-system-architecture.md | 1060:#### Git Workflow
+docs/general/brownfield-system-architecture.md | 1068:#### Deployment Automation
+docs/general/brownfield-system-architecture.md | 1085:#### Database Migrations
+docs/general/brownfield-system-architecture.md | 1089:# Development
+docs/general/brownfield-system-architecture.md | 1093:# Production
+docs/general/brownfield-system-architecture.md | 1103:### Security Architecture
+docs/general/brownfield-system-architecture.md | 1105:#### Authentication Security
+docs/general/brownfield-system-architecture.md | 1113:#### API Security
+docs/general/brownfield-system-architecture.md | 1122:#### Database Security
+docs/general/brownfield-system-architecture.md | 1129:#### Infrastructure Security
+docs/general/brownfield-system-architecture.md | 1135:### Performance Architecture
+docs/general/brownfield-system-architecture.md | 1137:#### Frontend Performance
+docs/general/brownfield-system-architecture.md | 1154:#### Backend Performance
+docs/general/brownfield-system-architecture.md | 1171:#### Caching Strategy
+docs/general/brownfield-system-architecture.md | 1191:### Scalability Architecture
+docs/general/brownfield-system-architecture.md | 1193:#### Horizontal Scaling
+docs/general/brownfield-system-architecture.md | 1211:#### Vertical Scaling
+docs/general/brownfield-system-architecture.md | 1224:#### Scaling Triggers
+docs/general/brownfield-system-architecture.md | 1235:## 📦 Technology Stack Summary
+docs/general/brownfield-system-architecture.md | 1237:### Frontend Stack
+docs/general/brownfield-system-architecture.md | 1249:### Backend Stack
+docs/general/brownfield-system-architecture.md | 1260:### Database Stack
+docs/general/brownfield-system-architecture.md | 1267:### DevOps Stack
+docs/general/brownfield-system-architecture.md | 1275:### Development Tools
+docs/general/brownfield-system-architecture.md | 1284:## 🔄 Migration Strategy
+docs/general/brownfield-system-architecture.md | 1286:### Phase 1: Week 1 (Epic 1-2)
+docs/general/brownfield-system-architecture.md | 1309:### Phase 2: Week 2 (Epic 3-4)
+docs/general/brownfield-system-architecture.md | 1325:### Phase 3: Week 3 (Epic 5)
+docs/general/brownfield-system-architecture.md | 1348:### Phase 4: Week 4 (Epic 6-7)
+docs/general/brownfield-system-architecture.md | 1373:## ✅ Success Criteria
+docs/general/brownfield-system-architecture.md | 1375:### Technical Metrics
+docs/general/brownfield-system-architecture.md | 1384:### Functional Requirements
+docs/general/brownfield-system-architecture.md | 1391:### User Experience
+docs/general/brownfield-system-architecture.md | 1398:### Operational
+docs/general/brownfield-system-architecture.md | 1407:## 📋 Architecture Decision Records (ADRs)
+docs/general/brownfield-system-architecture.md | 1409:### ADR-001: PostgreSQL over MongoDB
+docs/general/brownfield-system-architecture.md | 1422:### ADR-002: Django over Flask
+docs/general/brownfield-system-architecture.md | 1435:### ADR-003: REST over GraphQL
+docs/general/brownfield-system-architecture.md | 1448:### ADR-004: JWT with Refresh Tokens
+docs/general/brownfield-system-architecture.md | 1460:### ADR-005: Django ORM over SQLAlchemy
+docs/general/brownfield-system-architecture.md | 1475:## 🎯 Next Steps
+docs/general/brownfield-system-architecture.md | 1477:### Immediate (Week 1)
+docs/general/brownfield-system-architecture.md | 1484:### Week 2
+docs/general/brownfield-system-architecture.md | 1489:### Week 3
+docs/general/brownfield-system-architecture.md | 1493:### Week 4
+docs/general/brownfield-system-architecture.md | 1500:## 📚 References & Resources
+docs/general/brownfield-system-architecture.md | 1502:### Documentation
+docs/general/brownfield-system-architecture.md | 1509:### Tools
+docs/general/brownfield-system-architecture.md | 1515:### Best Practices
+docs/general/cache-optimization.md | 1:# Cache Policy Optimization
+docs/general/cache-optimization.md | 3:## Problem Identified
+docs/general/cache-optimization.md | 6:## Root Cause Analysis
+docs/general/cache-optimization.md | 14:## Solution Implemented
+docs/general/cache-optimization.md | 16:### 1. Comprehensive Cache Headers
+docs/general/cache-optimization.md | 19:#### **Immutable Assets (1 Year Cache)**
+docs/general/cache-optimization.md | 21:# Images
+docs/general/cache-optimization.md | 42:# Fonts
+docs/general/cache-optimization.md | 55:# SVG and Icons
+docs/general/cache-optimization.md | 66:# Source Maps
+docs/general/cache-optimization.md | 73:#### **Semi-Static Assets (Shorter Cache)**
+docs/general/cache-optimization.md | 75:# Manifest files (updated less frequently)
+docs/general/cache-optimization.md | 81:# SEO files (may change)
+docs/general/cache-optimization.md | 92:# API/Data files
+docs/general/cache-optimization.md | 99:### 2. Cache Optimization Service
+docs/general/cache-optimization.md | 128:### 3. Asset Versioning Strategy
+docs/general/cache-optimization.md | 141:## Performance Impact
+docs/general/cache-optimization.md | 143:### Before Optimization:
+docs/general/cache-optimization.md | 148:### After Optimization:
+docs/general/cache-optimization.md | 154:## Expected Improvements
+docs/general/cache-optimization.md | 162:## Implementation Details
+docs/general/cache-optimization.md | 164:### File Changes:
+docs/general/cache-optimization.md | 170:### Browser Compatibility:
+docs/general/cache-optimization.md | 175:### Cache Duration Strategy:
+docs/general/cache-optimization.md | 189:## Validation
+docs/general/cache-optimization.md | 191:### Development Testing:
+docs/general/cache-optimization.md | 209:### Production Monitoring:
+docs/general/cache-optimization.md | 216:## Best Practices Applied
+docs/general/cache-optimization.md | 227:## Future Optimizations
+docs/general/cdn-image-optimization-fix.md | 1:# CDN Image Optimization Fix
+docs/general/cdn-image-optimization-fix.md | 3:## Problem Identified
+docs/general/cdn-image-optimization-fix.md | 11:## Root Cause Analysis
+docs/general/cdn-image-optimization-fix.md | 13:### Original Implementation Issue:
+docs/general/cdn-image-optimization-fix.md | 25:### The Problem:
+docs/general/cdn-image-optimization-fix.md | 31:## Solution Implemented
+docs/general/cdn-image-optimization-fix.md | 33:### 1. Updated Image Optimization Service
+docs/general/cdn-image-optimization-fix.md | 47:### 2. Smart Conditional Loading
+docs/general/cdn-image-optimization-fix.md | 59:### 3. Updated Template
+docs/general/cdn-image-optimization-fix.md | 79:## Current Behavior
+docs/general/cdn-image-optimization-fix.md | 81:### Local Assets (Working ✅):
+docs/general/cdn-image-optimization-fix.md | 87:### CDN Assets (Fixed ✅):
+docs/general/cdn-image-optimization-fix.md | 93:## Performance Impact
+docs/general/cdn-image-optimization-fix.md | 95:### Before Fix:
+docs/general/cdn-image-optimization-fix.md | 101:### After Fix:
+docs/general/cdn-image-optimization-fix.md | 107:## Future CDN Optimization Options
+docs/general/cdn-image-optimization-fix.md | 109:### Option 1: Cloudflare Image Resizing
+docs/general/cdn-image-optimization-fix.md | 111:# Requires Cloudflare Pro plan + setup
+docs/general/cdn-image-optimization-fix.md | 112:# Enable Image Resizing for your domain
+docs/general/cdn-image-optimization-fix.md | 113:# Then update service to use ?format=avif&quality=75
+docs/general/cdn-image-optimization-fix.md | 116:### Option 2: Pre-converted CDN Assets
+docs/general/cdn-image-optimization-fix.md | 118:# Convert and upload multiple formats
+docs/general/cdn-image-optimization-fix.md | 123:# Update service to check if files exist
+docs/general/cdn-image-optimization-fix.md | 126:### Option 3: Third-party Image CDN
+docs/general/cdn-image-optimization-fix.md | 128:# Services like Cloudinary, ImageKit, or Optimole
+docs/general/cdn-image-optimization-fix.md | 129:# Automatic format conversion and optimization
+docs/general/cdn-image-optimization-fix.md | 130:# URL-based transformation parameters
+docs/general/cdn-image-optimization-fix.md | 133:## Testing the Fix
+docs/general/cdn-image-optimization-fix.md | 135:### Before (Failing):
+docs/general/cdn-image-optimization-fix.md | 138:# Result: 404 Not Found
+docs/general/cdn-image-optimization-fix.md | 141:### After (Working):
+docs/general/cdn-image-optimization-fix.md | 144:# Result: 200 OK (original format)
+docs/general/cdn-image-optimization-fix.md | 147:### Browser Behavior:
+docs/general/cdn-image-optimization-fix.md | 160:## Benefits of This Approach
+docs/general/cdn-image-optimization-fix.md | 168:## Implementation Files
+docs/general/cdn-image-optimization-fix.md | 170:### Modified Files:
+docs/general/cdn-image-optimization-fix.md | 175:### Key Changes:
+docs/general/comprehensive-performance-optimization.md | 1:# Comprehensive Performance Optimization Plan
+docs/general/comprehensive-performance-optimization.md | 3:## Target: Get PageSpeed Score Above 80
+docs/general/comprehensive-performance-optimization.md | 5:### 📊 Initial Performance Baseline
+docs/general/comprehensive-performance-optimization.md | 13:## 🎯 Comprehensive Optimization Strategy
+docs/general/comprehensive-performance-optimization.md | 15:### 1. **LCP (Largest Contentful Paint) Optimization**
+docs/general/comprehensive-performance-optimization.md | 17:#### **Problem**: LCP at 7.7s (should be <2.5s)
+docs/general/comprehensive-performance-optimization.md | 20:#### **Solutions Implemented**:
+docs/general/comprehensive-performance-optimization.md | 55:### 2. **CLS (Cumulative Layout Shift) Reduction**
+docs/general/comprehensive-performance-optimization.md | 57:#### **Problem**: CLS at 0.418 (should be <0.1)
+docs/general/comprehensive-performance-optimization.md | 60:#### **Solutions Implemented**:
+docs/general/comprehensive-performance-optimization.md | 107:### 3. **Font Loading Optimization**
+docs/general/comprehensive-performance-optimization.md | 109:#### **Solutions Implemented**:
+docs/general/comprehensive-performance-optimization.md | 126:### 4. **Bundle Size and JavaScript Optimization**
+docs/general/comprehensive-performance-optimization.md | 128:#### **Solutions Implemented**:
+docs/general/comprehensive-performance-optimization.md | 165:### 5. **Advanced Image Optimization**
+docs/general/comprehensive-performance-optimization.md | 167:#### **Solutions Implemented**:
+docs/general/comprehensive-performance-optimization.md | 193:### 6. **Critical Resource Preloading**
+docs/general/comprehensive-performance-optimization.md | 195:#### **Solutions Implemented**:
+docs/general/comprehensive-performance-optimization.md | 229:## 📈 Expected Performance Improvements
+docs/general/comprehensive-performance-optimization.md | 231:### **LCP Optimization** (7.7s → <2.5s)
+docs/general/comprehensive-performance-optimization.md | 237:### **CLS Reduction** (0.418 → <0.1)  
+docs/general/comprehensive-performance-optimization.md | 243:### **Bundle Size Optimization**
+docs/general/comprehensive-performance-optimization.md | 249:### **Overall Performance Score**
+docs/general/comprehensive-performance-optimization.md | 254:## 🔧 Implementation Files
+docs/general/comprehensive-performance-optimization.md | 256:### **New/Enhanced Services**:
+docs/general/comprehensive-performance-optimization.md | 261:### **Enhanced Components**:
+docs/general/comprehensive-performance-optimization.md | 265:### **Configuration Updates**:
+docs/general/comprehensive-performance-optimization.md | 270:## 🚀 Deployment and Validation
+docs/general/comprehensive-performance-optimization.md | 272:### **Build Command**:
+docs/general/comprehensive-performance-optimization.md | 277:### **Performance Testing**:
+docs/general/comprehensive-performance-optimization.md | 279:# Test production build
+docs/general/comprehensive-performance-optimization.md | 282:# Analyze bundle size
+docs/general/comprehensive-performance-optimization.md | 286:### **Browser Console Validation**:
+docs/general/comprehensive-performance-optimization.md | 303:## 📊 Success Metrics
+docs/general/comprehensive-performance-optimization.md | 305:### **Target Achievements**:
+docs/general/comprehensive-performance-optimization.md | 312:### **Monitoring**:
+docs/general/comprehensive-performance-optimization.md | 320:## 🎯 Expected Results
+docs/general/deployment.md | 1:# 🚀 Deployment Guide - Quran Apps Directory
+docs/general/deployment.md | 5:## 🌍 Environment Overview
+docs/general/deployment.md | 13:## 📂 Configuration Files
+docs/general/deployment.md | 15:### Angular Build Configurations
+docs/general/deployment.md | 20:### Netlify Configurations
+docs/general/deployment.md | 25:### Environment Files
+docs/general/deployment.md | 30:## 🛠️ Available Scripts
+docs/general/deployment.md | 33:# Development
+docs/general/deployment.md | 38:# Staging
+docs/general/deployment.md | 43:# Production
+docs/general/deployment.md | 49:## 🚀 Automated Git Deployment
+docs/general/deployment.md | 51:### Deployment Strategy
+docs/general/deployment.md | 60:### Deployment Workflow
+docs/general/deployment.md | 62:# 1. Feature development
+docs/general/deployment.md | 65:# ... make changes ...
+docs/general/deployment.md | 68:# 2. Deploy to development
+docs/general/deployment.md | 73:# 3. Deploy to staging (after testing in dev)
+docs/general/deployment.md | 78:# 4. Deploy to production (after testing in staging)
+docs/general/deployment.md | 84:### Key Benefits
+docs/general/deployment.md | 90:## 🔧 Site IDs and Configuration
+docs/general/deployment.md | 93:# Site IDs (Replace with your actual site IDs)
+docs/general/deployment.md | 98:# Netlify URLs
+docs/general/deployment.md | 104:## 🌐 DNS Configuration
+docs/general/deployment.md | 113:## 🔐 Authentication
+docs/general/deployment.md | 120:## 📋 Pre-Deployment Checklist
+docs/general/deployment.md | 122:### ✅ Before Staging Deployment
+docs/general/deployment.md | 131:### ✅ Before Production Deployment
+docs/general/deployment.md | 139:## 🔍 Environment-Specific Features
+docs/general/deployment.md | 141:### Staging Environment
+docs/general/deployment.md | 149:### Development Environment
+docs/general/deployment.md | 157:### Production Environment
+docs/general/deployment.md | 165:## 🚨 Troubleshooting
+docs/general/deployment.md | 167:### Common Issues
+docs/general/deployment.md | 192:## 📞 Support
+docs/general/deployment.md | 198:## 🎉 Quick Start
+docs/general/deployment.md | 203:# 1. Build staging version
+docs/general/deployment.md | 206:# 2. Deploy using script
+docs/general/deployment.md | 209:# 3. Verify deployment
+docs/general/django-architecture-supplement.md | 1:# Django Backend API Architecture Supplement
+docs/general/django-architecture-supplement.md | 2:# Quran Apps Directory - Backend Implementation Guide
+docs/general/django-architecture-supplement.md | 12:## 🎯 Purpose
+docs/general/django-architecture-supplement.md | 18:## 📦 Technology Stack (Django)
+docs/general/django-architecture-supplement.md | 20:### Core Stack
+docs/general/django-architecture-supplement.md | 36:### Key Python Packages (requirements.txt)
+docs/general/django-architecture-supplement.md | 38:# Core Django
+docs/general/django-architecture-supplement.md | 43:# Authentication & Security
+docs/general/django-architecture-supplement.md | 47:# API Documentation
+docs/general/django-architecture-supplement.md | 50:# Caching & Performance
+docs/general/django-architecture-supplement.md | 54:# Development & Testing
+docs/general/django-architecture-supplement.md | 59:# Optional: Background Tasks
+docs/general/django-architecture-supplement.md | 63:# Environment & Deployment
+docs/general/django-architecture-supplement.md | 71:## 🏗️ Project Structure
+docs/general/django-architecture-supplement.md | 170:## 💾 Django Models Implementation
+docs/general/django-architecture-supplement.md | 172:### Django Settings Configuration
+docs/general/django-architecture-supplement.md | 175:# config/settings/base.py
+docs/general/django-architecture-supplement.md | 186:# Database
+docs/general/django-architecture-supplement.md | 198:# Installed Apps
+docs/general/django-architecture-supplement.md | 222:# REST Framework
+docs/general/django-architecture-supplement.md | 235:### Core Models (Base Classes)
+docs/general/django-architecture-supplement.md | 238:# core/models.py
+docs/general/django-architecture-supplement.md | 292:### App Model Example
+docs/general/django-architecture-supplement.md | 295:# apps/models.py
+docs/general/django-architecture-supplement.md | 372:### Django Admin Configuration
+docs/general/django-architecture-supplement.md | 375:# apps/admin.py
+docs/general/django-architecture-supplement.md | 427:## 🔌 Django REST Framework API Implementation
+docs/general/django-architecture-supplement.md | 429:### DRF Serializers
+docs/general/django-architecture-supplement.md | 432:# apps/serializers.py
+docs/general/django-architecture-supplement.md | 518:### DRF Views and ViewSets
+docs/general/django-architecture-supplement.md | 521:# apps/views.py
+docs/general/django-architecture-supplement.md | 640:### Custom Filters
+docs/general/django-architecture-supplement.md | 643:# apps/filters.py
+docs/general/django-architecture-supplement.md | 675:## 🔐 Django JWT Authentication Implementation
+docs/general/django-architecture-supplement.md | 677:### JWT Settings Configuration
+docs/general/django-architecture-supplement.md | 680:# config/settings/base.py
+docs/general/django-architecture-supplement.md | 683:# JWT Settings
+docs/general/django-architecture-supplement.md | 695:# Simple JWT Configuration
+docs/general/django-architecture-supplement.md | 721:### Custom User Manager
+docs/general/django-architecture-supplement.md | 724:# core/managers.py
+docs/general/django-architecture-supplement.md | 758:### Authentication Views
+docs/general/django-architecture-supplement.md | 761:# users/views.py
+docs/general/django-architecture-supplement.md | 845:### Authentication Serializers
+docs/general/django-architecture-supplement.md | 848:# users/serializers.py
+docs/general/django-architecture-supplement.md | 920:## 🚀 Django Deployment Configuration
+docs/general/django-architecture-supplement.md | 922:### Railway Deployment
+docs/general/django-architecture-supplement.md | 945:# Set environment variables
+docs/general/django-architecture-supplement.md | 950:# Set work directory
+docs/general/django-architecture-supplement.md | 953:# Install system dependencies
+docs/general/django-architecture-supplement.md | 959:# Install Python dependencies
+docs/general/django-architecture-supplement.md | 964:# Copy project
+docs/general/django-architecture-supplement.md | 967:# Collect static files
+docs/general/django-architecture-supplement.md | 970:# Create non-root user
+docs/general/django-architecture-supplement.md | 975:# Expose port
+docs/general/django-architecture-supplement.md | 978:# Run the application
+docs/general/django-architecture-supplement.md | 982:### Digital Ocean App Platform
+docs/general/django-architecture-supplement.md | 1020:### Environment Variables Template (.env.example)
+docs/general/django-architecture-supplement.md | 1023:# Django Configuration
+docs/general/django-architecture-supplement.md | 1028:# Database
+docs/general/django-architecture-supplement.md | 1035:# Redis (for caching and sessions)
+docs/general/django-architecture-supplement.md | 1038:# Email (optional)
+docs/general/django-architecture-supplement.md | 1045:# CORS
+docs/general/django-architecture-supplement.md | 1048:# File Storage (optional - for cloud storage)
+docs/general/django-architecture-supplement.md | 1057:## 📋 Django Performance Optimizations
+docs/general/django-architecture-supplement.md | 1059:### Caching Strategy
+docs/general/django-architecture-supplement.md | 1062:# config/settings/base.py - Redis Cache Configuration
+docs/general/django-architecture-supplement.md | 1077:# API-level caching
+docs/general/django-architecture-supplement.md | 1083:### Database Query Optimization
+docs/general/django-architecture-supplement.md | 1086:# Use select_related for ForeignKey relationships
+docs/general/django-architecture-supplement.md | 1089:# Use prefetch_related for ManyToMany and reverse ForeignKey
+docs/general/django-architecture-supplement.md | 1092:# Use only() to select specific fields
+docs/general/django-architecture-supplement.md | 1095:# Use defer() to exclude heavy fields
+docs/general/django-architecture-supplement.md | 1098:# Database indexes in models
+docs/general/django-architecture-supplement.md | 1111:### QuerySet Optimization Examples
+docs/general/django-architecture-supplement.md | 1114:# Optimized app list query
+docs/general/django-architecture-supplement.md | 1124:# Optimized app detail query
+docs/general/django-architecture-supplement.md | 1131:### View-Level Caching
+docs/general/django-architecture-supplement.md | 1134:# apps/views.py
+docs/general/environment-setup.md | 1:# 🌐 Multi-Environment Setup Complete
+docs/general/environment-setup.md | 3:## ✅ Environment Configuration
+docs/general/environment-setup.md | 11:## 🔧 DNS Records Added
+docs/general/environment-setup.md | 20:## 🚀 Branch-Based Deployment Strategy
+docs/general/environment-setup.md | 28:## 📋 Available Scripts
+docs/general/environment-setup.md | 30:### Development
+docs/general/environment-setup.md | 38:### Build Commands
+docs/general/environment-setup.md | 45:## 🔄 Workflow
+docs/general/environment-setup.md | 47:### Feature Development
+docs/general/environment-setup.md | 49:# 1. Create feature from develop
+docs/general/environment-setup.md | 53:# 2. Develop and test locally
+docs/general/environment-setup.md | 56:# 3. Deploy to development
+docs/general/environment-setup.md | 61:# 4. Deploy to staging
+docs/general/environment-setup.md | 66:# 5. Deploy to production
+docs/general/environment-setup.md | 72:## 🌐 Domain Status
+docs/general/environment-setup.md | 80:## 🔗 Management Links
+docs/general/environment-setup.md | 89:## 🎯 Next Steps
+docs/general/environment-setup.md | 95:## 🛠️ Technical Details
+docs/general/environment-setup.md | 97:### Site IDs
+docs/general/environment-setup.md | 104:### DNS Zone ID
+docs/general/EXECUTIVE-OVERVIEW.md | 1:# Quran Apps Directory - Executive Overview
+docs/general/EXECUTIVE-OVERVIEW.md | 10:## 🎯 **Project Vision**
+docs/general/EXECUTIVE-OVERVIEW.md | 18:## 📊 **Current State (October 2025)**
+docs/general/EXECUTIVE-OVERVIEW.md | 20:### What We Have Today
+docs/general/EXECUTIVE-OVERVIEW.md | 28:### Current Capabilities
+docs/general/EXECUTIVE-OVERVIEW.md | 37:### Current Limitations
+docs/general/EXECUTIVE-OVERVIEW.md | 45:### Performance Metrics
+docs/general/EXECUTIVE-OVERVIEW.md | 53:## 🌍 **Market Analysis & Competitive Landscape**
+docs/general/EXECUTIVE-OVERVIEW.md | 55:### The Opportunity
+docs/general/EXECUTIVE-OVERVIEW.md | 62:### Competitive Analysis
+docs/general/EXECUTIVE-OVERVIEW.md | 64:#### 1. **General App Stores (Google Play, Apple App Store)**
+docs/general/EXECUTIVE-OVERVIEW.md | 82:#### 2. **Islamic App Aggregators/Blogs**
+docs/general/EXECUTIVE-OVERVIEW.md | 101:#### 3. **Muslim Pro / Athan / Major Islamic Apps**
+docs/general/EXECUTIVE-OVERVIEW.md | 117:#### 4. **Direct Competitors (None Currently)**
+docs/general/EXECUTIVE-OVERVIEW.md | 124:## 🚀 **Strategic Direction (2-3 Months Plan)**
+docs/general/EXECUTIVE-OVERVIEW.md | 126:### Phase 1: Foundation (Weeks 1-4)
+docs/general/EXECUTIVE-OVERVIEW.md | 142:### Phase 2: User Engagement (Weeks 5-8)
+docs/general/EXECUTIVE-OVERVIEW.md | 158:### Phase 3: Developer Ecosystem (Weeks 9-11)
+docs/general/EXECUTIVE-OVERVIEW.md | 174:### Phase 4: Innovation (Weeks 11-12)
+docs/general/EXECUTIVE-OVERVIEW.md | 191:## 📈 **Growth Projections**
+docs/general/EXECUTIVE-OVERVIEW.md | 193:### 3-Month Target (Platform Launch)
+docs/general/EXECUTIVE-OVERVIEW.md | 200:### 6-Month Target
+docs/general/EXECUTIVE-OVERVIEW.md | 207:### 12-Month Target
+docs/general/EXECUTIVE-OVERVIEW.md | 217:## 💡 **Unique Value Propositions**
+docs/general/EXECUTIVE-OVERVIEW.md | 219:### For Users
+docs/general/EXECUTIVE-OVERVIEW.md | 226:### For Developers
+docs/general/EXECUTIVE-OVERVIEW.md | 233:### For the Ummah
+docs/general/EXECUTIVE-OVERVIEW.md | 242:## 🎯 **Success Metrics**
+docs/general/EXECUTIVE-OVERVIEW.md | 244:### Technical Excellence
+docs/general/EXECUTIVE-OVERVIEW.md | 251:### User Engagement
+docs/general/EXECUTIVE-OVERVIEW.md | 258:### Content Growth
+docs/general/EXECUTIVE-OVERVIEW.md | 264:### Community Health
+docs/general/EXECUTIVE-OVERVIEW.md | 272:## ⚠️ **Key Risks & Mitigation**
+docs/general/EXECUTIVE-OVERVIEW.md | 274:### Risk 1: Developer Adoption
+docs/general/EXECUTIVE-OVERVIEW.md | 282:### Risk 2: Content Quality
+docs/general/EXECUTIVE-OVERVIEW.md | 290:### Risk 3: User Engagement
+docs/general/EXECUTIVE-OVERVIEW.md | 298:### Risk 4: Competition
+docs/general/EXECUTIVE-OVERVIEW.md | 306:### Risk 5: Technical Complexity
+docs/general/EXECUTIVE-OVERVIEW.md | 316:## 💰 **Business Model & Sustainability**
+docs/general/EXECUTIVE-OVERVIEW.md | 318:### Phase 1: Community-First (Months 1-6)
+docs/general/EXECUTIVE-OVERVIEW.md | 323:### Phase 2: Value-Added Services (Months 7-12)
+docs/general/EXECUTIVE-OVERVIEW.md | 335:### Phase 3: Ecosystem Revenue (Months 12+)
+docs/general/EXECUTIVE-OVERVIEW.md | 345:## 🛠️ **Technical Architecture (Simplified)**
+docs/general/EXECUTIVE-OVERVIEW.md | 347:### Current (Static)
+docs/general/EXECUTIVE-OVERVIEW.md | 354:### Future (Dynamic)
+docs/general/EXECUTIVE-OVERVIEW.md | 374:## 🤝 **Team & Resources Required**
+docs/general/EXECUTIVE-OVERVIEW.md | 376:### Aggressive Timeline (2-3 Months)
+docs/general/EXECUTIVE-OVERVIEW.md | 388:### Infrastructure
+docs/general/EXECUTIVE-OVERVIEW.md | 399:## 📋 **Discussion Points / Decision Items**
+docs/general/EXECUTIVE-OVERVIEW.md | 401:### 1. Timeline Approval
+docs/general/EXECUTIVE-OVERVIEW.md | 408:### 2. Scope Confirmation
+docs/general/EXECUTIVE-OVERVIEW.md | 414:### 3. Technology Stack
+docs/general/EXECUTIVE-OVERVIEW.md | 422:### 4. Business Model
+docs/general/EXECUTIVE-OVERVIEW.md | 429:### 5. Success Definition
+docs/general/EXECUTIVE-OVERVIEW.md | 440:## ✅ **Next Steps (If Approved)**
+docs/general/EXECUTIVE-OVERVIEW.md | 442:### Immediate (This Week)
+docs/general/EXECUTIVE-OVERVIEW.md | 449:### Week 1-4
+docs/general/EXECUTIVE-OVERVIEW.md | 454:### Month 2
+docs/general/EXECUTIVE-OVERVIEW.md | 459:### Month 3
+docs/general/EXECUTIVE-OVERVIEW.md | 464:### Launch (End of Month 3)
+docs/general/EXECUTIVE-OVERVIEW.md | 472:## 🎯 **Why This Matters**
+docs/general/EXECUTIVE-OVERVIEW.md | 485:## 📞 **Questions for Discussion**
+docs/general/http2-optimization.md | 1:# HTTP/2 Optimization Implementation
+docs/general/http2-optimization.md | 3:## Problem Addressed
+docs/general/http2-optimization.md | 6:## HTTP/2 Benefits Over HTTP/1.1
+docs/general/http2-optimization.md | 8:### **1. Multiplexing**
+docs/general/http2-optimization.md | 13:### **2. Header Compression (HPACK)**
+docs/general/http2-optimization.md | 18:### **3. Server Push**
+docs/general/http2-optimization.md | 23:### **4. Binary Protocol**
+docs/general/http2-optimization.md | 28:## Implementation Strategy
+docs/general/http2-optimization.md | 30:### 1. Netlify HTTP/2 Configuration
+docs/general/http2-optimization.md | 32:#### **Enhanced Headers** (`netlify.toml`):
+docs/general/http2-optimization.md | 43:#### **Key Optimizations**:
+docs/general/http2-optimization.md | 48:### 2. Resource Hints Optimization
+docs/general/http2-optimization.md | 50:#### **HTTP/2-Optimized Preconnects** (`index.html`):
+docs/general/http2-optimization.md | 60:#### **Benefits**:
+docs/general/http2-optimization.md | 65:### 3. HTTP/2 Optimization Service
+docs/general/http2-optimization.md | 67:#### **Real-time Analysis** (`Http2OptimizationService`):
+docs/general/http2-optimization.md | 77:#### **Key Features**:
+docs/general/http2-optimization.md | 83:### 4. Performance Monitoring
+docs/general/http2-optimization.md | 85:#### **Real-time HTTP/2 Monitoring**:
+docs/general/http2-optimization.md | 94:#### **Browser Console Analysis**:
+docs/general/http2-optimization.md | 102:## Expected Performance Improvements
+docs/general/http2-optimization.md | 104:### **Before HTTP/2 Optimization**:
+docs/general/http2-optimization.md | 110:### **After HTTP/2 Optimization**:
+docs/general/http2-optimization.md | 117:## HTTP/2 Best Practices Implemented
+docs/general/http2-optimization.md | 119:### 1. **Domain Consolidation**
+docs/general/http2-optimization.md | 129:### 2. **Resource Bundling Strategy**
+docs/general/http2-optimization.md | 138:### 3. **Server Push Opportunities**
+docs/general/http2-optimization.md | 148:## Validation and Testing
+docs/general/http2-optimization.md | 150:### **1. Protocol Verification**
+docs/general/http2-optimization.md | 152:# Check HTTP/2 support on production
+docs/general/http2-optimization.md | 156:### **2. Browser Developer Tools**
+docs/general/http2-optimization.md | 161:### **3. Console Analysis Script**
+docs/general/http2-optimization.md | 174:### **4. Performance Metrics**
+docs/general/http2-optimization.md | 179:## Implementation Files
+docs/general/http2-optimization.md | 181:### **Modified Files**:
+docs/general/http2-optimization.md | 188:### **Key Enhancements**:
+docs/general/http2-optimization.md | 195:## Expected PageSpeed Impact
+docs/general/http2-optimization.md | 197:### **Before**:
+docs/general/http2-optimization.md | 202:### **After**:
+docs/general/http2-optimization.md | 208:## Advanced HTTP/2 Features
+docs/general/http2-optimization.md | 210:### **1. Server Push Candidates**
+docs/general/http2-optimization.md | 216:### **2. Connection Coalescing**
+docs/general/http2-optimization.md | 222:### **3. Flow Control**
+docs/general/http2-optimization.md | 230:## Browser Support
+docs/general/http2-optimization.md | 233:## Next Steps
+docs/general/javascript-optimization.md | 1:# JavaScript Loading Optimization
+docs/general/javascript-optimization.md | 3:## Overview
+docs/general/javascript-optimization.md | 6:## Problem Identified
+docs/general/javascript-optimization.md | 12:## Solutions Implemented
+docs/general/javascript-optimization.md | 14:### 1. Deferred Analytics Loading
+docs/general/javascript-optimization.md | 38:### 2. Script Loading Service
+docs/general/javascript-optimization.md | 46:### 3. Bundle Optimization
+docs/general/javascript-optimization.md | 53:### 4. Route-based Analytics
+docs/general/javascript-optimization.md | 59:## Performance Impact
+docs/general/javascript-optimization.md | 61:### Before Optimization:
+docs/general/javascript-optimization.md | 66:### After Optimization:
+docs/general/javascript-optimization.md | 72:## Implementation Details
+docs/general/javascript-optimization.md | 74:### DeferredAnalyticsService Usage:
+docs/general/javascript-optimization.md | 86:### ScriptLoaderService Usage:
+docs/general/javascript-optimization.md | 99:## Browser Compatibility
+docs/general/javascript-optimization.md | 104:## Expected Improvements
+docs/general/javascript-optimization.md | 110:## Future Optimizations
+docs/general/javascript-optimization.md | 116:## Files Modified
+docs/general/javascript-optimization.md | 129:## Verification
+docs/general/lcp-lazy-loading-optimization.md | 1:# LCP Lazy Loading Optimization
+docs/general/lcp-lazy-loading-optimization.md | 3:## Problem Identified
+docs/general/lcp-lazy-loading-optimization.md | 6:## Root Cause Analysis
+docs/general/lcp-lazy-loading-optimization.md | 21:## Solution Implemented
+docs/general/lcp-lazy-loading-optimization.md | 23:### 1. Smart Loading Strategy
+docs/general/lcp-lazy-loading-optimization.md | 49:### 2. Updated Template
+docs/general/lcp-lazy-loading-optimization.md | 60:### 3. LCP Monitoring Service
+docs/general/lcp-lazy-loading-optimization.md | 84:## Performance Impact
+docs/general/lcp-lazy-loading-optimization.md | 86:### Before Optimization:
+docs/general/lcp-lazy-loading-optimization.md | 91:### After Optimization:
+docs/general/lcp-lazy-loading-optimization.md | 96:## Expected Improvements
+docs/general/lcp-lazy-loading-optimization.md | 103:## Implementation Details
+docs/general/lcp-lazy-loading-optimization.md | 105:### File Changes:
+docs/general/lcp-lazy-loading-optimization.md | 111:### Browser Compatibility:
+docs/general/lcp-lazy-loading-optimization.md | 116:### Responsive Considerations:
+docs/general/lcp-lazy-loading-optimization.md | 122:## Validation
+docs/general/lcp-lazy-loading-optimization.md | 124:### Development Validation:
+docs/general/lcp-lazy-loading-optimization.md | 138:### Production Monitoring:
+docs/general/lcp-lazy-loading-optimization.md | 145:## Best Practices Applied
+docs/general/lcp-lazy-loading-optimization.md | 155:## Future Optimizations
+docs/general/next-gen-image-optimization.md | 1:# Next-Generation Image Format Optimization
+docs/general/next-gen-image-optimization.md | 3:## Overview
+docs/general/next-gen-image-optimization.md | 6:## Benefits Achieved
+docs/general/next-gen-image-optimization.md | 12:## Implementation Details
+docs/general/next-gen-image-optimization.md | 14:### 1. Image Conversion
+docs/general/next-gen-image-optimization.md | 20:### 2. OptimizedImageComponent
+docs/general/next-gen-image-optimization.md | 36:### 3. Browser Compatibility
+docs/general/next-gen-image-optimization.md | 46:### 4. CDN Integration
+docs/general/next-gen-image-optimization.md | 51:### 5. Service Worker Caching
+docs/general/next-gen-image-optimization.md | 54:### 6. Critical Image Preloading
+docs/general/next-gen-image-optimization.md | 62:## File Structure
+docs/general/next-gen-image-optimization.md | 80:## Performance Impact
+docs/general/next-gen-image-optimization.md | 87:## Future Enhancements
+docs/general/next-gen-image-optimization.md | 93:## Browser Support
+docs/general/performance-improvements-summary.md | 1:# Performance Improvements Summary
+docs/general/performance-improvements-summary.md | 3:## 🚀 Performance Optimizations Implemented
+docs/general/performance-improvements-summary.md | 7:### ✅ **Completed Optimizations**
+docs/general/performance-improvements-summary.md | 9:#### 1. **Image Optimization & Lazy Loading**
+docs/general/performance-improvements-summary.md | 20:#### 2. **Bundle Size Optimization**
+docs/general/performance-improvements-summary.md | 29:#### 3. **Compression & Caching**
+docs/general/performance-improvements-summary.md | 37:#### 4. **Resource Preloading & Hints**
+docs/general/performance-improvements-summary.md | 45:#### 5. **Core Web Vitals Optimizations**
+docs/general/performance-improvements-summary.md | 51:## 📊 **Current Bundle Analysis**
+docs/general/performance-improvements-summary.md | 53:### Before Optimizations
+docs/general/performance-improvements-summary.md | 59:### After Optimizations
+docs/general/performance-improvements-summary.md | 71:## 🎯 **Expected Performance Improvements**
+docs/general/performance-improvements-summary.md | 73:### **Core Web Vitals Impact**
+docs/general/performance-improvements-summary.md | 86:### **Loading Performance**
+docs/general/performance-improvements-summary.md | 91:## 🛠️ **Technical Implementation Details**
+docs/general/performance-improvements-summary.md | 93:### **Image Lazy Loading**
+docs/general/performance-improvements-summary.md | 107:### **Build Process Enhancement**
+docs/general/performance-improvements-summary.md | 109:# New optimized build pipeline
+docs/general/performance-improvements-summary.md | 116:### **Netlify Configuration**
+docs/general/performance-improvements-summary.md | 118:# Performance headers
+docs/general/performance-improvements-summary.md | 124:## 📈 **Monitoring & Next Steps**
+docs/general/performance-improvements-summary.md | 126:### **Performance Monitoring**
+docs/general/performance-improvements-summary.md | 131:### **Future Optimizations**
+docs/general/performance-improvements-summary.md | 138:## 🚀 **Deployment Impact**
+docs/general/performance-improvements-summary.md | 146:### **Expected Results**
+docs/general/performance-improvements-summary.md | 152:## 📋 **Files Modified**
+docs/general/performance-improvements-summary.md | 154:### **Performance Optimizations**
+docs/general/performance-improvements-summary.md | 162:### **New Files**
+docs/general/performance-optimization-plan.md | 1:# Performance Optimization Plan
+docs/general/performance-optimization-plan.md | 3:## Current Performance Issues
+docs/general/performance-optimization-plan.md | 7:### 🚨 Critical Issues
+docs/general/performance-optimization-plan.md | 13:## 📊 Performance Improvements Roadmap
+docs/general/performance-optimization-plan.md | 15:### Priority 1: Image Optimization
+docs/general/performance-optimization-plan.md | 21:### Priority 2: Bundle Optimization  
+docs/general/performance-optimization-plan.md | 27:### Priority 3: Core Web Vitals
+docs/general/performance-optimization-plan.md | 32:### Priority 4: Loading Performance
+docs/general/performance-optimization-plan.md | 38:## 🎯 Target Metrics
+docs/general/performance-optimization-plan.md | 49:## Implementation Plan
+docs/general/performance-optimization-plan.md | 51:### Phase 1: Quick Wins (1-2 days)
+docs/general/performance-optimization-plan.md | 56:### Phase 2: Medium Impact (3-5 days)  
+docs/general/performance-optimization-plan.md | 61:### Phase 3: Advanced (1-2 weeks)
+docs/general/performance-validation-checklist.md | 1:# Performance Validation Checklist
+docs/general/performance-validation-checklist.md | 3:## 🎯 Post-Deployment Validation Steps
+docs/general/performance-validation-checklist.md | 7:### 1. PageSpeed Insights Testing
+docs/general/performance-validation-checklist.md | 13:### 2. Network Performance Validation
+docs/general/performance-validation-checklist.md | 19:### 3. Real User Monitoring
+docs/general/performance-validation-checklist.md | 24:### 4. SEO Impact
+docs/general/performance-validation-checklist.md | 29:## 🎯 Expected Results
+docs/general/performance-validation-checklist.md | 31:### Performance Scores
+docs/general/performance-validation-checklist.md | 36:### Loading Times
+docs/general/performance-validation-checklist.md | 41:### Bundle Sizes
+docs/general/performance-validation-checklist.md | 46:## 🚨 Troubleshooting
+docs/general/performance-validation-checklist.md | 55:## 📊 Monitoring Tools
+docs/general/product-requirements-document.md | 1:# 📋 Product Requirements Document (PRD)
+docs/general/product-requirements-document.md | 2:## Quran Apps Directory - Comprehensive Quranic Application Platform
+docs/general/product-requirements-document.md | 11:## 🎯 Executive Summary
+docs/general/product-requirements-document.md | 15:### Key Success Metrics
+docs/general/product-requirements-document.md | 24:## 🌟 Product Vision & Mission
+docs/general/product-requirements-document.md | 26:### Mission Statement
+docs/general/product-requirements-document.md | 29:### Vision Statement
+docs/general/product-requirements-document.md | 32:### Core Values
+docs/general/product-requirements-document.md | 42:## 👥 Target Audience & User Personas
+docs/general/product-requirements-document.md | 44:### Primary Personas
+docs/general/product-requirements-document.md | 46:#### 1. **Ahmed - The Dedicated Learner** 🎓
+docs/general/product-requirements-document.md | 53:#### 2. **Fatima - The New Muslim** 🌱
+docs/general/product-requirements-document.md | 60:#### 3. **Dr. Hassan - The Islamic Educator** 👨‍🏫
+docs/general/product-requirements-document.md | 67:### Secondary Personas
+docs/general/product-requirements-document.md | 69:#### 4. **Aisha - The Busy Parent** 👩‍👧‍👦
+docs/general/product-requirements-document.md | 76:#### 5. **Omar - The App Developer** 💻
+docs/general/product-requirements-document.md | 85:## 🏗️ Current System Architecture
+docs/general/product-requirements-document.md | 87:### Technical Stack
+docs/general/product-requirements-document.md | 95:### Infrastructure & Environments
+docs/general/product-requirements-document.md | 101:### Data Architecture
+docs/general/product-requirements-document.md | 109:## 🚀 Current Features & Functionality
+docs/general/product-requirements-document.md | 111:### Core Features
+docs/general/product-requirements-document.md | 113:#### 1. **Application Discovery Engine**
+docs/general/product-requirements-document.md | 120:#### 2. **Comprehensive Application Profiles**
+docs/general/product-requirements-document.md | 128:#### 3. **Advanced Category System**
+docs/general/product-requirements-document.md | 143:#### 4. **Developer Ecosystem**
+docs/general/product-requirements-document.md | 149:#### 5. **Bilingual Excellence**
+docs/general/product-requirements-document.md | 156:### Technical Features
+docs/general/product-requirements-document.md | 158:#### 1. **Performance Optimization**
+docs/general/product-requirements-document.md | 165:#### 2. **SEO & Discoverability**
+docs/general/product-requirements-document.md | 172:#### 3. **User Experience**
+docs/general/product-requirements-document.md | 181:## 📊 Market Position & Competitive Analysis
+docs/general/product-requirements-document.md | 183:### Unique Value Proposition
+docs/general/product-requirements-document.md | 191:### Market Differentiation
+docs/general/product-requirements-document.md | 193:#### vs. App Store Browsing
+docs/general/product-requirements-document.md | 198:#### vs. Generic App Directories
+docs/general/product-requirements-document.md | 203:#### vs. Islamic Organization Recommendations
+docs/general/product-requirements-document.md | 208:### Market Opportunities
+docs/general/product-requirements-document.md | 216:## 🎯 Success Metrics & KPIs
+docs/general/product-requirements-document.md | 218:### Current Baseline Metrics
+docs/general/product-requirements-document.md | 225:### Target KPIs (Future Measurement)
+docs/general/product-requirements-document.md | 234:## 🛠️ Technical Specifications
+docs/general/product-requirements-document.md | 236:### Frontend Architecture
+docs/general/product-requirements-document.md | 246:### Data Schema
+docs/general/product-requirements-document.md | 269:### Infrastructure Configuration
+docs/general/product-requirements-document.md | 277:## 🔒 Security & Compliance
+docs/general/product-requirements-document.md | 279:### Data Protection
+docs/general/product-requirements-document.md | 285:### Content Integrity
+docs/general/product-requirements-document.md | 293:## 🚀 Future Roadmap Considerations
+docs/general/product-requirements-document.md | 295:### Phase 1: Enhanced User Experience
+docs/general/product-requirements-document.md | 301:### Phase 2: Community Features
+docs/general/product-requirements-document.md | 307:### Phase 3: Platform Expansion
+docs/general/product-requirements-document.md | 313:### Phase 4: Advanced Features
+docs/general/product-requirements-document.md | 321:## 📞 Support & Maintenance
+docs/general/product-requirements-document.md | 323:### Current Support Structure
+docs/general/product-requirements-document.md | 329:### Contact & Collaboration
+docs/general/product-requirements-document.md | 337:## 📝 Conclusion
+docs/general/product-strategy.md | 1:# Quran Apps Directory Product Strategy
+docs/general/product-strategy.md | 3:## Executive Summary
+docs/general/product-strategy.md | 14:## Product Vision
+docs/general/product-strategy.md | 17:## Target Users
+docs/general/product-strategy.md | 22:## Key Objectives
+docs/general/product-strategy.md | 29:## Feature Prioritization
+docs/general/product-strategy.md | 39:## Risks & Mitigations
+docs/general/product-strategy.md | 45:## Success Metrics
+docs/general/roadmap.md | 1:# Quran Apps Directory Roadmap
+docs/general/roadmap.md | 3:## Overview
+docs/general/roadmap.md | 15:## Phase 1: Database Architecture Foundation (Weeks 1-2, Priority 1)
+docs/general/roadmap.md | 27:## Phase 2: Backend Infrastructure Setup (Weeks 3-4, Priority 1)
+docs/general/roadmap.md | 39:## Phase 3: Data Migration Engine (Weeks 5-6, Priority 1-2)
+docs/general/roadmap.md | 51:## Phase 4: API Development & Integration (Weeks 7-8, Priority 2)
+docs/general/roadmap.md | 61:## Phase 5: Frontend Integration (Weeks 9-10, Priority 2)
+docs/general/roadmap.md | 71:## Phase 6: Enhanced App Discovery (Weeks 11-12, Priority 3)
+docs/general/roadmap.md | 82:## Phase 7: Social Sharing & Community (Post-MVP, Priority 4)
+docs/general/roadmap.md | 88:## Phase 8: Optimizations & Ecosystem (Future, Priority 4-5)
+docs/general/roadmap.md | 95:## Milestones
+docs/general/roadmap.md | 100:## Dependencies & Risks
+docs/general/schema-org-implementation.md | 1:# Schema.org Structured Data Implementation
+docs/general/schema-org-implementation.md | 3:## 🎯 Overview
+docs/general/schema-org-implementation.md | 7:## 📊 Implemented Schema Types
+docs/general/schema-org-implementation.md | 9:### 1. **WebSite Schema** (Enhanced)
+docs/general/schema-org-implementation.md | 18:### 2. **Organization Schema** (Enhanced)
+docs/general/schema-org-implementation.md | 27:### 3. **SoftwareApplication Schema** (Enhanced)
+docs/general/schema-org-implementation.md | 37:### 4. **ItemList Schema** (Enhanced)
+docs/general/schema-org-implementation.md | 45:### 5. **BreadcrumbList Schema** (New)
+docs/general/schema-org-implementation.md | 52:### 6. **FAQPage Schema** (New)
+docs/general/schema-org-implementation.md | 59:### 7. **CollectionPage Schema** (New)
+docs/general/schema-org-implementation.md | 66:### 8. **Developer/Organization Schema** (New)
+docs/general/schema-org-implementation.md | 73:## 🔧 Technical Implementation
+docs/general/schema-org-implementation.md | 75:### **Dynamic Schema Generation**
+docs/general/schema-org-implementation.md | 88:### **Bilingual Support**
+docs/general/schema-org-implementation.md | 96:### **Page-Specific Implementation**
+docs/general/schema-org-implementation.md | 98:#### **Homepage** (`app-list.component.ts`)
+docs/general/schema-org-implementation.md | 104:#### **App Detail Pages** (`app-detail.component.ts`)
+docs/general/schema-org-implementation.md | 110:#### **Category Pages** (`app-list.component.ts` with category)
+docs/general/schema-org-implementation.md | 116:#### **Developer Pages** (`developer.component.ts`)
+docs/general/schema-org-implementation.md | 122:## 📈 SEO Benefits
+docs/general/schema-org-implementation.md | 124:### **Rich Snippets Expected**
+docs/general/schema-org-implementation.md | 131:### **Search Engine Understanding**
+docs/general/schema-org-implementation.md | 138:### **User Experience Improvements**
+docs/general/schema-org-implementation.md | 144:## 🛠️ Validation and Testing
+docs/general/schema-org-implementation.md | 146:### **Schema.org Validator**
+docs/general/schema-org-implementation.md | 149:### **Google Rich Results Test**
+docs/general/schema-org-implementation.md | 152:### **Testing URLs**
+docs/general/schema-org-implementation.md | 158:## 📊 Performance Impact
+docs/general/schema-org-implementation.md | 160:### **Schema Statistics**
+docs/general/schema-org-implementation.md | 167:### **File Changes**
+docs/general/schema-org-implementation.md | 173:## 🚀 Next Steps
+docs/general/schema-org-implementation.md | 175:### **Monitoring**
+docs/general/schema-org-implementation.md | 181:### **Future Enhancements**
+docs/general/schema-org-implementation.md | 187:## 📝 Maintenance
+docs/general/schema-org-implementation.md | 189:### **Regular Updates**
+docs/general/schema-org-implementation.md | 195:### **Best Practices**
+docs/general/seo-cross-linking-strategy.md | 1:# SEO Cross-Linking Strategy for Quran Apps Directory
+docs/general/seo-cross-linking-strategy.md | 3:## Overview
+docs/general/seo-cross-linking-strategy.md | 6:## 🔗 **Implemented Cross-Links**
+docs/general/seo-cross-linking-strategy.md | 8:### 1. **Navigation Links**
+docs/general/seo-cross-linking-strategy.md | 13:### 2. **Footer Links Network**
+docs/general/seo-cross-linking-strategy.md | 20:### 3. **About Page Integration**
+docs/general/seo-cross-linking-strategy.md | 23:## 📈 **SEO Benefits of Cross-Linking**
+docs/general/seo-cross-linking-strategy.md | 25:### 1. **Domain Authority Sharing**
+docs/general/seo-cross-linking-strategy.md | 30:### 2. **Topical Relevance Boost**
+docs/general/seo-cross-linking-strategy.md | 35:### 3. **Link Equity Distribution**
+docs/general/seo-cross-linking-strategy.md | 40:### 4. **Enhanced User Experience**
+docs/general/seo-cross-linking-strategy.md | 45:## 🎯 **Strategic Link Placement**
+docs/general/seo-cross-linking-strategy.md | 47:### **High-Value Locations**
+docs/general/seo-cross-linking-strategy.md | 53:### **Anchor Text Optimization**
+docs/general/seo-cross-linking-strategy.md | 59:## 🌐 **Recommended Reciprocal Links**
+docs/general/seo-cross-linking-strategy.md | 61:### **From ITQAN Main Site to Apps Directory**
+docs/general/seo-cross-linking-strategy.md | 82:## 📊 **SEO Impact Metrics**
+docs/general/seo-cross-linking-strategy.md | 84:### **Expected Improvements**
+docs/general/seo-cross-linking-strategy.md | 93:### **Measurement KPIs**
+docs/general/seo-cross-linking-strategy.md | 99:## 🚀 **Advanced Cross-Linking Strategies**
+docs/general/seo-cross-linking-strategy.md | 101:### 1. **Content Integration**
+docs/general/seo-cross-linking-strategy.md | 106:### 2. **Social Media Synergy**
+docs/general/seo-cross-linking-strategy.md | 111:### 3. **Developer Community Integration**
+docs/general/seo-cross-linking-strategy.md | 116:## 🔧 **Technical Implementation**
+docs/general/seo-cross-linking-strategy.md | 118:### **Link Attributes**
+docs/general/seo-cross-linking-strategy.md | 123:### **Mobile Optimization**
+docs/general/seo-cross-linking-strategy.md | 128:## 📈 **Competitive Advantage**
+docs/general/seo-cross-linking-strategy.md | 130:### **Unique Position**
+docs/general/seo-cross-linking-strategy.md | 135:### **Long-term Benefits**
+docs/general/seo-cross-linking-strategy.md | 140:## 🎯 **Next Steps**
+docs/general/seo-setup-guide.md | 1:# SEO Setup Guide for Quran Apps Directory
+docs/general/seo-setup-guide.md | 3:## Overview
+docs/general/seo-setup-guide.md | 6:## 🚀 Immediate Actions Required
+docs/general/seo-setup-guide.md | 8:### 1. Google Search Console Setup
+docs/general/seo-setup-guide.md | 10:#### Step 1: Add Your Property
+docs/general/seo-setup-guide.md | 16:#### Step 2: Verify Ownership
+docs/general/seo-setup-guide.md | 28:#### Step 3: Submit Sitemap
+docs/general/seo-setup-guide.md | 33:#### Step 4: Set Up for All Environments
+docs/general/seo-setup-guide.md | 38:### 2. Generate and Deploy Sitemap
+docs/general/seo-setup-guide.md | 42:#### Option A: Manual Generation (Quick Start)
+docs/general/seo-setup-guide.md | 52:#### Option B: Automated Generation (Recommended)
+docs/general/seo-setup-guide.md | 62:### 3. Performance Optimization
+docs/general/seo-setup-guide.md | 64:#### Core Web Vitals Improvements
+docs/general/seo-setup-guide.md | 78:#### Immediate Performance Fixes
+docs/general/seo-setup-guide.md | 85:### 4. Analytics Setup
+docs/general/seo-setup-guide.md | 87:#### Enhanced Google Analytics 4
+docs/general/seo-setup-guide.md | 104:## 📊 SEO Monitoring & KPIs
+docs/general/seo-setup-guide.md | 106:### Key Metrics to Track
+docs/general/seo-setup-guide.md | 126:### Weekly SEO Tasks
+docs/general/seo-setup-guide.md | 132:## 🎯 Advanced SEO Strategies
+docs/general/seo-setup-guide.md | 134:### Content Marketing for SEO
+docs/general/seo-setup-guide.md | 145:### Link Building Strategy
+docs/general/seo-setup-guide.md | 151:### International SEO
+docs/general/seo-setup-guide.md | 157:## 🛠️ Technical SEO Checklist
+docs/general/seo-setup-guide.md | 159:### ✅ Completed
+docs/general/seo-setup-guide.md | 169:### 🔄 Ongoing Optimization
+docs/general/seo-setup-guide.md | 176:### 📈 Advanced Features
+docs/general/seo-setup-guide.md | 182:## 🚨 Critical Next Steps
+docs/general/seo-setup-guide.md | 190:## 📞 Support
+docs/general/sitemap-generation.md | 1:# Sitemap Generation Documentation
+docs/general/sitemap-generation.md | 3:## Overview
+docs/general/sitemap-generation.md | 7:## Features
+docs/general/sitemap-generation.md | 16:## Generated URLs
+docs/general/sitemap-generation.md | 27:## Usage
+docs/general/sitemap-generation.md | 29:### Manual Generation
+docs/general/sitemap-generation.md | 32:# or
+docs/general/sitemap-generation.md | 34:# or
+docs/general/sitemap-generation.md | 38:### Automatic Generation (Build Process)
+docs/general/sitemap-generation.md | 48:## Script Configuration
+docs/general/sitemap-generation.md | 50:### File: `generate-sitemap.js`
+docs/general/sitemap-generation.md | 64:### Static Pages Configuration
+docs/general/sitemap-generation.md | 74:## Data Sources
+docs/general/sitemap-generation.md | 89:## URL Structure
+docs/general/sitemap-generation.md | 91:### Homepage
+docs/general/sitemap-generation.md | 95:### Categories
+docs/general/sitemap-generation.md | 100:### Apps
+docs/general/sitemap-generation.md | 105:### Developers
+docs/general/sitemap-generation.md | 110:### Static Pages
+docs/general/sitemap-generation.md | 115:## SEO Features
+docs/general/sitemap-generation.md | 117:### Hreflang Support
+docs/general/sitemap-generation.md | 125:### Priority Structure
+docs/general/sitemap-generation.md | 132:### Change Frequencies
+docs/general/sitemap-generation.md | 137:## Character Escaping
+docs/general/sitemap-generation.md | 148:## Validation
+docs/general/sitemap-generation.md | 172:## Troubleshooting
+docs/general/sitemap-generation.md | 174:### Common Issues
+docs/general/sitemap-generation.md | 180:### Manual Validation
+docs/general/sitemap-generation.md | 182:# Validate XML format
+docs/general/sitemap-generation.md | 185:# Check line count  
+docs/general/sitemap-generation.md | 188:# View first few entries
+docs/general/sitemap-generation.md | 192:## Deployment
+docs/general/sitemap-generation.md | 199:## Maintenance
+docs/general/social-media-links-corrected.md | 1:# Social Media Links Correction
+docs/general/social-media-links-corrected.md | 3:## ✅ Verified ITQAN Community Social Media Presence
+docs/general/social-media-links-corrected.md | 7:### **Official Social Media Channels**
+docs/general/social-media-links-corrected.md | 34:### **Schema.org Updates Applied**
+docs/general/social-media-links-corrected.md | 36:#### **Organization Schema** (`seo.service.ts`)
+docs/general/social-media-links-corrected.md | 52:#### **WebSite Schema** (`index.html`)
+docs/general/social-media-links-corrected.md | 67:### **SEO Benefits**
+docs/general/social-media-links-corrected.md | 74:### **Community Ecosystem**
+docs/general/social-media-links-corrected.md | 84:### **Validation Status**
+docs/general/workflow.md | 1:# 🔄 Git Workflow & Branch Strategy
+docs/general/workflow.md | 5:## 🌳 Branch Structure
+docs/general/workflow.md | 17:## 🚀 Deployment Strategy
+docs/general/workflow.md | 19:### Automated Deployments
+docs/general/workflow.md | 28:## 📋 Development Workflow
+docs/general/workflow.md | 30:### 1. **Feature Development**
+docs/general/workflow.md | 32:# Start new feature from develop
+docs/general/workflow.md | 37:# Make your changes
+docs/general/workflow.md | 38:# ... code, code, code ...
+docs/general/workflow.md | 40:# Commit your changes
+docs/general/workflow.md | 46:### 2. **Deploy to Development**
+docs/general/workflow.md | 48:# Merge feature to develop branch
+docs/general/workflow.md | 54:# 🚀 Auto-deploys to: https://dev.quran-apps.itqan.dev
+docs/general/workflow.md | 57:### 3. **Deploy to Staging** 
+docs/general/workflow.md | 59:# After testing in development, promote to staging
+docs/general/workflow.md | 65:# 🚀 Auto-deploys to: https://staging.quran-apps.itqan.dev
+docs/general/workflow.md | 68:### 4. **Deploy to Production**
+docs/general/workflow.md | 70:# After testing in staging, promote to production
+docs/general/workflow.md | 76:# 🚀 Auto-deploys to: https://quran-apps.itqan.dev
+docs/general/workflow.md | 79:## 🔧 Local Testing
+docs/general/workflow.md | 84:# Test different configurations locally
+docs/general/workflow.md | 90:## 🧪 Testing Strategy
+docs/general/workflow.md | 92:### Development Environment (`develop` branch)
+docs/general/workflow.md | 100:### Staging Environment (`staging` branch)
+docs/general/workflow.md | 109:### Production Environment (`main` branch)
+docs/general/workflow.md | 116:## 📊 Branch Management Rules
+docs/general/workflow.md | 118:### Protected Branches
+docs/general/workflow.md | 124:### Merge Strategy
+docs/general/workflow.md | 129:### Naming Conventions
+docs/general/workflow.md | 137:## 🚨 Hotfix Workflow
+docs/general/workflow.md | 142:# Create hotfix from main
+docs/general/workflow.md | 147:# Fix the issue
+docs/general/workflow.md | 148:# ... make changes ...
+docs/general/workflow.md | 152:# Deploy hotfix to staging first for testing
+docs/general/workflow.md | 156:# Test on staging environment
+docs/general/workflow.md | 158:# Deploy to production
+docs/general/workflow.md | 163:# Backport to develop
+docs/general/workflow.md | 168:# Clean up
+docs/general/workflow.md | 173:## 📈 Monitoring & Rollback
+docs/general/workflow.md | 175:### Monitoring Deployments
+docs/general/workflow.md | 180:### Rollback Strategy
+docs/general/workflow.md | 182:# Rollback using Git (recommended)
+docs/general/workflow.md | 187:# Or rollback to specific commit
+docs/general/workflow.md | 192:### Netlify Rollback
+docs/general/workflow.md | 194:# Using Netlify CLI
+docs/general/workflow.md | 198:## 🔄 Release Process
+docs/general/workflow.md | 200:### Version Tagging
+docs/general/workflow.md | 202:# Create release tag
+docs/general/workflow.md | 208:### Release Notes
+docs/general/workflow.md | 215:## 🛠️ Local Development
+docs/general/workflow.md | 217:### Environment Setup
+docs/general/workflow.md | 219:# Clone and setup
+docs/general/workflow.md | 224:# Switch to development workflow
+docs/general/workflow.md | 228:### Testing Different Configurations
+docs/general/workflow.md | 230:# Test development build
+docs/general/workflow.md | 233:# Test staging build  
+docs/general/workflow.md | 236:# Test production build
+docs/general/workflow.md | 240:## 📋 Checklists
+docs/general/workflow.md | 242:### ✅ Before Merging to Staging
+docs/general/workflow.md | 251:### ✅ Before Merging to Production  
+docs/general/workflow.md | 260:## 🎯 Quick Reference
+docs/general/workflow.md | 262:### Common Commands
+docs/general/workflow.md | 264:# Switch branches
+docs/general/workflow.md | 267:# Deploy environments
+docs/general/workflow.md | 270:# Check deployment status
+docs/general/workflow.md | 274:# Emergency rollback
+docs/general/workflow.md | 278:### Environment URLs
