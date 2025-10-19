@@ -125,7 +125,7 @@ USER ENGAGEMENT DOMAIN (Reviews, Collections, Favorites)
     │ avatar_url  │
     │ language    │
     │ theme       │
-    └────┬────┬───┴────┬─────────┐
+    └────┬────┬───┴────┬─────────┘
          │    │        │         │
     ┌────┘    │        │         └────────────────┐
     │         │        │                          │
@@ -210,7 +210,7 @@ DEVELOPERS (Public, No Auth)
 AUTHENTICATION (Public, No Auth Required)
 ├── POST   /auth/register           # Register new user
 ├── POST   /auth/login              # Login (email/password)
-├── POST   /auth/oauth/{provider}   # OAuth flow (Google, Apple, etc)
+├── POST   /auth/oauth/{provider}   # OAuth flow (Google, Apple, etc.)
 ├── POST   /auth/verify-email       # Verify email token
 ├── POST   /auth/forgot-password    # Initiate password reset
 ├── POST   /auth/reset-password     # Complete password reset
@@ -380,7 +380,7 @@ JWT AUTHENTICATION
 
 ```
 DEVELOPMENT
-═══════════
+═════════
 
 Local Machine:
 ├─ Django dev server (localhost:8000)
