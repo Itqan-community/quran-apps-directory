@@ -1,6 +1,6 @@
-# US8.8: Implement Notification System
+# US8.8: Implement Notification System (Django + Celery)
 
-**Epic:** Epic 8 - User Accounts & Personalization  
+**Epic:** Epic 8 - User Accounts & Personalization
 **Sprint:** Week 8, Day 2-3  
 **Story Points:** 5  
 **Priority:** P2  
@@ -67,7 +67,7 @@
 ## 📝 Technical Notes
 
 ### Notification Entity
-```csharp
+```python
 public class Notification
 {
     public Guid Id { get; set; }
@@ -111,7 +111,7 @@ public static class NotificationTypes
 ```
 
 ### Notification Service
-```csharp
+```python
 public interface INotificationService
 {
     Task<Notification> CreateNotificationAsync(Guid userId, string type, 
@@ -127,9 +127,6 @@ public interface INotificationService
 
 public class NotificationService : INotificationService
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IHubContext<NotificationsHub> _hubContext;
-    private readonly IEmailService _emailService;
     
     public async Task<Notification> CreateNotificationAsync(
         Guid userId,
@@ -267,12 +264,12 @@ public class NotificationService : INotificationService
 ```
 
 ### SignalR Hub
-```csharp
+```python
 public class NotificationsHub : Hub
 {
     public override async Task OnConnectedAsync()
     {
-        var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         if (!string.IsNullOrEmpty(userId))
         {
@@ -284,7 +281,7 @@ public class NotificationsHub : Hub
     
     public override async Task OnDisconnectedAsync(Exception exception)
     {
-        var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         if (!string.IsNullOrEmpty(userId))
         {
@@ -415,5 +412,5 @@ export class NotificationService {
 ---
 
 **Created:** October 6, 2025  
-**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
+**Updated:** October 19, 2025 (Django alignment)**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
 **Epic:** [Epic 8: User Accounts & Personalization](../epics/epic-8-user-accounts-personalization.md)

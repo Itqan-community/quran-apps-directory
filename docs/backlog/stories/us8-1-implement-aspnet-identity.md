@@ -1,75 +1,75 @@
-# US8.1: Implement ASP.NET Core Identity
+# US8.1: Implement django-allauth Authentication System
 
-**Epic:** Epic 8 - User Accounts & Personalization  
-**Sprint:** Week 7, Day 1  
-**Story Points:** 8  
-**Priority:** P1  
-**Assigned To:** Backend Lead  
+**Epic:** Epic 8 - User Accounts & Personalization
+**Sprint:** Week 7, Day 1
+**Story Points:** 8
+**Priority:** P1
+**Assigned To:** Backend Lead
 **Status:** Not Started
 
 ---
 
 ## 📋 User Story
 
-**As a** Backend Developer  
-**I want** ASP.NET Core Identity configured with custom user model  
+**As a** Backend Developer
+**I want** django-allauth configured with custom user model
 **So that** we have a robust foundation for user authentication and authorization
 
 ---
 
 ## 🎯 Acceptance Criteria
 
-### AC1: ApplicationUser Model
-- [ ] Custom `ApplicationUser` extends `IdentityUser<Guid>`
-- [ ] Additional properties:
-  - `FullName` (string, max 200)
-  - `ProfilePictureUrl` (string, nullable)
-  - `PreferredLanguage` (string: "en", "ar")
-  - `EmailVerified` (bool)
-  - `PhoneNumberVerified` (bool)
-  - `CreatedAt` (DateTime)
-  - `UpdatedAt` (DateTime, nullable)
-  - `LastLoginAt` (DateTime, nullable)
-- [ ] Navigation properties for related entities
+### AC1: Custom User Model
+- [ ] Custom `User` model extends Django's `AbstractUser`
+- [ ] Additional fields:
+  - `avatar_url` (URLField, nullable)
+  - `bio` (TextField, nullable)
+  - `language_preference` (CharField: "en", "ar")
+  - `theme_preference` (CharField: "light", "dark", "auto")
+  - `email_verified` (BooleanField, default=False)
+  - `created_at` (DateTimeField, auto_now_add=True)
+  - `updated_at` (DateTimeField, auto_now=True)
+  - `last_login_at` (DateTimeField, nullable)
+- [ ] Foreign key relationships defined (to future models)
 
-### AC2: Identity Configuration
-- [ ] Password requirements configured:
+### AC2: django-allauth Configuration
+- [ ] django-allauth installed and configured in settings.py
+- [ ] Password validation configured:
   - Minimum length: 8 characters
   - Require uppercase, lowercase, digit, special char
-  - Max failed attempts: 5
-  - Lockout duration: 15 minutes
-- [ ] Username = Email (no separate username)
-- [ ] Email confirmation required
-- [ ] Two-factor authentication supported
+  - Account lockout: 5 failed attempts, 15 minute lockout
+- [ ] Email as username (USERNAME_FIELD = 'email')
+- [ ] Email verification required before login
+- [ ] Two-factor authentication support enabled
 
-### AC3: Database Schema
-- [ ] Identity tables created via migration:
-  - `AspNetUsers`
-  - `AspNetRoles`
-  - `AspNetUserRoles`
-  - `AspNetUserClaims`
-  - `AspNetUserLogins`
-  - `AspNetUserTokens`
-  - `AspNetRoleClaims`
-- [ ] Guid primary keys (not default int)
+### AC3: Database Migrations
+- [ ] Custom User model migrations created
+- [ ] Django's built-in auth tables created:
+  - `auth_user` (custom)
+  - `auth_group`
+  - `auth_user_groups`
+  - `auth_user_user_permissions`
+- [ ] UUID primary keys configured
 - [ ] Proper indexes and foreign keys
 
-### AC4: Roles Setup
-- [ ] Predefined roles created:
-  - `Admin` (full access)
+### AC4: Roles/Groups Setup
+- [ ] Predefined groups created via migration:
+  - `Admin` (all permissions)
   - `Developer` (manage own apps)
   - `User` (standard user)
-- [ ] Role seeding in migration
-- [ ] Role-based authorization configured
+- [ ] Groups and permissions seeded
+- [ ] Permission-based authorization configured
 
-### AC5: DbContext Integration
-- [ ] `ApplicationDbContext` extends `IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>`
-- [ ] Identity entities configured
-- [ ] Relationships to app-specific entities
+### AC5: Django Model Integration
+- [ ] `User` model properly integrated with Django ORM
+- [ ] Custom manager created (Django User Model)
+- [ ] Relationships to app-specific models
+- [ ] Model validation implemented
 
-### AC6: Service Registration
-- [ ] Identity services registered in `Program.cs`
-- [ ] JWT authentication configured
+### AC6: django-allauth Service Configuration
+- [ ] django-allauth apps registered in INSTALLED_APPS
+- [ ] Email backend configured (SendGrid or similar)
+- [ ] JWT authentication via djangorestframework-simplejwt
 - [ ] Cookie authentication for admin portal (optional)
 
 ---
@@ -77,7 +77,7 @@
 ## 📝 Technical Notes
 
 ### ApplicationUser Model
-```csharp
+```python
 public class ApplicationUser : IdentityUser<Guid>
 {
     [Required]
@@ -106,7 +106,7 @@ public class ApplicationUser : IdentityUser<Guid>
 ```
 
 ### ApplicationDbContext
-```csharp
+```python
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
     public DbSet<App> Apps { get; set; }
@@ -149,7 +149,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
 ```
 
 ### Identity Configuration (Program.cs)
-```csharp
+```python
 // Add Identity services
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
 {
@@ -213,7 +213,7 @@ builder.Services.AddAuthorization(options =>
 ```
 
 ### Initial Migration with Role Seeding
-```csharp
+```python
 public class SeedRoles : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
@@ -261,23 +261,25 @@ public class SeedRoles : Migration
 ---
 
 ## 🔗 Dependencies
-- US2.2: EF Core configured
-- US2.3: ASP.NET Core API created
+- US2.2: Django ORM configured
+- US2.3: Django REST API created
 
 ---
 
 ## 📊 Definition of Done
-- [ ] ApplicationUser model created
-- [ ] Identity configured with password policies
-- [ ] Database migration applied
-- [ ] Roles created and seeded
+- [ ] Custom User model created
+- [ ] django-allauth configured with password policies
+- [ ] Database migrations created and applied
+- [ ] Roles/groups created and seeded
+- [ ] Email verification configured
 - [ ] JWT authentication configured
-- [ ] Authorization policies defined
-- [ ] Unit tests for user creation
+- [ ] Authorization system tested
+- [ ] Unit tests for user creation (80%+ coverage)
 - [ ] Documentation complete
 
 ---
 
-**Created:** October 6, 2025  
-**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
+**Created:** October 6, 2025
+**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev
+**Updated:** October 19, 2025 (Django alignment)
 **Epic:** [Epic 8: User Accounts & Personalization](../epics/epic-8-user-accounts-personalization.md)

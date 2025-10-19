@@ -50,29 +50,22 @@
 
 ## 📝 Technical Notes
 
-### Rating Analytics Controller
-```csharp
-[ApiController]
-[Route("api/apps/{appId:guid}")]
-public class RatingAnalyticsController : ControllerBase
+### ViewSet
+```python
+class RatingAnalyticsViewSet(viewsets.ModelViewSet):
 {
-    [HttpGet("rating-distribution")]
     [ResponseCache(Duration = 600)] // 10 minutes
-    [ProducesResponseType(typeof(RatingDistributionDto), StatusCodes.Status200OK)]
-    public async Task<ActionResult<RatingDistributionDto>> GetRatingDistribution(Guid appId)
+    def <RatingDistributionDto>> GetRatingDistribution(Guid appId)
     {
         var distribution = await _ratingAnalyticsService.GetRatingDistributionAsync(appId);
         
         if (distribution == null)
-            return NotFound();
         
         return Ok(distribution);
     }
     
-    [HttpGet("rating-trends")]
-    public async Task<ActionResult<RatingTrendsDto>> GetRatingTrends(
+    def <RatingTrendsDto>> GetRatingTrends(
         Guid appId,
-        [FromQuery] int days = 30)
     {
         var trends = await _ratingAnalyticsService.GetRatingTrendsAsync(appId, days);
         
@@ -82,7 +75,7 @@ public class RatingAnalyticsController : ControllerBase
 ```
 
 ### Rating Analytics Service
-```csharp
+```python
 public class RatingAnalyticsService
 {
     public async Task<RatingDistributionDto> GetRatingDistributionAsync(Guid appId)
@@ -154,7 +147,7 @@ public class RatingAnalyticsService
 ```
 
 ### DTOs
-```csharp
+```python
 public class RatingDistributionDto
 {
     public Guid AppId { get; set; }

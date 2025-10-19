@@ -1,7 +1,7 @@
 # Epic 14: AI-Powered Recommendations
 
 ## 📋 Epic Overview
-Implement intelligent recommendation system using ML.NET to suggest personalized apps based on user behavior, preferences, and similar user patterns.
+Implement intelligent recommendation system using MLDjango to suggest personalized apps based on user behavior, preferences, and similar user patterns.
 
 ## 🎯 Goal
 Increase app discovery and user engagement through personalized recommendations that match user needs and preferences.
@@ -50,7 +50,7 @@ Increase app discovery and user engagement through personalized recommendations 
 
 ## Django + AI/ML Implementation Details
 ### Entity Models
-```csharp
+```python
 public class UserBehavior
 {
     public Guid Id { get; set; }
@@ -86,8 +86,8 @@ public class AppRecommendation
 }
 ```
 
-### ML.NET Model Classes
-```csharp
+### MLDjango Model Classes
+```python
 public class AppRating
 {
     [LoadColumn(0)]
@@ -107,42 +107,31 @@ public class AppRatingPrediction
 }
 ```
 
-### RecommendationsController
-```csharp
-[ApiController]
-[Route("api/v1/[controller]")]
-public class RecommendationsController : ControllerBase
+### RecommendationsViewSet
+```python
+[ApiViewSet]
+public class RecommendationsViewSet : ViewSetBase
 {
-    private readonly IRecommendationService _recommendationService;
     
-    [HttpGet("for-you")]
-    [Authorize]
-    public async Task<ActionResult<List<AppResponse>>> GetPersonalizedRecommendations(
-        [FromQuery] int count = 10)
+    public async Task<Response<List<AppResponse>>> GetPersonalizedRecommendations(
     {
         var userId = GetUserId();
         var recommendations = await _recommendationService.GetPersonalizedRecommendationsAsync(userId, count);
         return Ok(recommendations);
     }
     
-    [HttpGet("similar/{appId:guid}")]
-    public async Task<ActionResult<List<AppResponse>>> GetSimilarApps(
+    public async Task<Response<List<AppResponse>>> GetSimilarApps(
         Guid appId,
-        [FromQuery] int count = 5)
     {
         var similar = await _recommendationService.GetSimilarAppsAsync(appId, count);
         return Ok(similar);
     }
     
-    [HttpGet("trending")]
-    public async Task<ActionResult<List<AppResponse>>> GetTrendingApps([FromQuery] int count = 10)
     {
         var trending = await _recommendationService.GetTrendingAppsAsync(count);
         return Ok(trending);
     }
     
-    [HttpGet("popular")]
-    public async Task<ActionResult<List<AppResponse>>> GetPopularApps([FromQuery] int count = 10)
     {
         var popular = await _recommendationService.GetPopularAppsAsync(count);
         return Ok(popular);
@@ -150,14 +139,11 @@ public class RecommendationsController : ControllerBase
 }
 ```
 
-### RecommendationService with ML.NET
-```csharp
+### RecommendationService with MLDjango
+```python
 public class RecommendationService : IRecommendationService
 {
-    private readonly ApplicationDbContext _context;
-    private readonly MLContext _mlContext;
     private ITransformer _model;
-    private readonly IMapper _mapper;
     
     public RecommendationService(ApplicationDbContext context, IMapper mapper)
     {
@@ -203,7 +189,7 @@ public class RecommendationService : IRecommendationService
         
         var recommendations = new List<(Guid AppId, float Score)>();
         
-        // Use ML.NET model to predict scores
+        // Use MLDjango model to predict scores
         if (_model != null)
         {
             var predictionEngine = _mlContext.Model.CreatePredictionEngine<AppRating, AppRatingPrediction>(_model);
@@ -353,10 +339,9 @@ public class RecommendationService : IRecommendationService
 ```
 
 ### Background Model Training Job
-```csharp
+```python
 public class ModelTrainingBackgroundService : BackgroundService
 {
-    private readonly IServiceProvider _services;
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -416,7 +401,7 @@ export class HomeComponent implements OnInit {
 }
 ```
 
-### Required NuGet Packages
+### Required pip Packages
 ```xml
 <PackageReference Include="Microsoft.ML" Version="3.0.0" />
 <PackageReference Include="Microsoft.ML.Recommender" Version="0.21.0" />

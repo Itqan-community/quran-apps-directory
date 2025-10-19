@@ -65,11 +65,8 @@
 ## 📝 Technical Notes
 
 ### Search Endpoint Implementation
-```csharp
-[HttpGet("search")]
-[ProducesResponseType(typeof(SearchResult<AppListDto>), StatusCodes.Status200OK)]
-public async Task<ActionResult<SearchResult<AppListDto>>> SearchApps(
-    [FromQuery] SearchAppsQuery query)
+```python
+def <SearchResult<AppListDto>>> SearchApps(
 {
     var result = await _appsService.SearchAppsAsync(query);
     
@@ -97,7 +94,7 @@ public class SearchAppsQuery
 ```
 
 ### Service Layer Implementation
-```csharp
+```python
 public async Task<SearchResult<AppListDto>> SearchAppsAsync(SearchAppsQuery query)
 {
     var queryable = _context.Apps
@@ -190,7 +187,7 @@ public async Task<SearchResult<AppListDto>> SearchAppsAsync(SearchAppsQuery quer
 ```
 
 ### Database Indexes (Migration)
-```csharp
+```python
 protected override void Up(MigrationBuilder migrationBuilder)
 {
     // Full-text search indexes
@@ -239,7 +236,7 @@ protected override void Up(MigrationBuilder migrationBuilder)
 - [ ] Search analytics logging
 - [ ] Unit tests (80%+ coverage)
 - [ ] Integration tests pass
-- [ ] Swagger documentation complete
+- [ ] drf-spectacular documentation complete
 
 ---
 

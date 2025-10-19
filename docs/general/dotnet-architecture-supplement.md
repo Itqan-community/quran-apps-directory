@@ -28,7 +28,7 @@ This document supplements the main architecture document with Django backend API
 - Authentication: Django Auth + JWT (djangorestframework-simplejwt)
 - Caching: Django Redis cache
 - Task Queue: Celery (optional, for background tasks)
-- API Documentation: drf-spectacular (OpenAPI/Swagger)
+- API Documentation: drf-spectacular (OpenAPI/drf-spectacular)
 - Testing: Django Test Framework + pytest
 - Environment: Poetry (dependency management)
 ```
@@ -722,10 +722,10 @@ SIMPLE_JWT = {
 
 ```python
 # core/managers.py
-from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import BaseDjango User Model
 from django.utils import timezone
 
-class UserManager(BaseUserManager):
+class Django User Model(BaseDjango User Model):
     """Custom user manager"""
 
     def _create_user(self, email, password, **extra_fields):

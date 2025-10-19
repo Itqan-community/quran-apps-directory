@@ -167,7 +167,7 @@ Based on comprehensive analysis of the current system, gap analysis, and market 
 
 **Deliverables:**
 - Complete REST API
-- Swagger documentation
+- drf-spectacular documentation
 - Postman collection
 - Performance benchmarks
 

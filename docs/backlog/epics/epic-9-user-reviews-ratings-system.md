@@ -14,10 +14,10 @@ Build trust and community engagement through authentic user reviews and ratings,
 - 50% of users find reviews helpful
 
 ## 🏗️ Technical Scope (Django)
-- Review submission and storage (EF Core entities)
+- Review submission and storage (Django ORM entities)
 - Rating aggregation and calculation
 - Review moderation system (Admin dashboard)
-- Spam/abuse detection (ML.NET or external API)
+- Spam/abuse detection (MLDjango or external API)
 - Helpful/not helpful voting
 - Review pagination and sorting
 - Real-time rating updates
@@ -51,7 +51,7 @@ Build trust and community engagement through authentic user reviews and ratings,
 
 ## Django Implementation Details
 ### Entity Models
-```csharp
+```python
 public class Review
 {
     public Guid Id { get; set; }
@@ -91,18 +91,13 @@ public class ReviewHelpfulness
 }
 ```
 
-### ReviewsController
-```csharp
-[ApiController]
-[Route("api/v1/[controller]")]
-public class ReviewsController : ControllerBase
+### ReviewsViewSet
+```python
+[ApiViewSet]
+public class ReviewsViewSet : ViewSetBase
 {
-    private readonly IReviewsService _reviewsService;
     
-    [HttpPost]
-    [Authorize]
-    public async Task<ActionResult<ReviewResponse>> CreateReview(
-        [FromBody] CreateReviewRequest request)
+    public async Task<Response<ReviewResponse>> CreateReview(
     {
         var userId = GetUserId();
         
@@ -116,45 +111,31 @@ public class ReviewsController : ControllerBase
         return CreatedAtAction(nameof(GetReview), new { id = review.Id }, review);
     }
     
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<ReviewResponse>> GetReview(Guid id)
+    public async Task<Response<ReviewResponse>> GetReview(Guid id)
     {
         var review = await _reviewsService.GetReviewAsync(id);
         return review == null ? NotFound() : Ok(review);
     }
     
-    [HttpGet("app/{appId:guid}")]
-    public async Task<ActionResult<PaginatedResponse<ReviewResponse>>> GetAppReviews(
+    public async Task<Response<PaginatedResponse<ReviewResponse>>> GetAppReviews(
         Guid appId,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10,
-        [FromQuery] string sort = "recent") // recent, helpful, rating
     {
         var reviews = await _reviewsService.GetAppReviewsAsync(appId, page, pageSize, sort);
         return Ok(reviews);
     }
     
-    [HttpPost("{id:guid}/helpful")]
-    [Authorize]
-    public async Task<IActionResult> MarkHelpful(Guid id, [FromBody] MarkHelpfulRequest request)
     {
         var userId = GetUserId();
         await _reviewsService.MarkHelpfulAsync(id, userId, request.IsHelpful);
         return NoContent();
     }
     
-    [HttpPost("{id:guid}/flag")]
-    [Authorize]
-    public async Task<IActionResult> FlagReview(Guid id, [FromBody] FlagReviewRequest request)
     {
         var userId = GetUserId();
         await _reviewsService.FlagReviewAsync(id, userId, request.Reason);
         return NoContent();
     }
     
-    [HttpPut("{id:guid}/moderate")]
-    [Authorize(Roles = "Admin,Moderator")]
-    public async Task<IActionResult> ModerateReview(Guid id, [FromBody] ModerateReviewRequest request)
     {
         var moderatorId = GetUserId();
         await _reviewsService.ModerateReviewAsync(id, moderatorId, request.Status, request.Reason);
@@ -164,7 +145,7 @@ public class ReviewsController : ControllerBase
 ```
 
 ### ReviewsService
-```csharp
+```python
 public interface IReviewsService
 {
     Task<ReviewResponse> CreateReviewAsync(Guid userId, CreateReviewRequest request);
@@ -179,10 +160,6 @@ public interface IReviewsService
 
 public class ReviewsService : IReviewsService
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
-    private readonly IEmailService _emailService;
-    private readonly ISpamDetectionService _spamDetection;
     
     public async Task<ReviewResponse> CreateReviewAsync(Guid userId, CreateReviewRequest request)
     {
@@ -268,7 +245,7 @@ public class ReviewsService : IReviewsService
 ```
 
 ### Spam Detection Service
-```csharp
+```python
 public interface ISpamDetectionService
 {
     Task<bool> IsSpamAsync(string content);
@@ -276,8 +253,6 @@ public interface ISpamDetectionService
 
 public class SpamDetectionService : ISpamDetectionService
 {
-    private readonly HttpClient _httpClient;
-    private readonly IConfiguration _configuration;
     
     public async Task<bool> IsSpamAsync(string content)
     {

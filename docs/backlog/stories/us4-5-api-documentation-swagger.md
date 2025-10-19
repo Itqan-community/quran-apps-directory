@@ -1,26 +1,27 @@
-# US4.5: API Documentation with Swagger/OpenAPI
+# US4.5: API Documentation with drf-spectacular/OpenAPI
 
-**Epic:** Epic 4 - API Development & Integration  
-**Sprint:** Week 3, Day 4  
-**Story Points:** 3  
-**Priority:** P1  
-**Assigned To:** Backend Developer  
+**Epic:** Epic 4 - API Development & Integration
+**Sprint:** Week 3, Day 4
+**Story Points:** 3
+**Priority:** P1
+**Assigned To:** Backend Developer
 **Status:** Not Started
 
 ---
 
 ## 📋 User Story
 
-**As a** Frontend Developer or API Consumer  
-**I want** comprehensive, interactive API documentation  
+**As a** Frontend Developer or API Consumer
+**I want** comprehensive, interactive API documentation
 **So that** I can understand and test all endpoints without reading source code
 
 ---
 
 ## 🎯 Acceptance Criteria
 
-### AC1: Swagger UI Available
-- [ ] Swagger UI accessible at `/swagger`
+### AC1: drf-spectacular UI Available
+- [ ] drf-spectacular UI accessible at `/api/schema/swagger/`
+- [ ] ReDoc available at `/api/schema/redoc/`
 - [ ] Development environment: Always enabled
 - [ ] Staging environment: Enabled
 - [ ] Production environment: Disabled (security)
@@ -35,18 +36,18 @@
 - [ ] Authentication requirements clearly marked
 
 ### AC3: Schema Definitions
-- [ ] All DTOs defined in Swagger
+- [ ] All DTOs defined in drf-spectacular
 - [ ] Validation rules visible (required, min/max, regex)
 - [ ] Example values provided
 - [ ] Bilingual field structure documented
 
 ### AC4: Authentication Integration
-- [ ] JWT Bearer auth scheme configured in Swagger
+- [ ] JWT Bearer auth scheme configured in drf-spectacular
 - [ ] "Authorize" button functional
 - [ ] Test requests with auth tokens
 
 ### AC5: OpenAPI JSON Export
-- [ ] OpenAPI 3.0 JSON spec available at `/swagger/v1/swagger.json`
+- [ ] OpenAPI 3.0 JSON spec available at `/api/schema/`
 - [ ] Can be imported into Postman
 - [ ] Can be used for client SDK generation
 
@@ -63,164 +64,144 @@
 
 ## 📝 Technical Notes
 
-### Swagger Configuration (Program.cs)
-```csharp
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Version = "v1",
-        Title = "Quran Apps Directory API",
-        Description = "RESTful API for managing Quran-related mobile applications",
-        Contact = new OpenApiContact
-        {
-            Name = "Abubakr Abduraghman",
-            Email = "a.abduraghman@itqan.dev",
-            Url = new Uri("https://quran-apps.itqan.dev")
-        },
-        License = new OpenApiLicense
-        {
-            Name = "MIT License",
-            Url = new Uri("https://opensource.org/licenses/MIT")
-        }
-    });
-    
-    // JWT Authentication
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token.",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-    
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-    
-    // XML Comments
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    options.IncludeXmlComments(xmlPath);
-    
-    // Example filters
-    options.ExampleFilters();
-});
+### drf-spectacular Configuration (settings.py)
+```python
+# settings.py
 
-builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
+INSTALLED_APPS = [
+    # ...
+    'drf_spectacular',
+    'rest_framework',
+    # ...
+]
 
-// Middleware
-if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Quran Apps API v1");
-        options.RoutePrefix = "swagger";
-        options.DocumentTitle = "Quran Apps API Documentation";
-        options.DefaultModelsExpandDepth(2);
-        options.DefaultModelExpandDepth(2);
-    });
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
 }
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Quran Apps Directory API',
+    'DESCRIPTION': 'RESTful API for managing Quran-related mobile applications',
+    'VERSION': '1.0.0',
+    'CONTACT': {
+        'name': 'Abubakr Abduraghman',
+        'email': 'a.abduraghman@itqan.dev',
+        'url': 'https://quran-apps.itqan.dev',
+    },
+    'LICENSE': {
+        'name': 'MIT License',
+        'url': 'https://opensource.org/licenses/MIT',
+    },
+    'SECURITY': {
+        'Bearer': {
+            'type': 'http',
+            'scheme': 'bearer',
+            'bearerFormat': 'JWT',
+        }
+    },
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.IsAuthenticated'],
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'defaultModelsExpandDepth': 2,
+        'presets': [
+            'swagger-ui/swagger-ui-bundle.js',
+            'swagger-ui/swagger-ui-standalone-preset.js',
+        ],
+    },
+}
+
+# urls.py
+urlpatterns = [
+    # ...
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger/', Spectaculardrf-spectacularView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    # ...
+]
 ```
 
-### Controller Documentation Examples
-```csharp
-/// <summary>
-/// Retrieves a paginated list of Quran apps
-/// </summary>
-/// <param name="page">Page number (default: 1)</param>
-/// <param name="pageSize">Number of items per page (default: 20, max: 100)</param>
-/// <param name="sortBy">Sort field: name, rating, createdAt (default: name)</param>
-/// <param name="sortOrder">Sort direction: asc, desc (default: asc)</param>
-/// <returns>Paginated list of apps</returns>
-/// <response code="200">Returns the paginated list</response>
-/// <response code="400">Invalid query parameters</response>
-[HttpGet]
-[ProducesResponseType(typeof(PagedResult<AppListDto>), StatusCodes.Status200OK)]
-[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-public async Task<ActionResult<PagedResult<AppListDto>>> GetApps(
-    [FromQuery] int page = 1,
-    [FromQuery] int pageSize = 20,
-    [FromQuery] string sortBy = "name",
-    [FromQuery] string sortOrder = "asc")
-{
-    // Implementation
-}
+### ViewSet Documentation Examples
+```python
+class AppViewSet(viewsets.ModelViewSet):
+    """
+    API for Quran applications management.
 
-/// <summary>
-/// Retrieves a single app by ID
-/// </summary>
-/// <param name="id">The unique identifier of the app</param>
-/// <returns>Complete app details including developer, categories, and screenshots</returns>
-/// <response code="200">Returns the app</response>
-/// <response code="404">App not found</response>
-[HttpGet("{id:guid}")]
-[ProducesResponseType(typeof(AppDetailDto), StatusCodes.Status200OK)]
-[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-public async Task<ActionResult<AppDetailDto>> GetApp(Guid id)
-{
-    // Implementation
-}
+    list:
+    Returns a paginated list of all Quran apps with filtering and search.
 
-/// <summary>
-/// Creates a new app (requires authentication)
-/// </summary>
-/// <param name="dto">App creation data</param>
-/// <returns>The created app</returns>
-/// <response code="201">App created successfully</response>
-/// <response code="400">Validation errors</response>
-/// <response code="401">Unauthorized</response>
-[HttpPost]
-[Authorize]
-[ProducesResponseType(typeof(AppDetailDto), StatusCodes.Status201Created)]
-[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-public async Task<ActionResult<AppDetailDto>> CreateApp([FromBody] CreateAppDto dto)
-{
-    // Implementation
-}
+    Query Parameters:
+    - page: Page number (default: 1)
+    - page_size: Items per page (default: 20, max: 100)
+    - search: Search by name_en or name_ar
+    - category: Filter by category ID
+
+    Response:
+    - 200: Paginated list of apps
+    - 400: Invalid query parameters
+    """
+    queryset = App.objects.select_related('developer').prefetch_related('categories')
+    serializer_class = AppSerializer
+    pagination_class = PageNumberPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['category']
+    search_fields = ['name_en', 'name_ar']
+    ordering_fields = ['created_at', 'apps_avg_rating']
+    permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        GET /api/apps/{id} - Retrieve a single app by ID
+
+        Response:
+        - 200: Complete app details including developer, categories
+        - 404: App not found
+        """
+        return super().retrieve(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        """
+        POST /api/apps - Create a new app (requires authentication)
+
+        Response:
+        - 201: App created successfully
+        - 400: Validation errors
+        - 401: Unauthorized
+        """
+        return super().create(request, *args, **kwargs)
 ```
 
-### Example Response Classes
-```csharp
-public class AppListDtoExample : IExamplesProvider<AppListDto>
-{
-    public AppListDto GetExamples()
+### Example Serializer with Examples
+```python
+class AppListSerializer(serializers.ModelSerializer):
+    """
+    Example:
     {
-        return new AppListDto
-        {
-            Id = Guid.Parse("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"),
-            NameAr = "مصحف التجويد الملون",
-            NameEn = "Tajweed Quran",
-            ShortDescriptionAr = "مصحف ملون بألوان التجويد",
-            ShortDescriptionEn = "Color-coded Tajweed Quran",
-            ApplicationIconUrl = "https://cdn.example.com/icons/tajweed.png",
-            AverageRating = 4.7m,
-            Categories = new List<string> { "Reading", "Learning" }
-        };
+        "id": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
+        "name_ar": "مصحف التجويد الملون",
+        "name_en": "Tajweed Quran",
+        "short_description_ar": "مصحف ملون بألوان التجويد",
+        "short_description_en": "Color-coded Tajweed Quran",
+        "application_icon": "https://cdn.example.com/icons/tajweed.png",
+        "apps_avg_rating": 4.7,
+        "categories": ["Reading", "Learning"]
     }
-}
+    """
+
+    class Meta:
+        model = App
+        fields = ['id', 'name_ar', 'name_en', 'short_description_ar',
+                 'short_description_en', 'application_icon', 'apps_avg_rating']
 ```
 
-### csproj Configuration (Enable XML Documentation)
-```xml
-<PropertyGroup>
-  <GenerateDocumentationFile>true</GenerateDocumentationFile>
-  <NoWarn>$(NoWarn);1591</NoWarn>
-</PropertyGroup>
+### Django settings.py Configuration for Docstrings
+```python
+# In settings.py, docstrings are automatically extracted from:
+# 1. ViewSet class docstrings
+# 2. Method docstrings in ViewSet
+# 3. Serializer field help_text attributes
+# No additional configuration needed - drf-spectacular auto-generates from docstrings
 ```
 
 ---
@@ -232,7 +213,7 @@ public class AppListDtoExample : IExamplesProvider<AppListDto>
 ---
 
 ## 📊 Definition of Done
-- [ ] Swagger UI accessible and branded
+- [ ] drf-spectacular UI accessible and branded
 - [ ] All endpoints documented with XML comments
 - [ ] Authentication integration working
 - [ ] Example requests/responses provided

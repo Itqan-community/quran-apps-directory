@@ -57,34 +57,26 @@
 - [ ] Rating must be 1-5 (decimal allowed, e.g., 4.5)
 - [ ] Comment max length: 2000 characters
 - [ ] Profanity filter applied (basic)
-- [ ] Spam detection (ML.NET or rule-based)
+- [ ] Spam detection (scikit-learn/TensorFlow or rule-based)
 - [ ] Rate limiting: 5 reviews per day per user
 
 ---
 
 ## 📝 Technical Notes
 
-### Reviews Controller
-```csharp
-[ApiController]
-[Route("api/apps/{appId}/reviews")]
-public class ReviewsController : ControllerBase
+### ViewSet
+```python
+class ReviewsViewSet(viewsets.ModelViewSet):
 {
-    private readonly IReviewsService _reviewsService;
-    private readonly IRatingService _ratingService;
     
-    [HttpPost]
-    [Authorize]
-    [ProducesResponseType(typeof(ReviewDto), StatusCodes.Status201Created)]
-    public async Task<ActionResult<ReviewDto>> SubmitReview(
+    def <ReviewDto>> SubmitReview(
         Guid appId,
-        [FromBody] CreateReviewDto dto)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         // Check if user already reviewed this app
         var existing = await _reviewsService.GetUserReviewForAppAsync(
-            Guid.Parse(userId), appId);
+            uuid.UUID(userId), appId);
         
         if (existing != null)
             return Conflict(new { message = "You already reviewed this app" });
@@ -94,7 +86,7 @@ public class ReviewsController : ControllerBase
         {
             Id = Guid.NewGuid(),
             AppId = appId,
-            UserId = Guid.Parse(userId),
+            UserId = uuid.UUID(userId),
             Rating = dto.Rating,
             Comment = dto.Comment,
             CreatedAt = DateTime.UtcNow,
@@ -104,20 +96,13 @@ public class ReviewsController : ControllerBase
         // Recalculate app rating
         await _ratingService.RecalculateAppRatingAsync(appId);
         
-        return CreatedAtAction(
             nameof(GetReview),
             new { reviewId = review.Id },
             review);
     }
     
-    [HttpGet]
-    [ProducesResponseType(typeof(PagedResult<ReviewDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<PagedResult<ReviewDto>>> GetAppReviews(
+    def <PagedResult<ReviewDto>>> GetAppReviews(
         Guid appId,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        [FromQuery] string sortBy = "newest",
-        [FromQuery] int? rating = null)
     {
         var reviews = await _reviewsService.GetAppReviewsAsync(
             appId, page, pageSize, sortBy, rating);
@@ -125,43 +110,31 @@ public class ReviewsController : ControllerBase
         return Ok(reviews);
     }
     
-    [HttpGet("me")]
-    [Authorize]
-    [ProducesResponseType(typeof(ReviewDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ReviewDto>> GetMyReview(Guid appId)
+    def <ReviewDto>> GetMyReview(Guid appId)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var review = await _reviewsService.GetUserReviewForAppAsync(
-            Guid.Parse(userId), appId);
+            uuid.UUID(userId), appId);
         
         if (review == null)
-            return NotFound();
         
         return Ok(review);
     }
 }
 
-[ApiController]
-[Route("api/reviews")]
-public class ReviewManagementController : ControllerBase
+class ReviewManagementViewSet(viewsets.ModelViewSet):
 {
-    [HttpPut("{id:guid}")]
-    [Authorize]
-    public async Task<ActionResult<ReviewDto>> UpdateReview(
-        Guid id,
-        [FromBody] UpdateReviewDto dto)
+    def <ReviewDto>> UpdateReview(
+        uuid_id,
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var review = await _reviewsService.GetReviewByIdAsync(id);
         
         if (review == null)
-            return NotFound();
         
         if (review.UserId.ToString() != userId)
-            return Forbid();
         
         review.Rating = dto.Rating;
         review.Comment = dto.Comment;
@@ -174,45 +147,38 @@ public class ReviewManagementController : ControllerBase
         return Ok(review);
     }
     
-    [HttpDelete("{id:guid}")]
-    [Authorize]
-    public async Task<IActionResult> DeleteReview(Guid id)
+    def  DeleteReview(uuid_id)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var review = await _reviewsService.GetReviewByIdAsync(id);
         
         if (review == null)
-            return NotFound();
         
         if (review.UserId.ToString() != userId)
-            return Forbid();
         
         await _reviewsService.DeleteReviewAsync(id);
         await _ratingService.RecalculateAppRatingAsync(review.AppId);
         
-        return NoContent();
     }
 }
 ```
 
 ### Reviews Service
-```csharp
+```python
 public interface IReviewsService
 {
     Task<ReviewDto> CreateReviewAsync(Review review);
-    Task<ReviewDto> GetReviewByIdAsync(Guid id);
+    Task<ReviewDto> GetReviewByIdAsync(uuid_id);
     Task<ReviewDto> GetUserReviewForAppAsync(Guid userId, Guid appId);
     Task<PagedResult<ReviewDto>> GetAppReviewsAsync(Guid appId, int page, 
         int pageSize, string sortBy, int? rating);
     Task UpdateReviewAsync(Review review);
-    Task DeleteReviewAsync(Guid id);
+    Task DeleteReviewAsync(uuid_id);
 }
 
 public class ReviewsService : IReviewsService
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IProfanityFilter _profanityFilter;
     
     public async Task<ReviewDto> CreateReviewAsync(Review review)
     {
@@ -286,7 +252,7 @@ public class ReviewsService : IReviewsService
 ```
 
 ### DTOs
-```csharp
+```python
 public class CreateReviewDto
 {
     [Required]

@@ -60,7 +60,7 @@
 ## 📝 Technical Notes
 
 ### Many-to-Many Handling
-```csharp
+```python
 public async Task MigrateRelationshipsAsync(
     List<App> apps,
     List<StaticAppData> sourceData,
@@ -109,7 +109,7 @@ public async Task MigrateRelationshipsAsync(
 ```
 
 ### Category Mapping Setup
-```csharp
+```python
 public async Task<Dictionary<string, Guid>> BuildCategoryMapAsync()
 {
     var categories = await _context.Categories.ToListAsync();
@@ -130,8 +130,8 @@ public async Task<Dictionary<string, Guid>> BuildCategoryMapAsync()
 }
 ```
 
-### EF Core Navigation Configuration
-```csharp
+### Django ORM Navigation Configuration
+```python
 // In ApplicationDbContext.OnModelCreating
 modelBuilder.Entity<AppCategory>()
     .HasKey(ac => new { ac.AppId, ac.CategoryId });

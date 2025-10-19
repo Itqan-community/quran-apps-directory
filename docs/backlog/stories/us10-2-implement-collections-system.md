@@ -64,7 +64,7 @@
 ## 📝 Technical Notes
 
 ### Collection Entities
-```csharp
+```python
 public class Collection
 {
     public Guid Id { get; set; }
@@ -101,115 +101,93 @@ public class AppCollection
 }
 ```
 
-### Collections Controller
-```csharp
-[ApiController]
-[Route("api/users/me/collections")]
-[Authorize]
-public class CollectionsController : ControllerBase
+### ViewSet
+```python
+class CollectionsViewSet(viewsets.ModelViewSet):
 {
-    private readonly ICollectionsService _collectionsService;
     
-    [HttpPost]
-    [ProducesResponseType(typeof(CollectionDto), StatusCodes.Status201Created)]
-    public async Task<ActionResult<CollectionDto>> CreateCollection(
-        [FromBody] CreateCollectionDto dto)
+    def <CollectionDto>> CreateCollection(
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var collection = await _collectionsService.CreateCollectionAsync(
-            Guid.Parse(userId), dto);
+            uuid.UUID(userId), dto);
         
-        return CreatedAtAction(
             nameof(GetCollection),
             new { id = collection.Id },
             collection);
     }
     
-    [HttpPut("{id:guid}")]
-    public async Task<ActionResult<CollectionDto>> UpdateCollection(
-        Guid id,
-        [FromBody] UpdateCollectionDto dto)
+    def <CollectionDto>> UpdateCollection(
+        uuid_id,
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var collection = await _collectionsService.UpdateCollectionAsync(
-            id, Guid.Parse(userId), dto);
+            id, uuid.UUID(userId), dto);
         
         if (collection == null)
-            return NotFound();
         
         return Ok(collection);
     }
     
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteCollection(Guid id)
+    def  DeleteCollection(uuid_id)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var deleted = await _collectionsService.DeleteCollectionAsync(
-            id, Guid.Parse(userId));
+            id, uuid.UUID(userId));
         
         if (!deleted)
-            return NotFound();
         
-        return NoContent();
     }
     
-    [HttpPost("{collectionId:guid}/apps/{appId:guid}")]
-    public async Task<IActionResult> AddAppToCollection(
+    def  AddAppToCollection(
         Guid collectionId,
         Guid appId)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         await _collectionsService.AddAppToCollectionAsync(
-            collectionId, appId, Guid.Parse(userId));
+            collectionId, appId, uuid.UUID(userId));
         
         return StatusCode(201);
     }
     
-    [HttpDelete("{collectionId:guid}/apps/{appId:guid}")]
-    public async Task<IActionResult> RemoveAppFromCollection(
+    def  RemoveAppFromCollection(
         Guid collectionId,
         Guid appId)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         await _collectionsService.RemoveAppFromCollectionAsync(
-            collectionId, appId, Guid.Parse(userId));
+            collectionId, appId, uuid.UUID(userId));
         
-        return NoContent();
     }
     
-    [HttpGet]
-    public async Task<ActionResult<List<CollectionSummaryDto>>> GetUserCollections()
+    def <List<CollectionSummaryDto>>> GetUserCollections()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var collections = await _collectionsService.GetUserCollectionsAsync(
-            Guid.Parse(userId));
+            uuid.UUID(userId));
         
         return Ok(collections);
     }
 }
 
-[ApiController]
-[Route("api/collections")]
-public class PublicCollectionsController : ControllerBase
+class PublicCollectionsViewSet(viewsets.ModelViewSet):
 {
-    [HttpGet("{id:guid}")]
     [AllowAnonymous]
-    public async Task<ActionResult<CollectionDetailDto>> GetCollection(Guid id)
+    def <CollectionDetailDto>> GetCollection(uuid_id)
     {
         var userId = User.Identity?.IsAuthenticated == true
-            ? Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+            ? uuid.UUID(request.user.id)
             : (Guid?)null;
         
         var collection = await _collectionsService.GetCollectionAsync(id, userId);
         
         if (collection == null)
-            return NotFound();
         
         return Ok(collection);
     }
@@ -217,7 +195,7 @@ public class PublicCollectionsController : ControllerBase
 ```
 
 ### Collections Service
-```csharp
+```python
 public class CollectionsService : ICollectionsService
 {
     public async Task<CollectionDto> CreateCollectionAsync(
@@ -277,7 +255,7 @@ public class CollectionsService : ICollectionsService
     }
     
     public async Task<CollectionDetailDto> GetCollectionAsync(
-        Guid id,
+        uuid_id,
         Guid? requestingUserId)
     {
         var collection = await _context.Collections

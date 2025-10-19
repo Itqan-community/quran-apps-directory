@@ -504,7 +504,7 @@ Open public API for third-party integrations.
 #### User Stories
 
 **US15.1: API Documentation & Developer Portal**
-- Comprehensive API docs (Swagger)
+- Comprehensive API docs (drf-spectacular)
 - Developer portal
 - Code examples
 - Interactive playground

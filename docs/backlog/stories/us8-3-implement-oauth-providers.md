@@ -1,18 +1,18 @@
-# US8.3: Implement OAuth 2.0 Providers (Google, Apple, Facebook)
+# US8.3: Implement OAuth 2.0 Providers with django-allauth
 
-**Epic:** Epic 8 - User Accounts & Personalization  
-**Sprint:** Week 7, Day 2-3  
-**Story Points:** 8  
-**Priority:** P1  
-**Assigned To:** Backend Developer  
+**Epic:** Epic 8 - User Accounts & Personalization
+**Sprint:** Week 7
+**Story Points:** 8
+**Priority:** P1
+**Assigned To:** Backend Developer
 **Status:** Not Started
 
 ---
 
 ## 📋 User Story
 
-**As a** User  
-**I want** to sign in using my Google, Apple, or Facebook account  
+**As a** User
+**I want** to sign in using my Google, Apple, or Facebook account
 **So that** I can register and login quickly without creating a new password
 
 ---
@@ -72,27 +72,16 @@
 
 ## 📝 Technical Notes
 
-### OAuth Controller
-```csharp
-[ApiController]
-[Route("api/auth")]
-public class OAuthController : ControllerBase
+### ViewSet
+```python
+class OAuthViewSet(viewsets.ModelViewSet):
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly ITokenService _tokenService;
-    private readonly IGoogleAuthService _googleAuth;
-    private readonly IAppleAuthService _appleAuth;
-    private readonly IFacebookAuthService _facebookAuth;
     
-    [HttpPost("google")]
-    [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
-    public async Task<ActionResult<AuthResponse>> GoogleLogin([FromBody] GoogleLoginDto dto)
     {
         // Validate Google ID token
         var payload = await _googleAuth.ValidateTokenAsync(dto.IdToken);
         
         if (payload == null)
-            return Unauthorized(new { message = "Invalid Google token" });
         
         // Find or create user
         var user = await _userManager.FindByLoginAsync("Google", payload.Subject);
@@ -118,7 +107,6 @@ public class OAuthController : ControllerBase
                 
                 var createResult = await _userManager.CreateAsync(user);
                 if (!createResult.Succeeded)
-                    return BadRequest(createResult.Errors);
                 
                 await _userManager.AddToRoleAsync(user, "User");
             }
@@ -138,13 +126,10 @@ public class OAuthController : ControllerBase
         return Ok(authResponse);
     }
     
-    [HttpPost("apple")]
-    public async Task<ActionResult<AuthResponse>> AppleLogin([FromBody] AppleLoginDto dto)
     {
         var payload = await _appleAuth.ValidateTokenAsync(dto.IdentityToken);
         
         if (payload == null)
-            return Unauthorized(new { message = "Invalid Apple token" });
         
         var user = await _userManager.FindByLoginAsync("Apple", payload.Subject);
         
@@ -165,7 +150,6 @@ public class OAuthController : ControllerBase
             
             var createResult = await _userManager.CreateAsync(user);
             if (!createResult.Succeeded)
-                return BadRequest(createResult.Errors);
             
             await _userManager.AddToRoleAsync(user, "User");
             
@@ -181,13 +165,10 @@ public class OAuthController : ControllerBase
         return Ok(authResponse);
     }
     
-    [HttpPost("facebook")]
-    public async Task<ActionResult<AuthResponse>> FacebookLogin([FromBody] FacebookLoginDto dto)
     {
         var profile = await _facebookAuth.GetUserProfileAsync(dto.AccessToken);
         
         if (profile == null)
-            return Unauthorized(new { message = "Invalid Facebook token" });
         
         var user = await _userManager.FindByLoginAsync("Facebook", profile.Id);
         
@@ -210,7 +191,6 @@ public class OAuthController : ControllerBase
                 
                 var createResult = await _userManager.CreateAsync(user);
                 if (!createResult.Succeeded)
-                    return BadRequest(createResult.Errors);
                 
                 await _userManager.AddToRoleAsync(user, "User");
             }
@@ -230,7 +210,7 @@ public class OAuthController : ControllerBase
 ```
 
 ### Google Auth Service
-```csharp
+```python
 public interface IGoogleAuthService
 {
     Task<GoogleJsonWebSignature.Payload> ValidateTokenAsync(string idToken);
@@ -238,7 +218,6 @@ public interface IGoogleAuthService
 
 public class GoogleAuthService : IGoogleAuthService
 {
-    private readonly IConfiguration _configuration;
     
     public async Task<GoogleJsonWebSignature.Payload> ValidateTokenAsync(string idToken)
     {
@@ -263,11 +242,9 @@ public class GoogleAuthService : IGoogleAuthService
 ```
 
 ### Apple Auth Service
-```csharp
+```python
 public class AppleAuthService : IAppleAuthService
 {
-    private readonly HttpClient _httpClient;
-    private readonly IConfiguration _configuration;
     
     public async Task<AppleTokenPayload> ValidateTokenAsync(string identityToken)
     {
@@ -320,10 +297,9 @@ public class AppleAuthService : IAppleAuthService
 ```
 
 ### Facebook Auth Service
-```csharp
+```python
 public class FacebookAuthService : IFacebookAuthService
 {
-    private readonly HttpClient _httpClient;
     
     public async Task<FacebookUserProfile> GetUserProfileAsync(string accessToken)
     {
@@ -362,7 +338,7 @@ public class FacebookAuthService : IFacebookAuthService
 }
 ```
 
-### NuGet Packages
+### pip Packages
 ```xml
 <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
 <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.0" />
@@ -371,7 +347,7 @@ public class FacebookAuthService : IFacebookAuthService
 ---
 
 ## 🔗 Dependencies
-- US8.1: ASP.NET Identity
+- US8.1: django-allauth
 - US8.2: JWT Auth Endpoints
 
 ---
@@ -389,5 +365,5 @@ public class FacebookAuthService : IFacebookAuthService
 ---
 
 **Created:** October 6, 2025  
-**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
+**Updated:** October 19, 2025 (Django alignment)**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
 **Epic:** [Epic 8: User Accounts & Personalization](../epics/epic-8-user-accounts-personalization.md)

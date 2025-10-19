@@ -88,8 +88,6 @@ export interface SearchQuery {
 })
 export class SearchService {
   private searchSubject = new Subject<SearchQuery>();
-  private readonly HISTORY_KEY = 'search_history';
-  private readonly MAX_HISTORY = 10;
   
   // Debounced search stream
   search$ = this.searchSubject.pipe(

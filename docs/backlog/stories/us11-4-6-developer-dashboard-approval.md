@@ -192,20 +192,12 @@ export class DeveloperDashboardComponent implements OnInit {
 }
 ```
 
-### Admin Submission Review Controller
-```csharp
-[ApiController]
-[Route("api/admin/submissions")]
-[Authorize(Roles = "Admin")]
-public class AdminSubmissionsController : ControllerBase
+### ViewSet
+```python
+class AdminSubmissionsViewSet(viewsets.ModelViewSet):
 {
-    private readonly ISubmissionService _submissionService;
-    private readonly INotificationService _notificationService;
     
-    [HttpGet("pending")]
-    public async Task<ActionResult<PagedResult<AppSubmissionDto>>> GetPendingSubmissions(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20)
+    def <PagedResult<AppSubmissionDto>>> GetPendingSubmissions(
     {
         var submissions = await _submissionService.GetPendingSubmissionsAsync(
             page, pageSize);
@@ -213,13 +205,12 @@ public class AdminSubmissionsController : ControllerBase
         return Ok(submissions);
     }
     
-    [HttpPost("{id:guid}/approve")]
-    public async Task<IActionResult> ApproveSubmission(Guid id)
+    def  ApproveSubmission(uuid_id)
     {
-        var adminId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var adminId = request.user.id;
         
         var app = await _submissionService.ApproveSubmissionAsync(
-            id, Guid.Parse(adminId));
+            id, uuid.UUID(adminId));
         
         // Notify developer
         var submission = await _context.AppSubmissions
@@ -236,15 +227,13 @@ public class AdminSubmissionsController : ControllerBase
         return Ok(new { message = "App approved", appId = app.Id });
     }
     
-    [HttpPost("{id:guid}/reject")]
-    public async Task<IActionResult> RejectSubmission(
-        Guid id,
-        [FromBody] RejectSubmissionDto dto)
+    def  RejectSubmission(
+        uuid_id,
     {
-        var adminId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var adminId = request.user.id;
         
         await _submissionService.RejectSubmissionAsync(
-            id, Guid.Parse(adminId), dto.Reason);
+            id, uuid.UUID(adminId), dto.Reason);
         
         // Notify developer
         var submission = await _context.AppSubmissions
@@ -264,7 +253,7 @@ public class AdminSubmissionsController : ControllerBase
 ```
 
 ### Submission Service - Approval Logic
-```csharp
+```python
 public async Task<App> ApproveSubmissionAsync(Guid submissionId, Guid adminId)
 {
     var submission = await _context.AppSubmissions

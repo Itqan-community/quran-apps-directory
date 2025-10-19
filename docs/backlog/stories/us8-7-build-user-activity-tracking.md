@@ -1,6 +1,6 @@
-# US8.7: Build User Activity Tracking
+# US8.7: Build User Activity Tracking (Django Signals)
 
-**Epic:** Epic 8 - User Accounts & Personalization  
+**Epic:** Epic 8 - User Accounts & Personalization
 **Sprint:** Week 8, Day 2  
 **Story Points:** 3  
 **Priority:** P2  
@@ -61,7 +61,7 @@
 ## 📝 Technical Notes
 
 ### UserActivity Entity
-```csharp
+```python
 public class UserActivity
 {
     public Guid Id { get; set; }
@@ -102,7 +102,7 @@ public static class ActivityTypes
 ```
 
 ### Activity Service
-```csharp
+```python
 public interface IActivityService
 {
     Task LogActivityAsync(Guid userId, string activityType, Guid? entityId = null, 
@@ -113,9 +113,6 @@ public interface IActivityService
 
 public class ActivityService : IActivityService
 {
-    private readonly ApplicationDbContext _context;
-    private readonly ILogger<ActivityService> _logger;
-    private readonly Channel<UserActivity> _activityQueue;
     
     public ActivityService(
         ApplicationDbContext context,
@@ -229,10 +226,9 @@ public class ActivityService : IActivityService
 ```
 
 ### Middleware for Automatic Activity Tracking
-```csharp
+```python
 public class ActivityTrackingMiddleware
 {
-    private readonly RequestDelegate _next;
     
     public async Task InvokeAsync(HttpContext context, IActivityService activityService)
     {
@@ -243,7 +239,7 @@ public class ActivityTrackingMiddleware
         
         if (context.User.Identity?.IsAuthenticated == true)
         {
-            var userIdStr = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userIdStr = context.request.user.id;
             if (Guid.TryParse(userIdStr, out var userId))
             {
                 // Track app views
@@ -274,7 +270,7 @@ public class ActivityTrackingMiddleware
 ```
 
 ### Analytics Service
-```csharp
+```python
 public class AnalyticsService
 {
     public async Task<DailyActiveUsersDto> GetDAUAsync(DateTime date)
@@ -356,7 +352,7 @@ public class AnalyticsService
 ---
 
 ## 🔗 Dependencies
-- US8.1: ASP.NET Identity
+- US8.1: django-allauth
 - US8.2: JWT Auth
 
 ---
@@ -374,5 +370,5 @@ public class AnalyticsService
 ---
 
 **Created:** October 6, 2025  
-**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
+**Updated:** October 19, 2025 (Django alignment)**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
 **Epic:** [Epic 8: User Accounts & Personalization](../epics/epic-8-user-accounts-personalization.md)

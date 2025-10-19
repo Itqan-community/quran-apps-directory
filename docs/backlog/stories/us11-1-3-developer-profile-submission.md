@@ -55,7 +55,7 @@
 ## 📝 Technical Implementation
 
 ### Developer Profile Entities
-```csharp
+```python
 public class DeveloperProfile
 {
     public Guid Id { get; set; }
@@ -163,67 +163,50 @@ public static class SubmissionStatus
 }
 ```
 
-### Developers Controller
-```csharp
-[ApiController]
-[Route("api/developers")]
-[Authorize(Roles = "Developer")]
-public class DevelopersController : ControllerBase
+### ViewSet
+```python
+class DevelopersViewSet(viewsets.ModelViewSet):
 {
-    private readonly IDeveloperService _developerService;
-    private readonly IStorageService _storageService;
     
-    [HttpPost("register")]
     [AllowAnonymous]
-    [Authorize] // Only authenticated users
-    public async Task<ActionResult<DeveloperProfileDto>> RegisterDeveloper(
-        [FromBody] RegisterDeveloperDto dto)
+    def <DeveloperProfileDto>> RegisterDeveloper(
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var profile = await _developerService.RegisterDeveloperAsync(
-            Guid.Parse(userId), dto);
+            uuid.UUID(userId), dto);
         
-        return CreatedAtAction(nameof(GetProfile), profile);
     }
     
-    [HttpGet("profile")]
-    public async Task<ActionResult<DeveloperProfileDto>> GetProfile()
+    def <DeveloperProfileDto>> GetProfile()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var profile = await _developerService.GetDeveloperProfileAsync(
-            Guid.Parse(userId));
+            uuid.UUID(userId));
         
         if (profile == null)
-            return NotFound();
         
         return Ok(profile);
     }
     
-    [HttpPut("profile")]
-    public async Task<ActionResult<DeveloperProfileDto>> UpdateProfile(
-        [FromBody] UpdateDeveloperProfileDto dto)
+    def <DeveloperProfileDto>> UpdateProfile(
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var profile = await _developerService.UpdateDeveloperProfileAsync(
-            Guid.Parse(userId), dto);
+            uuid.UUID(userId), dto);
         
         return Ok(profile);
     }
     
-    [HttpPost("upload-image")]
-    [RequestSizeLimit(5 * 1024 * 1024)] // 5MB
-    public async Task<ActionResult<ImageUploadResponse>> UploadImage(
+    def <ImageUploadResponse>> UploadImage(
         IFormFile file,
-        [FromQuery] string type = "screenshot") // logo, icon, screenshot
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         // Validate
         if (!IsValidImageType(file.ContentType))
-            return BadRequest(new { message = "Invalid image type" });
         
         // Resize based on type
         var (width, height) = type switch
@@ -254,73 +237,60 @@ public class DevelopersController : ControllerBase
 }
 ```
 
-### App Submissions Controller
-```csharp
-[ApiController]
-[Route("api/developers/submissions/apps")]
-[Authorize(Roles = "Developer")]
-public class AppSubmissionsController : ControllerBase
+### ViewSet
+```python
+class AppSubmissionsViewSet(viewsets.ModelViewSet):
 {
-    [HttpPost]
-    public async Task<ActionResult<AppSubmissionDto>> CreateDraft(
-        [FromBody] CreateAppSubmissionDto dto)
+    def <AppSubmissionDto>> CreateDraft(
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var submission = await _submissionService.CreateDraftAsync(
-            Guid.Parse(userId), dto);
+            uuid.UUID(userId), dto);
         
-        return CreatedAtAction(nameof(GetSubmission), 
             new { id = submission.Id }, submission);
     }
     
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<AppSubmissionDto>> GetSubmission(Guid id)
+    def <AppSubmissionDto>> GetSubmission(uuid_id)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var submission = await _submissionService.GetSubmissionAsync(
-            id, Guid.Parse(userId));
+            id, uuid.UUID(userId));
         
         if (submission == null)
-            return NotFound();
         
         return Ok(submission);
     }
     
-    [HttpPut("{id:guid}")]
-    public async Task<ActionResult<AppSubmissionDto>> UpdateSubmission(
-        Guid id,
-        [FromBody] UpdateAppSubmissionDto dto)
+    def <AppSubmissionDto>> UpdateSubmission(
+        uuid_id,
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var submission = await _submissionService.UpdateSubmissionAsync(
-            id, Guid.Parse(userId), dto);
+            id, uuid.UUID(userId), dto);
         
         if (submission == null)
-            return NotFound();
         
         return Ok(submission);
     }
     
-    [HttpPost("{id:guid}/submit")]
-    public async Task<IActionResult> SubmitForReview(Guid id)
+    def  SubmitForReview(uuid_id)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
-        await _submissionService.SubmitForReviewAsync(id, Guid.Parse(userId));
+        await _submissionService.SubmitForReviewAsync(id, uuid.UUID(userId));
         
         return Ok(new { message = "Submitted for review" });
     }
     
-    [HttpGet]
-    public async Task<ActionResult<List<AppSubmissionSummaryDto>>> GetMySubmissions()
+    def <List<AppSubmissionSummaryDto>>> GetMySubmissions()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var submissions = await _submissionService.GetDeveloperSubmissionsAsync(
-            Guid.Parse(userId));
+            uuid.UUID(userId));
         
         return Ok(submissions);
     }
@@ -328,7 +298,7 @@ public class AppSubmissionsController : ControllerBase
 ```
 
 ### Cloudflare R2 Storage Service
-```csharp
+```python
 public interface IStorageService
 {
     Task<string> UploadAsync(string fileName, Stream content, string contentType);
@@ -338,9 +308,6 @@ public interface IStorageService
 
 public class CloudflareR2StorageService : IStorageService
 {
-    private readonly AmazonS3Client _s3Client;
-    private readonly string _bucketName;
-    private readonly string _publicUrl;
     
     public CloudflareR2StorageService(IConfiguration configuration)
     {

@@ -52,7 +52,7 @@ Empower admins with efficient tools to manage the platform at scale while mainta
 
 ## Django Implementation Details
 ### Entity Models
-```csharp
+```python
 public class AuditLog
 {
     public Guid Id { get; set; }
@@ -114,35 +114,26 @@ public enum ModerationPriority
 }
 ```
 
-### AdminController
-```csharp
-[ApiController]
-[Route("api/v1/admin")]
-[Authorize(Roles = "Admin")]
-public class AdminController : ControllerBase
+### AdminViewSet
+```python
+[ApiViewSet]
+public class AdminViewSet : ViewSetBase
 {
-    private readonly IAdminService _adminService;
-    private readonly IAuditLogService _auditLogService;
     
-    [HttpGet("dashboard")]
-    public async Task<ActionResult<AdminDashboardResponse>> GetDashboard()
+    public async Task<Response<AdminDashboardResponse>> GetDashboard()
     {
         var dashboard = await _adminService.GetDashboardMetricsAsync();
         return Ok(dashboard);
     }
     
-    [HttpGet("users")]
-    public async Task<ActionResult<PaginatedResponse<UserResponse>>> GetUsers(
-        [FromQuery] GetUsersRequest request)
+    public async Task<Response<PaginatedResponse<UserResponse>>> GetUsers(
     {
         var users = await _adminService.GetUsersAsync(request);
         return Ok(users);
     }
     
-    [HttpPut("users/{userId:guid}/ban")]
-    public async Task<IActionResult> BanUser(
+    public async Task<IResponse> BanUser(
         Guid userId,
-        [FromBody] BanUserRequest request)
     {
         var adminId = GetUserId();
         await _adminService.BanUserAsync(userId, request.Reason, request.DurationDays);
@@ -159,10 +150,8 @@ public class AdminController : ControllerBase
         return NoContent();
     }
     
-    [HttpPut("users/{userId:guid}/role")]
-    public async Task<IActionResult> ChangeUserRole(
+    public async Task<IResponse> ChangeUserRole(
         Guid userId,
-        [FromBody] ChangeRoleRequest request)
     {
         var adminId = GetUserId();
         await _adminService.ChangeUserRoleAsync(userId, request.Role);
@@ -179,26 +168,21 @@ public class AdminController : ControllerBase
         return NoContent();
     }
     
-    [HttpGet("moderation-queue")]
-    public async Task<ActionResult<PaginatedResponse<ModerationQueueItemResponse>>> GetModerationQueue(
-        [FromQuery] ModerationQueueFilter filter)
+    public async Task<Response<PaginatedResponse<ModerationQueueItemResponse>>> GetModerationQueue(
     {
         var queue = await _adminService.GetModerationQueueAsync(filter);
         return Ok(queue);
     }
     
-    [HttpPost("moderation-queue/{id:guid}/assign")]
-    public async Task<IActionResult> AssignModerationItem(Guid id)
+    public async Task<IResponse> AssignModerationItem(Guid id)
     {
         var adminId = GetUserId();
         await _adminService.AssignModerationItemAsync(id, adminId);
         return NoContent();
     }
     
-    [HttpPost("moderation-queue/{id:guid}/review")]
-    public async Task<IActionResult> ReviewModerationItem(
+    public async Task<IResponse> ReviewModerationItem(
         Guid id,
-        [FromBody] ReviewModerationItemRequest request)
     {
         var adminId = GetUserId();
         await _adminService.ReviewModerationItemAsync(id, adminId, request);
@@ -215,25 +199,19 @@ public class AdminController : ControllerBase
         return NoContent();
     }
     
-    [HttpGet("audit-logs")]
-    public async Task<ActionResult<PaginatedResponse<AuditLogResponse>>> GetAuditLogs(
-        [FromQuery] GetAuditLogsRequest request)
+    public async Task<Response<PaginatedResponse<AuditLogResponse>>> GetAuditLogs(
     {
         var logs = await _auditLogService.GetLogsAsync(request);
         return Ok(logs);
     }
     
-    [HttpGet("reports/platform-health")]
-    public async Task<ActionResult<PlatformHealthReport>> GetPlatformHealth()
+    public async Task<Response<PlatformHealthReport>> GetPlatformHealth()
     {
         var report = await _adminService.GetPlatformHealthReportAsync();
         return Ok(report);
     }
     
-    [HttpGet("reports/user-growth")]
-    public async Task<ActionResult<UserGrowthReport>> GetUserGrowth(
-        [FromQuery] DateTime startDate,
-        [FromQuery] DateTime endDate)
+    public async Task<Response<UserGrowthReport>> GetUserGrowth(
     {
         var report = await _adminService.GetUserGrowthReportAsync(startDate, endDate);
         return Ok(report);
@@ -242,11 +220,9 @@ public class AdminController : ControllerBase
 ```
 
 ### AdminService
-```csharp
+```python
 public class AdminService : IAdminService
 {
-    private readonly ApplicationDbContext _context;
-    private readonly UserManager<ApplicationUser> _userManager;
     
     public async Task<AdminDashboardResponse> GetDashboardMetricsAsync()
     {

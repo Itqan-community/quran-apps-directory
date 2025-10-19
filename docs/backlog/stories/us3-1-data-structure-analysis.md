@@ -75,7 +75,7 @@
   - Option 2: Use TypeScript compiler API
   - Option 3: Manual extraction via regex
 - [ ] Recommended approach selected and justified
-- [ ] Sample parsing code written in C#
+- [ ] Sample parsing code written in Python
 
 ### AC6: Migration Complexity Assessment
 - [ ] Data transformation complexity rated (Low/Medium/High)
@@ -123,22 +123,33 @@
 | Developer_Name_Ar | → Developer.NameAr | string → string | Extract unique | Create Developer entity |
 | categories | → AppCategories | string[] → List<Guid> | Map to Category IDs | Junction table |
 
-### C# Parsing Approach
-```csharp
-// Option 1: Parse as JSON (recommended)
-public class StaticAppData
-{
-    public int Id { get; set; }
-    public string Name_Ar { get; set; }
-    public string Name_En { get; set; }
-    // ... other properties
-}
+### Python Parsing Approach
+```python
+# Option 1: Parse as JSON (recommended)
+import json
+import re
+from typing import List, TypedDict
 
-// Read and parse
-var json = File.ReadAllText("applicationsData.ts")
-    .Replace("export const applications = ", "")
-    .TrimEnd(';');
-var apps = JsonSerializer.Deserialize<List<StaticAppData>>(json);
+class StaticAppData(TypedDict):
+    id: int
+    Name_Ar: str
+    Name_En: str
+    # ... other properties
+
+# Read and parse TypeScript file
+with open('src/app/services/applicationsData.ts', 'r', encoding='utf-8') as f:
+    content = f.read()
+
+# Extract JSON content from TypeScript export
+json_str = re.sub(r'export const applications = ', '', content)
+json_str = json_str.rstrip(';')
+
+# Parse JSON
+apps: List[StaticAppData] = json.loads(json_str)
+
+# Process apps for database migration
+for app in apps:
+    print(f"Processing: {app['Name_En']}")
 ```
 
 ---
@@ -167,7 +178,7 @@ var apps = JsonSerializer.Deserialize<List<StaticAppData>>(json);
 
 ## 📚 Resources
 - Current file: `src/app/services/applicationsData.ts`
-- System.Text.Json documentation
+- Python json module documentation
 - Data migration best practices
 
 ---

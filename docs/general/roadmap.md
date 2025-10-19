@@ -56,7 +56,7 @@ Focus: Build CRUD APIs. Dependencies: Phases 1-3.
   - US4.2: Advanced Filtering (# new story) - By features/languages.
   - US4.3: Pagination (# new story) - For large results.
   - US4.4: Error Handling (# new story) - Logging/retry.
-  - US4.5: API Documentation (# new story) - Swagger/OpenAPI.
+  - US4.5: API Documentation (# new story) - drf-spectacular/OpenAPI.
 
 ## Phase 5: Frontend Integration (Weeks 9-10, Priority 2)
 Focus: Connect Angular to APIs. Dependencies: Phase 4.

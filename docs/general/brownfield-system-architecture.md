@@ -25,7 +25,7 @@ This document defines the complete system architecture for migrating the Quran A
 - **Database:** PostgreSQL 16+ (relational, ACID compliant, proven at scale)
 - **Backend:** Django 5.2 with Django REST Framework (Python 3.12+, production-ready, industry-leading)
 - **ORM:** Django ORM with strong typing (migrations, query optimization)
-- **API:** RESTful with drf-spectacular (OpenAPI/Swagger)
+- **API:** RESTful with drf-spectacular (OpenAPI/drf-spectacular)
 - **Frontend:** Angular 19 (existing, maintain and enhance)
 - **Hosting:** Digital Ocean App Platform or Railway (backend) + Netlify (frontend)
 - **CDN:** Cloudflare R2 (existing, maintain)
@@ -1302,7 +1302,7 @@ python manage.py migrate
 **Day 5-7: Backend Complete**
 1. Implement filtering and pagination
 2. Add error handling and validation
-3. Setup Swagger documentation
+3. Setup drf-spectacular documentation
 4. Deploy to staging
 5. Load testing
 

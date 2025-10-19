@@ -48,7 +48,7 @@ Increase user engagement and retention by allowing personalized app curation and
 
 ## Django Implementation Details
 ### Entity Models
-```csharp
+```python
 public class Favorite
 {
     public Guid UserId { get; set; }
@@ -87,41 +87,34 @@ public class CollectionApp
 }
 ```
 
-### FavoritesController
-```csharp
-[ApiController]
-[Route("api/v1/[controller]")]
-[Authorize]
-public class FavoritesController : ControllerBase
+### FavoritesViewSet
+```python
+[ApiViewSet]
+public class FavoritesViewSet : ViewSetBase
 {
-    private readonly IFavoritesService _favoritesService;
     
-    [HttpGet]
-    public async Task<ActionResult<List<AppResponse>>> GetFavorites()
+    public async Task<Response<List<AppResponse>>> GetFavorites()
     {
         var userId = GetUserId();
         var favorites = await _favoritesService.GetUserFavoritesAsync(userId);
         return Ok(favorites);
     }
     
-    [HttpPost("{appId:guid}")]
-    public async Task<IActionResult> AddFavorite(Guid appId)
+    public async Task<IResponse> AddFavorite(Guid appId)
     {
         var userId = GetUserId();
         await _favoritesService.AddFavoriteAsync(userId, appId);
         return NoContent();
     }
     
-    [HttpDelete("{appId:guid}")]
-    public async Task<IActionResult> RemoveFavorite(Guid appId)
+    public async Task<IResponse> RemoveFavorite(Guid appId)
     {
         var userId = GetUserId();
         await _favoritesService.RemoveFavoriteAsync(userId, appId);
         return NoContent();
     }
     
-    [HttpGet("{appId:guid}/is-favorite")]
-    public async Task<ActionResult<bool>> IsFavorite(Guid appId)
+    public async Task<Response<bool>> IsFavorite(Guid appId)
     {
         var userId = GetUserId();
         var isFavorite = await _favoritesService.IsFavoriteAsync(userId, appId);
@@ -129,56 +122,45 @@ public class FavoritesController : ControllerBase
     }
 }
 
-[ApiController]
-[Route("api/v1/[controller]")]
-[Authorize]
-public class CollectionsController : ControllerBase
+[ApiViewSet]
+public class CollectionsViewSet : ViewSetBase
 {
-    private readonly ICollectionsService _collectionsService;
     
-    [HttpGet]
-    public async Task<ActionResult<List<CollectionResponse>>> GetCollections()
+    public async Task<Response<List<CollectionResponse>>> GetCollections()
     {
         var userId = GetUserId();
         var collections = await _collectionsService.GetUserCollectionsAsync(userId);
         return Ok(collections);
     }
     
-    [HttpPost]
-    public async Task<ActionResult<CollectionResponse>> CreateCollection(
-        [FromBody] CreateCollectionRequest request)
+    public async Task<Response<CollectionResponse>> CreateCollection(
     {
         var userId = GetUserId();
         var collection = await _collectionsService.CreateCollectionAsync(userId, request);
         return CreatedAtAction(nameof(GetCollection), new { id = collection.Id }, collection);
     }
     
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<CollectionDetailResponse>> GetCollection(Guid id)
+    public async Task<Response<CollectionDetailResponse>> GetCollection(Guid id)
     {
         var userId = User.Identity?.IsAuthenticated == true ? GetUserId() : (Guid?)null;
         var collection = await _collectionsService.GetCollectionAsync(id, userId);
         return collection == null ? NotFound() : Ok(collection);
     }
     
-    [HttpPost("{id:guid}/apps/{appId:guid}")]
-    public async Task<IActionResult> AddAppToCollection(Guid id, Guid appId)
+    public async Task<IResponse> AddAppToCollection(Guid id, Guid appId)
     {
         var userId = GetUserId();
         await _collectionsService.AddAppToCollectionAsync(id, appId, userId);
         return NoContent();
     }
     
-    [HttpDelete("{id:guid}/apps/{appId:guid}")]
-    public async Task<IActionResult> RemoveAppFromCollection(Guid id, Guid appId)
+    public async Task<IResponse> RemoveAppFromCollection(Guid id, Guid appId)
     {
         var userId = GetUserId();
         await _collectionsService.RemoveAppFromCollectionAsync(id, appId, userId);
         return NoContent();
     }
     
-    [HttpGet("{id:guid}/export")]
-    public async Task<IActionResult> ExportCollection(Guid id, [FromQuery] string format = "json")
     {
         var userId = GetUserId();
         var content = await _collectionsService.ExportCollectionAsync(id, userId, format);
@@ -190,8 +172,7 @@ public class CollectionsController : ControllerBase
     }
     
     [AllowAnonymous]
-    [HttpGet("shared/{shareToken}")]
-    public async Task<ActionResult<CollectionDetailResponse>> GetSharedCollection(string shareToken)
+    public async Task<Response<CollectionDetailResponse>> GetSharedCollection(string shareToken)
     {
         var collection = await _collectionsService.GetCollectionByShareTokenAsync(shareToken);
         return collection == null ? NotFound() : Ok(collection);
@@ -200,7 +181,7 @@ public class CollectionsController : ControllerBase
 ```
 
 ### CollectionsService
-```csharp
+```python
 public class CollectionsService : ICollectionsService
 {
     public async Task<CollectionResponse> CreateCollectionAsync(Guid userId, CreateCollectionRequest request)

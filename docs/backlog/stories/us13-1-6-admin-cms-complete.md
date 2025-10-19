@@ -66,7 +66,7 @@ Complete admin CMS including dashboard, user management, content moderation, app
 ## 📝 Technical Implementation
 
 ### Audit Log Entity
-```csharp
+```python
 public class AuditLog
 {
     public Guid Id { get; set; }
@@ -97,15 +97,11 @@ public class AuditLog
 }
 ```
 
-### Admin Dashboard Controller
-```csharp
-[ApiController]
-[Route("api/admin")]
-[Authorize(Roles = "Admin")]
-public class AdminDashboardController : ControllerBase
+### ViewSet
+```python
+class AdminDashboardViewSet(viewsets.ModelViewSet):
 {
-    [HttpGet("overview")]
-    public async Task<ActionResult<AdminOverviewDto>> GetOverview()
+    def <AdminOverviewDto>> GetOverview()
     {
         var totalUsers = await _context.Users.CountAsync();
         var totalApps = await _context.Apps.CountAsync();
@@ -136,19 +132,11 @@ public class AdminDashboardController : ControllerBase
 }
 ```
 
-### User Management Controller
-```csharp
-[ApiController]
-[Route("api/admin/users")]
-[Authorize(Roles = "Admin")]
-public class AdminUsersController : ControllerBase
+### ViewSet
+```python
+class AdminUsersViewSet(viewsets.ModelViewSet):
 {
-    [HttpGet]
-    public async Task<ActionResult<PagedResult<UserListDto>>> GetUsers(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        [FromQuery] string search = null,
-        [FromQuery] string role = null)
+    def <PagedResult<UserListDto>>> GetUsers(
     {
         var query = _context.Users.AsQueryable();
         
@@ -191,14 +179,11 @@ public class AdminUsersController : ControllerBase
         });
     }
     
-    [HttpPut("{id:guid}/roles")]
-    public async Task<IActionResult> UpdateUserRoles(
-        Guid id,
-        [FromBody] UpdateUserRolesDto dto)
+    def  UpdateUserRoles(
+        uuid_id,
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
         if (user == null)
-            return NotFound();
         
         var currentRoles = await _userManager.GetRolesAsync(user);
         
@@ -211,7 +196,7 @@ public class AdminUsersController : ControllerBase
         // Log action
         await _auditService.LogAsync(new AuditLog
         {
-            UserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value),
+            UserId = request.user.id,
             Action = "UserRolesUpdated",
             EntityType = "User",
             EntityId = id,
@@ -221,14 +206,11 @@ public class AdminUsersController : ControllerBase
         return Ok(new { message = "User roles updated" });
     }
     
-    [HttpPost("{id:guid}/ban")]
-    public async Task<IActionResult> BanUser(
-        Guid id,
-        [FromBody] BanUserDto dto)
+    def  BanUser(
+        uuid_id,
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
         if (user == null)
-            return NotFound();
         
         await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
         
@@ -242,7 +224,7 @@ public class AdminUsersController : ControllerBase
         // Log action
         await _auditService.LogAsync(new AuditLog
         {
-            UserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value),
+            UserId = request.user.id,
             Action = "UserBanned",
             EntityType = "User",
             EntityId = id,
@@ -254,19 +236,14 @@ public class AdminUsersController : ControllerBase
 }
 ```
 
-### App Management Controller
-```csharp
-[ApiController]
-[Route("api/admin/apps")]
-[Authorize(Roles = "Admin")]
-public class AdminAppsController : ControllerBase
+### ViewSet
+```python
+class AdminAppsViewSet(viewsets.ModelViewSet):
 {
-    [HttpPut("{id:guid}/feature")]
-    public async Task<IActionResult> FeatureApp(Guid id)
+    def  FeatureApp(uuid_id)
     {
         var app = await _context.Apps.FindAsync(id);
         if (app == null)
-            return NotFound();
         
         app.IsFeatured = !app.IsFeatured;
         app.FeaturedAt = app.IsFeatured ? DateTime.UtcNow : (DateTime?)null;
@@ -275,7 +252,7 @@ public class AdminAppsController : ControllerBase
         
         await _auditService.LogAsync(new AuditLog
         {
-            UserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value),
+            UserId = request.user.id,
             Action = app.IsFeatured ? "AppFeatured" : "AppUnfeatured",
             EntityType = "App",
             EntityId = id
@@ -284,19 +261,17 @@ public class AdminAppsController : ControllerBase
         return Ok(new { message = $"App {(app.IsFeatured ? "featured" : "unfeatured")}" });
     }
     
-    [HttpPut("{id:guid}/activate")]
-    public async Task<IActionResult> ToggleActive(Guid id)
+    def  ToggleActive(uuid_id)
     {
         var app = await _context.Apps.FindAsync(id);
         if (app == null)
-            return NotFound();
         
         app.IsActive = !app.IsActive;
         await _context.SaveChangesAsync();
         
         await _auditService.LogAsync(new AuditLog
         {
-            UserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value),
+            UserId = request.user.id,
             Action = app.IsActive ? "AppActivated" : "AppDeactivated",
             EntityType = "App",
             EntityId = id

@@ -118,13 +118,11 @@ export class FavoriteButtonComponent {
 ### Collection Sharing (US10.4)
 ```typescript
 // Backend - Share URL endpoint
-[HttpGet("{id:guid}/share-url")]
-public ActionResult<ShareUrlDto> GetShareUrl(Guid id)
+public Response<ShareUrlDto> GetShareUrl(uuid_id)
 {
     var collection = await _context.Collections.FindAsync(id);
     
     if (collection == null || !collection.IsPublic)
-        return NotFound();
     
     var url = $"{_configuration["Frontend:BaseUrl"]}/collections/{id}";
     
@@ -169,10 +167,8 @@ export class ShareCollectionComponent {
 ### Bulk Operations (US10.5)
 ```typescript
 // Backend - Bulk operations endpoint
-[HttpPost("bulk-operations")]
-public async Task<IActionResult> BulkOperation([FromBody] BulkOperationDto dto)
 {
-    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var userId = request.user.id;
     
     switch (dto.Operation)
     {
@@ -180,14 +176,14 @@ public async Task<IActionResult> BulkOperation([FromBody] BulkOperationDto dto)
             await _collectionsService.BulkAddAppsAsync(
                 dto.CollectionId.Value,
                 dto.AppIds,
-                Guid.Parse(userId));
+                uuid.UUID(userId));
             break;
         
         case "remove-from-collection":
             await _collectionsService.BulkRemoveAppsAsync(
                 dto.CollectionId.Value,
                 dto.AppIds,
-                Guid.Parse(userId));
+                uuid.UUID(userId));
             break;
         
         case "move-to-collection":
@@ -195,11 +191,10 @@ public async Task<IActionResult> BulkOperation([FromBody] BulkOperationDto dto)
                 dto.SourceCollectionId.Value,
                 dto.CollectionId.Value,
                 dto.AppIds,
-                Guid.Parse(userId));
+                uuid.UUID(userId));
             break;
         
         default:
-            return BadRequest();
     }
     
     return Ok(new { message = $"Bulk operation completed for {dto.AppIds.Count} apps" });
@@ -301,7 +296,7 @@ export class BulkSelectionComponent {
 ```
 
 ### Collections Service - Bulk Methods
-```csharp
+```python
 public async Task BulkAddAppsAsync(
     Guid collectionId,
     List<Guid> appIds,

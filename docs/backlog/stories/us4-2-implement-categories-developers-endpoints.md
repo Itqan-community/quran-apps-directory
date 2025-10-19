@@ -76,147 +76,126 @@
 
 ## 📝 Technical Notes
 
-### CategoriesController
-```csharp
-[ApiController]
-[Route("api/[controller]")]
-public class CategoriesController : ControllerBase
-{
-    private readonly ICategoriesService _categoriesService;
-    
-    [HttpGet]
-    [ProducesResponseType(typeof(CategoriesResponse), StatusCodes.Status200OK)]
-    public async Task<ActionResult<CategoriesResponse>> GetCategories()
-    {
-        var categories = await _categoriesService.GetAllCategoriesAsync();
-        
-        return Ok(new CategoriesResponse { Categories = categories });
-    }
-    
-    [HttpGet("{id:guid}/apps")]
-    [ProducesResponseType(typeof(PagedResult<AppListDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<PagedResult<AppListDto>>> GetCategoryApps(
-        Guid id,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20)
-    {
-        var apps = await _categoriesService.GetCategoryAppsAsync(
-            id, page, pageSize);
-        
-        if (apps == null)
-            return NotFound();
-        
-        return Ok(apps);
-    }
-    
-    [HttpPost]
-    [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status201Created)]
-    public async Task<ActionResult<CategoryDto>> CreateCategory(
-        [FromBody] CreateCategoryDto dto)
-    {
-        var category = await _categoriesService.CreateCategoryAsync(dto);
-        
-        return CreatedAtAction(
-            nameof(GetCategories),
-            new { id = category.Id },
-            category);
-    }
-}
+### CategoriesViewSet
+```python
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from django_filters.rest_framework import DjangoFilterBackend
+
+class CategoriesViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.annotate(app_count=Count('apps'))
+    serializer_class = CategorySerializer
+    filter_backends = [DjangoFilterBackend]
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=['get'])
+    def list_all(self, request):
+        """
+        GET /api/categories - Returns all categories with app counts
+        """
+        categories = self.get_queryset()
+        serializer = self.get_serializer(categories, many=True)
+        return Response({"categories": serializer.data})
+
+    @action(detail=True, methods=['get'])
+    def apps(self, request, pk=None):
+        """
+        GET /api/categories/{id}/apps - Returns paginated apps for category
+        """
+        category = self.get_object()
+        apps = category.apps.all()
+
+        paginator = PageNumberPagination()
+        paginated_apps = paginator.paginate_queryset(apps, request)
+
+        serializer = AppSerializer(paginated_apps, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        """
+        POST /api/categories - Create category (admin only)
+        """
+        if not request.user.is_staff:
+            return Response(
+                {"detail": "Admin access required"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().create(request, *args, **kwargs)
 ```
 
-### DevelopersController
-```csharp
-[ApiController]
-[Route("api/[controller]")]
-public class DevelopersController : ControllerBase
-{
-    private readonly IDevelopersService _developersService;
-    
-    [HttpGet]
-    [ProducesResponseType(typeof(PagedResult<DeveloperListDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<PagedResult<DeveloperListDto>>> GetDevelopers(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        [FromQuery] string search = null)
-    {
-        var result = await _developersService.GetDevelopersAsync(
-            page, pageSize, search);
-        
-        return Ok(result);
-    }
-    
-    [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(DeveloperDetailDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<DeveloperDetailDto>> GetDeveloper(Guid id)
-    {
-        var developer = await _developersService.GetDeveloperByIdAsync(id);
-        
-        if (developer == null)
-            return NotFound();
-        
-        return Ok(developer);
-    }
-    
-    [HttpGet("{id:guid}/apps")]
-    public async Task<ActionResult<List<AppListDto>>> GetDeveloperApps(Guid id)
-    {
-        var apps = await _developersService.GetDeveloperAppsAsync(id);
-        
-        if (apps == null)
-            return NotFound();
-        
-        return Ok(apps);
-    }
-    
-    [HttpPut("{id:guid}")]
-    [Authorize]
-    public async Task<ActionResult<DeveloperDetailDto>> UpdateDeveloper(
-        Guid id,
-        [FromBody] UpdateDeveloperDto dto)
-    {
-        // Verify user is developer or admin
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (!await _developersService.CanEditDeveloper(id, userId))
-            return Forbid();
-        
-        var updated = await _developersService.UpdateDeveloperAsync(id, dto);
-        
-        if (updated == null)
-            return NotFound();
-        
-        return Ok(updated);
-    }
-}
+### DevelopersViewSet
+```python
+class DevelopersViewSet(viewsets.ModelViewSet):
+    queryset = Developer.objects.annotate(app_count=Count('apps'))
+    serializer_class = DeveloperSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ['name_ar', 'name_en']
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        """Use different serializers for list vs detail views"""
+        if self.action == 'retrieve':
+            return DeveloperDetailSerializer
+        return DeveloperListSerializer
+
+    @action(detail=True, methods=['get'])
+    def apps(self, request, pk=None):
+        """
+        GET /api/developers/{id}/apps - Returns paginated apps by developer
+        """
+        developer = self.get_object()
+        apps = developer.apps.all()
+
+        paginator = PageNumberPagination()
+        paginated_apps = paginator.paginate_queryset(apps, request)
+
+        serializer = AppSerializer(paginated_apps, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        """
+        PUT /api/developers/{id} - Update developer (auth required)
+        """
+        developer = self.get_object()
+
+        # Check permissions: must be developer owner or admin
+        if not (request.user == developer.user or request.user.is_staff):
+            return Response(
+                {"detail": "Insufficient permissions"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        return super().update(request, *args, **kwargs)
 ```
 
-### DTOs
-```csharp
-public class CategoryDto
-{
-    public Guid Id { get; set; }
-    public string NameAr { get; set; }
-    public string NameEn { get; set; }
-    public int AppCount { get; set; }
-}
+### Django Serializers
+```python
+class CategorySerializer(serializers.ModelSerializer):
+    app_count = serializers.IntegerField(read_only=True)
 
-public class DeveloperListDto
-{
-    public Guid Id { get; set; }
-    public string NameAr { get; set; }
-    public string NameEn { get; set; }
-    public string LogoUrl { get; set; }
-    public int AppCount { get; set; }
-}
+    class Meta:
+        model = Category
+        fields = ['id', 'name_ar', 'name_en', 'app_count']
 
-public class DeveloperDetailDto : DeveloperListDto
-{
-    public string Website { get; set; }
-    public string Email { get; set; }
-    public List<AppListDto> Apps { get; set; }
-    public DateTime CreatedAt { get; set; }
-}
+
+class DeveloperListSerializer(serializers.ModelSerializer):
+    app_count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Developer
+        fields = ['id', 'name_ar', 'name_en', 'logo_url', 'app_count']
+
+
+class DeveloperDetailSerializer(serializers.ModelSerializer):
+    app_count = serializers.IntegerField(read_only=True)
+    apps = AppSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Developer
+        fields = ['id', 'name_ar', 'name_en', 'website', 'email',
+                 'logo_url', 'app_count', 'apps', 'created_at']
 ```
 
 ---
@@ -230,7 +209,7 @@ public class DeveloperDetailDto : DeveloperListDto
 - [ ] All 7 endpoints implemented
 - [ ] DTOs created
 - [ ] Authentication/authorization working
-- [ ] Swagger documentation updated
+- [ ] drf-spectacular documentation updated
 - [ ] Unit tests written
 - [ ] Integration tests pass
 

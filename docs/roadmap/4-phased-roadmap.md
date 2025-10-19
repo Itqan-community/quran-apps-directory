@@ -422,7 +422,7 @@ A: That's more expensive and doesn't solve the core problems (quality tracking, 
 **Q: What if volunteer reviewers don't materialize?**
 A: We can hire part-time paid reviewers initially. The process and tools are the same. Transition to volunteers once proven valuable.
 
-**Q: Why NestJS instead of .NET (or other framework)?**
+**Q: Why NestJS instead of Django (or other framework)?**
 A: Same language as our frontend (TypeScript), faster development, excellent for our scale. We can migrate later if needed - the database and API design are what matter.
 
 **Q: How do we know 200 apps is the right target?**

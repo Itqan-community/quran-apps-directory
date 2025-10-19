@@ -45,10 +45,8 @@ Create viral growth mechanisms through easy sharing across social platforms and 
 
 ## Django Implementation Details
 ### Share Analytics Backend
-```csharp
-// SharesController
-[HttpPost("track")]
-public async Task<IActionResult> TrackShare([FromBody] TrackShareRequest request)
+```python
+// SharesViewSet
 {
     var share = new ShareEvent
     {
@@ -65,8 +63,7 @@ public async Task<IActionResult> TrackShare([FromBody] TrackShareRequest request
     return Ok();
 }
 
-[HttpGet("{appId}/share-count")]
-public async Task<ActionResult<int>> GetShareCount(Guid appId)
+public async Task<Response<int>> GetShareCount(Guid appId)
 {
     var count = await _context.ShareEvents
         .Where(s => s.AppId == appId)

@@ -1,202 +1,227 @@
-# US2.2: Implement Entity Framework Core 9
+# US2.2: Implement Django ORM with PostgreSQL
 
-**Epic:** Epic 2 - Backend Infrastructure Setup  
-**Sprint:** Week 1, Day 2-3  
-**Story Points:** 5  
-**Priority:** P1 (Critical)  
-**Assigned To:** Backend Developer  
+**Epic:** Epic 2 - Backend Infrastructure Setup
+**Sprint:** Week 1, Day 2-3
+**Story Points:** 5
+**Priority:** P1 (Critical)
+**Assigned To:** Backend Developer
 **Status:** Not Started
 
 ---
 
 ## 📋 User Story
 
-**As a** Backend Developer  
-**I want to** configure Entity Framework Core 9 with PostgreSQL  
-**So that** we have a reliable ORM for database operations with migrations, LINQ queries, and type safety
+**As a** Backend Developer
+**I want to** configure Django ORM with PostgreSQL
+**So that** we have a reliable ORM for database operations with migrations, QuerySets, and type safety
 
 ---
 
 ## 🎯 Acceptance Criteria
 
-### AC1: NuGet Packages Installed
-- [ ] Core packages added to `.csproj`:
-  ```xml
-  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
-  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0" />
-  <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
-  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0" />
+### AC1: Django & psycopg2 Installation
+- [ ] Required packages installed in `requirements.txt`:
   ```
-
-### AC2: ApplicationDbContext Created
-- [ ] DbContext class implemented with all DbSets:
-  ```csharp
-  public class ApplicationDbContext : DbContext
-  {
-      public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-          : base(options) { }
-      
-      public DbSet<App> Apps => Set<App>();
-      public DbSet<Category> Categories => Set<Category>();
-      public DbSet<Developer> Developers => Set<Developer>();
-      public DbSet<Feature> Features => Set<Feature>();
-      // ... other DbSets
-  }
+  Django==5.2.0
+  psycopg2-binary==2.9.0
+  python-decouple==3.8
   ```
-- [ ] OnModelCreating configured with Fluent API
-- [ ] Naming conventions configured (snake_case for PostgreSQL)
+- [ ] Virtual environment configured
+- [ ] Packages installed: `pip install -r requirements.txt`
 
-### AC3: Fluent API Configurations
-- [ ] Entity configurations created for complex mappings:
-  ```csharp
-  public class AppConfiguration : IEntityTypeConfiguration<App>
-  {
-      public void Configure(EntityTypeBuilder<App> builder)
-      {
-          builder.ToTable("apps");
-          builder.HasKey(a => a.Id);
-          builder.Property(a => a.NameAr).IsRequired().HasMaxLength(200);
-          builder.HasIndex(a => a.NameEn);
-          builder.HasOne(a => a.Developer)
-              .WithMany(d => d.Apps)
-              .HasForeignKey(a => a.DeveloperId);
+### AC2: Django Project & Apps Created
+- [ ] Django project created: `django-admin startproject quran_apps_api`
+- [ ] Django apps created:
+  ```bash
+  python manage.py startapp apps
+  python manage.py startapp users
+  python manage.py startapp reviews
+  ```
+- [ ] Apps registered in `settings.py` INSTALLED_APPS
+
+### AC3: Database Configuration in settings.py
+- [ ] PostgreSQL configured as database backend:
+  ```python
+  DATABASES = {
+      'default': {
+          'ENGINE': 'django.db.backends.postgresql',
+          'NAME': 'quran_apps_directory',
+          'USER': 'postgres',
+          'PASSWORD': 'password',
+          'HOST': 'localhost',
+          'PORT': '5432',
+          'CONN_MAX_AGE': 600,  # Connection pooling
       }
   }
   ```
-- [ ] Many-to-many relationships configured
-- [ ] Cascade delete behaviors defined
+- [ ] Database credentials stored in `.env` file (not in code)
 
-### AC4: Database Context Registration
-- [ ] DbContext registered in `Program.cs`:
-  ```csharp
-  builder.Services.AddDbContext<ApplicationDbContext>(options =>
-      options.UseNpgsql(
-          builder.Configuration.GetConnectionString("DefaultConnection"),
-          npgsqlOptions => {
-              npgsqlOptions.EnableRetryOnFailure(maxRetryCount: 3);
-              npgsqlOptions.CommandTimeout(30);
-              npgsqlOptions.MigrationsAssembly("QuranAppsDirectory.Api");
-          })
-      .UseSnakeCaseNamingConvention()  // PostgreSQL naming
-      .EnableSensitiveDataLogging(builder.Environment.IsDevelopment())
-      .EnableDetailedErrors(builder.Environment.IsDevelopment()));
-  ```
+### AC4: Django Models Created
+- [ ] All models from django-models.py implemented
+- [ ] Models use Django ORM conventions (ForeignKey, ManyToMany)
+- [ ] Meta classes configured with db_table, ordering, indexes
+- [ ] Model methods implemented (save(), __str__(), custom properties)
 
-### AC5: Initial Migration Created
-- [ ] Migration created with EF Core CLI:
+### AC5: Migrations Created & Applied
+- [ ] Initial migration created:
   ```bash
-  dotnet ef migrations add InitialCreate
+  python manage.py makemigrations
   ```
-- [ ] Migration reviewed for correctness
+- [ ] Migration reviewed in `migrations/` folder
 - [ ] Migration applied to dev database:
   ```bash
-  dotnet ef database update
+  python manage.py migrate
   ```
-- [ ] Database schema verified in pgAdmin
+- [ ] Database schema verified in pgAdmin/psql
 
-### AC6: Connection Pooling Configured
-- [ ] Connection string optimized for pooling
-- [ ] Pool size configured (Min: 5, Max: 100)
-- [ ] Connection lifetime set (5 minutes)
-- [ ] Performance tested under load
+### AC6: Connection Pooling Optimized
+- [ ] Connection pooling configured in settings.py
+- [ ] CONN_MAX_AGE set to 600 seconds
+- [ ] django-db-pool installed (optional for advanced pooling)
+- [ ] Performance tested under load (100+ concurrent requests)
 
 ### AC7: Development Experience Optimized
-- [ ] Entity tracking behavior configured
+- [ ] Django admin interface working (`python manage.py createsuperuser`)
 - [ ] Query logging configured for development
-- [ ] Lazy loading enabled/disabled as needed
-- [ ] Model snapshot generated
+- [ ] Database shell accessible: `python manage.py dbshell`
+- [ ] Model introspection available
 
 ---
 
 ## 📝 Technical Notes
 
-### Complete DbContext Example
-```csharp
-public class ApplicationDbContext : DbContext
-{
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
-    {
-    }
-    
-    public DbSet<App> Apps => Set<App>();
-    public DbSet<Category> Categories => Set<Category>();
-    public DbSet<Developer> Developers => Set<Developer>();
-    public DbSet<Feature> Features => Set<Feature>();
-    public DbSet<AppCategory> AppCategories => Set<AppCategory>();
-    public DbSet<AppFeature> AppFeatures => Set<AppFeature>();
-    
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
-        
-        // Apply all configurations from assembly
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-        
-        // Configure many-to-many relationships
-        modelBuilder.Entity<AppCategory>()
-            .HasKey(ac => new { ac.AppId, ac.CategoryId });
-        
-        modelBuilder.Entity<AppFeature>()
-            .HasKey(af => new { af.AppId, af.FeatureId });
-        
-        // Configure cascade deletes
-        modelBuilder.Entity<App>()
-            .HasMany(a => a.AppCategories)
-            .WithOne(ac => ac.App)
-            .OnDelete(DeleteBehavior.Cascade);
-    }
-}
+### Example Django Model (from django-models.py)
+```python
+from django.db import models
+import uuid
+
+class App(models.Model):
+    """Quran Applications"""
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('archived', 'Archived'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name_en = models.CharField(max_length=255, db_index=True)
+    name_ar = models.CharField(max_length=255, db_index=True)
+    slug = models.SlugField(max_length=255, unique=True, db_index=True)
+    developer = models.ForeignKey(
+        'Developer',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='apps'
+    )
+    categories = models.ManyToManyField(
+        'Category',
+        related_name='apps',
+        through='AppCategory'
+    )
+    apps_avg_rating = models.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        default=0
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'apps'
+        ordering = ['-apps_avg_rating', 'name_en']
+        indexes = [
+            models.Index(fields=['slug']),
+            models.Index(fields=['developer_id']),
+            models.Index(fields=['-apps_avg_rating']),
+        ]
+
+    def __str__(self):
+        return f"{self.name_en} / {self.name_ar}"
 ```
 
-### Migration Commands
+### Django Migration Commands
 ```bash
-# Add new migration
-dotnet ef migrations add <MigrationName>
+# Create initial migration
+python manage.py makemigrations
 
-# Update database to latest
-dotnet ef database update
+# View pending migrations
+python manage.py showmigrations
 
-# Rollback to specific migration
-dotnet ef database update <MigrationName>
+# Apply migrations
+python manage.py migrate
 
-# Generate SQL script
-dotnet ef migrations script
+# Create migration with specific app
+python manage.py makemigrations apps
 
-# Remove last migration (if not applied)
-dotnet ef migrations remove
+# Create empty migration
+python manage.py makemigrations --empty apps --name migration_name
+
+# Migrate to specific version
+python manage.py migrate apps 0001
+
+# Rollback all migrations
+python manage.py migrate apps zero
+
+# View migration SQL
+python manage.py sqlmigrate apps 0001
+```
+
+### Settings.py Configuration
+```python
+# Database
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME', 'quran_apps_directory'),
+        'USER': os.getenv('DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
+        'CONN_MAX_AGE': 600,  # Connection pooling (in seconds)
+        'OPTIONS': {
+            'connect_timeout': 10,
+        }
+    }
+}
+
+# Django ORM settings
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ```
 
 ---
 
 ## 🔗 Dependencies
 - US2.1: Database Server Setup (must be complete)
-- US1.4: Define Data Models (must be complete)
+- US1.2: Database Schema Design (reference for models)
 
 ---
 
 ## 🚫 Blockers
-- Database server must be accessible
-- Entity classes must be finalized
+- PostgreSQL database server must be accessible
+- Python 3.11+ must be installed
 
 ---
 
 ## 📊 Definition of Done
-- [ ] EF Core 9 configured with PostgreSQL
-- [ ] ApplicationDbContext implemented
-- [ ] Fluent API configurations complete
-- [ ] Initial migration created and applied
+- [ ] Django project created and configured
+- [ ] Django apps created (apps, users, reviews, etc.)
+- [ ] PostgreSQL database configured in settings.py
+- [ ] All Django models implemented from django-models.py
+- [ ] Initial migrations created and applied
 - [ ] Database schema verified
-- [ ] Connection pooling tested
+- [ ] Connection pooling tested (100+ concurrent requests)
+- [ ] Django admin interface working
 - [ ] Code review passed
 - [ ] Documentation updated
 
 ---
 
 ## 📚 Resources
-- [EF Core with PostgreSQL](https://www.npgsql.org/efcore/)
-- [EF Core Migrations](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/)
-- [Fluent API](https://learn.microsoft.com/en-us/ef/core/modeling/)
+- [Django Documentation](https://docs.djangoproject.com/)
+- [Django ORM](https://docs.djangoproject.com/en/5.2/topics/db/models/)
+- [Django Migrations](https://docs.djangoproject.com/en/5.2/topics/migrations/)
+- [psycopg2 Documentation](https://www.psycopg.org/psycopg3/basic/index.html)
 
 ---
 

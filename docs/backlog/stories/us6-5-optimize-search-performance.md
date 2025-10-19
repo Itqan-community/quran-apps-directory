@@ -69,7 +69,7 @@
 ## 📝 Technical Notes
 
 ### Database Indexing Migration
-```csharp
+```python
 public class AddSearchIndexes : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
@@ -134,7 +134,7 @@ public class AddSearchIndexes : Migration
 ```
 
 ### Optimized Search Query
-```csharp
+```python
 public async Task<SearchResult<AppListDto>> SearchAppsAsync(SearchQuery query)
 {
     var queryable = _context.Apps
@@ -216,11 +216,9 @@ public async Task<SearchResult<AppListDto>> SearchAppsAsync(SearchQuery query)
 ```
 
 ### Redis Caching (Optional)
-```csharp
+```python
 public class CachedSearchService : ISearchService
 {
-    private readonly ISearchService _innerService;
-    private readonly IDistributedCache _cache;
     
     public async Task<SearchResult<AppListDto>> SearchAppsAsync(SearchQuery query)
     {
@@ -251,11 +249,9 @@ public class CachedSearchService : ISearchService
 ```
 
 ### Performance Monitoring
-```csharp
+```python
 public class SearchPerformanceMiddleware
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<SearchPerformanceMiddleware> _logger;
     
     public async Task InvokeAsync(HttpContext context)
     {

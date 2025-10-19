@@ -75,11 +75,9 @@
 ## 📝 Technical Notes
 
 ### Validation Test Suite
-```csharp
+```python
 public class MigrationValidationTests
 {
-    private readonly ApplicationDbContext _context;
-    private readonly List<StaticAppData> _sourceData;
     
     [Fact]
     public async Task ShouldMigrateAllApps()
@@ -162,7 +160,7 @@ public class MigrationValidationTests
 ```
 
 ### Validation Report Generator
-```csharp
+```python
 public class ValidationReportGenerator
 {
     public async Task<ValidationReport> GenerateReportAsync()

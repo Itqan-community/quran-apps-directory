@@ -68,7 +68,7 @@ export class ApiService {
   }
 }
 
-// TypeScript interfaces matching .NET DTOs
+// TypeScript interfaces matching Django DTOs
 export interface App {
   id: string;
   nameAr: string;

@@ -1,18 +1,18 @@
-# US8.4: Create User Profile Management
+# US8.4: Create User Profile Management (Django + DRF)
 
-**Epic:** Epic 8 - User Accounts & Personalization  
-**Sprint:** Week 7, Day 3-4  
-**Story Points:** 5  
-**Priority:** P1  
-**Assigned To:** Full Stack Developer  
+**Epic:** Epic 8 - User Accounts & Personalization
+**Sprint:** Week 7
+**Story Points:** 5
+**Priority:** P1
+**Assigned To:** Full Stack Developer
 **Status:** Not Started
 
 ---
 
 ## 📋 User Story
 
-**As a** User  
-**I want** to view and edit my profile information  
+**As a** User
+**I want** to view and edit my profile information via API
 **So that** I can keep my account details up-to-date and personalize my experience
 
 ---
@@ -69,25 +69,17 @@
 
 ## 📝 Technical Notes
 
-### Users Controller
-```csharp
-[ApiController]
-[Route("api/[controller]")]
-[Authorize]
-public class UsersController : ControllerBase
+### ViewSet
+```python
+class UsersViewSet(viewsets.ModelViewSet):
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IStorageService _storageService;
     
-    [HttpGet("me")]
-    [ProducesResponseType(typeof(UserProfileDto), StatusCodes.Status200OK)]
-    public async Task<ActionResult<UserProfileDto>> GetCurrentUser()
+    def <UserProfileDto>> GetCurrentUser()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         var user = await _userManager.FindByIdAsync(userId);
         
         if (user == null)
-            return NotFound();
         
         var logins = await _userManager.GetLoginsAsync(user);
         
@@ -104,15 +96,11 @@ public class UsersController : ControllerBase
         });
     }
     
-    [HttpPut("me")]
-    [ProducesResponseType(typeof(UserProfileDto), StatusCodes.Status200OK)]
-    public async Task<ActionResult<UserProfileDto>> UpdateProfile([FromBody] UpdateProfileDto dto)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         var user = await _userManager.FindByIdAsync(userId);
         
         if (user == null)
-            return NotFound();
         
         // Update allowed fields
         user.FullName = dto.FullName;
@@ -124,7 +112,6 @@ public class UsersController : ControllerBase
         {
             var emailExists = await _userManager.FindByEmailAsync(dto.Email);
             if (emailExists != null)
-                return BadRequest(new { message = "Email already in use" });
             
             user.Email = dto.Email;
             user.UserName = dto.Email;
@@ -138,7 +125,6 @@ public class UsersController : ControllerBase
         var result = await _userManager.UpdateAsync(user);
         
         if (!result.Succeeded)
-            return BadRequest(result.Errors);
         
         return Ok(new UserProfileDto
         {
@@ -150,20 +136,16 @@ public class UsersController : ControllerBase
         });
     }
     
-    [HttpPost("me/change-password")]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         var user = await _userManager.FindByIdAsync(userId);
         
         if (user == null)
-            return NotFound();
         
         var result = await _userManager.ChangePasswordAsync(
             user, dto.CurrentPassword, dto.NewPassword);
         
         if (!result.Succeeded)
-            return BadRequest(result.Errors);
         
         // Send confirmation email
         await _emailService.SendPasswordChangeConfirmationAsync(user.Email);
@@ -171,23 +153,18 @@ public class UsersController : ControllerBase
         return Ok(new { message = "Password changed successfully" });
     }
     
-    [HttpPost("me/profile-picture")]
-    [RequestSizeLimit(5 * 1024 * 1024)] // 5MB
-    public async Task<ActionResult<ProfilePictureResponse>> UploadProfilePicture(IFormFile file)
+    def <ProfilePictureResponse>> UploadProfilePicture(IFormFile file)
     {
         if (file == null || file.Length == 0)
-            return BadRequest(new { message = "No file uploaded" });
         
         // Validate file type
         var allowedTypes = new[] { "image/jpeg", "image/png", "image/webp" };
         if (!allowedTypes.Contains(file.ContentType))
-            return BadRequest(new { message = "Invalid file type" });
         
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         var user = await _userManager.FindByIdAsync(userId);
         
         if (user == null)
-            return NotFound();
         
         // Resize image
         using var image = await Image.LoadAsync(file.OpenReadStream());
@@ -213,19 +190,15 @@ public class UsersController : ControllerBase
         return Ok(new ProfilePictureResponse { Url = url });
     }
     
-    [HttpPost("me/delete-account")]
-    public async Task<IActionResult> DeleteAccount([FromBody] DeleteAccountDto dto)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         var user = await _userManager.FindByIdAsync(userId);
         
         if (user == null)
-            return NotFound();
         
         // Verify password
         var passwordValid = await _userManager.CheckPasswordAsync(user, dto.Password);
         if (!passwordValid)
-            return Unauthorized(new { message = "Invalid password" });
         
         // Soft delete and anonymize
         user.Email = $"deleted_{user.Id}@deleted.com";
@@ -240,7 +213,6 @@ public class UsersController : ControllerBase
         // Send confirmation
         await _emailService.SendAccountDeletionConfirmationAsync(dto.Password);
         
-        return NoContent();
     }
 }
 ```
@@ -399,5 +371,5 @@ export class UserService {
 ---
 
 **Created:** October 6, 2025  
-**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
+**Updated:** October 19, 2025 (Django alignment)**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
 **Epic:** [Epic 8: User Accounts & Personalization](../epics/epic-8-user-accounts-personalization.md)

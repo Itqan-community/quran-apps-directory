@@ -232,7 +232,7 @@ Migrate from static data architecture to dynamic, database-backed platform while
   - **Effort:** 3 points | **Priority:** P2 | **Owner:** Backend Dev
 
 - ✅ US4.5: Create API Documentation
-  - Swagger/OpenAPI spec
+  - drf-spectacular/OpenAPI spec
   - Interactive API playground
   - Code examples (curl, JavaScript, Python)
   - Authentication documentation
@@ -240,7 +240,7 @@ Migrate from static data architecture to dynamic, database-backed platform while
 
 **Deliverables:**
 - [ ] Complete API with all endpoints
-- [ ] API documentation (Swagger UI live)
+- [ ] API documentation (drf-spectacular UI live)
 - [ ] Postman collection for testing
 - [ ] Performance benchmarks (<100ms)
 - [ ] Error handling tested

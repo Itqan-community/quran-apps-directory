@@ -33,33 +33,33 @@
 
 ### AC2: Query Optimization Guidelines
 - [ ] N+1 query prevention strategy:
-  ```csharp
-  // Use Include() for eager loading
-  var apps = await _context.Apps
-      .Include(a => a.Developer)
-      .Include(a => a.AppCategories)
-          .ThenInclude(ac => ac.Category)
-      .ToListAsync();
+  ```python
+  # Use select_related() for eager loading (ForeignKey, OneToOne)
+  # Use prefetch_related() for reverse relations and ManyToMany
+  apps = App.objects.select_related('developer').prefetch_related('categories').all()
   ```
-- [ ] Pagination best practices documented (Skip/Take limits)
-- [ ] Projection usage guidelines (Select only needed fields)
-- [ ] Compiled queries identified for hot paths
-- [ ] Query plan analysis process defined
+- [ ] Pagination best practices documented (offset/limit limits)
+- [ ] only() / defer() usage guidelines (Select only needed fields)
+- [ ] Database views identified for complex queries
+- [ ] Query plan analysis process defined (EXPLAIN)
 
-### AC3: EF Core Performance Configuration
-- [ ] DbContext configuration optimized:
-  ```csharp
-  optionsBuilder
-      .UseNpgsql(connectionString, npgsqlOptions => {
-          npgsqlOptions.EnableRetryOnFailure(3);
-          npgsqlOptions.CommandTimeout(30);
-      })
-      .EnableSensitiveDataLogging(isDevelopment)
-      .LogTo(Console.WriteLine, LogLevel.Information);
+### AC3: Django ORM Performance Configuration
+- [ ] Database configuration optimized:
+  ```python
+  DATABASES = {
+      'default': {
+          'ENGINE': 'django.db.backends.postgresql',
+          'CONN_MAX_AGE': 600,  # Connection pooling: 10 minutes
+          'OPTIONS': {
+              'connect_timeout': 10,
+              'options': '-c default_transaction_isolation=read_committed'
+          }
+      }
+  }
   ```
-- [ ] Change tracking strategy defined (NoTracking for read-only)
-- [ ] Bulk operations strategy (EFCore.BulkExtensions)
-- [ ] Connection pooling configured (min 5, max 100)
+- [ ] QuerySet evaluation strategy defined (caching patterns)
+- [ ] Bulk operations strategy (bulk_create, bulk_update)
+- [ ] Connection pooling configured (CONN_MAX_AGE: 5-10 minutes)
 
 ### AC4: Caching Strategy Outlined
 - [ ] Application-level caching plan:
@@ -99,18 +99,18 @@
 ## 📝 Technical Notes
 
 ### Compiled Queries for Hot Paths
-```csharp
+```python
 public class CompiledQueries
 {
     private static readonly Func<ApplicationDbContext, Guid, Task<App?>> _getAppById =
-        EF.CompileAsyncQuery((ApplicationDbContext context, Guid id) =>
+        # Django query optimization((ApplicationDbContext context, uuid_id) =>
             context.Apps
                 .Include(a => a.Developer)
                 .Include(a => a.AppCategories)
                     .ThenInclude(ac => ac.Category)
                 .FirstOrDefault(a => a.Id == id));
     
-    public static Task<App?> GetAppByIdAsync(ApplicationDbContext context, Guid id)
+    public static Task<App?> GetAppByIdAsync(ApplicationDbContext context, uuid_id)
         => _getAppById(context, id);
 }
 ```
@@ -164,7 +164,7 @@ CREATE INDEX idx_app_categories_app ON app_categories (app_id);
 ## 📊 Definition of Done
 - [ ] Indexing strategy document completed
 - [ ] Query optimization guidelines documented
-- [ ] EF Core performance configuration defined
+- [ ] Django ORM performance configuration defined
 - [ ] Caching strategy outlined
 - [ ] Monitoring plan created
 - [ ] Scalability roadmap documented
@@ -175,8 +175,8 @@ CREATE INDEX idx_app_categories_app ON app_categories (app_id);
 
 ## 📚 Resources
 - [PostgreSQL Performance Optimization](https://www.postgresql.org/docs/16/performance-tips.html)
-- [EF Core Performance](https://learn.microsoft.com/en-us/ef/core/performance/)
-- [Npgsql Performance](https://www.npgsql.org/doc/performance.html)
+- [Django ORM Performance](https://docs.djangoproject.com/en/stable/topics/db/optimization/)
+- [psycopg2 Performance](https://www.psycopg.org/psycopg2/docs/usage.html)
 - [pgBadger](https://github.com/darold/pgbadger)
 
 ---

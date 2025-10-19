@@ -51,7 +51,7 @@ Scale content creation by empowering developers to manage their own app listings
 
 ## Django Implementation Details
 ### Entity Models
-```csharp
+```python
 public class DeveloperProfile
 {
     public Guid UserId { get; set; }
@@ -117,45 +117,33 @@ public enum SubmissionStatus
 }
 ```
 
-### DevelopersController
-```csharp
-[ApiController]
-[Route("api/v1/[controller]")]
-[Authorize]
-public class DevelopersController : ControllerBase
+### DevelopersViewSet
+```python
+[ApiViewSet]
+public class DevelopersViewSet : ViewSetBase
 {
-    private readonly IDevelopersService _developersService;
-    private readonly IStorageService _storageService;
     
-    [HttpPost("register")]
-    public async Task<ActionResult<DeveloperProfileResponse>> RegisterAsDeveloper(
-        [FromBody] RegisterDeveloperRequest request)
+    public async Task<Response<DeveloperProfileResponse>> RegisterAsDeveloper(
     {
         var userId = GetUserId();
         var profile = await _developersService.CreateDeveloperProfileAsync(userId, request);
         return CreatedAtAction(nameof(GetProfile), profile);
     }
     
-    [HttpGet("profile")]
-    public async Task<ActionResult<DeveloperProfileResponse>> GetProfile()
+    public async Task<Response<DeveloperProfileResponse>> GetProfile()
     {
         var userId = GetUserId();
         var profile = await _developersService.GetDeveloperProfileAsync(userId);
         return profile == null ? NotFound() : Ok(profile);
     }
     
-    [HttpPut("profile")]
-    public async Task<ActionResult<DeveloperProfileResponse>> UpdateProfile(
-        [FromBody] UpdateDeveloperProfileRequest request)
+    public async Task<Response<DeveloperProfileResponse>> UpdateProfile(
     {
         var userId = GetUserId();
         var profile = await _developersService.UpdateDeveloperProfileAsync(userId, request);
         return Ok(profile);
     }
     
-    [HttpPost("profile/logo")]
-    [RequestSizeLimit(5_000_000)] // 5MB
-    public async Task<ActionResult<string>> UploadLogo([FromForm] IFormFile file)
     {
         var userId = GetUserId();
         
@@ -171,62 +159,48 @@ public class DevelopersController : ControllerBase
     }
 }
 
-[ApiController]
-[Route("api/v1/[controller]")]
-[Authorize(Roles = "Developer")]
-public class SubmissionsController : ControllerBase
+[ApiViewSet]
+public class SubmissionsViewSet : ViewSetBase
 {
-    private readonly ISubmissionsService _submissionsService;
-    private readonly IStorageService _storageService;
     
-    [HttpPost]
-    public async Task<ActionResult<AppSubmissionResponse>> CreateSubmission()
+    public async Task<Response<AppSubmissionResponse>> CreateSubmission()
     {
         var userId = GetUserId();
         var submission = await _submissionsService.CreateDraftSubmissionAsync(userId);
         return CreatedAtAction(nameof(GetSubmission), new { id = submission.Id }, submission);
     }
     
-    [HttpGet]
-    public async Task<ActionResult<List<AppSubmissionResponse>>> GetMySubmissions()
+    public async Task<Response<List<AppSubmissionResponse>>> GetMySubmissions()
     {
         var userId = GetUserId();
         var submissions = await _submissionsService.GetDeveloperSubmissionsAsync(userId);
         return Ok(submissions);
     }
     
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<AppSubmissionResponse>> GetSubmission(Guid id)
+    public async Task<Response<AppSubmissionResponse>> GetSubmission(Guid id)
     {
         var userId = GetUserId();
         var submission = await _submissionsService.GetSubmissionAsync(id, userId);
         return submission == null ? NotFound() : Ok(submission);
     }
     
-    [HttpPut("{id:guid}")]
-    public async Task<ActionResult<AppSubmissionResponse>> UpdateSubmission(
+    public async Task<Response<AppSubmissionResponse>> UpdateSubmission(
         Guid id,
-        [FromBody] UpdateSubmissionRequest request)
     {
         var userId = GetUserId();
         var submission = await _submissionsService.UpdateSubmissionAsync(id, userId, request);
         return Ok(submission);
     }
     
-    [HttpPost("{id:guid}/submit")]
-    public async Task<IActionResult> SubmitForReview(Guid id)
+    public async Task<IResponse> SubmitForReview(Guid id)
     {
         var userId = GetUserId();
         await _submissionsService.SubmitForReviewAsync(id, userId);
         return NoContent();
     }
     
-    [HttpPost("{id:guid}/upload-screenshots")]
-    [RequestSizeLimit(20_000_000)] // 20MB total
-    public async Task<ActionResult<List<string>>> UploadScreenshots(
+    public async Task<Response<List<string>>> UploadScreenshots(
         Guid id,
-        [FromForm] List<IFormFile> files,
-        [FromQuery] string language = "ar")
     {
         var userId = GetUserId();
         
@@ -249,46 +223,34 @@ public class SubmissionsController : ControllerBase
 }
 
 // Admin endpoints
-[ApiController]
-[Route("api/v1/admin/[controller]")]
-[Authorize(Roles = "Admin,Moderator")]
-public class SubmissionsReviewController : ControllerBase
+[ApiViewSet]
+public class SubmissionsReviewViewSet : ViewSetBase
 {
-    private readonly ISubmissionsService _submissionsService;
     
-    [HttpGet("pending")]
-    public async Task<ActionResult<PaginatedResponse<AppSubmissionResponse>>> GetPendingSubmissions(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20)
+    public async Task<Response<PaginatedResponse<AppSubmissionResponse>>> GetPendingSubmissions(
     {
         var submissions = await _submissionsService.GetPendingSubmissionsAsync(page, pageSize);
         return Ok(submissions);
     }
     
-    [HttpPost("{id:guid}/approve")]
-    public async Task<IActionResult> ApproveSubmission(
+    public async Task<IResponse> ApproveSubmission(
         Guid id,
-        [FromBody] ReviewSubmissionRequest request)
     {
         var reviewerId = GetUserId();
         await _submissionsService.ApproveSubmissionAsync(id, reviewerId, request.Notes);
         return NoContent();
     }
     
-    [HttpPost("{id:guid}/reject")]
-    public async Task<IActionResult> RejectSubmission(
+    public async Task<IResponse> RejectSubmission(
         Guid id,
-        [FromBody] ReviewSubmissionRequest request)
     {
         var reviewerId = GetUserId();
         await _submissionsService.RejectSubmissionAsync(id, reviewerId, request.Notes);
         return NoContent();
     }
     
-    [HttpPost("{id:guid}/request-changes")]
-    public async Task<IActionResult> RequestChanges(
+    public async Task<IResponse> RequestChanges(
         Guid id,
-        [FromBody] ReviewSubmissionRequest request)
     {
         var reviewerId = GetUserId();
         await _submissionsService.RequestChangesAsync(id, reviewerId, request.Notes);
@@ -298,12 +260,9 @@ public class SubmissionsReviewController : ControllerBase
 ```
 
 ### Storage Service for R2
-```csharp
+```python
 public class R2StorageService : IStorageService
 {
-    private readonly AmazonS3Client _s3Client;
-    private readonly string _bucketName;
-    private readonly string _cdnUrl;
     
     public async Task<string> UploadScreenshotAsync(IFormFile file, Guid submissionId, string language)
     {
@@ -327,7 +286,7 @@ public class R2StorageService : IStorageService
 ```
 
 ### Notification Service
-```csharp
+```python
 public class SubmissionNotificationService
 {
     public async Task NotifySubmissionStatusChangeAsync(AppSubmission submission)

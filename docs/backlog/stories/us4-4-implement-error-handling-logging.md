@@ -87,11 +87,9 @@
 ## 📝 Technical Notes
 
 ### Exception Handler Middleware
-```csharp
+```python
 public class GlobalExceptionHandlerMiddleware
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<GlobalExceptionHandlerMiddleware> _logger;
     
     public async Task InvokeAsync(HttpContext context)
     {
@@ -141,7 +139,7 @@ app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 ```
 
 ### Serilog Configuration
-```csharp
+```python
 // Program.cs
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -166,11 +164,9 @@ builder.Host.UseSerilog();
 ```
 
 ### Request Logging Middleware
-```csharp
+```python
 public class RequestLoggingMiddleware
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<RequestLoggingMiddleware> _logger;
     
     public async Task InvokeAsync(HttpContext context)
     {
@@ -207,7 +203,7 @@ public class RequestLoggingMiddleware
 ```
 
 ### Custom Exception Classes
-```csharp
+```python
 public class NotFoundException : Exception
 {
     public NotFoundException(string message) : base(message) { }

@@ -66,7 +66,7 @@
 ## 📝 Technical Notes
 
 ### Migration Console App
-```csharp
+```python
 public class Program
 {
     public static async Task<int> Main(string[] args)
@@ -75,7 +75,7 @@ public class Program
         
         var services = new ServiceCollection()
             .AddDbContext<ApplicationDbContext>(opts =>
-                opts.UseNpgsql(options.ConnectionString))
+                opts.Usepsycopg2(options.ConnectionString))
             .AddSingleton<DataTransformationService>()
             .AddSingleton<MigrationService>()
             .BuildServiceProvider();
@@ -188,7 +188,7 @@ dotnet run --project QuranApps.DataMigration -- \
 
 ## 🔗 Dependencies
 - US3.2: Transform Data to Match Schema
-- US2.2: EF Core configured
+- US2.2: Django ORM configured
 
 ---
 

@@ -26,7 +26,7 @@
   - Performance (query speed, write speed)
   - Scalability (horizontal, vertical)
   - Data integrity (ACID compliance)
-  - .NET integration quality
+  - Django/Python integration quality
   - Community support & documentation
   - Cost (hosting, licensing)
 - [ ] Team review conducted with stakeholders
@@ -36,7 +36,7 @@
 - [ ] Technical justification document created including:
   - ACID compliance for data integrity
   - Excellent JSON/JSONB support for flexible fields
-  - Mature .NET integration via Npgsql
+  - Mature Django/Python integration via psycopg2
   - Proven scalability (handles millions of records)
   - Rich indexing capabilities (B-tree, GiST, GIN)
   - Strong community and enterprise support
@@ -45,7 +45,7 @@
 ### AC3: Development Instance Setup
 - [ ] PostgreSQL 16+ installed on development machine
 - [ ] Database server configured with optimal settings
-- [ ] Connection tested from Django application
+- [ ] Connection tested from Django application (psycopg2)
 - [ ] Basic admin tools configured (pgAdmin/DBeaver)
 - [ ] Backup strategy outlined
 
@@ -105,7 +105,7 @@ DATABASES = {
 | Managed | Yes | Yes |
 | Backups | Automatic daily | Manual + paid auto |
 | Scaling | Easy (UI-based) | Moderate (CLI) |
-| .NET Support | Excellent | Excellent |
+| Python Support | Excellent | Excellent |
 | **Recommendation** | ✅ Railway (simpler, cheaper for MVP) | Future migration for scale |
 
 ---
@@ -132,13 +132,14 @@ DATABASES = {
 
 ## 📚 Resources
 - [PostgreSQL Official Docs](https://www.postgresql.org/docs/16/)
-- [Npgsql Documentation](https://www.npgsql.org/doc/index.html)
+- [psycopg2 Documentation](https://www.psycopg.org/psycopg3/)
+- [Django Database Configuration](https://docs.djangoproject.com/en/5.2/ref/settings/#databases)
 - [Railway PostgreSQL Guide](https://docs.railway.app/databases/postgresql)
-- [EF Core with PostgreSQL](https://learn.microsoft.com/en-us/ef/core/providers/npgsql/)
 
 ---
 
-**Created:** October 6, 2025  
-**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
+**Created:** October 6, 2025
+**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev
+**Updated:** October 19, 2025 (Django alignment)
 **Epic:** [Epic 1: Database Architecture Foundation](../epics/epic-1-database-architecture-foundation.md)
 

@@ -1,6 +1,6 @@
-# US8.9: Create Privacy & GDPR Compliance Features
+# US8.9: Create Privacy # US8.9: Create Privacy & GDPR Compliance GDPR Compliance (Django) Features
 
-**Epic:** Epic 8 - User Accounts & Personalization  
+**Epic:** Epic 8 - User Accounts & Personalization
 **Sprint:** Week 8, Day 3-4  
 **Story Points:** 5  
 **Priority:** P1  
@@ -66,27 +66,19 @@
 
 ## 📝 Technical Notes
 
-### Privacy Controller
-```csharp
-[ApiController]
-[Route("api/users/me/privacy")]
-[Authorize]
-public class PrivacyController : ControllerBase
+### ViewSet
+```python
+class PrivacyViewSet(viewsets.ModelViewSet):
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IPrivacyService _privacyService;
     
-    [HttpGet("export-data")]
-    [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> ExportData()
+    def  ExportData()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         var user = await _userManager.FindByIdAsync(userId);
         
         if (user == null)
-            return NotFound();
         
-        var exportData = await _privacyService.ExportUserDataAsync(Guid.Parse(userId));
+        var exportData = await _privacyService.ExportUserDataAsync(uuid.UUID(userId));
         
         var json = JsonSerializer.Serialize(exportData, new JsonSerializerOptions
         {
@@ -98,22 +90,18 @@ public class PrivacyController : ControllerBase
         return File(bytes, "application/json", $"quran-apps-data-export-{DateTime.UtcNow:yyyyMMdd}.json");
     }
     
-    [HttpPost("delete-account")]
-    public async Task<IActionResult> DeleteAccount([FromBody] DeleteAccountDto dto)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         var user = await _userManager.FindByIdAsync(userId);
         
         if (user == null)
-            return NotFound();
         
         // Verify password
         var passwordValid = await _userManager.CheckPasswordAsync(user, dto.Password);
         if (!passwordValid)
-            return Unauthorized(new { message = "Invalid password" });
         
         // Schedule deletion (30-day grace period)
-        await _privacyService.ScheduleAccountDeletionAsync(Guid.Parse(userId));
+        await _privacyService.ScheduleAccountDeletionAsync(uuid.UUID(userId));
         
         return Ok(new
         {
@@ -122,33 +110,28 @@ public class PrivacyController : ControllerBase
         });
     }
     
-    [HttpPost("cancel-deletion")]
-    public async Task<IActionResult> CancelDeletion()
+    def  CancelDeletion()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
-        await _privacyService.CancelAccountDeletionAsync(Guid.Parse(userId));
+        await _privacyService.CancelAccountDeletionAsync(uuid.UUID(userId));
         
         return Ok(new { message = "Account deletion cancelled" });
     }
     
-    [HttpGet("consent")]
-    [ProducesResponseType(typeof(UserConsentDto), StatusCodes.Status200OK)]
-    public async Task<ActionResult<UserConsentDto>> GetConsent()
+    def <UserConsentDto>> GetConsent()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
-        var consent = await _privacyService.GetUserConsentAsync(Guid.Parse(userId));
+        var consent = await _privacyService.GetUserConsentAsync(uuid.UUID(userId));
         
         return Ok(consent);
     }
     
-    [HttpPut("consent")]
-    public async Task<IActionResult> UpdateConsent([FromBody] UpdateConsentDto dto)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
-        await _privacyService.UpdateUserConsentAsync(Guid.Parse(userId), dto);
+        await _privacyService.UpdateUserConsentAsync(uuid.UUID(userId), dto);
         
         return Ok(new { message = "Consent preferences updated" });
     }
@@ -156,7 +139,7 @@ public class PrivacyController : ControllerBase
 ```
 
 ### Privacy Service
-```csharp
+```python
 public interface IPrivacyService
 {
     Task<UserDataExport> ExportUserDataAsync(Guid userId);
@@ -317,7 +300,7 @@ public class PrivacyService : IPrivacyService
 ```
 
 ### Data Retention Background Job
-```csharp
+```python
 public class DataRetentionJobs
 {
     [AutomaticRetry(Attempts = 0)]
@@ -415,5 +398,5 @@ export class CookieConsentComponent {
 ---
 
 **Created:** October 6, 2025  
-**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
+**Updated:** October 19, 2025 (Django alignment)**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
 **Epic:** [Epic 8: User Accounts & Personalization](../epics/epic-8-user-accounts-personalization.md)

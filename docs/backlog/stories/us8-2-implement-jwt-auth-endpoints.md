@@ -1,18 +1,18 @@
-# US8.2: Implement JWT Authentication Endpoints
+# US8.2: Implement Django JWT Authentication Endpoints
 
-**Epic:** Epic 8 - User Accounts & Personalization  
-**Sprint:** Week 7, Day 1-2  
-**Story Points:** 5  
-**Priority:** P1  
-**Assigned To:** Backend Developer  
+**Epic:** Epic 8 - User Accounts & Personalization
+**Sprint:** Week 7
+**Story Points:** 5
+**Priority:** P1
+**Assigned To:** Backend Developer
 **Status:** Not Started
 
 ---
 
 ## 📋 User Story
 
-**As a** User  
-**I want** to register, login, and manage my authentication  
+**As a** User
+**I want** to register, login, and manage my authentication via API
 **So that** I can access personalized features securely
 
 ---
@@ -71,23 +71,12 @@
 
 ## 📝 Technical Notes
 
-### Auth Controller
-```csharp
-[ApiController]
-[Route("api/[controller]")]
-public class AuthController : ControllerBase
+### ViewSet
+```python
+class AuthViewSet(viewsets.ModelViewSet):
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly ITokenService _tokenService;
-    private readonly IEmailService _emailService;
     
-    [HttpPost("register")]
-    [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status201Created)]
-    public async Task<ActionResult<AuthResponse>> Register([FromBody] RegisterDto dto)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
         
         var user = new ApplicationUser
         {
@@ -102,7 +91,6 @@ public class AuthController : ControllerBase
         var result = await _userManager.CreateAsync(user, dto.Password);
         
         if (!result.Succeeded)
-            return BadRequest(result.Errors);
         
         // Assign default role
         await _userManager.AddToRoleAsync(user, "User");
@@ -120,20 +108,14 @@ public class AuthController : ControllerBase
         // Generate JWT
         var authResponse = await _tokenService.GenerateTokenAsync(user);
         
-        return CreatedAtAction(nameof(GetCurrentUser), authResponse);
     }
     
-    [HttpPost("login")]
-    [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
-    public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginDto dto)
     {
         var user = await _userManager.FindByEmailAsync(dto.Email);
         
         if (user == null)
-            return Unauthorized(new { message = "Invalid credentials" });
         
         if (!user.EmailVerified && !await _userManager.IsEmailConfirmedAsync(user))
-            return Unauthorized(new { message = "Email not verified" });
         
         var result = await _signInManager.CheckPasswordSignInAsync(
             user, dto.Password, lockoutOnFailure: true);
@@ -141,9 +123,7 @@ public class AuthController : ControllerBase
         if (!result.Succeeded)
         {
             if (result.IsLockedOut)
-                return Unauthorized(new { message = "Account locked" });
             
-            return Unauthorized(new { message = "Invalid credentials" });
         }
         
         // Update last login
@@ -155,42 +135,31 @@ public class AuthController : ControllerBase
         return Ok(authResponse);
     }
     
-    [HttpPost("refresh-token")]
-    public async Task<ActionResult<AuthResponse>> RefreshToken([FromBody] RefreshTokenDto dto)
     {
         var authResponse = await _tokenService.RefreshTokenAsync(dto.RefreshToken);
         
         if (authResponse == null)
-            return Unauthorized(new { message = "Invalid refresh token" });
         
         return Ok(authResponse);
     }
     
-    [HttpPost("logout")]
-    [Authorize]
-    public async Task<IActionResult> Logout()
+    def  Logout()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         if (Guid.TryParse(userId, out var userGuid))
         {
             await _tokenService.RevokeRefreshTokensAsync(userGuid);
         }
         
-        return NoContent();
     }
     
-    [HttpGet("verify-email")]
-    public async Task<IActionResult> VerifyEmail(
-        [FromQuery] string userId,
-        [FromQuery] string token)
+    def  VerifyEmail(
     {
         if (!Guid.TryParse(userId, out var userGuid))
-            return BadRequest();
         
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
-            return NotFound();
         
         var result = await _userManager.ConfirmEmailAsync(user, token);
         
@@ -200,14 +169,10 @@ public class AuthController : ControllerBase
             await _userManager.UpdateAsync(user);
             
             // Redirect to frontend success page
-            return Redirect($"{_configuration["Frontend:BaseUrl"]}/email-verified");
         }
         
-        return BadRequest(new { message = "Email verification failed" });
     }
     
-    [HttpPost("forgot-password")]
-    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
     {
         var user = await _userManager.FindByEmailAsync(dto.Email);
         
@@ -223,13 +188,10 @@ public class AuthController : ControllerBase
         return Ok(new { message = "If email exists, reset link sent" });
     }
     
-    [HttpPost("reset-password")]
-    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
     {
         var user = await _userManager.FindByEmailAsync(dto.Email);
         
         if (user == null)
-            return BadRequest(new { message = "Invalid request" });
         
         var result = await _userManager.ResetPasswordAsync(
             user, dto.Token, dto.NewPassword);
@@ -237,13 +199,12 @@ public class AuthController : ControllerBase
         if (result.Succeeded)
             return Ok(new { message = "Password reset successful" });
         
-        return BadRequest(result.Errors);
     }
 }
 ```
 
 ### Token Service
-```csharp
+```python
 public interface ITokenService
 {
     Task<AuthResponse> GenerateTokenAsync(ApplicationUser user);
@@ -253,9 +214,6 @@ public interface ITokenService
 
 public class TokenService : ITokenService
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IConfiguration _configuration;
-    private readonly ApplicationDbContext _context;
     
     public async Task<AuthResponse> GenerateTokenAsync(ApplicationUser user)
     {
@@ -263,15 +221,15 @@ public class TokenService : ITokenService
         
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Name, user.FullName),
+            # Claim(NameIdentifier, user.Id.ToString()),
+            # Claim(Email, user.Email),
+            # Claim(Name, user.FullName),
             new Claim("PreferredLanguage", user.PreferredLanguage)
         };
         
         foreach (var role in roles)
         {
-            claims.Add(new Claim(ClaimTypes.Role, role));
+            claims.Add(# Claim(Role, role));
         }
         
         var key = new SymmetricSecurityKey(
@@ -330,7 +288,7 @@ public class TokenService : ITokenService
 ---
 
 ## 🔗 Dependencies
-- US8.1: ASP.NET Identity configured
+- US8.1: django-allauth configured
 
 ---
 
@@ -347,5 +305,5 @@ public class TokenService : ITokenService
 ---
 
 **Created:** October 6, 2025  
-**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
+**Updated:** October 19, 2025 (Django alignment)**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
 **Epic:** [Epic 8: User Accounts & Personalization](../epics/epic-8-user-accounts-personalization.md)

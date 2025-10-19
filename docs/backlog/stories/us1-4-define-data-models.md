@@ -11,66 +11,60 @@
 
 ## 📋 User Story
 
-**As a** Backend Developer  
-**I want to** create comprehensive C# entity classes, DTOs, and validators  
-**So that** we have type-safe data models for EF Core with proper validation and mapping between database entities and API responses
+**As a** Backend Developer
+**I want to** create comprehensive Python Django models, serializers, and validators
+**So that** we have type-safe data models with proper validation and serialization between database entities and API responses
 
 ---
 
 ## 🎯 Acceptance Criteria
 
-### AC1: Entity Classes Created
-- [ ] All entity classes implemented in C# 13:
-  - `App.cs` (main application entity)
-  - `Category.cs`
-  - `Developer.cs`
-  - `Feature.cs`
-  - `Screenshot.cs`
-  - `AppCategory.cs` (junction table)
-  - `AppFeature.cs` (junction table)
-- [ ] Primary keys defined as `Guid` for all entities
-- [ ] Navigation properties configured
-- [ ] Required vs optional fields marked with `?` nullable
+### AC1: Django Model Classes Created
+- [ ] All Django model classes implemented:
+  - `App` model (main application entity)
+  - `Category` model
+  - `Developer` model
+  - `Feature` model
+  - `Screenshot` model
+  - `AppCategory` model (junction table)
+  - `AppFeature` model (junction table)
+- [ ] Primary keys defined as UUID for all models
+- [ ] Relationships configured (ForeignKey, ManyToMany, OneToOneField)
+- [ ] Required vs optional fields marked with `null=True, blank=True`
 
-### AC2: Data Transfer Objects (DTOs)
-- [ ] Request DTOs created for API inputs:
-  ```csharp
-  public record CreateAppRequest(
-      string NameAr,
-      string NameEn,
-      string ShortDescriptionAr,
-      string ShortDescriptionEn,
-      Guid DeveloperId,
-      List<Guid> CategoryIds
-  );
+### AC2: Django REST Serializers
+- [ ] Request serializers created for API inputs:
+  ```python
+  class CreateAppSerializer(serializers.ModelSerializer):
+      category_ids = serializers.PrimaryKeyRelatedField(
+          queryset=Category.objects.all(),
+          many=True,
+          write_only=True,
+          source='categories'
+      )
+      class Meta:
+          model = App
+          fields = ['name_ar', 'name_en', 'short_description_ar',
+                   'short_description_en', 'developer_id', 'category_ids']
   ```
-- [ ] Response DTOs created for API outputs:
-  ```csharp
-  public record AppResponse(
-      Guid Id,
-      string NameAr,
-      string NameEn,
-      DeveloperResponse Developer,
-      List<CategoryResponse> Categories,
-      double AppsAvgRating
-  );
-  ```
-- [ ] Separate DTOs for list vs detail views
-- [ ] Bilingual support in all DTOs (_Ar, _En suffixes)
+- [ ] Response serializers created for API outputs with nested relationships
+- [ ] Separate serializers for list vs detail views
+- [ ] Bilingual support in all serializers (_ar, _en suffixes)
 
-### AC3: FluentValidation Rules
-- [ ] Validators created for all request DTOs:
-  ```csharp
-  public class CreateAppRequestValidator : AbstractValidator<CreateAppRequest>
-  {
-      public CreateAppRequestValidator()
-      {
-          RuleFor(x => x.NameAr).NotEmpty().MaximumLength(200);
-          RuleFor(x => x.NameEn).NotEmpty().MaximumLength(200);
-          RuleFor(x => x.DeveloperId).NotEmpty();
-          RuleFor(x => x.CategoryIds).NotEmpty().Must(c => c.Count <= 5);
-      }
-  }
+### AC3: Django Model Validators
+- [ ] Validators created for all models:
+  ```python
+  from django.core.validators import MinValueValidator, MaxValueValidator, URLValidator
+
+  class App(models.Model):
+      name_ar = models.CharField(max_length=200, validators=[MinLengthValidator(1)])
+      name_en = models.CharField(max_length=200, validators=[MinLengthValidator(1)])
+      developer = models.ForeignKey(Developer, on_delete=models.SET_NULL, null=True)
+      categories = models.ManyToManyField(Category, blank=True)
+      apps_avg_rating = models.DecimalField(
+          max_digits=3, decimal_places=2,
+          validators=[MinValueValidator(0), MaxValueValidator(5)]
+      )
   ```
 - [ ] Validation rules cover:
   - Required fields
@@ -79,21 +73,19 @@
   - Business rules (e.g., max 5 categories per app)
 - [ ] Custom error messages defined (Arabic + English)
 
-### AC4: AutoMapper Profiles
-- [ ] Mapping profiles created for Entity ↔ DTO:
-  ```csharp
-  public class ApplicationMappingProfile : Profile
-  {
-      public ApplicationMappingProfile()
-      {
-          CreateMap<App, AppResponse>();
-          CreateMap<CreateAppRequest, App>();
-          // ... other mappings
-      }
-  }
+### AC4: Django Serializer Relationships
+- [ ] Serializer mappings configured for Model ↔ Serializer:
+  ```python
+  class AppSerializer(serializers.ModelSerializer):
+      developer = DeveloperSerializer(read_only=True)
+      categories = CategorySerializer(many=True, read_only=True)
+
+      class Meta:
+          model = App
+          fields = ['id', 'name_ar', 'name_en', 'developer', 'categories', 'apps_avg_rating']
   ```
 - [ ] Complex mappings handled (nested objects, collections)
-- [ ] Reverse mappings configured where needed
+- [ ] Read-only fields configured where needed (e.g., id, created_at)
 
 ### AC5: Database Constraints Defined
 - [ ] String length constraints specified:
@@ -110,29 +102,30 @@
   - Developer emails
 - [ ] Check constraints defined (e.g., rating between 0-5)
 
-### AC6: Enum Types Created
-- [ ] Enumerations defined for fixed values:
-  ```csharp
-  public enum AppStatus
-  {
-      Draft = 0,
-      UnderReview = 1,
-      Published = 2,
-      Archived = 3
-  }
-  
-  public enum PlatformType
-  {
-      Android = 1,
-      iOS = 2,
-      Web = 3,
-      Desktop = 4
-  }
+### AC6: Django Choices (Enums) Created
+- [ ] Choice enumerations defined for fixed values:
+  ```python
+  from django.db import models
+
+  class AppStatus(models.TextChoices):
+      DRAFT = 'draft', 'Draft'
+      UNDER_REVIEW = 'under_review', 'Under Review'
+      PUBLISHED = 'published', 'Published'
+      ARCHIVED = 'archived', 'Archived'
+
+  class PlatformType(models.TextChoices):
+      ANDROID = 'android', 'Android'
+      IOS = 'ios', 'iOS'
+      WEB = 'web', 'Web'
+      DESKTOP = 'desktop', 'Desktop'
+
+  class App(models.Model):
+      status = models.CharField(max_length=20, choices=AppStatus.choices)
   ```
 
 ### AC7: Model Documentation
-- [ ] XML documentation comments added to all classes/properties
-- [ ] Usage examples provided in comments
+- [ ] Python docstrings added to all classes/fields
+- [ ] Usage examples provided in docstrings
 - [ ] Entity relationship diagram updated
 - [ ] Data dictionary document created
 
@@ -140,201 +133,181 @@
 
 ## 📝 Technical Notes
 
-### Complete Entity Example
-```csharp
-/// <summary>
-/// Represents a Quran application in the directory
-/// </summary>
-public class App
-{
-    /// <summary>
-    /// Unique identifier for the application
-    /// </summary>
-    public Guid Id { get; set; }
-    
-    /// <summary>
-    /// Arabic name of the application
-    /// </summary>
-    [Required]
-    [StringLength(200)]
-    public string NameAr { get; set; } = string.Empty;
-    
-    /// <summary>
-    /// English name of the application
-    /// </summary>
-    [Required]
-    [StringLength(200)]
-    public string NameEn { get; set; } = string.Empty;
-    
-    /// <summary>
-    /// Arabic short description (for list views)
-    /// </summary>
-    [StringLength(500)]
-    public string? ShortDescriptionAr { get; set; }
-    
-    /// <summary>
-    /// English short description (for list views)
-    /// </summary>
-    [StringLength(500)]
-    public string? ShortDescriptionEn { get; set; }
-    
-    /// <summary>
-    /// Arabic full description (for detail views)
-    /// </summary>
-    [StringLength(5000)]
-    public string? DescriptionAr { get; set; }
-    
-    /// <summary>
-    /// English full description (for detail views)
-    /// </summary>
-    [StringLength(5000)]
-    public string? DescriptionEn { get; set; }
-    
-    /// <summary>
-    /// Foreign key to the developer/company
-    /// </summary>
-    public Guid DeveloperId { get; set; }
-    
-    /// <summary>
-    /// Average user rating (0.0 to 5.0)
-    /// </summary>
-    [Range(0, 5)]
-    public double AppsAvgRating { get; set; }
-    
-    /// <summary>
-    /// Total number of reviews
-    /// </summary>
-    public int TotalReviews { get; set; }
-    
-    /// <summary>
-    /// Google Play Store link
-    /// </summary>
-    [Url]
-    [StringLength(500)]
-    public string? GooglePlayLink { get; set; }
-    
-    /// <summary>
-    /// Apple App Store link
-    /// </summary>
-    [Url]
-    [StringLength(500)]
-    public string? AppStoreLink { get; set; }
-    
-    /// <summary>
-    /// Huawei App Gallery link
-    /// </summary>
-    [Url]
-    [StringLength(500)]
-    public string? AppGalleryLink { get; set; }
-    
-    /// <summary>
-    /// Application icon URL (CDN)
-    /// </summary>
-    [Url]
-    [StringLength(500)]
-    public string? ApplicationIcon { get; set; }
-    
-    /// <summary>
-    /// Main promotional image (Arabic version)
-    /// </summary>
-    [Url]
-    [StringLength(500)]
-    public string? MainImageAr { get; set; }
-    
-    /// <summary>
-    /// Main promotional image (English version)
-    /// </summary>
-    [Url]
-    [StringLength(500)]
-    public string? MainImageEn { get; set; }
-    
-    /// <summary>
-    /// Creation timestamp
-    /// </summary>
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    
-    /// <summary>
-    /// Last update timestamp
-    /// </summary>
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-    
-    // Navigation Properties
-    
-    /// <summary>
-    /// Developer/Company that created this app
-    /// </summary>
-    public Developer Developer { get; set; } = null!;
-    
-    /// <summary>
-    /// Categories this app belongs to
-    /// </summary>
-    public ICollection<AppCategory> AppCategories { get; set; } = new List<AppCategory>();
-    
-    /// <summary>
-    /// Features offered by this app
-    /// </summary>
-    public ICollection<AppFeature> AppFeatures { get; set; } = new List<AppFeature>();
-    
-    /// <summary>
-    /// Screenshots (Arabic)
-    /// </summary>
-    public ICollection<Screenshot> ScreenshotsAr { get; set; } = new List<Screenshot>();
-    
-    /// <summary>
-    /// Screenshots (English)
-    /// </summary>
-    public ICollection<Screenshot> ScreenshotsEn { get; set; } = new List<Screenshot>();
-}
+### Complete Django Model Example
+```python
+from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator, URLValidator
+
+class App(models.Model):
+    """Represents a Quran application in the directory"""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    # Bilingual Names
+    name_ar = models.CharField(
+        max_length=200,
+        help_text="Arabic name of the application"
+    )
+    name_en = models.CharField(
+        max_length=200,
+        help_text="English name of the application"
+    )
+
+    # Short Descriptions (for list views)
+    short_description_ar = models.CharField(
+        max_length=500,
+        null=True,
+        blank=True,
+        help_text="Arabic short description"
+    )
+    short_description_en = models.CharField(
+        max_length=500,
+        null=True,
+        blank=True,
+        help_text="English short description"
+    )
+
+    # Full Descriptions (for detail views)
+    description_ar = models.TextField(
+        max_length=5000,
+        null=True,
+        blank=True,
+        help_text="Arabic full description"
+    )
+    description_en = models.TextField(
+        max_length=5000,
+        null=True,
+        blank=True,
+        help_text="English full description"
+    )
+
+    # Foreign Key
+    developer = models.ForeignKey(
+        'Developer',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="Developer/Company that created this app"
+    )
+
+    # Rating & Reviews
+    apps_avg_rating = models.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(5)],
+        help_text="Average user rating (0.0 to 5.0)"
+    )
+    app_total_reviews = models.IntegerField(
+        default=0,
+        help_text="Total number of reviews"
+    )
+
+    # Store Links
+    google_play_link = models.URLField(
+        max_length=500,
+        null=True,
+        blank=True,
+        help_text="Google Play Store link"
+    )
+    app_store_link = models.URLField(
+        max_length=500,
+        null=True,
+        blank=True,
+        help_text="Apple App Store link"
+    )
+    app_gallery_link = models.URLField(
+        max_length=500,
+        null=True,
+        blank=True,
+        help_text="Huawei App Gallery link"
+    )
+
+    # Images
+    application_icon = models.URLField(
+        max_length=500,
+        null=True,
+        blank=True,
+        help_text="Application icon URL (CDN)"
+    )
+    main_image_ar = models.URLField(
+        max_length=500,
+        null=True,
+        blank=True,
+        help_text="Main promotional image (Arabic)"
+    )
+    main_image_en = models.URLField(
+        max_length=500,
+        null=True,
+        blank=True,
+        help_text="Main promotional image (English)"
+    )
+
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # Relationships
+    categories = models.ManyToManyField(
+        'Category',
+        through='AppCategory',
+        related_name='apps',
+        blank=True,
+        help_text="Categories this app belongs to"
+    )
+
+    class Meta:
+        db_table = 'apps'
+        ordering = ['-apps_avg_rating', 'name_en']
+        indexes = [
+            models.Index(fields=['slug']),
+            models.Index(fields=['developer_id']),
+        ]
+
+    def __str__(self):
+        return self.name_en
 ```
 
-### DTO Pattern with Records (C# 13)
-```csharp
-// Request DTOs (immutable)
-public record CreateAppRequest(
-    string NameAr,
-    string NameEn,
-    string? ShortDescriptionAr,
-    string? ShortDescriptionEn,
-    string? DescriptionAr,
-    string? DescriptionEn,
-    Guid DeveloperId,
-    List<Guid> CategoryIds,
-    string? GooglePlayLink,
-    string? AppStoreLink
-);
+### Django REST Serializer Pattern
+```python
+from rest_framework import serializers
 
-// Response DTOs (immutable)
-public record AppResponse(
-    Guid Id,
-    string NameAr,
-    string NameEn,
-    string? ShortDescriptionAr,
-    string? ShortDescriptionEn,
-    DeveloperResponse Developer,
-    List<CategoryResponse> Categories,
-    double AppsAvgRating,
-    int TotalReviews,
-    string? GooglePlayLink,
-    string? AppStoreLink,
-    string? ApplicationIcon,
-    DateTime CreatedAt
-);
+# Request Serializer
+class CreateAppSerializer(serializers.ModelSerializer):
+    category_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        many=True,
+        write_only=True,
+        source='categories'
+    )
 
-// Nested DTOs
-public record DeveloperResponse(
-    Guid Id,
-    string NameAr,
-    string NameEn,
-    string? Website,
-    string? LogoUrl
-);
+    class Meta:
+        model = App
+        fields = ['name_ar', 'name_en', 'short_description_ar',
+                 'short_description_en', 'description_ar', 'description_en',
+                 'developer_id', 'category_ids', 'google_play_link', 'app_store_link']
 
-public record CategoryResponse(
-    Guid Id,
-    string NameAr,
-    string NameEn,
-    string? Icon
-);
+# Response Serializer
+class DeveloperSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Developer
+        fields = ['id', 'name_ar', 'name_en', 'website', 'logo_url']
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name_ar', 'name_en', 'icon']
+
+class AppSerializer(serializers.ModelSerializer):
+    developer = DeveloperSerializer(read_only=True)
+    categories = CategorySerializer(many=True, read_only=True)
+
+    class Meta:
+        model = App
+        fields = ['id', 'name_ar', 'name_en', 'short_description_ar',
+                 'short_description_en', 'developer', 'categories',
+                 'apps_avg_rating', 'app_total_reviews', 'google_play_link',
+                 'app_store_link', 'application_icon', 'created_at']
 ```
 
 ---
@@ -361,10 +334,10 @@ public record CategoryResponse(
 ---
 
 ## 📚 Resources
-- [EF Core Entity Configuration](https://learn.microsoft.com/en-us/ef/core/modeling/)
-- [FluentValidation Documentation](https://docs.fluentvalidation.net/)
-- [AutoMapper Documentation](https://docs.automapper.org/)
-- [C# 13 Records](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record)
+- [Django Models Documentation](https://docs.djangoproject.com/en/stable/topics/db/models/)
+- [Django REST Framework Serializers](https://www.django-rest-framework.org/api-guide/serializers/)
+- [Django Validators](https://docs.djangoproject.com/en/stable/ref/validators/)
+- [Django ORM Relationships](https://docs.djangoproject.com/en/stable/topics/db/models/#relationships)
 
 ---
 

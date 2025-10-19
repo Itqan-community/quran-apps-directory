@@ -43,11 +43,9 @@ Enable users to discover Quran applications through multiple filter dimensions i
 
 ## Django Implementation Details
 ### Backend Filter Implementation
-```csharp
-// AppsController - Advanced filtering
-[HttpGet("search")]
-public async Task<ActionResult<PaginatedResponse<AppResponse>>> AdvancedSearch(
-    [FromQuery] AdvancedSearchRequest request)
+```python
+// AppsViewSet - Advanced filtering
+public async Task<Response<PaginatedResponse<AppResponse>>> AdvancedSearch(
 {
     var query = _context.Apps.AsQueryable();
     

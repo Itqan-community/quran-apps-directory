@@ -83,7 +83,7 @@
   CREATE EXTENSION IF NOT EXISTS "unaccent"; -- For accent-insensitive search
   ```
 - [ ] Application schema created
-- [ ] Migration tracking table created (for EF Core)
+- [ ] Migration tracking table created (for Django ORM)
 
 ### AC7: Connection Testing
 - [ ] Connection tested from local development machines
@@ -181,7 +181,7 @@ GRANT ALL ON SCHEMA public TO app_user;
 ## 📚 Resources
 - [Railway PostgreSQL Documentation](https://docs.railway.app/databases/postgresql)
 - [PostgreSQL Security Best Practices](https://www.postgresql.org/docs/16/security.html)
-- [Npgsql Connection Strings](https://www.npgsql.org/doc/connection-string-parameters.html)
+- [psycopg2 Connection Strings](https://www.npgsql.org/doc/connection-string-parameters.html)
 
 ---
 

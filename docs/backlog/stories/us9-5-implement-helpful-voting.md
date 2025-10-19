@@ -54,66 +54,55 @@
 
 ## 📝 Technical Notes
 
-### Review Voting Controller
-```csharp
-[ApiController]
-[Route("api/reviews/{reviewId:guid}/vote")]
-[Authorize]
-public class ReviewVotingController : ControllerBase
+### ViewSet
+```python
+class ReviewVotingViewSet(viewsets.ModelViewSet):
 {
-    private readonly IReviewVotingService _votingService;
     
-    [HttpPost]
-    public async Task<IActionResult> VoteOnReview(
+    def  VoteOnReview(
         Guid reviewId,
-        [FromBody] VoteDto dto)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         // Check if voting on own review
         var review = await _context.Reviews.FindAsync(reviewId);
         if (review.UserId.ToString() == userId)
-            return BadRequest(new { message = "Cannot vote on your own review" });
         
         await _votingService.VoteAsync(
             reviewId,
-            Guid.Parse(userId),
+            uuid.UUID(userId),
             dto.IsHelpful);
         
         return Ok(new { message = "Vote recorded" });
     }
     
-    [HttpGet]
-    public async Task<ActionResult<VoteDto>> GetMyVote(Guid reviewId)
+    def <VoteDto>> GetMyVote(Guid reviewId)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var vote = await _votingService.GetUserVoteAsync(
             reviewId,
-            Guid.Parse(userId));
+            uuid.UUID(userId));
         
         if (vote == null)
-            return NotFound();
         
         return Ok(new VoteDto { IsHelpful = vote.IsHelpful });
     }
     
-    [HttpDelete]
-    public async Task<IActionResult> RemoveVote(Guid reviewId)
+    def  RemoveVote(Guid reviewId)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         await _votingService.RemoveVoteAsync(
             reviewId,
-            Guid.Parse(userId));
+            uuid.UUID(userId));
         
-        return NoContent();
     }
 }
 ```
 
 ### Voting Service
-```csharp
+```python
 public interface IReviewVotingService
 {
     Task VoteAsync(Guid reviewId, Guid userId, bool isHelpful);

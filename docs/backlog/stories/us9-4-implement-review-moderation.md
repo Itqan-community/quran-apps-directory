@@ -48,7 +48,7 @@
 - [ ] Profanity detection (basic filter)
 - [ ] Spam detection (repeated text, links)
 - [ ] Length validation
-- [ ] Sentiment analysis (optional, ML.NET)
+- [ ] Sentiment analysis (optional, scikit-learn/TensorFlow)
 
 ### AC6: Admin Dashboard View
 - [ ] List of pending reviews
@@ -60,21 +60,12 @@
 
 ## 📝 Technical Notes
 
-### Admin Reviews Controller
-```csharp
-[ApiController]
-[Route("api/admin/reviews")]
-[Authorize(Roles = "Admin")]
-public class AdminReviewsController : ControllerBase
+### ViewSet
+```python
+class AdminReviewsViewSet(viewsets.ModelViewSet):
 {
-    private readonly IReviewModerationService _moderationService;
     
-    [HttpGet("pending")]
-    [ProducesResponseType(typeof(PagedResult<PendingReviewDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<PagedResult<PendingReviewDto>>> GetPendingReviews(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        [FromQuery] string filter = "all")
+    def <PagedResult<PendingReviewDto>>> GetPendingReviews(
     {
         var pending = await _moderationService.GetPendingReviewsAsync(
             page, pageSize, filter);
@@ -82,45 +73,37 @@ public class AdminReviewsController : ControllerBase
         return Ok(pending);
     }
     
-    [HttpPost("{id:guid}/approve")]
-    public async Task<IActionResult> ApproveReview(Guid id)
+    def  ApproveReview(uuid_id)
     {
-        var moderatorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var moderatorId = request.user.id;
         
         await _moderationService.ApproveReviewAsync(
-            id, Guid.Parse(moderatorId));
+            id, uuid.UUID(moderatorId));
         
         return Ok(new { message = "Review approved" });
     }
     
-    [HttpPost("{id:guid}/reject")]
-    public async Task<IActionResult> RejectReview(
-        Guid id,
-        [FromBody] RejectReviewDto dto)
+    def  RejectReview(
+        uuid_id,
     {
-        var moderatorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var moderatorId = request.user.id;
         
         await _moderationService.RejectReviewAsync(
-            id, Guid.Parse(moderatorId), dto.Reason);
+            id, uuid.UUID(moderatorId), dto.Reason);
         
         return Ok(new { message = "Review rejected" });
     }
 }
 
-[ApiController]
-[Route("api/reviews")]
-public class ReviewFlaggingController : ControllerBase
+class ReviewFlaggingViewSet(viewsets.ModelViewSet):
 {
-    [HttpPost("{id:guid}/flag")]
-    [Authorize]
-    public async Task<IActionResult> FlagReview(
-        Guid id,
-        [FromBody] FlagReviewDto dto)
+    def  FlagReview(
+        uuid_id,
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         await _moderationService.FlagReviewAsync(
-            id, Guid.Parse(userId), dto.Reason);
+            id, uuid.UUID(userId), dto.Reason);
         
         return Ok(new { message = "Review flagged for moderation" });
     }
@@ -128,7 +111,7 @@ public class ReviewFlaggingController : ControllerBase
 ```
 
 ### Review Moderation Service
-```csharp
+```python
 public interface IReviewModerationService
 {
     Task<PagedResult<PendingReviewDto>> GetPendingReviewsAsync(
@@ -141,8 +124,6 @@ public interface IReviewModerationService
 
 public class ReviewModerationService : IReviewModerationService
 {
-    private readonly ApplicationDbContext _context;
-    private readonly INotificationService _notificationService;
     
     public async Task<PagedResult<PendingReviewDto>> GetPendingReviewsAsync(
         int page,

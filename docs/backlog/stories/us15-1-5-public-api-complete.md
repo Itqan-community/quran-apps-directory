@@ -42,7 +42,7 @@ Complete public API system including API key management, rate limiting, public e
 - [ ] All endpoints require API key
 
 ### API Documentation Portal (AC19-AC24)
-- [ ] Swagger/OpenAPI spec for public API
+- [ ] drf-spectacular/OpenAPI spec for public API
 - [ ] Developer portal at /developers/docs
 - [ ] Interactive API explorer
 - [ ] Authentication guide
@@ -62,7 +62,7 @@ Complete public API system including API key management, rate limiting, public e
 ## 📝 Technical Implementation
 
 ### API Key Entity
-```csharp
+```python
 public class ApiKey
 {
     public Guid Id { get; set; }
@@ -107,21 +107,14 @@ public class ApiUsageLog
 }
 ```
 
-### API Key Management Controller
-```csharp
-[ApiController]
-[Route("api/developers/api-keys")]
-[Authorize(Roles = "Developer")]
-public class ApiKeysController : ControllerBase
+### ViewSet
+```python
+class ApiKeysViewSet(viewsets.ModelViewSet):
 {
-    private readonly IApiKeyService _apiKeyService;
     
-    [HttpPost]
-    [ProducesResponseType(typeof(CreateApiKeyResponse), StatusCodes.Status201Created)]
-    public async Task<ActionResult<CreateApiKeyResponse>> CreateApiKey(
-        [FromBody] CreateApiKeyDto dto)
+    def <CreateApiKeyResponse>> CreateApiKey(
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         // Generate API key
         var apiKey = GenerateApiKey();
@@ -131,7 +124,7 @@ public class ApiKeysController : ControllerBase
         var apiKeyEntity = new ApiKey
         {
             Id = Guid.NewGuid(),
-            UserId = Guid.Parse(userId),
+            UserId = uuid.UUID(userId),
             Name = dto.Name,
             KeyHash = keyHash,
             KeyPrefix = keyPrefix,
@@ -144,7 +137,6 @@ public class ApiKeysController : ControllerBase
         await _context.SaveChangesAsync();
         
         // Return plain key ONLY this once
-        return CreatedAtAction(nameof(GetApiKeys), new CreateApiKeyResponse
         {
             Id = apiKeyEntity.Id,
             Name = apiKeyEntity.Name,
@@ -155,13 +147,12 @@ public class ApiKeysController : ControllerBase
         });
     }
     
-    [HttpGet]
-    public async Task<ActionResult<List<ApiKeyDto>>> GetApiKeys()
+    def <List<ApiKeyDto>>> GetApiKeys()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var keys = await _context.ApiKeys
-            .Where(k => k.UserId == Guid.Parse(userId))
+            .Where(k => k.UserId == uuid.UUID(userId))
             .Select(k => new ApiKeyDto
             {
                 Id = k.Id,
@@ -177,21 +168,18 @@ public class ApiKeysController : ControllerBase
         return Ok(keys);
     }
     
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> RevokeApiKey(Guid id)
+    def  RevokeApiKey(uuid_id)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var apiKey = await _context.ApiKeys
-            .FirstOrDefaultAsync(k => k.Id == id && k.UserId == Guid.Parse(userId));
+            .FirstOrDefaultAsync(k => k.Id == id && k.UserId == uuid.UUID(userId));
         
         if (apiKey == null)
-            return NotFound();
         
         apiKey.IsActive = false;
         await _context.SaveChangesAsync();
         
-        return NoContent();
     }
     
     private string GenerateApiKey()
@@ -216,10 +204,9 @@ public class ApiKeysController : ControllerBase
 ```
 
 ### API Key Authentication Middleware
-```csharp
+```python
 public class ApiKeyAuthenticationMiddleware
 {
-    private readonly RequestDelegate _next;
     
     public async Task InvokeAsync(
         HttpContext context,
@@ -274,7 +261,7 @@ public class ApiKeyAuthenticationMiddleware
 ```
 
 ### Rate Limiting Configuration
-```csharp
+```python
 // appsettings.json
 {
   "IpRateLimiting": {
@@ -305,18 +292,12 @@ builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrateg
 app.UseIpRateLimiting();
 ```
 
-### Public API Controller
-```csharp
-[ApiController]
-[Route("api/public/v1")]
+### ViewSet
+```python
 [ApiVersion("1.0")]
-public class PublicApiController : ControllerBase
+class PublicApiViewSet(viewsets.ModelViewSet):
 {
-    [HttpGet("apps")]
-    [ProducesResponseType(typeof(PagedResult<PublicAppDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<PagedResult<PublicAppDto>>> GetApps(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20)
+    def <PagedResult<PublicAppDto>>> GetApps(
     {
         if (pageSize > 100) pageSize = 100;
         
@@ -328,25 +309,18 @@ public class PublicApiController : ControllerBase
         return Ok(apps);
     }
     
-    [HttpGet("apps/{id:guid}")]
-    [ProducesResponseType(typeof(PublicAppDetailDto), StatusCodes.Status200OK)]
-    public async Task<ActionResult<PublicAppDetailDto>> GetApp(Guid id)
+    def <PublicAppDetailDto>> GetApp(uuid_id)
     {
         var app = await _appsService.GetPublicAppByIdAsync(id);
         
         if (app == null)
-            return NotFound();
         
         AddRateLimitHeaders();
         
         return Ok(app);
     }
     
-    [HttpGet("apps/search")]
-    public async Task<ActionResult<SearchResult<PublicAppDto>>> SearchApps(
-        [FromQuery] string q,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20)
+    def <SearchResult<PublicAppDto>>> SearchApps(
     {
         var results = await _searchService.SearchPublicAppsAsync(q, page, pageSize);
         
@@ -513,7 +487,7 @@ print(apps)
 ## 🔗 Dependencies
 - US11.1: Developer profiles
 - AspNetCoreRateLimit package
-- Swagger/OpenAPI setup
+- drf-spectacular/OpenAPI setup
 
 ---
 
@@ -525,7 +499,7 @@ print(apps)
 - [ ] Documentation portal complete
 - [ ] TypeScript SDK published to npm
 - [ ] Code examples in docs
-- [ ] Swagger/OpenAPI spec generated
+- [ ] drf-spectacular/OpenAPI spec generated
 - [ ] Unit tests for API endpoints
 - [ ] Integration tests pass
 

@@ -18,7 +18,7 @@ Expand the ecosystem by enabling third-party integrations, increasing platform r
 - API key generation and management
 - Rate limiting per API key
 - Public API endpoints (read-only initially)
-- Comprehensive API documentation (Swagger)
+- Comprehensive API documentation (drf-spectacular)
 - API usage analytics
 - Webhook system for updates
 - TypeScript/JavaScript SDK
@@ -37,7 +37,7 @@ Expand the ecosystem by enabling third-party integrations, increasing platform r
 - API key system operational
 - Rate limiting enforced
 - Public API documented
-- SDKs published (npm, NuGet)
+- SDKs published (npm, pip)
 - Developer portal shows API usage
 - Webhooks functional
 - Example integrations created
@@ -51,7 +51,7 @@ Expand the ecosystem by enabling third-party integrations, increasing platform r
 
 ## Django Implementation Details
 ### Entity Models
-```csharp
+```python
 public class ApiKey
 {
     public Guid Id { get; set; }
@@ -107,10 +107,9 @@ public enum WebhookEvent
 ```
 
 ### API Key Middleware
-```csharp
+```python
 public class ApiKeyAuthenticationMiddleware
 {
-    private readonly RequestDelegate _next;
     
     public async Task InvokeAsync(HttpContext context, ApplicationDbContext dbContext)
     {
@@ -166,45 +165,31 @@ public class ApiKeyAuthenticationMiddleware
 app.UseMiddleware<ApiKeyAuthenticationMiddleware>();
 ```
 
-### Public API Controller
-```csharp
-[ApiController]
-[Route("api/public/v1")]
-public class PublicApiController : ControllerBase
+### Public API ViewSet
+```python
+[ApiViewSet]
+public class PublicApiViewSet : ViewSetBase
 {
-    private readonly IAppsService _appsService;
     
-    [HttpGet("apps")]
-    [ProducesResponseType(typeof(PaginatedResponse<AppResponse>), 200)]
-    public async Task<ActionResult<PaginatedResponse<AppResponse>>> GetApps(
-        [FromQuery] GetAppsRequest request)
+    public async Task<Response<PaginatedResponse<AppResponse>>> GetApps(
     {
         var apps = await _appsService.GetAppsAsync(request);
         return Ok(apps);
     }
     
-    [HttpGet("apps/{id:guid}")]
-    [ProducesResponseType(typeof(AppResponse), 200)]
-    [ProducesResponseType(404)]
-    public async Task<ActionResult<AppResponse>> GetApp(Guid id)
+    public async Task<Response<AppResponse>> GetApp(Guid id)
     {
         var app = await _appsService.GetAppByIdAsync(id);
         return app == null ? NotFound() : Ok(app);
     }
     
-    [HttpGet("categories")]
-    [ProducesResponseType(typeof(List<CategoryResponse>), 200)]
-    public async Task<ActionResult<List<CategoryResponse>>> GetCategories()
+    public async Task<Response<List<CategoryResponse>>> GetCategories()
     {
         var categories = await _appsService.GetCategoriesAsync();
         return Ok(categories);
     }
     
-    [HttpGet("developers")]
-    [ProducesResponseType(typeof(PaginatedResponse<DeveloperResponse>), 200)]
-    public async Task<ActionResult<PaginatedResponse<DeveloperResponse>>> GetDevelopers(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20)
+    public async Task<Response<PaginatedResponse<DeveloperResponse>>> GetDevelopers(
     {
         var developers = await _appsService.GetDevelopersAsync(page, pageSize);
         return Ok(developers);
@@ -212,52 +197,41 @@ public class PublicApiController : ControllerBase
 }
 ```
 
-### API Key Management Controller
-```csharp
-[ApiController]
-[Route("api/v1/api-keys")]
-[Authorize(Roles = "Developer")]
-public class ApiKeysController : ControllerBase
+### API Key Management ViewSet
+```python
+[ApiViewSet]
+public class ApiKeysViewSet : ViewSetBase
 {
-    private readonly IApiKeyService _apiKeyService;
     
-    [HttpGet]
-    public async Task<ActionResult<List<ApiKeyResponse>>> GetMyApiKeys()
+    public async Task<Response<List<ApiKeyResponse>>> GetMyApiKeys()
     {
         var developerId = GetUserId();
         var keys = await _apiKeyService.GetDeveloperApiKeysAsync(developerId);
         return Ok(keys);
     }
     
-    [HttpPost]
-    public async Task<ActionResult<ApiKeyResponse>> CreateApiKey([FromBody] CreateApiKeyRequest request)
     {
         var developerId = GetUserId();
         var apiKey = await _apiKeyService.CreateApiKeyAsync(developerId, request);
         return CreatedAtAction(nameof(GetApiKey), new { id = apiKey.Id }, apiKey);
     }
     
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<ApiKeyResponse>> GetApiKey(Guid id)
+    public async Task<Response<ApiKeyResponse>> GetApiKey(Guid id)
     {
         var developerId = GetUserId();
         var apiKey = await _apiKeyService.GetApiKeyAsync(id, developerId);
         return apiKey == null ? NotFound() : Ok(apiKey);
     }
     
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> RevokeApiKey(Guid id)
+    public async Task<IResponse> RevokeApiKey(Guid id)
     {
         var developerId = GetUserId();
         await _apiKeyService.RevokeApiKeyAsync(id, developerId);
         return NoContent();
     }
     
-    [HttpGet("{id:guid}/usage")]
-    public async Task<ActionResult<ApiUsageStats>> GetApiKeyUsage(
+    public async Task<Response<ApiUsageStats>> GetApiKeyUsage(
         Guid id,
-        [FromQuery] DateTime? startDate = null,
-        [FromQuery] DateTime? endDate = null)
     {
         var developerId = GetUserId();
         var usage = await _apiKeyService.GetApiKeyUsageAsync(
@@ -272,7 +246,7 @@ public class ApiKeysController : ControllerBase
 ```
 
 ### API Key Service
-```csharp
+```python
 public class ApiKeyService : IApiKeyService
 {
     public async Task<ApiKeyResponse> CreateApiKeyAsync(Guid developerId, CreateApiKeyRequest request)
@@ -317,10 +291,9 @@ public class ApiKeyService : IApiKeyService
 ```
 
 ### Webhook System
-```csharp
+```python
 public class WebhookService : IWebhookService
 {
-    private readonly HttpClient _httpClient;
     
     public async Task TriggerWebhookAsync(WebhookEvent eventType, object payload)
     {

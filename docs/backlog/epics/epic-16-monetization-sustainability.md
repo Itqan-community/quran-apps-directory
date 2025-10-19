@@ -52,7 +52,7 @@ Generate sustainable revenue to support platform growth, infrastructure costs, a
 
 ## Django Implementation Details
 ### Entity Models
-```csharp
+```python
 public class Donation
 {
     public Guid Id { get; set; }
@@ -141,18 +141,13 @@ public enum SponsorshipType
 }
 ```
 
-### PaymentsController
-```csharp
-[ApiController]
-[Route("api/v1/[controller]")]
-public class PaymentsController : ControllerBase
+### PaymentsViewSet
+```python
+[ApiViewSet]
+public class PaymentsViewSet : ViewSetBase
 {
-    private readonly IPaymentService _paymentService;
-    private readonly IConfiguration _configuration;
     
-    [HttpPost("donations/create-intent")]
-    public async Task<ActionResult<CreatePaymentIntentResponse>> CreateDonationIntent(
-        [FromBody] CreateDonationRequest request)
+    public async Task<Response<CreatePaymentIntentResponse>> CreateDonationIntent(
     {
         var userId = User.Identity?.IsAuthenticated == true ? GetUserId() : (Guid?)null;
         
@@ -170,9 +165,8 @@ public class PaymentsController : ControllerBase
         });
     }
     
-    [HttpPost("donations/webhook")]
     [AllowAnonymous]
-    public async Task<IActionResult> HandleStripeWebhook()
+    public async Task<IResponse> HandleStripeWebhook()
     {
         var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
         var stripeSignature = Request.Headers["Stripe-Signature"];
@@ -195,10 +189,7 @@ public class PaymentsController : ControllerBase
         }
     }
     
-    [Authorize(Roles = "Developer")]
-    [HttpPost("subscriptions/create")]
-    public async Task<ActionResult<CreateSubscriptionResponse>> CreateDeveloperSubscription(
-        [FromBody] CreateSubscriptionRequest request)
+    public async Task<Response<CreateSubscriptionResponse>> CreateDeveloperSubscription(
     {
         var developerId = GetUserId();
         
@@ -211,19 +202,14 @@ public class PaymentsController : ControllerBase
         return Ok(subscription);
     }
     
-    [Authorize(Roles = "Developer")]
-    [HttpPost("subscriptions/{subscriptionId}/cancel")]
-    public async Task<IActionResult> CancelSubscription(Guid subscriptionId)
+    public async Task<IResponse> CancelSubscription(Guid subscriptionId)
     {
         var developerId = GetUserId();
         await _paymentService.CancelSubscriptionAsync(subscriptionId, developerId);
         return NoContent();
     }
     
-    [Authorize(Roles = "Developer")]
-    [HttpPost("sponsored-placements/create")]
-    public async Task<ActionResult<SponsoredPlacementResponse>> CreateSponsoredPlacement(
-        [FromBody] CreateSponsoredPlacementRequest request)
+    public async Task<Response<SponsoredPlacementResponse>> CreateSponsoredPlacement(
     {
         var developerId = GetUserId();
         
@@ -237,9 +223,8 @@ public class PaymentsController : ControllerBase
         return Ok(placement);
     }
     
-    [HttpGet("transparency")]
     [AllowAnonymous]
-    public async Task<ActionResult<FinancialTransparencyResponse>> GetFinancialTransparency()
+    public async Task<Response<FinancialTransparencyResponse>> GetFinancialTransparency()
     {
         var transparency = await _paymentService.GetFinancialTransparencyAsync();
         return Ok(transparency);
@@ -248,11 +233,9 @@ public class PaymentsController : ControllerBase
 ```
 
 ### PaymentService
-```csharp
+```python
 public class PaymentService : IPaymentService
 {
-    private readonly ApplicationDbContext _context;
-    private readonly StripeClient _stripeClient;
     
     public PaymentService(ApplicationDbContext context, IConfiguration configuration)
     {
@@ -322,7 +305,7 @@ public class PaymentService : IPaymentService
     
     private async Task HandlePaymentSucceededAsync(PaymentIntent paymentIntent)
     {
-        var donationId = Guid.Parse(paymentIntent.Metadata["donation_id"]);
+        donation_id = payment_intent.metadata.get("donation_id")  # UUID handling
         var donation = await _context.Donations.FindAsync(donationId);
         
         if (donation != null)
@@ -550,7 +533,7 @@ export class TransparencyComponent implements OnInit {
 </div>
 ```
 
-### Required NuGet Packages
+### Required pip Packages
 ```xml
 <PackageReference Include="Stripe.net" Version="43.0.0" />
 ```

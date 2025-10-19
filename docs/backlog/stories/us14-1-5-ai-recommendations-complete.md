@@ -11,7 +11,7 @@
 
 ## 📋 Combined User Stories
 
-Complete AI recommendation system using ML.NET, including behavior tracking, model training, recommendation engine, UI integration, and A/B testing.
+Complete AI recommendation system using scikit-learn/TensorFlow, including behavior tracking, model training, recommendation engine, UI integration, and A/B testing.
 
 ---
 
@@ -24,7 +24,7 @@ Complete AI recommendation system using ML.NET, including behavior tracking, mod
 - [ ] Behavior aggregation
 - [ ] Privacy-compliant tracking
 
-### ML.NET Recommendation Model (AC6-AC10)
+### scikit-learn/TensorFlow Recommendation Model (AC6-AC10)
 - [ ] MatrixFactorization algorithm implemented
 - [ ] Training pipeline setup
 - [ ] Model training on historical data
@@ -58,7 +58,7 @@ Complete AI recommendation system using ML.NET, including behavior tracking, mod
 ## 📝 Technical Implementation
 
 ### User Behavior Entity
-```csharp
+```python
 public class UserBehavior
 {
     public Guid Id { get; set; }
@@ -92,8 +92,8 @@ public static class BehaviorWeights
 }
 ```
 
-### ML.NET Recommendation Model
-```csharp
+### scikit-learn/TensorFlow Recommendation Model
+```python
 public class AppRating
 {
     [LoadColumn(0)]
@@ -185,7 +185,7 @@ public class RecommendationModelService
 ```
 
 ### Recommendation Engine Service
-```csharp
+```python
 public interface IRecommendationEngine
 {
     Task<List<AppRecommendationDto>> GetRecommendationsForUserAsync(
@@ -196,8 +196,6 @@ public interface IRecommendationEngine
 
 public class RecommendationEngine : IRecommendationEngine
 {
-    private readonly RecommendationModelService _modelService;
-    private readonly ApplicationDbContext _context;
     
     public async Task<List<AppRecommendationDto>> GetRecommendationsForUserAsync(
         Guid userId,
@@ -235,7 +233,7 @@ public class RecommendationEngine : IRecommendationEngine
         Guid userId,
         int count)
     {
-        // Use ML.NET model for predictions
+        // Use scikit-learn/TensorFlow model for predictions
         var allApps = await _context.Apps
             .Where(a => a.IsActive && !a.IsDeleted)
             .Select(a => a.Id)
@@ -335,32 +333,24 @@ public class RecommendationEngine : IRecommendationEngine
 }
 ```
 
-### Recommendations Controller
-```csharp
-[ApiController]
-[Route("api/recommendations")]
-public class RecommendationsController : ControllerBase
+### ViewSet
+```python
+class RecommendationsViewSet(viewsets.ModelViewSet):
 {
-    private readonly IRecommendationEngine _recommendationEngine;
     
-    [HttpGet("for-you")]
-    [Authorize]
-    public async Task<ActionResult<List<AppRecommendationDto>>> GetRecommendations(
-        [FromQuery] int count = 10)
+    def <List<AppRecommendationDto>>> GetRecommendations(
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var recommendations = await _recommendationEngine.GetRecommendationsForUserAsync(
-            Guid.Parse(userId), count);
+            uuid.UUID(userId), count);
         
         return Ok(recommendations);
     }
     
-    [HttpGet("similar/{appId:guid}")]
     [AllowAnonymous]
-    public async Task<ActionResult<List<AppRecommendationDto>>> GetSimilarApps(
+    def <List<AppRecommendationDto>>> GetSimilarApps(
         Guid appId,
-        [FromQuery] int count = 5)
     {
         var similar = await _recommendationEngine.GetSimilarAppsAsync(appId, count);
         
@@ -433,11 +423,9 @@ export class RecommendationsComponent implements OnInit {
 ```
 
 ### Background Model Retraining Job
-```csharp
+```python
 public class ModelRetrainingJob : BackgroundService
 {
-    private readonly IServiceProvider _serviceProvider;
-    private readonly ILogger<ModelRetrainingJob> _logger;
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -474,14 +462,14 @@ builder.Services.AddHostedService<ModelRetrainingJob>();
 ## 🔗 Dependencies
 - US8.1: User authentication
 - US8.7: User behavior tracking
-- ML.NET NuGet package
+- scikit-learn/TensorFlow pip package
 - Sufficient training data (minimum 100 users with 5+ behaviors each)
 
 ---
 
 ## 📊 Definition of Done
 - [ ] User behavior tracking working
-- [ ] ML.NET model training pipeline complete
+- [ ] scikit-learn/TensorFlow model training pipeline complete
 - [ ] Recommendation engine implemented (collaborative + content-based)
 - [ ] Cold start problem handled
 - [ ] API endpoints functional

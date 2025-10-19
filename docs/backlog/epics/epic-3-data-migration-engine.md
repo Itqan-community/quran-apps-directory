@@ -15,9 +15,9 @@ Successfully migrate all 44 Quran applications and related data without any loss
 
 ## 🏗️ Technical Scope (Django)
 - Data extraction from applicationsData.ts (TypeScript parsing in C#)
-- Data transformation and validation scripts (C# with FluentValidation)
-- Automated migration pipeline (C# console app or API endpoint)
-- Rollback mechanisms for failed migrations (EF Core transactions)
+- Data transformation and validation scripts (Python with FluentValidation)
+- Automated migration pipeline (Python console app or API endpoint)
+- Rollback mechanisms for failed migrations (Django ORM transactions)
 - Data integrity verification tools (xUnit tests for validation)
 - Use System.Text.Json for TypeScript data parsing
 
@@ -42,18 +42,17 @@ Successfully migrate all 44 Quran applications and related data without any loss
 
 ## Related Stories
 - US3.1: Data Structure Analysis (Parse TypeScript in C#) (#155)
-- US3.2: Transform Data to Match New Schema (C# DTOs + AutoMapper)
-- US3.3: Create Automated Migration Scripts (C# Console App)
+- US3.2: Transform Data to Match New Schema (Python DTOs + AutoMapper)
+- US3.3: Create Automated Migration Scripts (Python Console App)
 - US3.4: Validate Data Integrity (xUnit Validation Tests)
-- US3.5: Handle Complex Many-to-Many Relationships (EF Core Navigation)
+- US3.5: Handle Complex Many-to-Many Relationships (Django ORM Navigation)
 
 ## Django Implementation Details
 ### Migration Approach
-```csharp
+```python
 // Migration Console App
 public class DataMigrationService
 {
-    private readonly ApplicationDbContext _context;
     
     public async Task<MigrationResult> MigrateAppsAsync(string jsonFilePath)
     {

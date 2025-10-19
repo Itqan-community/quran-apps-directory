@@ -31,8 +31,8 @@
 
 ### Epic 2: Backend Infrastructure Setup (5/5) ✅
 - US2.1: Database Server Setup
-- US2.2: Implement EF Core
-- US2.3: Create ASP.NET Core API
+- US2.2: Implement Django ORM
+- US2.3: Create Django Core API
 - US2.4: Configure Connection Pooling
 - US2.5: Implement Auth & Security Middleware
 
@@ -48,7 +48,7 @@
 - US4.2: Implement Categories & Developers Endpoints
 - US4.3: Implement Advanced Search & Filtering
 - US4.4: Implement Global Error Handling & Logging
-- US4.5: API Documentation with Swagger
+- US4.5: API Documentation with drf-spectacular
 
 ### Epic 5: Frontend Integration (5/5) ✅
 - US5.1: Create Angular API Service Layer
@@ -72,7 +72,7 @@
 - US7.5: Implement WhatsApp-Optimized Sharing
 
 ### Epic 8: User Accounts & Personalization (9/9) ✅
-- US8.1: Implement ASP.NET Core Identity
+- US8.1: Implement Django Core Identity
 - US8.2: Implement JWT Authentication Endpoints
 - US8.3: Implement OAuth 2.0 Providers (Google, Apple, Facebook)
 - US8.4: Create User Profile Management

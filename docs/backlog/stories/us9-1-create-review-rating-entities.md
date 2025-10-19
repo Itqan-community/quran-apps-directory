@@ -48,7 +48,7 @@
 - [ ] Tracks moderation history
 
 ### AC5: Database Migrations
-- [ ] EF Core migration created
+- [ ] Django ORM migration created
 - [ ] All relationships configured
 - [ ] Sample data seeding (optional)
 
@@ -57,7 +57,7 @@
 ## 📝 Technical Notes
 
 ### Review Entity
-```csharp
+```python
 public class Review
 {
     public Guid Id { get; set; }
@@ -137,7 +137,7 @@ public class ReviewModeration
 ```
 
 ### DbContext Configuration
-```csharp
+```python
 protected override void OnModelCreating(ModelBuilder modelBuilder)
 {
     // Review entity
@@ -208,7 +208,7 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 ```
 
 ### Rating Aggregation Service
-```csharp
+```python
 public interface IRatingService
 {
     Task RecalculateAppRatingAsync(Guid appId);
@@ -216,7 +216,6 @@ public interface IRatingService
 
 public class RatingService : IRatingService
 {
-    private readonly ApplicationDbContext _context;
     
     public async Task RecalculateAppRatingAsync(Guid appId)
     {
@@ -251,7 +250,7 @@ public class RatingService : IRatingService
 ---
 
 ## 🔗 Dependencies
-- US8.1: ASP.NET Identity (ApplicationUser)
+- US8.1: django-allauth (ApplicationUser)
 - US1.4: App entity defined
 
 ---

@@ -56,7 +56,7 @@ Comprehensive developer analytics system including data collection, real-time up
 ## 📝 Technical Implementation
 
 ### Analytics Event Entity
-```csharp
+```python
 public class AnalyticsEvent
 {
     public Guid Id { get; set; }
@@ -96,17 +96,12 @@ public static class AnalyticsEventTypes
 }
 ```
 
-### Analytics Tracking Controller
-```csharp
-[ApiController]
-[Route("api/analytics")]
-public class AnalyticsTrackingController : ControllerBase
+### ViewSet
+```python
+class AnalyticsTrackingViewSet(viewsets.ModelViewSet):
 {
-    private readonly IAnalyticsTrackingService _analyticsService;
     
-    [HttpPost("track")]
     [AllowAnonymous]
-    public IActionResult TrackEvent([FromBody] TrackEventDto dto)
     {
         // Fire and forget - don't await
         _ = _analyticsService.TrackEventAsync(new AnalyticsEvent
@@ -115,7 +110,7 @@ public class AnalyticsTrackingController : ControllerBase
             EventType = dto.EventType,
             AppId = dto.AppId,
             UserId = User.Identity?.IsAuthenticated == true 
-                ? Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                ? uuid.UUID(request.user.id)
                 : null,
             SessionId = dto.SessionId,
             ReferrerUrl = Request.Headers["Referer"].ToString(),
@@ -129,9 +124,7 @@ public class AnalyticsTrackingController : ControllerBase
         return Accepted();
     }
     
-    [HttpPost("track-batch")]
     [AllowAnonymous]
-    public IActionResult TrackBatch([FromBody] List<TrackEventDto> events)
     {
         _ = _analyticsService.TrackBatchAsync(events);
         
@@ -140,51 +133,40 @@ public class AnalyticsTrackingController : ControllerBase
 }
 ```
 
-### Developer Analytics Controller
-```csharp
-[ApiController]
-[Route("api/developers/analytics")]
-[Authorize(Roles = "Developer")]
-public class DeveloperAnalyticsController : ControllerBase
+### ViewSet
+```python
+class DeveloperAnalyticsViewSet(viewsets.ModelViewSet):
 {
-    [HttpGet("overview")]
-    public async Task<ActionResult<AnalyticsOverviewDto>> GetOverview(
-        [FromQuery] int days = 30)
+    def <AnalyticsOverviewDto>> GetOverview(
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var overview = await _analyticsService.GetDeveloperOverviewAsync(
-            Guid.Parse(userId), days);
+            uuid.UUID(userId), days);
         
         return Ok(overview);
     }
     
-    [HttpGet("apps/{appId:guid}")]
-    public async Task<ActionResult<AppAnalyticsDto>> GetAppAnalytics(
+    def <AppAnalyticsDto>> GetAppAnalytics(
         Guid appId,
-        [FromQuery] int days = 30)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         // Verify developer owns this app
         var app = await _context.Apps.FindAsync(appId);
         if (app == null || app.DeveloperId.ToString() != userId)
-            return Forbid();
         
         var analytics = await _analyticsService.GetAppAnalyticsAsync(appId, days);
         
         return Ok(analytics);
     }
     
-    [HttpGet("export/csv")]
-    public async Task<IActionResult> ExportToCsv(
-        [FromQuery] DateTime startDate,
-        [FromQuery] DateTime endDate)
+    def  ExportToCsv(
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var csv = await _analyticsService.ExportToCsvAsync(
-            Guid.Parse(userId), startDate, endDate);
+            uuid.UUID(userId), startDate, endDate);
         
         return File(
             Encoding.UTF8.GetBytes(csv),
@@ -195,7 +177,7 @@ public class DeveloperAnalyticsController : ControllerBase
 ```
 
 ### Analytics Service
-```csharp
+```python
 public class AnalyticsService
 {
     public async Task<AnalyticsOverviewDto> GetDeveloperOverviewAsync(
@@ -267,10 +249,9 @@ public class AnalyticsService
 ```
 
 ### SignalR Analytics Hub
-```csharp
+```python
 public class AnalyticsHub : Hub
 {
-    private readonly IAnalyticsService _analyticsService;
     
     public async Task SubscribeToAppAnalytics(Guid appId)
     {
@@ -286,7 +267,6 @@ public class AnalyticsHub : Hub
 // Background service to push updates
 public class AnalyticsUpdateService : BackgroundService
 {
-    private readonly IHubContext<AnalyticsHub> _hubContext;
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

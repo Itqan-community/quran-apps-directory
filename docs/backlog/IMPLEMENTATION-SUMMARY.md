@@ -115,7 +115,7 @@
   - Django User model with custom UserProfile
   - JWT token-based authentication (django-rest-framework-simplejwt)
   - OAuth 2.0 providers (Google, Apple, Facebook, Twitter via django-allauth)
-  - Django UserManager for user management
+  - Django Django User Model for user management
   - SendGrid email service (sendgrid-django)
   - Cloudflare R2 for avatar uploads (S3-compatible via django-storages)
   - Two-factor authentication (TOTP via django-otp)

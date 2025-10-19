@@ -58,7 +58,7 @@
 ## 📝 Technical Notes
 
 ### Favorite Entity
-```csharp
+```python
 public class Favorite
 {
     public Guid Id { get; set; }
@@ -78,7 +78,7 @@ public class Favorite
 ```
 
 ### DbContext Configuration
-```csharp
+```python
 modelBuilder.Entity<Favorite>(entity =>
 {
     entity.HasKey(f => f.Id);
@@ -101,25 +101,18 @@ modelBuilder.Entity<Favorite>(entity =>
 });
 ```
 
-### Favorites Controller
-```csharp
-[ApiController]
-[Route("api/users/me/favorites")]
-[Authorize]
-public class FavoritesController : ControllerBase
+### ViewSet
+```python
+class FavoritesViewSet(viewsets.ModelViewSet):
 {
-    private readonly IFavoritesService _favoritesService;
     
-    [HttpPost("{appId:guid}")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> AddFavorite(Guid appId)
+    def  AddFavorite(Guid appId)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         try
         {
-            await _favoritesService.AddFavoriteAsync(Guid.Parse(userId), appId);
+            await _favoritesService.AddFavoriteAsync(uuid.UUID(userId), appId);
             return StatusCode(201, new { message = "Added to favorites" });
         }
         catch (DuplicateException)
@@ -128,39 +121,30 @@ public class FavoritesController : ControllerBase
         }
     }
     
-    [HttpDelete("{appId:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> RemoveFavorite(Guid appId)
+    def  RemoveFavorite(Guid appId)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
-        await _favoritesService.RemoveFavoriteAsync(Guid.Parse(userId), appId);
+        await _favoritesService.RemoveFavoriteAsync(uuid.UUID(userId), appId);
         
-        return NoContent();
     }
     
-    [HttpGet]
-    [ProducesResponseType(typeof(PagedResult<FavoriteAppDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<PagedResult<FavoriteAppDto>>> GetFavorites(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20)
+    def <PagedResult<FavoriteAppDto>>> GetFavorites(
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var favorites = await _favoritesService.GetUserFavoritesAsync(
-            Guid.Parse(userId), page, pageSize);
+            uuid.UUID(userId), page, pageSize);
         
         return Ok(favorites);
     }
     
-    [HttpGet("{appId:guid}/exists")]
-    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-    public async Task<ActionResult<bool>> IsFavorited(Guid appId)
+    def <bool>> IsFavorited(Guid appId)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         
         var exists = await _favoritesService.IsFavoritedAsync(
-            Guid.Parse(userId), appId);
+            uuid.UUID(userId), appId);
         
         return Ok(exists);
     }
@@ -168,7 +152,7 @@ public class FavoritesController : ControllerBase
 ```
 
 ### Favorites Service
-```csharp
+```python
 public interface IFavoritesService
 {
     Task AddFavoriteAsync(Guid userId, Guid appId);
@@ -180,7 +164,6 @@ public interface IFavoritesService
 
 public class FavoritesService : IFavoritesService
 {
-    private readonly ApplicationDbContext _context;
     
     public async Task AddFavoriteAsync(Guid userId, Guid appId)
     {
@@ -315,7 +298,7 @@ export class FavoritesService {
 ---
 
 ## 🔗 Dependencies
-- US8.1: ASP.NET Identity
+- US8.1: django-allauth
 - US4.1: Apps API
 
 ---

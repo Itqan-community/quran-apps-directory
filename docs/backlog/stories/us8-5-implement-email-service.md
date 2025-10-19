@@ -1,7 +1,7 @@
-# US8.5: Implement Email Service Integration
+# US8.5: Implement Email Service (Django + Celery) Integration
 
-**Epic:** Epic 8 - User Accounts & Personalization  
-**Sprint:** Week 7, Day 4  
+**Epic:** Epic 8 - User Accounts & Personalization
+**Sprint:** Week 7
 **Story Points:** 3  
 **Priority:** P1  
 **Assigned To:** Backend Developer  
@@ -68,7 +68,7 @@
 ## 📝 Technical Notes
 
 ### Email Service Interface
-```csharp
+```python
 public interface IEmailService
 {
     Task SendEmailVerificationAsync(string email, string verificationUrl);
@@ -80,14 +80,9 @@ public interface IEmailService
 ```
 
 ### SendGrid Implementation
-```csharp
+```python
 public class SendGridEmailService : IEmailService
 {
-    private readonly ISendGridClient _sendGridClient;
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<SendGridEmailService> _logger;
-    private readonly string _fromEmail;
-    private readonly string _fromName;
     
     public SendGridEmailService(
         ISendGridClient sendGridClient,
@@ -265,10 +260,9 @@ public class SendGridEmailService : IEmailService
 ```
 
 ### Hangfire Background Jobs
-```csharp
+```python
 public class EmailBackgroundJobs
 {
-    private readonly IEmailService _emailService;
     
     [AutomaticRetry(Attempts = 3, DelaysInSeconds = new[] { 60, 300, 600 })]
     public async Task SendEmailVerification(string email, string verificationUrl)
@@ -283,7 +277,7 @@ public class EmailBackgroundJobs
     }
 }
 
-// Usage in AuthController
+// Usage in AuthViewSet
 BackgroundJob.Enqueue<EmailBackgroundJobs>(
     jobs => jobs.SendEmailVerification(user.Email, callbackUrl));
 ```
@@ -303,7 +297,7 @@ BackgroundJob.Enqueue<EmailBackgroundJobs>(
 ```
 
 ### Service Registration (Program.cs)
-```csharp
+```python
 builder.Services.AddSingleton<ISendGridClient>(sp =>
     new SendGridClient(builder.Configuration["SendGrid:ApiKey"]));
 
@@ -316,7 +310,7 @@ builder.Services.AddHangfire(config =>
 builder.Services.AddHangfireServer();
 ```
 
-### NuGet Packages
+### pip Packages
 ```xml
 <PackageReference Include="SendGrid" Version="9.29.1" />
 <PackageReference Include="Hangfire.AspNetCore" Version="1.8.6" />
@@ -344,5 +338,5 @@ builder.Services.AddHangfireServer();
 ---
 
 **Created:** October 6, 2025  
-**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
+**Updated:** October 19, 2025 (Django alignment)**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
 **Epic:** [Epic 8: User Accounts & Personalization](../epics/epic-8-user-accounts-personalization.md)

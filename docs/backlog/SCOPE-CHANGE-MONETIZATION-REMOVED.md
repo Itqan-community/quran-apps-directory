@@ -41,7 +41,7 @@ The following features from Epic 16 will NOT be implemented:
    - Donation tracking
 
 5. **Payment Infrastructure**
-   - Stripe.NET integration
+   - StripeDjango integration
    - Payment webhooks
    - Invoice generation
    - Subscription management

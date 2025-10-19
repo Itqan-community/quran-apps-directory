@@ -30,7 +30,7 @@
   - UserAgent (string)
   - ReferrerUrl (string, nullable)
 - [ ] Database migration created
-- [ ] EF Core navigation properties configured
+- [ ] Django ORM navigation properties configured
 
 ### AC2: Share Tracking Endpoint
 - [ ] POST /api/shares endpoint
@@ -81,7 +81,7 @@
 ## 📝 Technical Notes
 
 ### Share Entity
-```csharp
+```python
 public class Share
 {
     public Guid Id { get; set; }
@@ -114,7 +114,7 @@ public class Share
 ```
 
 ### DbContext Configuration
-```csharp
+```python
 protected override void OnModelCreating(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity<Share>(entity =>
@@ -141,19 +141,12 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 }
 ```
 
-### Shares Controller
-```csharp
-[ApiController]
-[Route("api/[controller]")]
-public class SharesController : ControllerBase
+### ViewSet
+```python
+class SharesViewSet(viewsets.ModelViewSet):
 {
-    private readonly ISharesService _sharesService;
-    private readonly ILogger<SharesController> _logger;
     
-    [HttpPost]
     [AllowAnonymous]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
-    public IActionResult TrackShare([FromBody] TrackShareDto dto)
     {
         // Fire and forget - don't await
         _ = _sharesService.TrackShareAsync(new Share
@@ -162,7 +155,7 @@ public class SharesController : ControllerBase
             AppId = dto.AppId,
             Platform = dto.Platform,
             UserId = User.Identity?.IsAuthenticated == true 
-                ? Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value) 
+                ? uuid.UUID(request.user.id) 
                 : null,
             SessionId = dto.SessionId,
             Timestamp = DateTime.UtcNow,
@@ -173,24 +166,17 @@ public class SharesController : ControllerBase
         return Accepted();
     }
     
-    [HttpGet("apps/{appId:guid}/share-count")]
     [ResponseCache(Duration = 600)] // 10 minutes
-    [ProducesResponseType(typeof(ShareCountResponse), StatusCodes.Status200OK)]
-    public async Task<ActionResult<ShareCountResponse>> GetAppShareCount(Guid appId)
+    def <ShareCountResponse>> GetAppShareCount(Guid appId)
     {
         var shareCount = await _sharesService.GetAppShareCountAsync(appId);
         
         if (shareCount == null)
-            return NotFound();
         
         return Ok(shareCount);
     }
     
-    [HttpGet("stats")]
-    [Authorize(Roles = "Admin")]
-    [ProducesResponseType(typeof(ShareStatsResponse), StatusCodes.Status200OK)]
-    public async Task<ActionResult<ShareStatsResponse>> GetShareStats(
-        [FromQuery] int days = 30)
+    def <ShareStatsResponse>> GetShareStats(
     {
         var stats = await _sharesService.GetShareStatsAsync(days);
         
@@ -200,7 +186,7 @@ public class SharesController : ControllerBase
 ```
 
 ### Shares Service
-```csharp
+```python
 public interface ISharesService
 {
     Task TrackShareAsync(Share share);
@@ -210,8 +196,6 @@ public interface ISharesService
 
 public class SharesService : ISharesService
 {
-    private readonly ApplicationDbContext _context;
-    private readonly ILogger<SharesService> _logger;
     
     public async Task TrackShareAsync(Share share)
     {
@@ -301,7 +285,7 @@ public class SharesService : ISharesService
 ```
 
 ### DTOs
-```csharp
+```python
 public class TrackShareDto
 {
     [Required]
@@ -349,7 +333,7 @@ public class DailyShareCount
 ---
 
 ## 🔗 Dependencies
-- US2.2: EF Core configured
+- US2.2: Django ORM configured
 - US4.1: Apps API endpoints
 
 ---

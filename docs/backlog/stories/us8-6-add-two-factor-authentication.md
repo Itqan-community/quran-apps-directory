@@ -1,6 +1,6 @@
-# US8.6: Add Two-Factor Authentication (2FA)
+# US8.6: Add Two-Factor Authentication (django-otp) (2FA)
 
-**Epic:** Epic 8 - User Accounts & Personalization  
+**Epic:** Epic 8 - User Accounts & Personalization
 **Sprint:** Week 8, Day 1  
 **Story Points:** 5  
 **Priority:** P2  
@@ -70,28 +70,19 @@
 
 ## 📝 Technical Notes
 
-### 2FA Controller
-```csharp
-[ApiController]
-[Route("api/users/me/2fa")]
-[Authorize]
-public class TwoFactorAuthController : ControllerBase
+### ViewSet
+```python
+class TwoFactorAuthViewSet(viewsets.ModelViewSet):
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly ILogger<TwoFactorAuthController> _logger;
     
-    [HttpPost("enable")]
-    [ProducesResponseType(typeof(Enable2FAResponse), StatusCodes.Status200OK)]
-    public async Task<ActionResult<Enable2FAResponse>> Enable2FA()
+    def <Enable2FAResponse>> Enable2FA()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         var user = await _userManager.FindByIdAsync(userId);
         
         if (user == null)
-            return NotFound();
         
         if (user.TwoFactorEnabled)
-            return BadRequest(new { message = "2FA already enabled" });
         
         // Generate authenticator key
         var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
@@ -116,15 +107,11 @@ public class TwoFactorAuthController : ControllerBase
         });
     }
     
-    [HttpPost("verify")]
-    [ProducesResponseType(typeof(Verify2FAResponse), StatusCodes.Status200OK)]
-    public async Task<ActionResult<Verify2FAResponse>> Verify2FA([FromBody] Verify2FADto dto)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         var user = await _userManager.FindByIdAsync(userId);
         
         if (user == null)
-            return NotFound();
         
         // Verify the TOTP code
         var isValid = await _userManager.VerifyTwoFactorTokenAsync(
@@ -133,7 +120,6 @@ public class TwoFactorAuthController : ControllerBase
             dto.Code);
         
         if (!isValid)
-            return BadRequest(new { message = "Invalid verification code" });
         
         // Enable 2FA
         await _userManager.SetTwoFactorEnabledAsync(user, true);
@@ -150,19 +136,15 @@ public class TwoFactorAuthController : ControllerBase
         });
     }
     
-    [HttpPost("disable")]
-    public async Task<IActionResult> Disable2FA([FromBody] Disable2FADto dto)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         var user = await _userManager.FindByIdAsync(userId);
         
         if (user == null)
-            return NotFound();
         
         // Verify password
         var passwordValid = await _userManager.CheckPasswordAsync(user, dto.Password);
         if (!passwordValid)
-            return Unauthorized(new { message = "Invalid password" });
         
         // Verify current TOTP code
         var codeValid = await _userManager.VerifyTwoFactorTokenAsync(
@@ -171,7 +153,6 @@ public class TwoFactorAuthController : ControllerBase
             dto.Code);
         
         if (!codeValid)
-            return BadRequest(new { message = "Invalid verification code" });
         
         // Disable 2FA
         await _userManager.SetTwoFactorEnabledAsync(user, false);
@@ -182,18 +163,14 @@ public class TwoFactorAuthController : ControllerBase
         return Ok(new { message = "2FA disabled successfully" });
     }
     
-    [HttpPost("regenerate-codes")]
-    [ProducesResponseType(typeof(RegenerateCodesResponse), StatusCodes.Status200OK)]
-    public async Task<ActionResult<RegenerateCodesResponse>> RegenerateRecoveryCodes()
+    def <RegenerateCodesResponse>> RegenerateRecoveryCodes()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = request.user.id;
         var user = await _userManager.FindByIdAsync(userId);
         
         if (user == null)
-            return NotFound();
         
         if (!user.TwoFactorEnabled)
-            return BadRequest(new { message = "2FA not enabled" });
         
         var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
         
@@ -232,21 +209,17 @@ public class TwoFactorAuthController : ControllerBase
 }
 ```
 
-### Modified Auth Controller (Login with 2FA)
-```csharp
-[HttpPost("login")]
-public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginDto dto)
+### Modified Auth ViewSet (Login with 2FA)
+```python
 {
     var user = await _userManager.FindByEmailAsync(dto.Email);
     
     if (user == null)
-        return Unauthorized(new { message = "Invalid credentials" });
     
     var result = await _signInManager.CheckPasswordSignInAsync(
         user, dto.Password, lockoutOnFailure: true);
     
     if (!result.Succeeded)
-        return Unauthorized(new { message = "Invalid credentials" });
     
     // Check if 2FA is enabled
     if (user.TwoFactorEnabled)
@@ -275,19 +248,15 @@ public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginDto dto)
     return Ok(authResponse);
 }
 
-[HttpPost("verify-2fa")]
-public async Task<ActionResult<AuthResponse>> Verify2FA([FromBody] Verify2FALoginDto dto)
 {
     // Retrieve user ID from session token
     var userIdStr = await _cache.GetStringAsync($"2fa_session_{dto.SessionToken}");
     
     if (string.IsNullOrEmpty(userIdStr))
-        return Unauthorized(new { message = "Invalid or expired session" });
     
     var user = await _userManager.FindByIdAsync(userIdStr);
     
     if (user == null)
-        return NotFound();
     
     bool isValid = false;
     
@@ -308,7 +277,6 @@ public async Task<ActionResult<AuthResponse>> Verify2FA([FromBody] Verify2FALogi
     }
     
     if (!isValid)
-        return Unauthorized(new { message = "Invalid code" });
     
     // Remove session token
     await _cache.RemoveAsync($"2fa_session_{dto.SessionToken}");
@@ -324,7 +292,7 @@ public async Task<ActionResult<AuthResponse>> Verify2FA([FromBody] Verify2FALogi
 }
 ```
 
-### NuGet Packages
+### pip Packages
 ```xml
 <PackageReference Include="QRCoder" Version="1.4.3" />
 ```
@@ -350,5 +318,5 @@ public async Task<ActionResult<AuthResponse>> Verify2FA([FromBody] Verify2FALogi
 ---
 
 **Created:** October 6, 2025  
-**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
+**Updated:** October 19, 2025 (Django alignment)**Owner:** Abubakr Abduraghman, a.abduraghman@itqan.dev  
 **Epic:** [Epic 8: User Accounts & Personalization](../epics/epic-8-user-accounts-personalization.md)

@@ -48,7 +48,7 @@ Increase developer engagement and app quality by providing actionable insights i
 
 ## Django Implementation Details
 ### Entity Models
-```csharp
+```python
 public class AnalyticsEvent
 {
     public Guid Id { get; set; }
@@ -93,18 +93,13 @@ public class AppAnalyticsSummary
 }
 ```
 
-### AnalyticsController
-```csharp
-[ApiController]
-[Route("api/v1/[controller]")]
-public class AnalyticsController : ControllerBase
+### AnalyticsViewSet
+```python
+[ApiViewSet]
+public class AnalyticsViewSet : ViewSetBase
 {
-    private readonly IAnalyticsService _analyticsService;
-    private readonly IHubContext<AnalyticsHub> _hubContext;
     
     // Track events (public endpoint)
-    [HttpPost("track")]
-    public async Task<IActionResult> TrackEvent([FromBody] TrackEventRequest request)
     {
         var userId = User.Identity?.IsAuthenticated == true ? GetUserId() : (Guid?)null;
         var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
@@ -130,11 +125,7 @@ public class AnalyticsController : ControllerBase
     }
     
     // Developer analytics (authenticated)
-    [Authorize(Roles = "Developer")]
-    [HttpGet("developer/apps")]
-    public async Task<ActionResult<List<AppAnalyticsResponse>>> GetMyAppsAnalytics(
-        [FromQuery] DateTime? startDate = null,
-        [FromQuery] DateTime? endDate = null)
+    public async Task<Response<List<AppAnalyticsResponse>>> GetMyAppsAnalytics(
     {
         var userId = GetUserId();
         var analytics = await _analyticsService.GetDeveloperAppsAnalyticsAsync(
@@ -145,12 +136,8 @@ public class AnalyticsController : ControllerBase
         return Ok(analytics);
     }
     
-    [Authorize(Roles = "Developer")]
-    [HttpGet("app/{appId:guid}")]
-    public async Task<ActionResult<AppAnalyticsDetail>> GetAppAnalytics(
+    public async Task<Response<AppAnalyticsDetail>> GetAppAnalytics(
         Guid appId,
-        [FromQuery] DateTime? startDate = null,
-        [FromQuery] DateTime? endDate = null)
     {
         var userId = GetUserId();
         
@@ -169,9 +156,7 @@ public class AnalyticsController : ControllerBase
         return Ok(analytics);
     }
     
-    [Authorize(Roles = "Developer")]
-    [HttpGet("app/{appId:guid}/keywords")]
-    public async Task<ActionResult<List<KeywordInsight>>> GetKeywordInsights(Guid appId)
+    public async Task<Response<List<KeywordInsight>>> GetKeywordInsights(Guid appId)
     {
         var userId = GetUserId();
         
@@ -184,13 +169,8 @@ public class AnalyticsController : ControllerBase
         return Ok(keywords);
     }
     
-    [Authorize(Roles = "Developer")]
-    [HttpGet("app/{appId:guid}/export")]
-    public async Task<IActionResult> ExportAnalytics(
+    public async Task<IResponse> ExportAnalytics(
         Guid appId,
-        [FromQuery] string format = "csv",
-        [FromQuery] DateTime? startDate = null,
-        [FromQuery] DateTime? endDate = null)
     {
         var userId = GetUserId();
         
@@ -215,10 +195,9 @@ public class AnalyticsController : ControllerBase
 ```
 
 ### AnalyticsService
-```csharp
+```python
 public class AnalyticsService : IAnalyticsService
 {
-    private readonly ApplicationDbContext _context;
     
     public async Task TrackEventAsync(AnalyticsEvent analyticsEvent)
     {
@@ -330,7 +309,7 @@ public class AnalyticsService : IAnalyticsService
 ```
 
 ### Real-Time Analytics Hub (SignalR)
-```csharp
+```python
 public class AnalyticsHub : Hub
 {
     public async Task SubscribeToApp(Guid appId)

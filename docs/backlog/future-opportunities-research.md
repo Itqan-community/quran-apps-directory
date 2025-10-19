@@ -503,7 +503,7 @@ Open public API allowing third-party developers to build on top of the Quran App
 - Webhook support
 - SDKs (JavaScript, Python, PHP)
 - Developer playground
-- Comprehensive documentation (Swagger/OpenAPI)
+- Comprehensive documentation (drf-spectacular/OpenAPI)
 
 **Use Cases:**
 - Islamic organizations embedding app directories

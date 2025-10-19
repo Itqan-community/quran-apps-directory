@@ -14,7 +14,7 @@ Transform the platform from anonymous browsing to authenticated user experience 
 - Email verification >90% completion
 
 ## 🏗️ Technical Scope (Django)
-- User registration and authentication (ASP.NET Core Identity)
+- User registration and authentication (Django Core Identity)
 - OAuth 2.0 integration (Google, Apple, Facebook, Twitter)
 - JWT token-based authentication
 - Profile management with avatar uploads
@@ -58,8 +58,8 @@ Transform the platform from anonymous browsing to authenticated user experience 
 - US8.9: GDPR Compliance Features
 
 ## Django Implementation Details
-### ASP.NET Core Identity Setup
-```csharp
+### Django Core Identity Setup
+```python
 // User Entity (extends IdentityUser)
 public class ApplicationUser : IdentityUser<Guid>
 {
@@ -95,54 +95,42 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddFacebook(options => { /* Facebook OAuth */ });
 ```
 
-### Authentication Controller
-```csharp
-[ApiController]
-[Route("api/v1/auth")]
-public class AuthController : ControllerBase
+### Authentication ViewSet
+```python
+[ApiViewSet]
+public class AuthViewSet : ViewSetBase
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly IJwtService _jwtService;
     
-    [HttpPost("register")]
-    public async Task<ActionResult<AuthResponse>> Register(RegisterRequest request)
+    public async Task<Response<AuthResponse>> Register(RegisterRequest request)
     {
         // Create user, send verification email, return JWT
     }
     
-    [HttpPost("login")]
-    public async Task<ActionResult<AuthResponse>> Login(LoginRequest request)
+    public async Task<Response<AuthResponse>> Login(LoginRequest request)
     {
         // Validate credentials, return JWT + refresh token
     }
     
-    [HttpPost("oauth/{provider}")]
-    public async Task<ActionResult<AuthResponse>> OAuthLogin(string provider, [FromBody] OAuthRequest request)
     {
         // Handle OAuth callback, create/login user, return JWT
     }
     
-    [HttpPost("verify-email")]
-    public async Task<ActionResult> VerifyEmail(VerifyEmailRequest request)
+    public async Task<Response> VerifyEmail(VerifyEmailRequest request)
     {
         // Verify email token
     }
     
-    [HttpPost("forgot-password")]
-    public async Task<ActionResult> ForgotPassword(ForgotPasswordRequest request)
+    public async Task<Response> ForgotPassword(ForgotPasswordRequest request)
     {
         // Send password reset email
     }
     
-    [HttpPost("reset-password")]
-    public async Task<ActionResult> ResetPassword(ResetPasswordRequest request)
+    public async Task<Response> ResetPassword(ResetPasswordRequest request)
     {
         // Reset password with token
     }
     
-    [HttpPost("refresh")]
-    public async Task<ActionResult<AuthResponse>> RefreshToken(RefreshTokenRequest request)
+    public async Task<Response<AuthResponse>> RefreshToken(RefreshTokenRequest request)
     {
         // Refresh JWT using refresh token
     }
@@ -150,7 +138,7 @@ public class AuthController : ControllerBase
 ```
 
 ### JWT Service
-```csharp
+```python
 public interface IJwtService
 {
     string GenerateAccessToken(ApplicationUser user);
@@ -160,15 +148,14 @@ public interface IJwtService
 
 public class JwtService : IJwtService
 {
-    private readonly IConfiguration _configuration;
     
     public string GenerateAccessToken(ApplicationUser user)
     {
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email!),
-            new Claim(ClaimTypes.Name, user.Name ?? user.Email!),
+            new Claim(JWT claims.NameIdentifier, user.Id.ToString()),
+            new Claim(JWT claims.Email, user.Email!),
+            new Claim(JWT claims.Name, user.Name ?? user.Email!),
             new Claim("language_pref", user.LanguagePreference)
         };
         
@@ -189,7 +176,7 @@ public class JwtService : IJwtService
 ```
 
 ### Email Service (SendGrid)
-```csharp
+```python
 public interface IEmailService
 {
     Task SendVerificationEmailAsync(string email, string token);
@@ -199,7 +186,6 @@ public interface IEmailService
 
 public class EmailService : IEmailService
 {
-    private readonly ISendGridClient _sendGridClient;
     
     public async Task SendVerificationEmailAsync(string email, string token)
     {
@@ -218,7 +204,7 @@ public class EmailService : IEmailService
 ```
 
 ### Avatar Upload to Cloudflare R2
-```csharp
+```python
 public interface IStorageService
 {
     Task<string> UploadAvatarAsync(IFormFile file, Guid userId);
@@ -227,7 +213,6 @@ public interface IStorageService
 
 public class R2StorageService : IStorageService
 {
-    private readonly AmazonS3Client _s3Client; // R2 is S3-compatible
     
     public async Task<string> UploadAvatarAsync(IFormFile file, Guid userId)
     {
@@ -251,10 +236,9 @@ public class R2StorageService : IStorageService
 ```
 
 ### Activity Tracking
-```csharp
+```python
 public class UserActivityService
 {
-    private readonly ApplicationDbContext _context;
     
     public async Task TrackActivityAsync(Guid userId, string activityType, Guid? appId = null)
     {
@@ -273,7 +257,7 @@ public class UserActivityService
 ```
 
 ### Security Considerations
-- **Password Hashing:** ASP.NET Core Identity uses PBKDF2 by default (configurable)
+- **Password Hashing:** Django Core Identity uses PBKDF2 by default (configurable)
 - **JWT Secret:** Store in environment variables, never in code
 - **OAuth Secrets:** Store in Azure Key Vault or environment variables
 - **HTTPS Only:** Enforce SSL/TLS
@@ -282,7 +266,7 @@ public class UserActivityService
 - **Email Verification:** Required before full account access
 - **2FA:** TOTP-based (Google Authenticator compatible)
 
-### Key NuGet Packages
+### Key pip Packages
 ```xml
 <ItemGroup>
   <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />

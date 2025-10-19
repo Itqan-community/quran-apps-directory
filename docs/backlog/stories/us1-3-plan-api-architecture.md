@@ -28,7 +28,7 @@
 - [ ] API versioning strategy documented (v1, v2, etc.)
 
 ### AC2: Complete Endpoint Specification
-- [ ] All endpoints documented in OpenAPI/Swagger format:
+- [ ] All endpoints documented in OpenAPI/drf-spectacular format:
   ```
   Apps Endpoints:
   - GET    /api/v1/apps (list with pagination & filtering)
@@ -79,13 +79,13 @@
 - [ ] HTTPS enforcement strategy
 - [ ] CORS policy defined (whitelist frontend domains)
 - [ ] Input validation requirements documented
-- [ ] SQL injection prevention strategy (EF Core parameterized queries)
+- [ ] SQL injection prevention strategy (Django ORM parameterized queries)
 - [ ] XSS prevention measures
 - [ ] API key management for public API (future)
 
 ### AC7: API Documentation Plan
-- [ ] Swagger/OpenAPI 3.0 adoption confirmed
-- [ ] Auto-generation from code annotations planned
+- [ ] drf-spectacular/OpenAPI 3.0 adoption confirmed
+- [ ] Auto-generation from code docstrings planned
 - [ ] Example requests/responses included
 - [ ] Authentication flow documented
 - [ ] Error codes and messages catalogued
@@ -94,33 +94,42 @@
 
 ## 📝 Technical Notes
 
-### ASP.NET Core 9 Controller Pattern
-```csharp
-[ApiController]
-[Route("api/v1/[controller]")]
-[Produces("application/json")]
-public class AppsController : ControllerBase
-{
-    private readonly IAppsService _appsService;
-    
-    /// <summary>
-    /// Retrieves a paginated list of Quran applications
-    /// </summary>
-    /// <param name="page">Page number (default: 1)</param>
-    /// <param name="pageSize">Items per page (default: 20, max: 100)</param>
-    /// <param name="categoryId">Filter by category (optional)</param>
-    /// <returns>Paginated list of applications</returns>
-    [HttpGet]
-    [ProducesResponseType(typeof(PaginatedResponse<AppResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<PaginatedResponse<AppResponse>>> GetApps(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        [FromQuery] Guid? categoryId = null)
-    {
-        // Implementation
-    }
-}
+### Django REST Framework ViewSet Pattern
+```python
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+class AppsViewSet(viewsets.ModelViewSet):
+    """
+    Retrieves a paginated list of Quran applications with filtering and search.
+
+    Query Parameters:
+    - page: Page number (default: 1)
+    - page_size: Items per page (default: 20, max: 100)
+    - category_id: Filter by category (optional)
+    """
+    queryset = App.objects.all()
+    serializer_class = AppSerializer
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['category', 'status']
+    search_fields = ['name_en', 'name_ar']
+    ordering_fields = ['created_at', 'apps_avg_rating']
+
+    def get_queryset(self):
+        """Filter apps based on permissions and query parameters"""
+        queryset = App.objects.all()
+        # Additional filtering logic
+        return queryset
 ```
 
 ### Standard Response Format
@@ -174,7 +183,7 @@ public class AppsController : ControllerBase
 
 ## 📊 Definition of Done
 - [ ] Complete API specification document created
-- [ ] OpenAPI/Swagger schema file generated
+- [ ] OpenAPI/drf-spectacular schema file generated
 - [ ] Authentication strategy approved
 - [ ] Rate limiting rules documented
 - [ ] Security measures defined
@@ -186,7 +195,8 @@ public class AppsController : ControllerBase
 ## 📚 Resources
 - [RESTful API Design Best Practices](https://restfulapi.net/)
 - [OpenAPI Specification 3.0](https://swagger.io/specification/)
-- [ASP.NET Core Web API Documentation](https://learn.microsoft.com/en-us/aspnet/core/web-api/)
+- [Django REST Framework Documentation](https://www.django-rest-framework.org/)
+- [drf-spectacular Documentation](https://drf-spectacular.readthedocs.io/)
 - [JWT.io](https://jwt.io/)
 
 ---

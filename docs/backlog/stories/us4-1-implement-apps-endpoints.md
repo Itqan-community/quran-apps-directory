@@ -80,22 +80,12 @@
 
 ## 📝 Technical Notes
 
-### AppsController Implementation
-```csharp
-[ApiController]
-[Route("api/[controller]")]
-public class AppsController : ControllerBase
+### AppsViewSet Implementation
+```python
+class AppsViewSet(viewsets.ModelViewSet):
 {
-    private readonly IAppsService _appsService;
-    private readonly ILogger<AppsController> _logger;
     
-    [HttpGet]
-    [ProducesResponseType(typeof(PagedResult<AppListDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<PagedResult<AppListDto>>> GetApps(
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        [FromQuery] string sortBy = "name",
-        [FromQuery] string sortOrder = "asc")
+    def <PagedResult<AppListDto>>> GetApps(
     {
         if (pageSize > 100) pageSize = 100;
         
@@ -105,71 +95,47 @@ public class AppsController : ControllerBase
         return Ok(result);
     }
     
-    [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(AppDetailDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<AppDetailDto>> GetApp(Guid id)
+    def <AppDetailDto>> GetApp(uuid_id)
     {
         var app = await _appsService.GetAppByIdAsync(id);
         
         if (app == null)
-            return NotFound(new { message = $"App with ID {id} not found" });
         
         return Ok(app);
     }
     
-    [HttpPost]
-    [Authorize]
-    [ProducesResponseType(typeof(AppDetailDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<AppDetailDto>> CreateApp(
-        [FromBody] CreateAppDto dto)
+    def <AppDetailDto>> CreateApp(
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
         
         var createdApp = await _appsService.CreateAppAsync(dto);
         
-        return CreatedAtAction(
             nameof(GetApp),
             new { id = createdApp.Id },
             createdApp);
     }
     
-    [HttpPut("{id:guid}")]
-    [Authorize]
-    [ProducesResponseType(typeof(AppDetailDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<AppDetailDto>> UpdateApp(
-        Guid id,
-        [FromBody] UpdateAppDto dto)
+    def <AppDetailDto>> UpdateApp(
+        uuid_id,
     {
         var updatedApp = await _appsService.UpdateAppAsync(id, dto);
         
         if (updatedApp == null)
-            return NotFound();
         
         return Ok(updatedApp);
     }
     
-    [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "Admin")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteApp(Guid id)
+    def  DeleteApp(uuid_id)
     {
         var deleted = await _appsService.DeleteAppAsync(id);
         
         if (!deleted)
-            return NotFound();
         
-        return NoContent();
     }
 }
 ```
 
 ### DTOs
-```csharp
+```python
 // Lightweight for lists
 public class AppListDto
 {
@@ -201,7 +167,7 @@ public class AppDetailDto : AppListDto
 ```
 
 ### Pagination Response
-```csharp
+```python
 public class PagedResult<T>
 {
     public List<T> Items { get; set; }
@@ -217,8 +183,8 @@ public class PagedResult<T>
 ---
 
 ## 🔗 Dependencies
-- US2.3: ASP.NET Core API created
-- US2.2: EF Core configured
+- US2.3: Django REST Framework created
+- US2.2: Django ORM configured
 - US3.3: Data migrated to database
 
 ---
@@ -229,7 +195,7 @@ public class PagedResult<T>
 - [ ] Pagination working correctly
 - [ ] Error handling complete
 - [ ] Authentication/authorization enforced
-- [ ] Swagger documentation updated
+- [ ] drf-spectacular documentation updated
 - [ ] Postman collection created
 - [ ] Unit tests written (80%+ coverage)
 - [ ] Integration tests pass

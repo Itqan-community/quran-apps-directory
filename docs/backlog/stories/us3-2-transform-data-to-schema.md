@@ -11,8 +11,8 @@
 
 ## 📋 User Story
 
-**As a** Backend Developer  
-**I want to** create C# transformation logic to convert static TypeScript data to database entities  
+**As a** Backend Developer
+**I want to** create Python transformation logic to convert static TypeScript data to Django models
 **So that** the existing 44 apps can be accurately migrated to the new PostgreSQL database with proper relationships
 
 ---
@@ -21,7 +21,7 @@
 
 ### AC1: Transformation Service Created
 - [ ] `DataTransformationService` class implemented
-- [ ] AutoMapper profiles configured for data mapping
+- [ ] Django serializer-based data mapping configured
 - [ ] All transformations covered:
   - App data transformation
   - Developer extraction and deduplication
@@ -64,12 +64,9 @@
 ## 📝 Technical Notes
 
 ### Transformation Service
-```csharp
+```python
 public class DataTransformationService
 {
-    private readonly IMapper _mapper;
-    private readonly Dictionary<string, Guid> _categoryMap;
-    private readonly Dictionary<string, Guid> _developerMap;
     
     public TransformationResult TransformApps(List<StaticAppData> staticApps)
     {

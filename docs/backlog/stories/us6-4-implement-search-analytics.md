@@ -69,7 +69,7 @@
 ## 📝 Technical Notes
 
 ### Search Log Entity
-```csharp
+```python
 public class SearchLog
 {
     public Guid Id { get; set; }
@@ -86,17 +86,12 @@ public class SearchLog
 }
 ```
 
-### Analytics Controller
-```csharp
-[ApiController]
-[Route("api/analytics")]
-public class AnalyticsController : ControllerBase
+### ViewSet
+```python
+class AnalyticsViewSet(viewsets.ModelViewSet):
 {
-    private readonly IAnalyticsService _analyticsService;
     
-    [HttpPost("search")]
     [AllowAnonymous]
-    public async Task<IActionResult> LogSearch([FromBody] SearchLogDto dto)
     {
         // Fire and forget - don't await
         _ = _analyticsService.LogSearchAsync(dto);
@@ -104,32 +99,22 @@ public class AnalyticsController : ControllerBase
         return Accepted();
     }
     
-    [HttpGet("popular-terms")]
     [ResponseCache(Duration = 3600)]
-    public async Task<ActionResult<PopularTermsResponse>> GetPopularTerms(
-        [FromQuery] int days = 30,
-        [FromQuery] int limit = 20)
+    def <PopularTermsResponse>> GetPopularTerms(
     {
         var terms = await _analyticsService.GetPopularSearchTermsAsync(days, limit);
         
         return Ok(new PopularTermsResponse { Terms = terms });
     }
     
-    [HttpGet("filter-usage")]
-    [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<FilterUsageResponse>> GetFilterUsage(
-        [FromQuery] int days = 30)
+    def <FilterUsageResponse>> GetFilterUsage(
     {
         var usage = await _analyticsService.GetFilterUsageAsync(days);
         
         return Ok(usage);
     }
     
-    [HttpGet("zero-results")]
-    [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<List<ZeroResultQuery>>> GetZeroResultQueries(
-        [FromQuery] int days = 7,
-        [FromQuery] int limit = 50)
+    def <List<ZeroResultQuery>>> GetZeroResultQueries(
     {
         var queries = await _analyticsService.GetZeroResultQueriesAsync(days, limit);
         
@@ -139,11 +124,9 @@ public class AnalyticsController : ControllerBase
 ```
 
 ### Analytics Service Implementation
-```csharp
+```python
 public class AnalyticsService : IAnalyticsService
 {
-    private readonly ApplicationDbContext _context;
-    private readonly ILogger<AnalyticsService> _logger;
     
     public async Task LogSearchAsync(SearchLogDto dto)
     {
