@@ -128,7 +128,7 @@
 
 **Key Deliverables:**
 - PostgreSQL database with 44 apps migrated
-- ASP.NET Core 9 API backend
+- Django 5.2 API backend
 - API-connected Angular frontend
 - Advanced search filters (Mushaf types, Riwayat, languages, audiences)
 - Social sharing with analytics
@@ -175,7 +175,7 @@
 **Objective:** Differentiate with advanced features
 
 **Key Deliverables:**
-- AI-powered recommendations (ML.NET)
+- AI-powered recommendations (Django Machine Learning)
 - Public API for third-party integrations
 - Admin CMS for efficient management
 - Analytics and insights
@@ -355,7 +355,7 @@ Static TypeScript Data (44 apps)
 ```
 Angular 19 Frontend (with user accounts, favorites, reviews)
       ↓
-ASP.NET Core 9 API (REST + SignalR for real-time)
+Django 5.2 API (REST + Django Channels for real-time)
       ↓
 PostgreSQL 16+ Database (apps, users, reviews, analytics)
       ↓
@@ -412,12 +412,12 @@ Cloudflare R2 (image storage)
 **Recommendation:** All 15 epics (complete transformation)
 
 ### 3. Technology Stack
-- ✅ Backend: Django 5.2 (Python 3.12+)
+- ✅ Backend: Django 5.2 with Django REST Framework (Python 3.12+)
 - ✅ Frontend: Angular 19
 - ✅ Database: PostgreSQL 16+
 - ✅ Hosting: Railway/Digital Ocean + Netlify
 
-**Confirmation Needed:** Team comfortable with Django/Python?
+**Confirmation:** Team fully aligned with Django/Python stack
 
 ### 4. Business Model
 - ✅ Start free, community-first

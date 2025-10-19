@@ -40,7 +40,7 @@ See roadmap for assignment to issues.
 - **Data Loss in Migration**: Implement validation scripts and rollback plans.
 - **Performance Degradation**: Benchmark queries (<100ms) and use caching.
 - **Scope Creep**: Focus on MVP (database + API + search) before social features.
-- **Technical Debt**: Use established tools (Prisma, Express/NestJS, PostgreSQL).
+- **Technical Debt**: Use established tools (Django ORM, Django REST Framework, PostgreSQL).
 
 ## Success Metrics
 - Migration: 100% data integrity for 44 apps.

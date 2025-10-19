@@ -29,8 +29,8 @@ Focus: Deploy server and ORM. Dependencies: Phase 1 schema.
 
 - **Epic 2: Backend Infrastructure Setup** (#147)
   - US2.1: Database Server Setup (#153) - PostgreSQL config, security, backups.
-  - US2.2: Implement Prisma ORM (# new story) - Schema integration.
-  - US2.3: Create API Server (# new story) - Express/NestJS setup.
+  - US2.2: Implement Django ORM (# new story) - Schema integration.
+  - US2.3: Create API Server (# new story) - Django REST Framework setup.
   - US2.4: Connection Pooling (# new story) - Performance tuning.
   - US2.5: Basic Security (# new story) - Auth middleware.
 

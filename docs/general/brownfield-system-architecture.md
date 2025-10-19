@@ -23,9 +23,9 @@ This document defines the complete system architecture for migrating the Quran A
 
 ### Key Architectural Decisions
 - **Database:** PostgreSQL 16+ (relational, ACID compliant, proven at scale)
-- **Backend:** Django 5.2 with Django REST Framework (Python 3.12+, high-performance, enterprise-ready)
-- **ORM:** Django ORM (type-safe, migrations, query optimization)
-- **API:** RESTful with OpenAPI/Swagger specification
+- **Backend:** Django 5.2 with Django REST Framework (Python 3.12+, production-ready, industry-leading)
+- **ORM:** Django ORM with strong typing (migrations, query optimization)
+- **API:** RESTful with drf-spectacular (OpenAPI/Swagger)
 - **Frontend:** Angular 19 (existing, maintain and enhance)
 - **Hosting:** Digital Ocean App Platform or Railway (backend) + Netlify (frontend)
 - **CDN:** Cloudflare R2 (existing, maintain)
@@ -135,41 +135,41 @@ This document defines the complete system architecture for migrating the Quran A
 │  │           Django REST API Server (Django 5.2)               │   │
 │  │                                                               │   │
 │  │  ┌──────────────────────────────────────────────────────┐   │   │
-│  │  │  Controllers (REST Endpoints)                         │   │   │
-│  │  │  - AppsController      (/api/apps)                    │   │   │
-│  │  │  - CategoriesController (/api/categories)             │   │   │
-│  │  │  - UsersController     (/api/users)                   │   │   │
-│  │  │  - ReviewsController   (/api/reviews)                 │   │   │
-│  │  │  - DevelopersController (/api/developers)             │   │   │
+│  │  │  ViewSets (REST Endpoints)                            │   │   │
+│  │  │  - AppsViewSet         (/api/apps)                    │   │   │
+│  │  │  - CategoriesViewSet   (/api/categories)              │   │   │
+│  │  │  - UsersViewSet        (/api/users)                   │   │   │
+│  │  │  - ReviewsViewSet      (/api/reviews)                 │   │   │
+│  │  │  - DevelopersViewSet   (/api/developers)              │   │   │
 │  │  └──────────────────────────────────────────────────────┘   │   │
 │  │                                                               │   │
 │  │  ┌──────────────────────────────────────────────────────┐   │   │
 │  │  │  Services (Business Logic)                            │   │   │
-│  │  │  - IAppsService (CRUD + complex queries)              │   │   │
-│  │  │  - ISearchService (advanced filtering)                │   │   │
-│  │  │  - IAuthService (JWT tokens, OAuth)                   │   │   │
-│  │  │  - ICacheService (Redis integration)                  │   │   │
-│  │  │  - IStorageService (file uploads)                     │   │   │
+│  │  │  - AppsService (CRUD + complex queries)               │   │   │
+│  │  │  - SearchService (advanced filtering)                 │   │   │
+│  │  │  - AuthService (JWT tokens, OAuth)                    │   │   │
+│  │  │  - CacheService (Redis integration)                   │   │   │
+│  │  │  - StorageService (file uploads)                      │   │   │
 │  │  └──────────────────────────────────────────────────────┘   │   │
 │  │                                                               │   │
 │  │  ┌──────────────────────────────────────────────────────┐   │   │
 │  │  │  Middleware                                           │   │   │
 │  │  │  - Authentication (JWT validation)                    │   │   │
-│  │  │  - Rate Limiting (AspNetCoreRateLimit)                │   │   │
-│  │  │  - Logging (Serilog structured logs)                  │   │   │
+│  │  │  - Rate Limiting (Django REST framework)              │   │   │
+│  │  │  - Logging (Structlog structured logs)                │   │   │
 │  │  │  - Error Handling (global exception handler)          │   │   │
-│  │  │  - CORS (frontend whitelisting)                       │   │   │
+│  │  │  - CORS (django-cors-headers)                         │   │   │
 │  │  └──────────────────────────────────────────────────────┘   │   │
 │  │                                                               │   │
 │  │  ┌──────────────────────────────────────────────────────┐   │   │
-│  │  │  Entity Framework Core 9 (ORM)                        │   │   │
-│  │  │  - Type-safe LINQ queries                             │   │   │
-│  │  │  - Code-first migrations                              │   │   │
-│  │  │  - DbContext and repositories                         │   │   │
+│  │  │  Django ORM (Object-Relational Mapping)                │   │   │
+│  │  │  - QuerySet for powerful queries                      │   │   │
+│  │  │  - Django Migrations system                           │   │   │
+│  │  │  - Models and queryset optimization                   │   │   │
 │  │  └──────────────────────────────────────────────────────┘   │   │
 │  └─────────────────────────────────────────────────────────────┘   │
 │                          │                                           │
-│                          │ EF Core + Npgsql                          │
+│                          │ Django ORM + psycopg2                    │
 │                          ▼                                           │
 │  ┌─────────────────────────────────────────────────────────────┐   │
 │  │              PostgreSQL 15+ Database                         │   │
@@ -208,16 +208,16 @@ This document defines the complete system architecture for migrating the Quran A
 - **JSON Support:** Native JSONB for flexible bilingual data
 - **Full-Text Search:** Built-in search capabilities
 - **PostGIS Ready:** Future geographic features (app availability by region)
-- **Excellent .NET Support:** Npgsql (mature, high-performance PostgreSQL driver)
-- **EF Core Integration:** First-class Entity Framework Core support
+- **Excellent Django Support:** psycopg2 (mature, high-performance PostgreSQL driver)
+- **Django ORM Integration:** Full support for all PostgreSQL features
 - **Cost Effective:** Open source, managed options available ($50-100/month)
 
 **Alternatives Considered:**
 - ❌ **SQL Server:** More expensive, less suitable for multi-cloud
-- ❌ **MySQL:** Weaker JSON support, less mature .NET drivers
+- ❌ **MySQL:** Weaker JSON support, less mature Django drivers
 - ❌ **MongoDB:** No relations, data integrity concerns, overkill for structured data
 - ❌ **SQLite:** Not suitable for multi-user web applications
-- ✅ **PostgreSQL:** Best fit for relational data with excellent .NET support
+- ✅ **PostgreSQL:** Best fit for relational data with excellent Django support
 
 ### Database Schema Design
 
@@ -515,14 +515,14 @@ CREATE TABLE analytics_events (
 5. **Filtering:** Composite indexes for common filter combinations
 
 #### Query Optimization
-1. **N+1 Prevention:** Use Prisma's `include` to eager load relationships
+1. **N+1 Prevention:** Use Django ORM's `prefetch_related`/`select_related` to eager load relationships
 2. **Pagination:** Cursor-based for large datasets (better than offset)
-3. **Counting:** Use `_count` aggregates instead of loading all records
+3. **Counting:** Use QuerySet aggregates instead of loading all records
 4. **Caching:** Redis for frequently accessed data (categories, featured apps)
 
 #### Scaling Strategy
 1. **Read Replicas:** For high read volume (future)
-2. **Connection Pooling:** PgBouncer or Prisma's built-in pooling
+2. **Connection Pooling:** PgBouncer with psycopg2
 3. **Partitioning:** analytics_events by month (future)
 4. **Archiving:** Move old data to separate tables/database
 
@@ -758,11 +758,11 @@ DELETE /api/v1/collections/:id/apps/:app_id
 
 ### API Documentation
 
-**Tool:** Swagger/OpenAPI 3.0
+**Tool:** drf-spectacular (OpenAPI 3.0)
 
 **Features:**
 - Interactive API playground
-- Auto-generated from NestJS decorators
+- Auto-generated from Django REST Framework serializers
 - Code examples (curl, JavaScript, Python)
 - Authentication testing
 - Request/response schemas
@@ -1084,13 +1084,14 @@ develop  → staging  → main
 
 #### Database Migrations
 
-**Strategy: Prisma Migrate**
+**Strategy: Django Migrations**
 ```bash
 # Development
-npx prisma migrate dev --name add_users_table
+python manage.py makemigrations
+python manage.py migrate
 
 # Production
-npx prisma migrate deploy
+python manage.py migrate
 ```
 
 **Safety Checks:**
@@ -1113,8 +1114,8 @@ npx prisma migrate deploy
 - **HTTPS Only:** Enforce SSL/TLS
 - **CORS:** Whitelist frontend domain only
 - **Rate Limiting:** Per-IP and per-user limits
-- **Input Validation:** Joi/class-validator on all inputs
-- **SQL Injection:** Prevented by Prisma ORM
+- **Input Validation:** Django validators on all inputs
+- **SQL Injection:** Prevented by Django ORM QuerySet
 - **XSS:** Angular sanitizes by default
 - **CSRF:** SameSite cookies + token validation
 
@@ -1246,21 +1247,21 @@ npx prisma migrate deploy
 - **Hosting:** Netlify
 
 ### Backend Stack
-- **Runtime:** Node.js 20+ LTS
-- **Framework:** NestJS (TypeScript)
-- **Language:** TypeScript 5+
-- **ORM:** Prisma 5+
-- **Validation:** class-validator + class-transformer
-- **Auth:** Passport.js + JWT
-- **Documentation:** Swagger/OpenAPI
-- **Testing:** Jest
-- **Hosting:** Railway/Render
+- **Runtime:** Python 3.12+ LTS
+- **Framework:** Django 5.2 + Django REST Framework
+- **Language:** Python 3.12+
+- **ORM:** Django ORM
+- **Validation:** Django REST Framework validators
+- **Auth:** Django REST Framework + SimpleJWT
+- **Documentation:** drf-spectacular
+- **Testing:** pytest + pytest-django
+- **Hosting:** Railway/Digital Ocean
 
 ### Database Stack
 - **Primary DB:** PostgreSQL 15+
 - **Cache:** Redis 7+
 - **Search:** PostgreSQL Full-Text Search (built-in)
-- **Migrations:** Prisma Migrate
+- **Migrations:** Django Migrations
 - **Hosting:** Managed service (Railway/Supabase/AWS RDS)
 
 ### DevOps Stack
@@ -1286,16 +1287,16 @@ npx prisma migrate deploy
 
 **Day 1-2: Database Setup**
 1. Provision PostgreSQL instance (Railway/Supabase)
-2. Create Prisma schema file
-3. Run initial migration
+2. Create Django models (schema definition)
+3. Run Django migrations
 4. Seed with sample data (5 apps)
 5. Verify schema
 
 **Day 3-4: Backend Scaffold**
-1. Create NestJS project
-2. Configure Prisma connection
-3. Generate resource modules (Apps, Categories, Developers)
-4. Implement basic CRUD endpoints
+1. Create Django project with apps
+2. Configure PostgreSQL connection
+3. Create models (Apps, Categories, Developers)
+4. Implement ViewSets with Django REST Framework
 5. Test with Postman
 
 **Day 5-7: Backend Complete**
@@ -1418,23 +1419,23 @@ npx prisma migrate deploy
 
 **Alternatives:** MongoDB (rejected - data too structured), MySQL (rejected - weaker JSON/search)
 
-### ADR-002: NestJS over Express
-**Status:** Accepted  
-**Context:** Need to choose Node.js framework  
-**Decision:** NestJS  
+### ADR-002: Django over Flask
+**Status:** Accepted
+**Context:** Need to choose Python web framework
+**Decision:** Django 5.2
 **Rationale:**
-- TypeScript-first (type safety across stack)
-- Opinionated structure (faster development)
-- Built-in dependency injection
-- Excellent Swagger integration
+- Battery-included framework (authentication, ORM, admin panel built-in)
+- Django REST Framework for API development
+- Mature and battle-tested (20+ years)
+- Excellent PostgreSQL support
 - Scales well with team size
 
-**Alternatives:** Express (rejected - too minimal), Fastify (rejected - less mature ecosystem)
+**Alternatives:** Flask (rejected - too minimal), FastAPI (rejected - newer, less ecosystem maturity for our needs)
 
 ### ADR-003: REST over GraphQL
-**Status:** Accepted  
-**Context:** Need to choose API architecture  
-**Decision:** RESTful API  
+**Status:** Accepted
+**Context:** Need to choose API architecture
+**Decision:** RESTful API
 **Rationale:**
 - Simpler to implement and maintain
 - Better caching (HTTP cache)
@@ -1442,7 +1443,7 @@ npx prisma migrate deploy
 - GraphQL complexity not justified for current requirements
 - Can add GraphQL later if needed
 
-**Alternatives:** GraphQL (rejected - overkill for v1), tRPC (rejected - TypeScript lock-in)
+**Alternatives:** GraphQL (rejected - overkill for v1), OpenAPI-first approach (used for documentation)
 
 ### ADR-004: JWT with Refresh Tokens
 **Status:** Accepted  
@@ -1456,18 +1457,18 @@ npx prisma migrate deploy
 
 **Alternatives:** Session-based (rejected - doesn't scale), OAuth only (rejected - need email/password option)
 
-### ADR-005: Prisma over TypeORM
-**Status:** Accepted  
-**Context:** Need to choose ORM  
-**Decision:** Prisma 5+  
+### ADR-005: Django ORM over SQLAlchemy
+**Status:** Accepted
+**Context:** Need to choose ORM
+**Decision:** Django ORM (built-in)
 **Rationale:**
-- Excellent TypeScript support
-- Type-safe database access
-- Great migration system
+- Excellent PostgreSQL support
+- Powerful QuerySet API for complex queries
+- Built-in migrations system
 - Best-in-class developer experience
-- Active development and community
+- Tightly integrated with Django framework
 
-**Alternatives:** TypeORM (rejected - type safety issues), Knex (rejected - too low-level)
+**Alternatives:** SQLAlchemy (rejected - overkill, external dependency), Raw SQL (rejected - maintainability)
 
 ---
 
@@ -1476,9 +1477,9 @@ npx prisma migrate deploy
 ### Immediate (Week 1)
 1. ✅ Architecture document review and approval
 2. 🔄 Setup development environment (PostgreSQL, Redis)
-3. 🔄 Create Prisma schema file
-4. 🔄 Scaffold NestJS backend project
-5. 🔄 Generate database migrations
+3. 🔄 Create Django models (schema)
+4. 🔄 Create Django REST Framework project
+5. 🔄 Generate Django migrations
 
 ### Week 2
 1. Complete Epic 1-2 (Database + Backend Infrastructure)
@@ -1500,8 +1501,8 @@ npx prisma migrate deploy
 
 ### Documentation
 - **PostgreSQL:** https://www.postgresql.org/docs/
-- **Prisma:** https://www.prisma.io/docs
-- **NestJS:** https://docs.nestjs.com/
+- **Django:** https://docs.djangoproject.com/
+- **Django REST Framework:** https://www.django-rest-framework.org/
 - **Angular:** https://angular.io/docs
 - **JWT:** https://jwt.io/introduction
 
