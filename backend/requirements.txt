@@ -1,0 +1,12 @@
+Django==4.2.25
+djangorestframework==3.16.1
+drf-spectacular==0.28.0
+psycopg2-binary==2.9.11
+python-decouple==3.8
+django-cors-headers==4.9.0
+Pillow==11.3.0
+django-extensions==4.1
+django-filter==24.3
+
+# Development tools (optional)
+django-debug-toolbar==4.4.6

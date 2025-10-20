@@ -1,0 +1,9 @@
+-r base.txt
+
+# Production
+gunicorn==22.0.*
+whitenoise==6.7.*
+sentry-sdk==2.0.*  # Error tracking
+django-anymail==0.13.*  # Email backend
+# redis==5.0.*  # For caching/background tasks
+# celery==5.5.*  # Background tasks

@@ -1,0 +1,12 @@
+-r base.txt
+
+# Testing Tools
+pytest==8.4.2
+pytest-django==4.11.1
+pytest-cov>=6.3.0
+coverage==7.10.6
+django-coverage-plugin==3.1.1
+factory-boy==3.3.*
+model-bakery>=1.20.5
+freezegun>=1.5.5
+responses>=0.25.8
