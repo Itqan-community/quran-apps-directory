@@ -8,15 +8,16 @@ import { NzRateModule } from "ng-zorro-antd/rate";
 import { NzInputModule } from "ng-zorro-antd/input";
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzButtonModule } from "ng-zorro-antd/button";
+import { SpinModule } from "ng-zorro-antd/spin";
+import { AlertModule } from "ng-zorro-antd/alert";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { AppService, QuranApp } from "../../services/app.service";
+import { ApiService, App, Category } from "../../services/api.service";
 import { DomSanitizer, SafeHtml, Title, Meta } from "@angular/platform-browser";
-import { categories } from "../../services/applicationsData";
-import { combineLatest } from "rxjs";
+import { combineLatest, of } from "rxjs";
+import { catchError, finalize, take } from "rxjs/operators";
 import { SeoService } from "../../services/seo.service";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
-
-const CATEGORIES = categories;
 
 @Component({
   selector: "app-list",
@@ -31,6 +32,8 @@ const CATEGORIES = categories;
     NzInputModule,
     NzIconModule,
     NzButtonModule,
+    SpinModule,
+    AlertModule,
     TranslateModule,
     OptimizedImageComponent,
   ],
@@ -41,17 +44,20 @@ export class AppListComponent implements OnInit {
   apps: QuranApp[] = [];
   filteredApps: QuranApp[] = [];
   searchQuery: string = "";
-  categories: { name: string; icon: SafeHtml }[] = [];
+  categories: Category[] = [];
+  isLoading = false;
+  error: string | null = null;
   isDragging = false;
   startX = 0;
   scrollLeft = 0;
   sortAscending = true;
   private categoriesContainer: HTMLElement | null = null;
-  currentLang: "en" | "ar" = 'ar'; // Initialize with browser language
+  currentLang: "en" | "ar" = 'en'; // Initialize with browser language
   selectedCategory: string = 'all';
 
   constructor(
     private appService: AppService,
+    private apiService: ApiService,
     private sanitizer: DomSanitizer,
     private translateService: TranslateService,
     private route: ActivatedRoute,
@@ -59,56 +65,90 @@ export class AppListComponent implements OnInit {
     private titleService: Title,
     private metaService: Meta
   ) {
-    this.categories = CATEGORIES.map((category) => ({
-      name: category.name,
-      icon: this.sanitizer.bypassSecurityTrustHtml(category.icon),
-    }));
-
     // Set initial language based on browser
     this.currentLang = this.translateService.currentLang as "en" | "ar";
     // Subscribe to language changes
     this.translateService.onLangChange.subscribe((event) => {
       this.currentLang = event.lang as "en" | "ar";
     });
+
+    // Subscribe to API service observables for reactive updates
+    this.apiService.loading$.subscribe(loading => {
+      this.isLoading = loading;
+    });
+
+    this.apiService.error$.subscribe(error => {
+      this.error = error;
+    });
   }
 
   ngOnInit() {
-    // Load apps data first
-    this.appService.getApps().subscribe((apps) => {
-      this.apps = apps;
-      this.filteredApps = apps;
-      
-      // Now that apps are loaded, subscribe to route changes
-      this.route.paramMap.subscribe(params => {
-        const lang = params.get('lang');
-        const category = params.get('category');
+    // Load categories and apps from API
+    this.loadData();
 
-        if (lang) {
-          this.currentLang = lang as "en" | "ar";
-        }
+    // Subscribe to route changes for category filtering
+    this.route.paramMap.subscribe(params => {
+      const lang = params.get('lang');
+      const category = params.get('category');
 
-        // If we're on a category-specific route, use that category
-        // If we're on the base route (no category), show all apps
-        if (category) {
-          this.selectedCategory = category.toLowerCase();
-          this.filterByCategory(this.selectedCategory);
-        } else {
-          this.selectedCategory = 'all';
-          this.filteredApps = this.apps; // Show all apps
-        }
-        
-        // Update SEO data after apps and route parameters are set
-        this.updateSeoData();
-      });
+      if (lang) {
+        this.currentLang = lang as "en" | "ar";
+      }
+
+      // If we're on a category-specific route, use that category
+      // If we're on the base route (no category), show all apps
+      if (category) {
+        this.selectedCategory = category.toLowerCase();
+        this.filterByCategory(this.selectedCategory);
+      } else {
+        this.selectedCategory = 'all';
+        this.filteredApps = this.apps; // Show all apps
+      }
+
+      // Update SEO data after apps and route parameters are set
+      this.updateSeoData();
     });
+
+    // Subscribe to apps from API service for reactive updates
+    this.apiService.apps$.subscribe(apiApps => {
+      this.apps = apiApps.map(app => this.apiService.formatAppForDisplay(app));
+      // If no category is selected, update filtered apps
+      if (this.selectedCategory === 'all' && !this.searchQuery.trim()) {
+        this.filteredApps = this.apps;
+      }
+    });
+
+    // Subscribe to categories from API service
+    this.apiService.categories$.subscribe(apiCategories => {
+      this.categories = apiCategories;
+    });
+  }
+
+  private loadData() {
+    // Load both categories and apps concurrently
+    this.apiService.getCategories().pipe(
+      catchError(error => {
+        console.error('Failed to load categories:', error);
+        return of([]);
+      })
+    ).subscribe();
+
+    this.apiService.getApps().pipe(
+      catchError(error => {
+        console.error('Failed to load apps:', error);
+        return of({ count: 0, next: null, previous: null, results: [] });
+      })
+    ).subscribe();
   }
 
   onSearch() {
     if (!this.searchQuery.trim()) {
       this.filteredApps = this.apps;
     } else {
-      this.appService.searchApps(this.searchQuery).subscribe((apps) => {
-        this.filteredApps = apps;
+      this.apiService.searchApps(this.searchQuery, {
+        category: this.selectedCategory !== 'all' ? this.selectedCategory : undefined
+      }).subscribe(apiApps => {
+        this.filteredApps = apiApps.map(app => this.apiService.formatAppForDisplay(app));
       });
     }
   }
@@ -116,12 +156,35 @@ export class AppListComponent implements OnInit {
   filterByCategory(category: string) {
     this.selectedCategory = category.toLowerCase();
 
-    this.appService.getAppsByCategory(this.selectedCategory).subscribe((apps) => {
-      this.filteredApps = apps;
+    if (category === 'all') {
+      // If showing all, use the main apps array
+      this.filteredApps = this.searchQuery.trim() ?
+        this.apps.filter(app => this.isAppInSearchResults(app)) :
+        this.apps;
+    } else {
+      // Filter by category using API
+      this.apiService.getApps({
+        category: this.selectedCategory,
+        search: this.searchQuery.trim() || undefined
+      }).subscribe(response => {
+        this.filteredApps = response.results.map(app => this.apiService.formatAppForDisplay(app));
+      });
+    }
+  }
 
-      // Force change detection
-      this.filteredApps = [...this.filteredApps];
-    });
+  private isAppInSearchResults(app: QuranApp): boolean {
+    if (!this.searchQuery.trim()) return true;
+
+    const searchLower = this.searchQuery.toLowerCase();
+    const nameEn = app.Name_En?.toLowerCase() || '';
+    const nameAr = app.Name_Ar?.toLowerCase() || '';
+    const descEn = app.Short_Description_En?.toLowerCase() || '';
+    const descAr = app.Short_Description_Ar?.toLowerCase() || '';
+
+    return nameEn.includes(searchLower) ||
+           nameAr.includes(searchLower) ||
+           descEn.includes(searchLower) ||
+           descAr.includes(searchLower);
   }
 
   startDragging(e: MouseEvent) {
@@ -313,5 +376,14 @@ export class AppListComponent implements OnInit {
    */
   getImageAspectRatio(imageType: 'cover' | 'icon'): string {
     return imageType === 'cover' ? '16/9' : '1/1';
+  }
+
+  /**
+   * Get default icon for categories without custom icon
+   */
+  getDefaultCategoryIcon(): string {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+      <path fill="#A0533B" d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
+    </svg>`;
   }
 }

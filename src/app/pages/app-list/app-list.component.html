@@ -19,63 +19,106 @@
         </nz-input-group>
         <!-- Search icon template -->
         <ng-template #searchPrefix>
-          <span nz-icon nzType="search" nzTheme="outline" style="color: #000000;"></span>
+          <span nz-icon nzType="search" nzTheme="outline"></span>
         </ng-template>
       </div>
     </div>
-    <div class="section-title">
-      <h2>{{ "appList.categories.title" | translate }}</h2>
-      <!-- <a href="#">View All</a> -->
-    </div>
-    <!-- Grid of category buttons -->
-    <div
-      class="categories-grid"
-      style="padding-right: 10px; padding-left: 10px;"
-      (mousedown)="startDragging($event)"
-      (mousemove)="onDrag($event)"
-      (mouseup)="stopDragging()"
-      (mouseleave)="stopDragging()"
-    >
-      <div
-        class="category-item "
-        role="button"
-        aria-label="Filter by All"
-        [routerLink]="['/', currentLang]"
-        [routerLinkActive]="'selected'"
-        [routerLinkActiveOptions]="{ exact: true }"
-        data-category="all"
-      >
-        <span class="category-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="#A0533B" d="M3.75 3.75v4.5h4.5v-4.5zm-2.25 0A2.25 2.25 0 0 1 3.75 1.5h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5A2.25 2.25 0 0 1 1.5 8.25zm2.25 12v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25zm18.75-12h-4.5v4.5h4.5zm-4.5-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25v-4.5a2.25 2.25 0 0 1 2.25-2.25m0 14.25v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25z"/></svg>
-        </span>
-        <span class="category-item--title">{{ "appList.categories.all" | translate }}</span>
+
+    <!-- Error Alert -->
+    <nz-alert
+      *ngIf="error"
+      [nzMessage]="error"
+      nzType="error"
+      nzShowIcon
+      nzCloseable
+      (nzOnClose)="error = null"
+      style="margin-bottom: 20px;"
+    ></nz-alert>
+
+    <!-- Loading Spinner -->
+    <nz-spin [nzSpinning]="isLoading" nzSize="large">
+      <div class="loading-placeholder" *ngIf="isLoading && apps.length === 0">
+        <p>{{ "loading.apps" | translate }}</p>
       </div>
+    </nz-spin>
+
+    <!-- Categories Section (only show when not loading or when we have data) -->
+    <div *ngIf="!isLoading || categories.length > 0">
+      <div class="section-title">
+        <h2>{{ "appList.categories.title" | translate }}</h2>
+        <!-- <a href="#">View All</a> -->
+      </div>
+      <!-- Grid of category buttons -->
       <div
-        class="category-item"
-        *ngFor="let category of categories"
-        [routerLink]="['/', currentLang, category.name.toLowerCase()]"
-        [routerLinkActive]="'selected'"
-        role="button"
-        [attr.aria-label]="'Filter by ' + category.name"
-        [attr.data-category]="category.name.toLowerCase()"
+        class="categories-grid"
+        style="padding-right: 10px; padding-left: 10px;"
+        (mousedown)="startDragging($event)"
+        (mousemove)="onDrag($event)"
+        (mouseup)="stopDragging()"
+        (mouseleave)="stopDragging()"
       >
-        <span class="category-icon" [innerHTML]="category.icon"></span>
-        <span class="category-item--title">{{
-          "appList.categories." + category.name.toLowerCase() | translate
-        }}</span>
+        <!-- All Categories Button -->
+        <div
+          class="category-item"
+          role="button"
+          aria-label="Filter by All"
+          [routerLink]="['/', currentLang]"
+          [routerLinkActive]="'selected'"
+          [routerLinkActiveOptions]="{ exact: true }"
+          data-category="all"
+        >
+          <span class="category-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+              <path fill="#A0533B" d="M3.75 3.75v4.5h4.5v-4.5zm-2.25 0A2.25 2.25 0 0 1 3.75 1.5h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5A2.25 2.25 0 0 1 1.5 8.25zm2.25 12v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25zm18.75-12h-4.5v4.5h4.5zm-4.5-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25v-4.5a2.25 2.25 0 0 1 2.25-2.25m0 14.25v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25z"/>
+            </svg>
+          </span>
+          <span class="category-item--title">{{ "appList.categories.all" | translate }}</span>
+        </div>
+
+        <!-- Dynamic Categories from API -->
+        <div
+          class="category-item"
+          *ngFor="let category of categories"
+          [routerLink]="['/', currentLang, category.slug]"
+          [routerLinkActive]="'selected'"
+          role="button"
+          [attr.aria-label]="'Filter by ' + (currentLang === 'ar' ? category.name_ar : category.name_en)"
+          [attr.data-category]="category.slug"
+        >
+          <span class="category-icon" [innerHTML]="category.icon || getDefaultCategoryIcon()"></span>
+          <span class="category-item--title">{{ currentLang === 'ar' ? category.name_ar : category.name_en }}</span>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Apps grid section -->
   <div class="apps-section">
-    <div class="section-title">
+    <!-- Only show section title when we have apps to display -->
+    <div class="section-title" *ngIf="!isLoading && filteredApps.length > 0">
       <h2>{{ "appList.apps.title" | translate }}</h2>
     </div>
 
+    <!-- Loading State for Apps -->
+    <div class="loading-container" *ngIf="isLoading && filteredApps.length === 0">
+      <nz-spin [nzSpinning]="true" nzSize="large">
+        <div class="loading-placeholder">
+          <p>{{ "loading.apps" | translate }}</p>
+        </div>
+      </nz-spin>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && filteredApps.length === 0">
+      <div class="empty-state-content">
+        <h3>{{ "empty.noApps.title" | translate }}</h3>
+        <p>{{ "empty.noApps.message" | translate }}</p>
+      </div>
+    </div>
+
     <!-- Grid of app cards -->
-    <div class="app-grid">
-      <div nz-row [nzGutter]="[24, 24]" class="app-grid-row"> 
+    <div class="app-grid" *ngIf="filteredApps.length > 0">
+      <div nz-row [nzGutter]="[24, 24]" class="app-grid-row">
         <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="6" nzXl="6" class="app-grid-col" *ngFor="let app of filteredApps; let i = index">
           <!-- App card with cover image -->
           <nz-card

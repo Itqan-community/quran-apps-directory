@@ -1,4 +1,14 @@
 {
+  "loading": {
+    "apps": "Loading applications...",
+    "categories": "Loading categories..."
+  },
+  "empty": {
+    "noApps": {
+      "title": "No applications found",
+      "message": "Try adjusting your search criteria or browse all categories."
+    }
+  },
   "common": {
     "back": "Back",
     "submit": "Submit",
