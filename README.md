@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/7ceb3341-c3a5-49fc-b154-518c6884262a/deploy-status?branch=main)](https://app.netlify.com/projects/quran-apps-directory/deploys)
+
 # 🕌 Quran Apps Directory
 
 A comprehensive directory of Islamic applications featuring the best Quran apps for reading, memorization, translation, tafsir, and recitation.
