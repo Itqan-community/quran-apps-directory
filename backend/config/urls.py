@@ -8,8 +8,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.http import JsonResponse
 from django.utils import timezone
-from drf_spectacular.views import SpectacularAPIView
-from core.scalar_view import scalar_ui_view  # Modern Scalar UI
+from apps.api.urls import api as ninja_api
+from apps.api.views import ScalarDocumentationView
 
 
 def health_check(request):
@@ -34,22 +34,9 @@ urlpatterns = [
     # Admin interface
     path('admin/', admin.site.urls),
 
-    # API endpoints (versioned via HTTP headers)
-    path('api/', include('apps.api.urls')),        # Apps API endpoints
-    path('api/', include('categories.urls')),      # Categories endpoints
-    path('api/', include('developers.urls')),      # Developers endpoints
+    # API endpoints (Ninja API - versioned via HTTP headers)
+    path('api/', ninja_api.urls),        # Apps & Categories API endpoints (Django Ninja)
 
-    # API Documentation
-    # OpenAPI Schema endpoint (JSON)
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-
-    # Scalar UI - Modern, beautiful API documentation
-    path('api/docs/', scalar_ui_view, name='scalar-ui'),
-]
-
-# Root redirect to API documentation
-from django.views.generic import RedirectView
-
-urlpatterns += [
-    path('', RedirectView.as_view(url='/api/docs/', permanent=False)),
+    # Scalar API Documentation (Modern, beautiful docs)
+    path('api/docs/', ScalarDocumentationView.as_view(), name='scalar-docs'),
 ]

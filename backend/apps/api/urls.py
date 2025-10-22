@@ -1,19 +1,22 @@
 """
-API URL Routing for Quranic Applications
+Ninja API URL routing for Quranic Applications
 
-Routes for the apps API endpoints.
+Following ITQAN community standards using Django Ninja framework.
 """
 
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from ninja import NinjaAPI
+from .controllers import router as apps_router
 
-from .views import AppViewSet
+# Create NinjaAPI instance (disable default docs to use Scalar)
+api = NinjaAPI(
+    title="Quran Apps API",
+    version="1.0.0",
+    docs_url=None  # Disable default docs to use Scalar instead
+)
 
-router = DefaultRouter()
-router.register(r'apps', AppViewSet, basename='app')
+# Add apps router
+api.add_router("/apps", apps_router)
 
-app_name = 'apps_api'
-
-urlpatterns = [
-    path('', include(router.urls)),
-]
+# Add categories endpoint directly to main API
+from .controllers import get_categories
+api.add_api_route("/categories/", get_categories, methods=["GET"], tags=["Categories"])

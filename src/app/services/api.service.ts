@@ -27,6 +27,7 @@ export interface App {
   sort_order: number;
   featured: boolean;
   platform: string;
+  status: string;
   developer: {
     id: string;
     name_en: string;
@@ -285,12 +286,13 @@ export class ApiService {
       screenshots_en: app.screenshots_en,
       screenshots_ar: app.screenshots_ar,
       Apps_Avg_Rating: app.avg_rating,
-      Developer_Name_En: app.developer?.name_en,
-      Developer_Name_Ar: app.developer?.name_ar,
-      Developer_Website: app.developer?.website,
-      Developer_Logo: app.developer?.logo,
+      Developer_Name_En: app.developer?.name_en || null,
+      Developer_Name_Ar: app.developer?.name_ar || null,
+      Developer_Website: app.developer?.website || null,
+      Developer_Logo: app.developer?.logo || null,
       categories: app.categories?.map(cat => cat.name_en.toLowerCase()) || [],
-      slug: app.slug
+      slug: app.slug,
+      status: app.status
     };
   }
 }

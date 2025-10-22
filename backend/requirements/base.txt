@@ -1,12 +1,12 @@
 # Django Core
-Django==4.2.25
-djangorestframework==3.16.1
+Django==4.2.*
+django-ninja==1.2.0  # API framework following Itqan standards (Python 3.9 compatible)
 
 # Database
 psycopg2-binary==2.9.11
 
 # API Documentation
-drf-spectacular==0.28.0  # OpenAPI schema generation
+# drf-spectacular==0.28.0  # Legacy - Django Ninja has built-in OpenAPI
 
 # Configuration
 python-decouple==3.8
@@ -23,9 +23,9 @@ django-extensions==4.1
 # Filtering & Search
 django-filter==24.3
 
-# Authentication & Security
-djangorestframework-simplejwt==5.3.2  # JWT tokens
-django-allauth==65.11.2  # OAuth/social auth
+# Legacy Authentication & Security (being removed)
+# djangorestframework-simplejwt==5.3.2  # Legacy JWT
+# django-allauth==65.11.2  # Legacy OAuth
 
 # Caching
 django-redis==6.0.0  # Redis caching backend

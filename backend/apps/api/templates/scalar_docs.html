@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title }}</title>
+    <!-- Scalar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@scalar/api-reference@latest/dist/style.css" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .scalar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ title }}</h1>
+        <p>Modern API documentation powered by Scalar</p>
+    </div>
+
+    <div class="scalar-container">
+        <!-- Scalar API Reference -->
+        <div id="scalar-api-reference"></div>
+    </div>
+
+    <!-- Scalar JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@latest/dist/browser.js"></script>
+
+    <script>
+        // Initialize Scalar API Reference
+        const apiReference = new Scalar.ApiReference({
+            id: 'scalar-api-reference',
+            spec: {
+                url: '{{ spec_url }}',
+                // You can also embed the spec directly if needed
+                // content: {{ openapi_spec|safe }}
+            },
+            theme: 'default',
+            withCredentials: false,
+        });
+    </script>
+</body>
+</html>

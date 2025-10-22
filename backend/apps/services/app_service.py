@@ -1,491 +1,357 @@
 """
-Application service for handling app-related business logic.
+Service layer for Quranic Applications
 
-This service encapsulates all business logic related to applications,
-including search, filtering, caching, and analytics.
+Following ITQAN community standards with proper business logic separation.
 """
 
-from typing import Optional, List, Dict, Any
-from django.db.models import QuerySet
-from django.db.models import Q, F, Count, Avg
+from typing import List, Optional, Dict, Any
 from django.core.cache import cache
+from django.db.models import Q
 from django.conf import settings
-from django.core.exceptions import ValidationError
-from decimal import Decimal
 
-from core.services.base_service import BaseService
-from apps.models import App
-from developers.models import Developer
-from categories.models import Category
+from ..models import App, Category, Developer
 
 
-class AppService(BaseService):
+class AppService:
     """
-    Service for managing application-related operations.
+    Service class for application business logic.
 
-    Handles:
-    - App search and filtering
-    - Featured apps management
-    - View counting and analytics
-    - Category-based operations
-    - Platform-specific operations
+    Handles all app-related operations with proper caching,
+    logging, and error handling following ITQAN patterns.
     """
 
     def __init__(self):
-        super().__init__()
-        self.app_cache_timeout = self.cache_timeout.get('APP_LIST', 600)  # 10 minutes default
+        pass
 
-    def get_queryset_optimized(self, include_ratings: bool = True) -> QuerySet[App]:
+    def get_apps(self, filters: Dict[str, Any] = None,
+                ordering: str = 'sort_order,name_en',
+                page: int = 1,
+                page_size: int = 20) -> Dict[str, Any]:
         """
-        Get optimized queryset with common relations.
+        Get applications with filtering and pagination.
 
         Args:
-            include_ratings: Whether to include rating calculations
+            filters: Dictionary of filters (search, category, platform, featured)
+            ordering: Order by clause
+            page: Page number (1-based)
+            page_size: Number of items per page
 
         Returns:
-            Optimized App queryset
+            Dictionary with pagination info and results
         """
-        queryset = App.objects.select_related('developer').prefetch_related('categories')
+        try:
+            # TODO: Add logging
+            # Build cache key
+            cache_key = f"apps_list_{filters}_{ordering}_{page}_{page_size}"
 
-        if include_ratings:
-            queryset = queryset.annotate(
-                avg_rating_calc=Avg('reviews__rating'),
-                review_count_calc=Count('reviews')
+            # Try to get from cache
+            cached_result = cache.get(cache_key)
+            if cached_result:
+                return cached_result
+
+            # Base queryset with optimizations
+            queryset = App.objects.select_related('developer').prefetch_related('categories')
+
+            # Apply filters
+            if filters:
+                search = filters.get('search')
+                if search:
+                    queryset = queryset.filter(
+                        Q(name_en__icontains=search) |
+                        Q(name_ar__icontains=search) |
+                        Q(short_description_en__icontains=search) |
+                        Q(short_description_ar__icontains=search)
+                    )
+
+                category = filters.get('category')
+                if category:
+                    queryset = queryset.filter(categories__slug=category)
+
+                platform = filters.get('platform')
+                if platform:
+                    queryset = queryset.filter(platform=platform)
+
+                featured = filters.get('featured')
+                if featured is not None:
+                    queryset = queryset.filter(featured=featured)
+
+            # Filter only published apps
+            queryset = queryset.filter(status='published')
+
+            # Apply ordering
+            if ordering:
+                order_fields = ordering.split(',')
+                queryset = queryset.order_by(*order_fields)
+
+            # Paginate results
+            from django.core.paginator import Paginator
+            paginator = Paginator(queryset, page_size)
+            page_obj = paginator.get_page(page)
+
+            paginated_result = {
+                'count': paginator.count,
+                'next': page_obj.has_next() and f"?page={page + 1}" or None,
+                'previous': page_obj.has_previous() and f"?page={page - 1}" or None,
+                'results': list(page_obj.object_list)
+            }
+
+            # Cache result (5 minutes)
+            cache.set(cache_key, paginated_result, 300)
+
+            return paginated_result
+
+        except Exception as e:
+            # TODO: Add proper logging
+            print(f"Error in get_apps: {e}")
+            return {
+                'count': 0,
+                'next': None,
+                'previous': None,
+                'results': []
+            }
+
+    def get_app_by_identifier(self, identifier: str) -> Optional[App]:
+        """
+        Get app by UUID or slug.
+
+        Args:
+            identifier: App UUID or slug
+
+        Returns:
+            App instance or None
+        """
+        try:
+            self.log_operation('get_app_by_identifier', {'identifier': identifier})
+
+            # Try UUID first, then slug
+            queryset = App.objects.select_related('developer').prefetch_related('categories')
+
+            try:
+                app = queryset.get(id=identifier, status='published')
+            except (App.DoesNotExist, ValueError):
+                try:
+                    app = queryset.get(slug=identifier, status='published')
+                except App.DoesNotExist:
+                    return None
+
+            return app
+
+        except Exception as e:
+            self.log_error('get_app_by_identifier', e, {'identifier': identifier})
+            return None
+
+    def get_featured_apps(self, category: str = 'all') -> List[App]:
+        """
+        Get featured applications.
+
+        Args:
+            category: Optional category filter
+
+        Returns:
+            List of featured apps
+        """
+        try:
+            self.log_operation('get_featured_apps', {'category': category})
+
+            cache_key = self.get_cache_key('featured_apps', category=category)
+            cached_apps = self.get_from_cache(cache_key)
+            if cached_apps:
+                return cached_apps
+
+            queryset = App.objects.select_related('developer').prefetch_related('categories').filter(
+                featured=True,
+                status='published'
             )
 
-        return queryset.filter(status='published')
+            if category != 'all':
+                queryset = queryset.filter(categories__slug=category)
 
-    def get_featured_apps(self, category_slug: Optional[str] = None,
-                         limit: int = 20) -> List[App]:
+            apps = list(queryset.order_by('sort_order', 'name_en'))
+
+            # Cache for 10 minutes
+            self.set_cache(cache_key, apps,
+                       timeout=self.cache_timeout.get('FEATURED_APPS', 600))
+
+            return apps
+
+        except Exception as e:
+            self.log_error('get_featured_apps', e, {'category': category})
+            return []
+
+    def get_apps_by_platform(self, platform: str) -> List[App]:
         """
-        Get featured applications, optionally filtered by category.
+        Get applications by platform.
 
         Args:
-            category_slug: Category slug to filter by (optional)
-            limit: Maximum number of apps to return
+            platform: Platform name (android, ios, web, cross_platform)
 
         Returns:
-            List of featured App instances
+            List of apps for the platform
         """
-        cache_key = self.get_cache_key('featured_apps', category=category_slug or 'all')
+        try:
+            self.log_operation('get_apps_by_platform', {'platform': platform})
 
-        # Try cache first
-        cached_apps = self.get_from_cache(cache_key)
-        if cached_apps:
-            return cached_apps
+            cache_key = self.get_cache_key('apps_by_platform', platform=platform)
+            cached_apps = self.get_from_cache(cache_key)
+            if cached_apps:
+                return cached_apps
 
-        # Build queryset
-        queryset = self.get_queryset_optimized().filter(featured=True)
+            apps = list(
+                App.objects.select_related('developer')
+                .prefetch_related('categories')
+                .filter(platform=platform, status='published')
+                .order_by('sort_order', 'name_en')
+            )
 
-        if category_slug and category_slug != 'all':
-            queryset = queryset.filter(categories__slug=category_slug)
+            # Cache for 10 minutes
+            self.set_cache(cache_key, apps,
+                       timeout=self.cache_timeout.get('APPS_BY_PLATFORM', 600))
 
-        # Order by sort order and rating
-        queryset = queryset.order_by('sort_order', '-avg_rating', '-view_count')
+            return apps
 
-        # Limit results
-        apps = list(queryset[:limit])
+        except Exception as e:
+            self.log_error('get_apps_by_platform', e, {'platform': platform})
+            return []
 
-        # Cache the results
-        self.set_cache(cache_key, apps, timeout=self.app_cache_timeout)
-
-        self.log_operation('get_featured_apps', {
-            'category': category_slug,
-            'count': len(apps)
-        })
-
-        return apps
-
-    def search_apps(self, query: str, filters: Dict[str, Any] = None,
-                   ordering: str = '-sort_order', page: int = 1,
-                   page_size: int = 20) -> Dict[str, Any]:
+    def create_app(self, app_data: Dict[str, Any]) -> App:
         """
-        Search applications with filters and pagination.
+        Create a new application.
+
+        Args:
+            app_data: Application data
+
+        Returns:
+            Created App instance
+        """
+        try:
+            self.log_operation('create_app', app_data)
+
+            # Extract related object IDs
+            developer_id = app_data.pop('developer_id', None)
+            category_ids = app_data.pop('categories', [])
+
+            app = App(**app_data)
+            self.validate_and_save(app)
+
+            # Handle relationships
+            if developer_id:
+                app.developer_id = developer_id
+                app.save()
+
+            if category_ids:
+                app.categories.set(category_ids)
+                app.save()
+
+            # Clear relevant caches
+            self._clear_app_caches()
+
+            return app
+
+        except Exception as e:
+            self.log_error('create_app', e, app_data)
+            raise
+
+    def update_app(self, app: App, update_data: Dict[str, Any]) -> App:
+        """
+        Update an existing application.
+
+        Args:
+            app: Existing App instance
+            update_data: Data to update
+
+        Returns:
+            Updated App instance
+        """
+        try:
+            self.log_operation('update_app', {
+                'app_id': app.id,
+                'update_data': {k: v for k, v in update_data.items() if v is not None}
+            })
+
+            # Handle relationships
+            developer_id = update_data.pop('developer_id', None)
+            category_ids = update_data.pop('categories', None)
+
+            # Update fields
+            for field, value in update_data.items():
+                if value is not None:
+                    setattr(app, field, value)
+
+            self.validate_and_save(app)
+
+            # Handle relationships
+            if developer_id:
+                app.developer_id = developer_id
+
+            if category_ids is not None:
+                if category_ids:
+                    app.categories.set(category_ids)
+                else:
+                    app.categories.clear()
+
+            app.save()
+
+            # Clear relevant caches
+            self._clear_app_caches()
+
+            return app
+
+        except Exception as e:
+            self.log_error('update_app', e, {'app_id': app.id, 'update_data': update_data})
+            raise
+
+    def delete_app(self, app: App) -> bool:
+        """
+        Delete an application.
+
+        Args:
+            app: App instance to delete
+
+        Returns:
+            True if successful
+        """
+        try:
+            self.log_operation('delete_app', {'app_id': app.id})
+
+            app.delete()
+            self._clear_app_caches()
+            return True
+
+        except Exception as e:
+            self.log_error('delete_app', e, {'app_id': app.id})
+            return False
+
+    def search_apps(self, query: str, filters: Dict[str, Any] = None) -> List[App]:
+        """
+        Search applications.
 
         Args:
             query: Search query string
-            filters: Dictionary of filters (category, platform, featured, etc.)
-            ordering: Ordering string
-            page: Page number
-            page_size: Number of items per page
+            filters: Additional filters (category, platform, etc.)
 
         Returns:
-            Dictionary with search results and pagination info
+            List of matching apps
         """
-        cache_key = self.get_cache_key(
-            'search_apps',
-            query=query[:100],  # Limit query length for cache key
-            **(filters or {}),
-            ordering=ordering,
-            page=page,
-            page_size=page_size
-        )
-
-        # Try cache first
-        cached_result = self.get_from_cache(cache_key)
-        if cached_result:
-            return cached_result
-
-        # Start with base queryset
-        queryset = self.get_queryset_optimized()
-
-        # Apply search query
-        if query:
-            search_conditions = Q()
-            for term in query.split():
-                search_conditions |= Q(name_en__icontains=term)
-                search_conditions |= Q(name_ar__icontains=term)
-                search_conditions |= Q(short_description_en__icontains=term)
-                search_conditions |= Q(short_description_ar__icontains=term)
-            queryset = queryset.filter(search_conditions)
-
-        # Apply filters
+        search_filters = {'search': query}
         if filters:
-            if 'category_slug' in filters:
-                queryset = queryset.filter(categories__slug=filters['category_slug'])
-            if 'platform' in filters:
-                queryset = queryset.filter(platform=filters['platform'])
-            if 'featured' in filters:
-                queryset = queryset.filter(featured=filters['featured'])
-            if 'developer_id' in filters:
-                queryset = queryset.filter(developer_id=filters['developer_id'])
+            search_filters.update(filters)
 
-        # Apply ordering
-        if ordering:
-            queryset = queryset.order_by(ordering)
+        result = self.get_apps(filters=search_filters, page_size=100)  # Limit search results
+        return result.get('results', [])
 
-        # Paginate results
-        result = self.paginate_results(queryset, page, page_size)
-
-        # Cache the results
-        self.set_cache(cache_key, result, timeout=self.app_cache_timeout)
-
-        self.log_operation('search_apps', {
-            'query': query[:100],
-            'filters': filters,
-            'count': result['count']
-        })
-
-        return result
-
-    def get_apps_by_category(self, category_slug: str,
-                            ordering: str = 'sort_order',
-                            page: int = 1, page_size: int = 20) -> Dict[str, Any]:
+    def get_queryset_optimized(self, model_class):
         """
-        Get applications filtered by category.
+        Get optimized queryset for App model.
 
-        Args:
-            category_slug: Category slug to filter by
-            ordering: Ordering string
-            page: Page number
-            page_size: Number of items per page
-
-        Returns:
-            Dictionary with category apps and pagination info
+        Overrides base service method with App-specific optimizations.
         """
-        cache_key = self.get_cache_key(
-            'apps_by_category',
-            category=category_slug,
-            ordering=ordering,
-            page=page,
-            page_size=page_size
-        )
+        return model_class.objects.select_related('developer').prefetch_related('categories')
 
-        # Try cache first
-        cached_result = self.get_from_cache(cache_key)
-        if cached_result:
-            return cached_result
-
-        # Verify category exists
-        try:
-            category = Category.objects.get(slug=category_slug, status='published')
-        except Category.DoesNotExist:
-            self.log_error('get_apps_by_category', ValueError(f"Category not found: {category_slug}"))
-            return self._empty_paginated_result()
-
-        # Filter by category
-        queryset = self.get_queryset_optimized().filter(categories__slug=category_slug)
-
-        # Apply ordering
-        if ordering:
-            queryset = queryset.order_by(ordering)
-
-        # Paginate results
-        result = self.paginate_results(queryset, page, page_size)
-
-        # Add category info
-        result['category'] = {
-            'id': category.id,
-            'slug': category.slug,
-            'name_en': category.name_en,
-            'name_ar': category.name_ar
-        }
-
-        # Cache the results
-        self.set_cache(cache_key, result, timeout=self.app_cache_timeout)
-
-        self.log_operation('get_apps_by_category', {
-            'category': category_slug,
-            'count': result['count']
-        })
-
-        return result
-
-    def get_apps_by_platform(self, platform: str,
-                            ordering: str = '-sort_order',
-                            page: int = 1, page_size: int = 20) -> Dict[str, Any]:
+    def _clear_app_caches(self) -> None:
         """
-        Get applications filtered by platform.
-
-        Args:
-            platform: Platform to filter by (android, ios, web, cross_platform)
-            ordering: Ordering string
-            page: Page number
-            page_size: Number of items per page
-
-        Returns:
-            Dictionary with platform apps and pagination info
+        Clear all app-related caches.
         """
-        if platform not in [choice[0] for choice in App.PLATFORM_CHOICES]:
-            self.log_error('get_apps_by_platform', ValueError(f"Invalid platform: {platform}"))
-            return self._empty_paginated_result()
-
-        cache_key = self.get_cache_key(
-            'apps_by_platform',
-            platform=platform,
-            ordering=ordering,
-            page=page,
-            page_size=page_size
-        )
-
-        # Try cache first
-        cached_result = self.get_from_cache(cache_key)
-        if cached_result:
-            return cached_result
-
-        # Filter by platform
-        queryset = self.get_queryset_optimized().filter(platform=platform)
-
-        # Apply ordering
-        if ordering:
-            queryset = queryset.order_by(ordering)
-
-        # Paginate results
-        result = self.paginate_results(queryset, page, page_size)
-
-        # Add platform info
-        result['platform'] = platform
-
-        # Cache the results
-        self.set_cache(cache_key, result, timeout=self.app_cache_timeout)
-
-        self.log_operation('get_apps_by_platform', {
-            'platform': platform,
-            'count': result['count']
-        })
-
-        return result
-
-    def get_app_detail(self, app_identifier: str) -> Optional[App]:
-        """
-        Get detailed app information by ID or slug.
-
-        Args:
-            app_identifier: App ID (integer) or slug
-
-        Returns:
-            App instance or None if not found
-        """
-        cache_key = self.get_cache_key('app_detail', identifier=app_identifier)
-
-        # Try cache first
-        cached_app = self.get_from_cache(cache_key)
-        if cached_app:
-            return cached_app
-
-        app = None
-
-        # Try to get by integer ID first
-        try:
-            app_id = int(app_identifier)
-            app = self.get_queryset_optimized().get(id=app_id)
-        except (ValueError, App.DoesNotExist):
-            # If not an integer or not found by ID, try slug
-            try:
-                app = self.get_queryset_optimized().get(slug__iexact=app_identifier)
-            except App.DoesNotExist:
-                pass
-
-        if app:
-            # Increment view count
-            self.increment_view_count(app)
-
-            # Cache the result (shorter timeout for details)
-            self.set_cache(cache_key, app, timeout=self.cache_timeout.get('APP_DETAIL', 300))
-
-            self.log_operation('get_app_detail', {
-                'identifier': app_identifier,
-                'app_id': app.id
-            })
-
-        return app
-
-    def increment_view_count(self, app: App) -> bool:
-        """
-        Increment the view count for an app.
-
-        Args:
-            app: App instance to increment view count for
-
-        Returns:
-            True if successful, False otherwise
-        """
-        try:
-            # Use F() expression to avoid race conditions
-            App.objects.filter(id=app.id).update(view_count=F('view_count') + 1)
-
-            # Clear relevant caches
-            self._clear_app_caches(app)
-
-            self.log_operation('increment_view_count', {
-                'app_id': app.id,
-                'new_count': app.view_count + 1
-            })
-
-            return True
-        except Exception as e:
-            self.log_error('increment_view_count', e, {'app_id': app.id})
-            return False
-
-    def get_popular_apps(self, limit: int = 20,
-                        min_reviews: int = 5) -> List[App]:
-        """
-        Get popular apps based on ratings and review count.
-
-        Args:
-            limit: Maximum number of apps to return
-            min_reviews: Minimum number of reviews required
-
-        Returns:
-            List of popular App instances
-        """
-        cache_key = self.get_cache_key('popular_apps', limit=limit, min_reviews=min_reviews)
-
-        # Try cache first
-        cached_apps = self.get_from_cache(cache_key)
-        if cached_apps:
-            return cached_apps
-
-        # Get apps with sufficient reviews, ordered by rating and review count
-        queryset = self.get_queryset_optimized().filter(
-            review_count__gte=min_reviews
-        ).order_by('-avg_rating', '-review_count', '-view_count')
-
-        apps = list(queryset[:limit])
-
-        # Cache the results
-        self.set_cache(cache_key, apps, timeout=self.app_cache_timeout)
-
-        self.log_operation('get_popular_apps', {
-            'limit': limit,
-            'min_reviews': min_reviews,
-            'count': len(apps)
-        })
-
-        return apps
-
-    def get_apps_by_developer(self, developer_id: int,
-                             page: int = 1, page_size: int = 20) -> Dict[str, Any]:
-        """
-        Get applications by developer.
-
-        Args:
-            developer_id: Developer ID
-            page: Page number
-            page_size: Number of items per page
-
-        Returns:
-            Dictionary with developer apps and pagination info
-        """
-        cache_key = self.get_cache_key(
-            'apps_by_developer',
-            developer_id=developer_id,
-            page=page,
-            page_size=page_size
-        )
-
-        # Try cache first
-        cached_result = self.get_from_cache(cache_key)
-        if cached_result:
-            return cached_result
-
-        # Verify developer exists
-        try:
-            developer = Developer.objects.get(id=developer_id)
-        except Developer.DoesNotExist:
-            self.log_error('get_apps_by_developer', ValueError(f"Developer not found: {developer_id}"))
-            return self._empty_paginated_result()
-
-        # Filter by developer
-        queryset = self.get_queryset_optimized().filter(developer_id=developer_id)
-
-        # Order by sort order and name
-        queryset = queryset.order_by('sort_order', 'name_en')
-
-        # Paginate results
-        result = self.paginate_results(queryset, page, page_size)
-
-        # Add developer info
-        result['developer'] = {
-            'id': developer.id,
-            'name_en': developer.name_en,
-            'name_ar': developer.name_ar,
-            'slug': developer.slug
-        }
-
-        # Cache the results
-        self.set_cache(cache_key, result, timeout=self.app_cache_timeout)
-
-        self.log_operation('get_apps_by_developer', {
-            'developer_id': developer_id,
-            'count': result['count']
-        })
-
-        return result
-
-    def _clear_app_caches(self, app: App) -> None:
-        """
-        Clear all cache entries related to a specific app.
-
-        Args:
-            app: App instance to clear caches for
-        """
-        # Clear app detail caches
-        self.delete_cache(f"app_detail_{app.id}")
-        self.delete_cache(f"app_detail_{app.slug}")
-
-        # Clear featured apps caches
-        self.delete_cache("featured_apps_all")
-        for category in app.categories.all():
-            self.delete_cache(f"featured_apps_{category.slug}")
-
-        # Clear search and list caches (use pattern if available)
-        self.delete_cache_pattern("*search_apps*")
-        self.delete_cache_pattern("*apps_by_category*")
-        self.delete_cache_pattern("*apps_by_platform*")
-
-    def _empty_paginated_result(self) -> Dict[str, Any]:
-        """
-        Return empty paginated result structure.
-
-        Returns:
-            Empty paginated result dictionary
-        """
-        return {
-            'count': 0,
-            'num_pages': 0,
-            'current_page': 1,
-            'has_next': False,
-            'has_previous': False,
-            'results': []
-        }
+        self.delete_cache_pattern('apps_list_*')
+        self.delete_cache_pattern('featured_apps_*')
+        self.delete_cache_pattern('apps_by_platform_*')
+        self.delete_cache_pattern('app_detail_*')

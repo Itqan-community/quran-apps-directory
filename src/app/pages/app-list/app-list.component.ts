@@ -8,8 +8,8 @@ import { NzRateModule } from "ng-zorro-antd/rate";
 import { NzInputModule } from "ng-zorro-antd/input";
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzButtonModule } from "ng-zorro-antd/button";
-import { SpinModule } from "ng-zorro-antd/spin";
-import { AlertModule } from "ng-zorro-antd/alert";
+import { NzSpinModule } from "ng-zorro-antd/spin";
+import { NzAlertModule } from "ng-zorro-antd/alert";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { AppService, QuranApp } from "../../services/app.service";
 import { ApiService, App, Category } from "../../services/api.service";
@@ -32,8 +32,8 @@ import { OptimizedImageComponent } from "../../components/optimized-image/optimi
     NzInputModule,
     NzIconModule,
     NzButtonModule,
-    SpinModule,
-    AlertModule,
+    NzSpinModule,
+    NzAlertModule,
     TranslateModule,
     OptimizedImageComponent,
   ],

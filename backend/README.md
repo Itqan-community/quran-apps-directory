@@ -1,19 +1,21 @@
 # Quran Apps Directory - Backend API
 
-A comprehensive bilingual (Arabic/English) REST API for the Quran Apps Directory, built with Django 5.2 and Django REST Framework.
+A comprehensive bilingual (Arabic/English) REST API for the Quran Apps Directory, built with Django 5.2 and Django Ninja following ITQAN community standards.
 
 ## Technology Stack
 
-- **Backend Framework:** Django 5.2 with Django REST Framework
+- **Backend Framework:** Django 5.2 with Django Ninja API framework
 - **Database:** PostgreSQL 15 (Docker for local development)
-- **API Documentation:** drf-spectacular (OpenAPI/Swagger)
+- **API Documentation:** Django Ninja built-in OpenAPI/Swagger
 - **Authentication:** Django session authentication (JWT planned)
 - **CORS:** django-cors-headers
 - **File Storage:** Local file storage (S3 planned for production)
+- **Caching:** Redis for performance optimization
+- **Python:** 3.13+ (following ITQAN standards)
 
 ## Prerequisites
 
-- Python 3.9+
+- Python 3.13+ (following ITQAN community standards)
 - Docker & Docker Compose
 - Git
 

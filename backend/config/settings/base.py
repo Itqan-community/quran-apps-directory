@@ -31,12 +31,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Third-party apps
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'drf_spectacular',  # OpenAPI schema generation
+    'ninja',
     'corsheaders',
     'django_extensions',
-    'django_filters',
+    # DRF legacy (will be removed after migration)
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'drf_spectacular',
 
     # Local apps
     'core',
