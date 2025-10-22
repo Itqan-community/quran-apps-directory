@@ -4,10 +4,7 @@ API Views for Quranic Applications
 Provides RESTful endpoints for browsing, searching, and filtering applications.
 """
 
-from django.db.models import Q, F
 from django_filters.rest_framework import DjangoFilterBackend
-from django.core.cache import cache
-from django.conf import settings
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -24,6 +21,7 @@ class AppViewSet(viewsets.ReadOnlyModelViewSet):
 
     Provides list and detail views with filtering by category and search functionality.
     All endpoints are publicly accessible for read operations.
+    Uses service layer for business logic.
     """
     lookup_field = 'pk'  # Allow both UUID and slug lookup in get_object method
     queryset = App.objects.select_related('developer').prefetch_related('categories')
@@ -90,6 +88,24 @@ class AppViewSet(viewsets.ReadOnlyModelViewSet):
         """
         return super().list(request, *args, **kwargs)
 
+    def _get_next_link(self, request, current_page, total_pages):
+        """Get next page link."""
+        if current_page >= total_pages:
+            return None
+        next_page = current_page + 1
+        request_data = request.query_params.copy()
+        request_data['page'] = str(next_page)
+        return request.build_absolute_uri(f"?{request_data.urlencode()}")
+
+    def _get_previous_link(self, request, current_page):
+        """Get previous page link."""
+        if current_page <= 1:
+            return None
+        previous_page = current_page - 1
+        request_data = request.query_params.copy()
+        request_data['page'] = str(previous_page)
+        return request.build_absolute_uri(f"?{request_data.urlencode()}")
+
     @extend_schema(summary="Get app details by ID or slug")
     def retrieve(self, request, *args, **kwargs):
         """
@@ -123,30 +139,20 @@ class AppViewSet(viewsets.ReadOnlyModelViewSet):
 
         Returns a list of featured apps, optionally filtered by category.
         """
-        # Create cache key
         category_slug = request.query_params.get('category', 'all')
-        cache_key = f'featured_apps_{category_slug}'
 
-        # Try to get from cache
-        cached_data = cache.get(cache_key)
-        if cached_data:
-            return Response(cached_data)
+        # Use service layer to get featured apps (handles caching)
+        featured_apps = self.app_service.get_featured_apps(
+            category_slug=category_slug if category_slug != 'all' else None
+        )
 
-        queryset = self.get_queryset().filter(featured=True)
-
-        if category_slug != 'all':
-            queryset = queryset.filter(categories__slug=category_slug)
-
-        page = self.paginate_queryset(queryset)
+        # Paginate results
+        page = self.paginate_queryset(featured_apps)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            response_data = self.get_paginated_response(serializer.data).data
-            # Cache for 10 minutes
-            cache.set(cache_key, response_data, timeout=settings.CACHE_TIMEOUTS['APP_LIST'])
-            return Response(response_data)
+            return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(queryset, many=True)
-        cache.set(cache_key, serializer.data, timeout=settings.CACHE_TIMEOUTS['APP_LIST'])
+        serializer = self.get_serializer(featured_apps, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
@@ -167,19 +173,43 @@ class AppViewSet(viewsets.ReadOnlyModelViewSet):
         """
         platform = request.query_params.get('platform')
         if not platform:
-            return Response(
-                {'error': 'Platform parameter is required'},
-                status=status.HTTP_400_BAD_REQUEST
+            return ErrorResponse.validation_error(
+                message="Platform parameter is required",
+                field_errors={'platform': ['This field is required.']}
             )
 
-        queryset = self.get_queryset().filter(platform=platform)
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+        # Get page parameters
+        page = int(request.query_params.get('page', 1))
+        page_size = int(request.query_params.get('page_size', 20))
 
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        # Use service layer to get apps by platform (handles caching and pagination)
+        result = self.app_service.get_apps_by_platform(
+            platform=platform,
+            page=page,
+            page_size=page_size
+        )
+
+        # Return paginated response
+        if page > 1 and not result['results']:
+            return ErrorResponse.not_found(
+                message="Page not found",
+                resource_type="Page",
+                resource_id=str(page)
+            )
+
+        # Create manual paginated response using DRF format
+        from rest_framework.pagination import PageNumberPagination
+        paginator = PageNumberPagination()
+        paginator.page_size = page_size
+        paginator.page = page
+
+        response_data = {
+            'count': result['count'],
+            'next': paginator.get_next_link() if result['has_next'] else None,
+            'previous': paginator.get_previous_link() if result['has_previous'] else None,
+            'results': self.get_serializer(result['results'], many=True).data
+        }
+        return Response(response_data)
 
     def get_object(self):
         """

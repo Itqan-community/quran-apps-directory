@@ -238,24 +238,24 @@
         background: var(--surface-color) !important;
         border: none !important;
         border-left: 1px solid var(--border-color) !important;
-        color: var(--text-secondary) !important;
-        
+        color: #000000 !important;
+
         .anticon {
-          color: var(--text-secondary) !important;
+          color: #000000 !important;
           opacity: 1 !important;
           font-size: 14px !important;
         }
-        
+
         span[nz-icon] {
-          color: var(--text-secondary) !important;
+          color: #000000 !important;
           opacity: 1 !important;
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
-          
+
           svg {
-            fill: var(--text-secondary) !important;
-            color: var(--text-secondary) !important;
+            fill: #000000 !important;
+            color: #000000 !important;
             opacity: 1 !important;
           }
         }
@@ -264,11 +264,11 @@
       &:hover {
         border-color: var(--primary-color) !important;
         background: var(--surface-color) !important;
-        
+
         .ant-input-group-addon {
           .anticon, span[nz-icon] {
             color: var(--primary-color) !important;
-            
+
             svg {
               fill: var(--primary-color) !important;
               color: var(--primary-color) !important;
@@ -276,16 +276,16 @@
           }
         }
       }
-      
+
       &:focus-within {
         border-color: var(--primary-color) !important;
         box-shadow: 0 0 0 2px rgba(255, 140, 66, 0.2) !important;
         background: var(--surface-color) !important;
-        
+
         .ant-input-group-addon {
           .anticon, span[nz-icon] {
             color: var(--primary-color) !important;
-            
+
             svg {
               fill: var(--primary-color) !important;
               color: var(--primary-color) !important;
@@ -300,40 +300,40 @@
   .search-section {
     nz-input-group .ant-input-group-addon {
       [nz-icon] {
-        color: var(--text-secondary) !important;
+        color: #000000 !important;
         opacity: 1 !important;
         display: flex !important;
-        
+
         svg {
-          fill: var(--text-secondary) !important;
-          stroke: var(--text-secondary) !important;
-          color: var(--text-secondary) !important;
+          fill: #000000 !important;
+          stroke: #000000 !important;
+          color: #000000 !important;
           opacity: 1 !important;
           width: 14px !important;
           height: 14px !important;
           display: block !important;
         }
-        
+
         .anticon {
-          color: var(--text-secondary) !important;
+          color: #000000 !important;
           opacity: 1 !important;
-          
+
           svg {
-            fill: var(--text-secondary) !important;
-            color: var(--text-secondary) !important;
+            fill: #000000 !important;
+            color: #000000 !important;
           }
         }
       }
     }
-    
+
     // More specific targeting
     .ant-input-group-addon span[nz-icon] {
-      color: var(--text-secondary) !important;
+      color: #000000 !important;
       opacity: 1 !important;
-      
+
       svg {
-        fill: var(--text-secondary) !important;
-        color: var(--text-secondary) !important;
+        fill: #000000 !important;
+        color: #000000 !important;
       }
     }
   }

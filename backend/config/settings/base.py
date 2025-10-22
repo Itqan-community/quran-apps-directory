@@ -54,6 +54,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+      # Custom API middleware (temporarily commented out for debugging)
+    # 'core.api.middleware.APIVersionMiddleware',
+    # 'core.api.middleware.APIErrorHandlerMiddleware',
+    # 'core.api.middleware.APIRequestLoggingMiddleware',
+    # 'core.api.middleware.APICacheMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -187,6 +193,57 @@ SPECTACULAR_SETTINGS = {
             'description': 'Developer information and profiles'
         },
     ],
+}
+
+# Cache timeout configuration - CMS Backend aligned
+CACHE_TIMEOUTS = {
+    # App-related cache timeouts (in seconds)
+    'APP_LIST': 600,          # 10 minutes for app listings
+    'APP_DETAIL': 300,        # 5 minutes for app details
+    'FEATURED_APPS': 600,     # 10 minutes for featured apps
+    'SEARCH_RESULTS': 120,    # 2 minutes for search results
+    'POPULAR_APPS': 1800,     # 30 minutes for popular apps
+
+    # Category-related cache timeouts
+    'CATEGORY_LIST': 1800,    # 30 minutes for category listings
+    'CATEGORY_DETAIL': 1800,  # 30 minutes for category details
+    'CATEGORY_NAV': 3600,     # 1 hour for navigation data
+    'CATEGORY_HIERARCHY': 3600, # 1 hour for category hierarchy
+
+    # Developer-related cache timeouts
+    'DEVELOPER_LIST': 1800,   # 30 minutes for developer listings
+    'DEVELOPER_DETAIL': 1800, # 30 minutes for developer details
+    'DEVELOPER_ANALYTICS': 900, # 15 minutes for analytics
+
+    # General cache timeouts
+    'STATIC_DATA': 7200,      # 2 hours for static reference data
+    'API_VERSION_INFO': 3600, # 1 hour for API version information
+}
+
+# API Configuration - CMS Backend aligned
+API_CONFIGURATION = {
+    'VERSIONING': {
+        'DEFAULT_VERSION': 'v1',
+        'SUPPORTED_VERSIONS': ['v1'],
+        'VERSION_HEADER': 'X-API-Version',
+        'ALLOWED_VERSION_SCHEMES': ['header', 'query', 'url'],
+    },
+    'RESPONSE_FORMAT': {
+        'STANDARDIZE_RESPONSES': True,
+        'INCLUDE_META_DATA': True,
+        'SUCCESS_MESSAGE_DEFAULT': 'Operation completed successfully',
+        'ERROR_CODE_DEFAULT': 'UNKNOWN_ERROR',
+    },
+    'RATE_LIMITING': {
+        'ANON_LIMIT': '100/hour',
+        'USER_LIMIT': '1000/hour',
+        'BURST_LIMIT': '10/minute',
+    },
+    'PAGINATION': {
+        'DEFAULT_PAGE_SIZE': 20,
+        'MAX_PAGE_SIZE': 100,
+        'PAGE_SIZE_QUERY_PARAM': 'page_size',
+    },
 }
 
 # CORS settings
