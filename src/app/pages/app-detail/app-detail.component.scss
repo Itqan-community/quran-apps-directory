@@ -14,6 +14,26 @@
   swiper-container {
     // Override global Swiper variables for this component
     --swiper-pagination-bottom: 24px !important;
+    display: block !important;
+    width: 100% !important;
+    height: 640px !important; // Container height for cards
+    max-height: 700px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    background: transparent !important;
+
+    // Responsive heights
+    @media screen and (max-width: 1024px) {
+      height: 590px !important;
+    }
+    @media screen and (max-width: 768px) {
+      height: 540px !important;
+      max-height: 600px !important;
+    }
+    @media screen and (max-width: 480px) {
+      height: 440px !important;
+      max-height: 500px !important;
+    }
     
     .swiper-pagination {
       position: absolute !important;
@@ -146,9 +166,22 @@ html[dir="rtl"] .content-carousel {
 
  .carousel-image {
   width: 100%;
-  height: auto;
-  border-radius: 12px;
+  height: 100%;
+  border-radius: 6px;
   cursor: move;
+  box-shadow: none;
+  transition: all 0.3s ease;
+  object-fit: contain;
+  max-width: 100%;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  border: none;
+
+  &:hover {
+    box-shadow: none;
+    transform: scale(1.01);
+  }
 }
  
 .content-section {
@@ -598,17 +631,33 @@ html[dir="rtl"] .content-section {
   }
 }
 .swiper-slide {
-  width: 28%;
+  width: 25%;
+  height: 600px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  padding: 12px !important;
+  box-sizing: border-box;
+  border-radius: 0;
+  border: none !important;
+
   // responsive
+  @media screen and (max-width: 1024px) {
+    width: 30%;
+    height: 550px !important;
+    padding: 10px !important;
+  }
   @media screen and (max-width: 768px) {
     width: 40%;
+    height: 500px !important;
+    padding: 8px !important;
   }
   @media screen and (max-width: 480px) {
     width: 60%;
+    height: 400px !important;
+    padding: 6px !important;
   }
-
-  
-
 }
 .swiper-button-next,
 .swiper-button-prev {
@@ -782,4 +831,36 @@ html[dir="rtl"] .content-section {
 [dir="rtl"] .app-rating .rating-number {
   margin-left: 8px;
   margin-right: 0;
+}
+/* Swiper Container Explicit Sizing - FIXED: Use explicit height not auto */
+:host ::ng-deep swiper-container {
+  display: block !important;
+  width: 100% !important;
+  height: 640px !important;
+  background: transparent !important;
+}
+
+:host ::ng-deep swiper-slide {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  height: 600px !important;
+  width: 100%;
+  border-radius: 0;
+  padding: 12px;
+  border: none !important;
+}
+
+:host ::ng-deep .carousel-image {
+  max-height: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  max-width: 100% !important;
+  border: none !important;
+  box-shadow: none !important;
 }

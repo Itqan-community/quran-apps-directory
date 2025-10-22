@@ -3,7 +3,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from decimal import Decimal
 
-from apps.models import App
+from apps.models import App  # Use root models
 from developers.models import Developer
 from categories.models import Category
 
@@ -621,10 +621,14 @@ class PermissionTest(TestCase):
             'name_en': 'Test',
             'name_ar': 'اختبار'
         })
-        # Should be method not allowed or no create action
+        # Should be unauthorized (401), forbidden (403), or method not allowed (405)
         self.assertIn(
             response.status_code,
-            [status.HTTP_405_METHOD_NOT_ALLOWED, status.HTTP_403_FORBIDDEN]
+            [
+                status.HTTP_401_UNAUTHORIZED,
+                status.HTTP_403_FORBIDDEN,
+                status.HTTP_405_METHOD_NOT_ALLOWED
+            ]
         )
 
     def test_read_only_detail_endpoint(self):
@@ -632,10 +636,14 @@ class PermissionTest(TestCase):
         response = self.client.put(f'/api/v1/apps/{self.published_app.id}/', {
             'name_en': 'Updated'
         })
-        # Should be method not allowed or no update action
+        # Should be unauthorized (401), forbidden (403), or method not allowed (405)
         self.assertIn(
             response.status_code,
-            [status.HTTP_405_METHOD_NOT_ALLOWED, status.HTTP_403_FORBIDDEN]
+            [
+                status.HTTP_401_UNAUTHORIZED,
+                status.HTTP_403_FORBIDDEN,
+                status.HTTP_405_METHOD_NOT_ALLOWED
+            ]
         )
 
 

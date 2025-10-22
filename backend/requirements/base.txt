@@ -1,4 +1,4 @@
-# Django
+# Django Core
 Django==4.2.25
 djangorestframework==3.16.1
 
@@ -6,7 +6,7 @@ djangorestframework==3.16.1
 psycopg2-binary==2.9.11
 
 # API Documentation
-drf-spectacular==0.28.0
+drf-spectacular==0.28.0  # OpenAPI schema generation
 
 # Configuration
 python-decouple==3.8
@@ -20,15 +20,15 @@ Pillow==11.3.0
 # Extensions
 django-extensions==4.1
 
-# Filtering
+# Filtering & Search
 django-filter==24.3
 
-# Authentication (future use)
-# djangorestframework-simplejwt==5.3.0
-# django-allauth==65.11.2
+# Authentication & Security
+djangorestframework-simplejwt==5.3.2  # JWT tokens
+django-allauth==65.11.2  # OAuth/social auth
 
-# Caching (future use)
-# django-redis==6.0.0
+# Caching
+django-redis==6.0.0  # Redis caching backend
 
 # File Storage (future use)
 # django-storages[s3]==1.14.*

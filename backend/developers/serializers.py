@@ -1,3 +1,4 @@
+from typing import List, Dict, Any
 from rest_framework import serializers
 from .models import Developer
 
@@ -30,11 +31,11 @@ class DeveloperSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
 
-    def get_apps_count(self, obj):
+    def get_apps_count(self, obj) -> int:
         """Get the count of published apps by this developer."""
         return obj.apps.filter(status='published').count()
 
-    def get_apps(self, obj):
+    def get_apps(self, obj) -> List[Dict[str, Any]]:
         """Get a list of published apps by this developer (limited)."""
         apps = obj.apps.filter(status='published').order_by('-featured', 'sort_order')[:5]
         return [

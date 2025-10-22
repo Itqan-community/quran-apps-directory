@@ -108,7 +108,7 @@
         background: transparent;
 
         .nav-link {
-          display: flex;
+          display: inline-flex;
           align-items: center;
           justify-content: center;
           gap: 8px;
@@ -119,11 +119,14 @@
           border: none;
           height: 40px;
           min-height: 40px;
+          line-height: 40px;
           margin: 0;
+          padding: 0 16px;
           position: relative;
           background: #e9ecef;
           box-shadow: none;
           text-align: center;
+          vertical-align: middle;
           
           .dark-theme & {
             color: #f8fafc;
@@ -131,10 +134,13 @@
           }
 
           .nav-icon {
-            display: flex;
+            display: inline-flex;
             align-items: center;
+            justify-content: center;
             opacity: 0.9;
             transition: opacity 0.2s ease;
+            line-height: 1;
+            vertical-align: middle;
           }
 
           &:hover {

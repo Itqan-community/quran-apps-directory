@@ -1,6 +1,0 @@
-docs/ARCHITECTURE.md
-docs/BACKLOG.md
-docs/DEPLOYMENT.md
-docs/DEVELOPMENT.md
-docs/README.md
-docs/SYSTEM-ARCHITECTURE.md

@@ -6,26 +6,48 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 """
 from django.contrib import admin
 from django.urls import path, include
-from drf_spectacular.views import (
-    SpectacularAPIView,
-    SpectacularSwaggerView,
-)
+from django.http import JsonResponse
+from django.utils import timezone
+from drf_spectacular.views import SpectacularAPIView
+from core.scalar_view import scalar_ui_view  # Modern Scalar UI
+
+
+def health_check(request):
+    """
+    Health check endpoint for deployment verification and monitoring.
+
+    Returns:
+        JSON response with status, service name, and timestamp
+    """
+    return JsonResponse({
+        'status': 'healthy',
+        'service': 'Quran Apps Directory API',
+        'timestamp': str(timezone.now()),
+        'version': '1.0.0',
+    })
+
 
 urlpatterns = [
-    # Admin
+    # Health check endpoint (for monitoring/load balancers)
+    path('health/', health_check, name='health_check'),
+
+    # Admin interface
     path('admin/', admin.site.urls),
 
-    # API v1 endpoints
-    path('api/v1/', include('apps.urls')),
-    path('api/v1/', include('categories.urls')),
-    path('api/v1/', include('developers.urls')),
+    # API endpoints (versioned via HTTP headers)
+    path('api/', include('apps.api.urls')),        # Apps API endpoints
+    path('api/', include('categories.urls')),      # Categories endpoints
+    path('api/', include('developers.urls')),      # Developers endpoints
 
     # API Documentation
+    # OpenAPI Schema endpoint (JSON)
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+
+    # Scalar UI - Modern, beautiful API documentation
+    path('api/docs/', scalar_ui_view, name='scalar-ui'),
 ]
 
-# Root redirect to API documentation (optional)
+# Root redirect to API documentation
 from django.views.generic import RedirectView
 
 urlpatterns += [

@@ -1,7 +1,6 @@
 <!-- Main container with app details -->
 <div *ngIf="app">
 
-
   <div class="content-carousel">
     <div class="container">
        <!-- Header with back button and app name -->
@@ -17,8 +16,9 @@
         </button>
         <h1>{{ currentLang == "en" ? app.Name_En : app.Name_Ar }}</h1>
       </div>
+
       <div *ngIf="loading" class="swiper-loader"><span></span></div>
-      <swiper-container #swiperContainer *ngIf="hideSwiper" init="false" [dir]="currentLang == 'en' ? 'ltr' : 'rtl'">
+      <swiper-container #swiperContainer init="false" [dir]="currentLang == 'en' ? 'ltr' : 'rtl'">
         <swiper-slide class="swiper-slide" *ngFor="let screenshot of currentLang === 'en' ? app.screenshots_en : app.screenshots_ar; let i = index">
           <img
             [src]="screenshot"

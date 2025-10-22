@@ -32,14 +32,15 @@ INSTALLED_APPS = [
 
     # Third-party apps
     'rest_framework',
-    'drf_spectacular',
+    'rest_framework_simplejwt',
+    'drf_spectacular',  # OpenAPI schema generation
     'corsheaders',
     'django_extensions',
     'django_filters',
 
     # Local apps
     'core',
-    'apps',
+    'apps',  # Reverted to use single 'apps' app
     'categories',
     'developers',
 ]
@@ -99,27 +100,93 @@ if config('USE_SQLITE', default=False, cast=bool):
         }
     }
 
-# Django REST Framework
+# Django REST Framework - CMS-Backend Aligned
 REST_FRAMEWORK = {
+    # Authentication
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
+
+    # Permissions
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
+
+    # Pagination
     'DEFAULT_PAGINATION_CLASS': 'core.pagination.StandardResultsSetPagination',
     'PAGE_SIZE': 20,
+
+    # Filtering & Searching
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+
+    # Rendering & Parsing
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ],
+
+    # Rate Limiting & Throttling
+    # Throttling - disabled in development for testing
+    'DEFAULT_THROTTLE_CLASSES': [],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/hour',
+        'user': '1000/hour',
+    },
+
+    # Schema Generation
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-# drf-spectacular (OpenAPI) settings
+# JWT Configuration
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': __import__('datetime').timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': __import__('datetime').timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+}
+
+# drf-spectacular (OpenAPI) settings - CMS-Backend Aligned
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Quran Apps Directory API',
-    'DESCRIPTION': 'A comprehensive bilingual (Arabic/English) directory of Islamic applications',
+    'DESCRIPTION': 'A comprehensive bilingual (Arabic/English) directory of Islamic applications with full-text search and filtering. API versioning is handled via X-API-Version header (e.g., X-API-Version: v1)',
     'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
+    'SERVE_INCLUDE_SCHEMA': False,  # Don't serve default schema, use Scalar instead
     'COMPONENT_SPLIT_REQUEST': True,
-    'SCHEMA_PATH_PREFIX': '/api/v1/',
+    'SCHEMA_PATH_PREFIX': '/api/',
+
+    # API Servers
+    'SERVERS': [
+        {'url': 'https://quran-apps.itqan.dev', 'description': 'Production'},
+        {'url': 'https://staging.quran-apps.itqan.dev', 'description': 'Staging'},
+        {'url': 'http://localhost:8000', 'description': 'Local Development'},
+    ],
+
+    # Tags for endpoint organization
+    'TAGS': [
+        {
+            'name': 'Apps',
+            'description': 'Application browsing, search, filtering, and detailed information'
+        },
+        {
+            'name': 'Categories',
+            'description': 'Category management and filtering'
+        },
+        {
+            'name': 'Developers',
+            'description': 'Developer information and profiles'
+        },
+    ],
 }
 
 # CORS settings
@@ -132,6 +199,20 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+# Allow custom headers for API versioning
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'x-api-version',  # Custom header for API versioning
+]
 
 # Cache Configuration
 CACHES = {

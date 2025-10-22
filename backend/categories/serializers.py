@@ -27,7 +27,7 @@ class CategorySerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
 
-    def get_apps_count(self, obj):
+    def get_apps_count(self, obj) -> int:
         """Get the count of published apps in this category."""
         return obj.apps.filter(status='published').count()
 

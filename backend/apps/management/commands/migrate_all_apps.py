@@ -2139,6 +2139,8 @@ class Command(BaseCommand):
                         'application_icon': app_data["application_icon"],
                         'main_image_en': app_data["main_image_en"],
                         'main_image_ar': app_data["main_image_ar"],
+                        'screenshots_en': app_data.get("screenshots_en", []),
+                        'screenshots_ar': app_data.get("screenshots_ar", []),
                         'google_play_link': app_data["google_play_link"] or '',
                         'app_store_link': app_data["app_store_link"] or '',
                         'app_gallery_link': app_data.get("app_gallery_link") or '',

@@ -322,6 +322,22 @@
     }
   }
   .ant-card-meta-description {
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limit to 3 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 4.05em; /* 3 lines * 1.35 line-height */
+    min-height: 4.05em; /* Ensure consistent height even for short text */
+    margin-top: 4px !important; /* Reduce space between title and description */
+  }
+
+  .ant-card-meta-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0 !important;
     line-height: 1.3;
   }
   .category-item {
@@ -456,21 +472,27 @@
 }
 
 ::ng-deep .ant-card-body {
-  padding: 20px;
+  padding: 14px 16px 12px 16px; /* Reduced bottom padding */
   display: flex;
   flex-direction: column;
-  height: 60%;
-  
+  min-height: 165px; /* Reduced minimum height for tighter layout */
+
   .ant-flex {
     flex: 1;
     display: flex;
-    height: 100%;
+    flex-direction: row;
+    gap: 0;
+    margin-bottom: 8px; /* Space between content and rating */
+  }
+
+  .ant-card-meta {
+    margin-bottom: 0;
   }
 }
 
 .app-rating {
   margin-top: auto; /* Push to bottom */
-  padding-top: 16px; /* Increased space from description */
+  padding-top: 8px; /* Reduced space from description */
   display: flex;
   align-items: center;
   height: auto; /* Let content determine height */

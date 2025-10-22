@@ -1,4 +1,5 @@
 import uuid
+from decimal import Decimal
 from django.db import models
 from django.utils.text import slugify
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -38,8 +39,8 @@ class App(PublishedModel):
     avg_rating = models.DecimalField(
         max_digits=3,
         decimal_places=2,
-        default=0.00,
-        validators=[MinValueValidator(0.0), MaxValueValidator(5.0)],
+        default=Decimal('0.00'),
+        validators=[MinValueValidator(Decimal('0.00')), MaxValueValidator(Decimal('5.00'))],
         db_index=True,
         help_text="Average rating from 0.00 to 5.00"
     )
@@ -101,7 +102,7 @@ class App(PublishedModel):
         return f"{self.name_en} / {self.name_ar}"
 
     @property
-    def rating_display(self):
+    def rating_display(self) -> str:
         """Return formatted rating string."""
         return f"{self.avg_rating:.1f}"
 

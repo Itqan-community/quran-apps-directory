@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, RouterModule, Router } from "@angular/router";
 import { NzCardModule } from "ng-zorro-antd/card";
@@ -74,24 +74,26 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     private router: Router,
     private seoService: SeoService,
     private titleService: Title,
-    private metaService: Meta
+    private metaService: Meta,
+    private cdr: ChangeDetectorRef
   ) {
     this.currentLang = this.translateService.currentLang as 'ar' | 'en';
     // Subscribe to language changes
     this.translateService.onLangChange.subscribe((event) => {
       this.currentLang = event.lang as "en" | "ar";
-      // Reinitialize swiper when language changes
+      console.log('🌐 DEBUG: Language changed to:', this.currentLang);
+      // Reinitialize swiper when language changes (same pattern as data load)
       if (this.swiperContainer) {
+        console.log('🔄 DEBUG: Reinitializing Swiper after language change...');
         this.hideSwiper = false;
         setTimeout(() => {
           this.hideSwiper = true;
+          console.log('🔄 DEBUG: Swiper container reset after language change, initializing...');
         }, 50);
         setTimeout(() => {
-          console.log(this.hideSwiper);
-          const swiperEl = this.swiperContainer.nativeElement;
-          Object.assign(swiperEl, this.swiperParams);
-          swiperEl.initialize();
-        }, 60);
+          console.log('🔄 DEBUG: Final Swiper initialization after language change...');
+          this.initializeSwiper();
+        }, 100);
       }
     });
   }
@@ -129,9 +131,18 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
   }
 
   private loadAppData(id: string) {
+    console.log('🔍 DEBUG: Loading app data for ID:', id);
     this.appService.getAppById(id).subscribe((app) => {
       if (app) {
+        console.log('✅ DEBUG: App data loaded successfully:', app.Name_En);
+        console.log('📊 DEBUG: Screenshots count (EN):', app.screenshots_en?.length || 0);
+        console.log('📊 DEBUG: Screenshots count (AR):', app.screenshots_ar?.length || 0);
+        console.log('🌐 DEBUG: Current language:', this.currentLang);
+        console.log('🖼️ DEBUG: First screenshot URL:', app.screenshots_en?.[0] || 'No screenshots');
+
         this.app = app;
+        this.cdr.detectChanges(); // Trigger immediate change detection
+
         if (app.categories.length > 0) {
           this.appService
             .getAppsByCategory(app.categories[0])
@@ -141,21 +152,54 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
                 .slice(0, 3);
             });
         }
-        
+
         // Update SEO data after app is loaded
         this.updateSeoData();
+        // FIX: Set loading to false immediately since we have the app data
+        // Images will load asynchronously and that's fine
         this.loading = false;
+        this.cdr.detectChanges(); // Trigger change detection after setting loading = false
+
+        // 🔧 FIX: Reinitialize Swiper after data loads (like language change handler)
+        // Use ChangeDetectorRef to force change detection before reinitializing
+        if (this.swiperContainer) {
+          console.log('🔄 DEBUG: Reinitializing Swiper after data load...');
+          this.hideSwiper = false;
+          this.cdr.markForCheck(); // Mark for change detection
+          setTimeout(() => {
+            this.hideSwiper = true;
+            this.cdr.markForCheck(); // Mark for change detection
+            console.log('🔄 DEBUG: Swiper container visible, initializing...');
+          }, 50);
+          setTimeout(() => {
+            console.log('🔄 DEBUG: Final Swiper initialization after data load...');
+            this.initializeSwiper();
+          }, 100);
+        } else {
+          console.warn('⚠️ DEBUG: Swiper container not available during data load');
+        }
+
+        console.log('⚙️ DEBUG: Component state after loading - hideSwiper:', this.hideSwiper, 'loading:', this.loading);
+      } else {
+        console.error('❌ DEBUG: No app data returned for ID:', id);
       }
+    }, (error) => {
+      console.error('❌ DEBUG: Error loading app data:', error);
     });
   }
 
   // Add a method to handle navigation to a related app
   navigateToApp(appId: string) {
-  
+    // Clear current app data before navigation to prevent stale data display
+    this.app = undefined;
+    this.loading = true;
+    this.relevantApps = [];
+    this.cdr.detectChanges();
+
     this.router.navigate([`/${this.currentLang}/app/${appId}`]).then(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       this.isExpanded = false;
-    });;
+    });
   }
 
 
@@ -185,10 +229,42 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
   }
 
   ngAfterViewInit() {
-    if (this.swiperContainer) {
-      const swiperEl = this.swiperContainer.nativeElement;
-      Object.assign(swiperEl, this.swiperParams);
-      swiperEl.initialize();
+    console.log('🔧 DEBUG: ngAfterViewInit called');
+    console.log('📦 DEBUG: Swiper container exists:', !!this.swiperContainer);
+    console.log('👁️ DEBUG: hideSwiper state:', this.hideSwiper);
+    console.log('📱 DEBUG: App data loaded:', !!this.app);
+
+    if (this.app) {
+      console.log('🖼️ DEBUG: App screenshots in ngAfterViewInit:', this.app.screenshots_en?.length || 0);
+      // Initialize Swiper if data is already available
+      this.initializeSwiper();
+    } else {
+      console.log('⏳ DEBUG: App data not loaded yet, Swiper will initialize after data loads');
+    }
+  }
+
+  // Separate method for Swiper initialization to reuse
+  private initializeSwiper() {
+    if (this.swiperContainer && this.app) {
+      console.log('🚀 DEBUG: Initializing Swiper...');
+      try {
+        const swiperEl = this.swiperContainer.nativeElement;
+        console.log('🎯 DEBUG: Swiper element:', swiperEl);
+        console.log('⚙️ DEBUG: Swiper params:', this.swiperParams);
+
+        Object.assign(swiperEl, this.swiperParams);
+        swiperEl.initialize();
+        console.log('✅ DEBUG: Swiper initialized successfully');
+      } catch (error) {
+        console.error('❌ DEBUG: Swiper initialization failed:', error);
+      }
+    } else {
+      if (!this.swiperContainer) {
+        console.warn('⚠️ DEBUG: Swiper container not available');
+      }
+      if (!this.app) {
+        console.warn('⚠️ DEBUG: App data not available for Swiper initialization');
+      }
     }
   }
 

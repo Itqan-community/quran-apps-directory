@@ -7,6 +7,9 @@ django-cors-headers==4.9.0
 Pillow==11.3.0
 django-extensions==4.1
 django-filter==24.3
+djangorestframework-simplejwt==5.3.0
+django-allauth==65.11.2
+django-redis==6.0.0
 
 # Development tools (optional)
 django-debug-toolbar==4.4.6
