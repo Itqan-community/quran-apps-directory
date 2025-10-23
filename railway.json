@@ -79,9 +79,10 @@
     {
       "id": "quran-frontend",
       "name": "Angular Frontend",
-      "serviceType": "nodejs",
-      "buildCommand": "npm install && npm run build:prod",
-      "startCommand": "npx serve -s dist/browser -l ${PORT:-3000}",
+      "serviceType": "dockerfile",
+      "dockerfilePath": "frontend/Dockerfile",
+      "dockerfileTarget": "production",
+      "rootDirectory": ".",
       "port": 3000,
       "environment": {
         "PORT": "3000",
