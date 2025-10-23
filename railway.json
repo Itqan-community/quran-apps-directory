@@ -41,9 +41,7 @@
       "dockerfilePath": "backend/Dockerfile",
       "dockerfileTarget": "production",
       "rootDirectory": "backend",
-      "port": 8000,
       "environment": {
-        "PORT": "8000",
         "DJANGO_SETTINGS_MODULE": "config.settings.production",
         "PYTHONUNBUFFERED": "1",
         "PYTHONDONTWRITEBYTECODE": "1",
