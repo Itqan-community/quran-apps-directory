@@ -41,10 +41,9 @@
       "dockerfilePath": "backend/Dockerfile",
       "dockerfileTarget": "production",
       "rootDirectory": "backend",
-      "buildCommand": "cd /app && python manage.py collectstatic --noinput",
-      "startCommand": "gunicorn --bind 0.0.0.0:8000 --workers 4 --worker-class sync --timeout 30 --access-logfile - --error-logfile - config.wsgi:application",
       "port": 8000,
       "environment": {
+        "PORT": "8000",
         "DJANGO_SETTINGS_MODULE": "config.settings.production",
         "PYTHONUNBUFFERED": "1",
         "PYTHONDONTWRITEBYTECODE": "1",
