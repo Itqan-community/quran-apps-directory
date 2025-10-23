@@ -1,30 +1,39 @@
 """
-Production settings for quran_apps project.
+Production settings for Quran Apps Directory.
 
-For more information on this file, see
-https://docs.djangoproject.com/en/4.2/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/4.2/ref/settings/
+Configured for Railway deployment with security best practices.
+See: https://docs.djangoproject.com/en/4.2/topics/settings/
 """
 
 from .base import *
 
 # Production settings
-DEBUG = False
+DEBUG = config('DEBUG', default=False, cast=bool)
 USE_SQLITE = False
 
 # Security settings
-SECURE_SSL_REDIRECT = True
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
+SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS', default=31536000, cast=int)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = config('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True, cast=bool)
+SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=True, cast=bool)
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
 
-# Allowed hosts must be set in production
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')])
+# Allowed hosts - required for production
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='quran-apps.itqan.dev,www.quran-apps.itqan.dev',
+    cast=lambda v: [s.strip() for s in v.split(',')]
+)
+
+# CORS configuration
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    default='https://quran-apps.itqan.dev,https://www.quran-apps.itqan.dev',
+    cast=lambda v: [s.strip() for s in v.split(',')]
+)
+CORS_ALLOW_CREDENTIALS = True
 
 # Database
 DATABASES = {
@@ -58,33 +67,75 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Logging
+# Logging - output to console for Railway
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'format': '[{levelname}] {asctime} {name} {message}',
+            'style': '{',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+        'simple': {
+            'format': '[{levelname}] {message}',
             'style': '{',
         },
     },
     'handlers': {
-        'file': {
+        'console': {
             'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'logs' / 'django.log',
+            'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
     },
     'root': {
-        'handlers': ['file'],
+        'handlers': ['console'],
         'level': 'INFO',
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': 'INFO',
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
             'propagate': False,
         },
     },
 }
+
+# ===== WHITENOISE FOR STATIC FILES =====
+MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+] + MIDDLEWARE
+
+# Enable WhiteNoise's compression and caching
+WHITENOISE_COMPRESS = True
+WHITENOISE_COMPRESSION_QUALITY = 85
+WHITENOISE_AUTOREFRESH = False
+
+# ===== PERFORMANCE & CACHING =====
+# Database connection pooling
+DATABASES['default']['CONN_MAX_AGE'] = 600
+
+# ===== ERROR TRACKING (Optional - Sentry) =====
+SENTRY_DSN = config('SENTRY_DSN', default='')
+if SENTRY_DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=0.1,
+        send_default_pii=False,
+        environment=config('ENVIRONMENT', default='production'),
+    )

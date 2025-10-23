@@ -4,8 +4,8 @@ Ninja API URL routing for Quranic Applications
 Following ITQAN community standards using Django Ninja framework.
 """
 
-from ninja import NinjaAPI
-from .controllers import router as apps_router
+from ninja import NinjaAPI, Router
+from .controllers import router as apps_router, get_categories
 
 # Create NinjaAPI instance (disable default docs to use Scalar)
 api = NinjaAPI(
@@ -14,9 +14,14 @@ api = NinjaAPI(
     docs_url=None  # Disable default docs to use Scalar instead
 )
 
-# Add apps router
-api.add_router("/apps", apps_router)
+# Create categories router
+categories_router = Router(tags=["Categories"])
 
-# Add categories endpoint directly to main API
-from .controllers import get_categories
-api.add_api_route("/categories/", get_categories, methods=["GET"], tags=["Categories"])
+@categories_router.get("/")
+def list_categories(request):
+    """Get all application categories."""
+    return get_categories(request)
+
+# Add routers to API
+api.add_router("/apps", apps_router)
+api.add_router("/categories", categories_router)

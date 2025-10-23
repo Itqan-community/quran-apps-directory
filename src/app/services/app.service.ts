@@ -157,7 +157,7 @@ export class AppService {
    */
   getAppById(id: string): Observable<QuranApp | undefined> {
     return this.http
-      .get<BackendApp>(`${this.apiUrl}/apps/${id}/`, { headers: this.getHeaders() })
+      .get<BackendApp>(`${this.apiUrl}/apps/${id}`, { headers: this.getHeaders() })
       .pipe(
         map((app) => this.mapBackendApp(app))
       );

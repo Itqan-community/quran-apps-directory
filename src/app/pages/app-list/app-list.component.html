@@ -85,7 +85,7 @@
           [attr.aria-label]="'Filter by ' + (currentLang === 'ar' ? category.name_ar : category.name_en)"
           [attr.data-category]="category.slug"
         >
-          <span class="category-icon" [innerHTML]="category.icon || getDefaultCategoryIcon()"></span>
+          <span class="category-icon" [innerHTML]="(category.icon || getDefaultCategoryIcon()) | safeHtml"></span>
           <span class="category-item--title">{{ currentLang === 'ar' ? category.name_ar : category.name_en }}</span>
         </div>
       </div>

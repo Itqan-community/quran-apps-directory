@@ -176,13 +176,9 @@ start_database() {
     source venv/bin/activate
     python manage.py migrate
 
-    # Check if sample data exists
-    if ! python manage.py shell -c "from apps.models import App; print(App.objects.count())" 2>/dev/null | grep -q "0"; then
-        print_status "Loading sample data..."
-        python manage.py create_sample_data
-    else
-        print_status "Sample data already exists ✓"
-    fi
+    # Load 44 real apps from JSON
+    print_status "Loading 44 real Quran applications..."
+    python manage.py load_apps_from_json
 
     cd ..
     print_status "Database is ready ✓"

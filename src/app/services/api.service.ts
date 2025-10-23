@@ -269,6 +269,22 @@ export class ApiService {
    * Utility method to format app data for components
    */
   formatAppForDisplay(app: App) {
+    // Handle categories - they can be either strings or objects
+    let formattedCategories: string[] = [];
+    if (app.categories && Array.isArray(app.categories)) {
+      formattedCategories = (app.categories as any[]).reduce((acc: string[], cat: any) => {
+        if (typeof cat === 'string') {
+          // Cat is already a string (slug)
+          acc.push(cat.toLowerCase());
+        } else if (cat && typeof cat === 'object' && cat.name_en) {
+          // Cat is an object with name_en property
+          const name = (cat.name_en as string).toLowerCase();
+          if (name) acc.push(name);
+        }
+        return acc;
+      }, []);
+    }
+
     return {
       ...app,
       Name_En: app.name_en,
@@ -290,7 +306,7 @@ export class ApiService {
       Developer_Name_Ar: app.developer?.name_ar || null,
       Developer_Website: app.developer?.website || null,
       Developer_Logo: app.developer?.logo || null,
-      categories: app.categories?.map(cat => cat.name_en.toLowerCase()) || [],
+      categories: formattedCategories,
       slug: app.slug,
       status: app.status
     };

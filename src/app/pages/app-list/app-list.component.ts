@@ -18,6 +18,7 @@ import { combineLatest, of } from "rxjs";
 import { catchError, finalize, take } from "rxjs/operators";
 import { SeoService } from "../../services/seo.service";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
+import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
 
 @Component({
   selector: "app-list",
@@ -36,6 +37,7 @@ import { OptimizedImageComponent } from "../../components/optimized-image/optimi
     NzAlertModule,
     TranslateModule,
     OptimizedImageComponent,
+    SafeHtmlPipe,
   ],
   templateUrl: "./app-list.component.html",
   styleUrls: ["./app-list.component.scss"],
