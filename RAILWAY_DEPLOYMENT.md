@@ -91,7 +91,7 @@ railway service add postgres
 2. Select Branch: `main` (for production)
 3. Root Directory: `.` (project root)
 4. Build Command: `npm install && npm run build:prod`
-5. Start Command: `npx serve -s dist/demo/browser -l 3000`
+5. Start Command: `npx serve -s dist/browser -l 3000`
 
 ## Step 3: Environment Variables
 
