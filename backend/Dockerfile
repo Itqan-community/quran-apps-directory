@@ -68,9 +68,10 @@ COPY --chown=appuser:appuser start.sh /start.sh
 # Expose port
 EXPOSE 8000
 
-# Health check (hardcoded to 8000 since HEALTHCHECK doesn't expand variables)
+# Health check - uses lightweight /health/ endpoint (no database check by default)
+# Interval: 30s, Timeout: 10s, StartPeriod: 60s (allows time for startup), Retries: 3
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:8000/api/categories/ || exit 1
+    CMD curl -f http://localhost:8000/health/ || exit 1
 
 # Default command for production (using start script)
 CMD ["/start.sh"]

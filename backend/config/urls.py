@@ -16,15 +16,43 @@ def health_check(request):
     """
     Health check endpoint for deployment verification and monitoring.
 
+    This is a liveness probe - confirms the application is running.
+    By default, it does NOT check database connectivity to avoid latency.
+
+    Query Parameters:
+        check_db (optional): If 'true', performs database connectivity check
+
     Returns:
-        JSON response with status, service name, and timestamp
+        JSON response with status, service name, timestamp, and version.
+        Optionally includes database_status if check_db=true
+
+    Status Codes:
+        200: Healthy
+        503: Unhealthy (database unreachable if check_db=true)
     """
-    return JsonResponse({
+    response_data = {
         'status': 'healthy',
         'service': 'Quran Apps Directory API',
         'timestamp': str(timezone.now()),
         'version': '1.0.0',
-    })
+    }
+
+    # Optional database connectivity check
+    check_db = request.GET.get('check_db', '').lower() == 'true'
+    status_code = 200
+
+    if check_db:
+        try:
+            from django.db import connection
+            # Attempt a simple database connection
+            connection.ensure_connection()
+            response_data['database_status'] = 'connected'
+        except Exception as e:
+            response_data['database_status'] = 'disconnected'
+            response_data['status'] = 'unhealthy'
+            status_code = 503
+
+    return JsonResponse(response_data, status=status_code)
 
 
 urlpatterns = [
