@@ -1,0 +1,13 @@
+# Nixpacks configuration for Railway deployment
+
+[phases.setup]
+nixPkgs = ["...", "nodejs_20", "python39"]
+
+[phases.install]
+cmd = "npm ci"
+
+[phases.build]
+cmd = "npm run build:prod"
+
+[start]
+cmd = "serve -s dist/browser -l ${PORT:-3000}"

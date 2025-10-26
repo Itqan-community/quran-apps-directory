@@ -1,13 +1,13 @@
-# Nixpacks configuration for Railway deployment
+# Nixpacks configuration for Railway backend deployment
 
 [phases.setup]
-nixPkgs = ["...", "nodejs_20", "python39"]
+nixPkgs = ["...", "python39", "postgresql"]
 
 [phases.install]
-cmd = "npm ci"
+cmd = "pip install -r requirements/production.txt"
 
 [phases.build]
-cmd = "npm run build:prod"
+cmd = "python manage.py migrate && python manage.py collectstatic --noinput"
 
 [start]
-cmd = "serve -s dist/browser -l ${PORT:-3000}"
+cmd = "gunicorn --bind 0.0.0.0:8000 --workers 4 --worker-class sync --timeout 30 config.wsgi:application"
