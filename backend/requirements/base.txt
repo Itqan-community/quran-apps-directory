@@ -6,7 +6,8 @@ django-ninja==1.2.0  # API framework following Itqan standards (Python 3.9 compa
 psycopg2-binary==2.9.11
 
 # API Documentation
-# drf-spectacular==0.28.0  # Legacy - Django Ninja has built-in OpenAPI
+drf-spectacular==0.28.0  # Still needed for some view decorators
+djangorestframework==3.16.1  # Required by drf-spectacular
 
 # Configuration
 python-decouple==3.8
