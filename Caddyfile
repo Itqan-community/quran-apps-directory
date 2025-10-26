@@ -4,11 +4,9 @@
 	header X-Content-Type-Options "nosniff"
 	header X-XSS-Protection "1; mode=block"
 	header Referrer-Policy "strict-origin-when-cross-origin"
-	# CSP: Allow Angular's dynamic module loading and inline scripts
-	# Note: 'unsafe-inline' and 'unsafe-eval' required for Angular runtime
-	# blob: scheme must be explicitly allowed for dynamic imports
-	# script-src-elem explicitly set to prevent fallback issues
-	header Content-Security-Policy "default-src 'self'; base-uri 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; script-src-elem 'self' 'unsafe-inline' https: blob:; worker-src 'self' blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-src 'self' https:; child-src 'self' blob:;"
+	# CSP is configured via meta tag in index.html to avoid Railway edge sanitization
+	# Railway's edge proxy strips 'unsafe-eval' and blob: from HTTP headers
+	# The meta tag in HTML provides the complete CSP policy for Angular
 
 	# Enable gzip compression
 	encode gzip zstd
