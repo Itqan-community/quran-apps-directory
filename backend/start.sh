@@ -3,9 +3,9 @@ set -e
 
 echo "Starting Django application..."
 
-# Wait for database to be ready (includes migrations)
-echo "Waiting for database and running migrations..."
-python manage.py wait_for_db --timeout 30
+# Run migrations
+echo "Running database migrations..."
+python manage.py migrate
 
 # Collect static files
 echo "Collecting static files..."
