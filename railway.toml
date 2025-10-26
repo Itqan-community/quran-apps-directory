@@ -1,7 +1,7 @@
 # Railway Configuration for Quran Apps Directory
 
 [build]
-builder = "nixpacks"
+builder = "docker"
 
 [deploy]
 healthcheckPath = "/"
