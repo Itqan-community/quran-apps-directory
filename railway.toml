@@ -33,9 +33,7 @@ port = 3000
 # Backend API Service Configuration
 [[services]]
 name = "quran-backend-api"
-source = "backend"
-dockerfilePath = "Dockerfile"
-dockerfileTarget = "production"
+source = "."
 
 [services.variables]
 DJANGO_SETTINGS_MODULE = "config.settings.production"

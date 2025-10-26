@@ -4,10 +4,10 @@
 nixPkgs = ["...", "python39", "postgresql"]
 
 [phases.install]
-cmd = "pip install -r requirements/production.txt"
+cmd = "pip install -r backend/requirements/production.txt"
 
 [phases.build]
-cmd = "python manage.py migrate && python manage.py collectstatic --noinput"
+cmd = "cd backend && python manage.py migrate && python manage.py collectstatic --noinput"
 
 [start]
-cmd = "gunicorn --bind 0.0.0.0:8000 --workers 4 --worker-class sync --timeout 30 config.wsgi:application"
+cmd = "cd backend && gunicorn --bind 0.0.0.0:8000 --workers 4 --worker-class sync --timeout 30 config.wsgi:application"
