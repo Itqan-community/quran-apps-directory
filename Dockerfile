@@ -54,8 +54,8 @@ FROM base as build
 
 ENV NODE_ENV=production
 
-# Install production dependencies only
-RUN npm ci --only=production
+# Install all dependencies (including dev) for build
+RUN npm ci --include=dev
 
 # Copy project
 COPY . .
