@@ -77,7 +77,7 @@
       "id": "quran-frontend",
       "name": "Angular Frontend",
       "serviceType": "dockerfile",
-      "dockerfilePath": "frontend/Dockerfile",
+      "dockerfilePath": "Dockerfile",
       "dockerfileTarget": "production",
       "rootDirectory": ".",
       "port": 3000,

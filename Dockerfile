@@ -49,8 +49,8 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 # Default command for development
 CMD ["npm", "run", "dev"]
 
-# ===== STAGE 3: Production =====
-FROM base as production
+# ===== STAGE 3: Build =====
+FROM base as build
 
 ENV NODE_ENV=production
 
@@ -63,23 +63,27 @@ COPY . .
 # Build Angular application
 RUN npm run build:prod
 
-# Install serve globally for serving static files
-RUN npm install -g serve
+# ===== STAGE 4: Production =====
+FROM nginx:alpine as production
 
-# Create necessary directories
-RUN mkdir -p /app/logs
+# Install wget for health check
+RUN apk add --no-cache wget
 
-# Change ownership to appuser
-RUN chown -R appuser:appuser /app
+# Remove default nginx website
+RUN rm -rf /usr/share/nginx/html/*
 
-USER appuser
+# Copy built angular app from build stage
+COPY --from=build /app/dist/browser /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port
 EXPOSE 3000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-3000} || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-3000}/ || exit 1
 
-# Default command for production (serve static files)
-CMD ["serve", "-s", "dist/browser", "-l", "${PORT:-3000}"]
+# Default command
+CMD ["nginx", "-g", "daemon off;"]
