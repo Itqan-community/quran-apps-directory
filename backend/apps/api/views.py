@@ -13,7 +13,7 @@ import json
 class ScalarDocumentationView(TemplateView):
     """Scalar API Documentation View."""
 
-    template_name = "scalar_docs.html"
+    template_name = "api/scalar_docs.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

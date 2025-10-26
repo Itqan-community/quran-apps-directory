@@ -3,8 +3,8 @@ export const environment = {
   staging: false,
   development: false,
   appName: 'Quran Apps Directory',
-  appUrl: 'https://quran-apps.itqan.dev',
-  apiUrl: 'https://api.quran-apps.itqan.dev',
+  appUrl: 'https://qad-frontend-production.up.railway.app',
+  apiUrl: 'https://qad-api-production.up.railway.app/api',
   version: '1.0.0',
   analytics: {
     enabled: true,
