@@ -4,45 +4,35 @@
 
 The backend container was failing to start with repeated errors: `Error: '$PORT' is not a valid port number.`
 
-This occurred because the Docker `CMD` instruction wasn't properly expanding environment variables before executing the start script.
+This was caused by attempting to use Railway's `$PORT` environment variable, which wasn't being properly substituted in the startup process.
 
-## Root Cause Analysis
+## Solution: Hardcoded Port 8000
 
-### 1. Dockerfile CMD Used Exec Form (Not Shell Form)
-**Problem**: `CMD ["/start.sh"]` does not invoke a shell, so environment variables in the startup script aren't expanded
-**Impact**: The shell script receives an unexpanded `$PORT` variable literal
-**Solution**: Changed to shell form: `CMD ["/bin/sh", "-c", "exec /start.sh"]`
-
-### 2. Insufficient PORT Validation in start.sh
-**Problem**: Script didn't validate PORT existence, format, or range
-**Impact**: No helpful error messages when PORT was invalid or missing
-**Solution**: Added comprehensive validation with clear error messages
-
-### 3. HEALTHCHECK Used Variable Substitution
-**Problem**: `HEALTHCHECK CMD curl ... ${PORT:-8000}` doesn't expand variables in HEALTHCHECK context
-**Solution**: Hardcoded to 8000 since gunicorn binds to Railway's PORT, but the app responds on 8000 internally
+The simplest and most reliable solution is to hardcode port 8000 in both the start script and Dockerfile configuration.
 
 ## Fixed Issues
 
-### Fix #1: Updated Dockerfile CMD
-```dockerfile
-# Before (WRONG - exec form doesn't expand variables)
-CMD ["/start.sh"]
+### Fix #1: Hardcoded PORT in start.sh
+```bash
+# Before (using environment variable)
+PORT=${PORT:-8000}
+exec gunicorn --bind 0.0.0.0:$PORT ...
 
-# After (CORRECT - shell form expands environment variables)
-CMD ["/bin/sh", "-c", "exec /start.sh"]
+# After (hardcoded)
+exec gunicorn --bind 0.0.0.0:8000 ...
 ```
 
-### Fix #2: Enhanced start.sh Validation
-- Check if PORT environment variable is set (default to 8000 if missing)
-- Validate PORT is numeric using regex
-- Validate PORT is within valid range (1-65535)
-- Provide clear error messages for debugging
+### Fix #2: Hardcoded HEALTHCHECK
+```dockerfile
+# Hardcoded to 8000 in Dockerfile
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/api/categories/ || exit 1
+```
 
-### Fix #3: Updated HEALTHCHECK
-- Hardcoded to 8000 since variables don't expand in HEALTHCHECK context
-- Django/gunicorn runs on the PORT provided by Railway
-- Health check validates the application is responsive
+### Fix #3: Simplified start.sh
+- Removed PORT variable substitution
+- Removed PORT validation logic
+- Cleaner, simpler startup process
 
 ## Deployment Instructions
 

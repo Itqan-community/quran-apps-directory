@@ -73,5 +73,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:8000/api/categories/ || exit 1
 
 # Default command for production (using start script)
-# NOTE: Using shell form to ensure environment variables are properly expanded
-CMD ["/bin/sh", "-c", "exec /start.sh"]
+CMD ["/start.sh"]
