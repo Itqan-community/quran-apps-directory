@@ -13,6 +13,7 @@ ENV PYTHONUNBUFFERED=1 \
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Create app user
@@ -61,16 +62,16 @@ RUN chown -R appuser:appuser /app
 
 USER appuser
 
-# Collect static files (requires DJANGO_SETTINGS_MODULE)
-# This will be run after container starts
-RUN python manage.py collectstatic --noinput || true
+# Copy start script and make it executable
+COPY --chown=appuser:appuser start.sh /start.sh
 
 # Expose port
 EXPOSE 8000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/apps/?page_size=1').read()" || exit 1
+# Health check (hardcoded to 8000 since HEALTHCHECK doesn't expand variables)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/api/categories/ || exit 1
 
-# Default command for production (using gunicorn)
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "sync", "--timeout", "30", "config.wsgi:application"]
+# Default command for production (using start script)
+# NOTE: Using shell form to ensure environment variables are properly expanded
+CMD ["/bin/sh", "-c", "exec /start.sh"]

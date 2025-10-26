@@ -23,14 +23,14 @@ X_FRAME_OPTIONS = 'DENY'
 # Allowed hosts - required for production
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='quran-apps.itqan.dev,www.quran-apps.itqan.dev',
+    default='quran-apps.itqan.dev,www.quran-apps.itqan.dev,qad-api-production.up.railway.app,railway.app,quran-apps-directory.railway.internal',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
 # CORS configuration
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='https://quran-apps.itqan.dev,https://www.quran-apps.itqan.dev',
+    default='https://quran-apps.itqan.dev,https://www.quran-apps.itqan.dev,https://qad-frontend-production.up.railway.app',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 CORS_ALLOW_CREDENTIALS = True
