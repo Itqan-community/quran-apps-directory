@@ -1,106 +1,12 @@
 {
   "$schema": "https://railway.app/schema.json",
-  "projectName": "quran-apps-directory",
-  "envFile": ".env.railway",
-  "plugins": [],
-  "services": [
-    {
-      "id": "quran-postgres",
-      "name": "PostgreSQL Database",
-      "image": "postgres:15-alpine",
-      "environment": {
-        "POSTGRES_DB": "quran_apps_db",
-        "POSTGRES_USER": "postgres",
-        "POSTGRES_PASSWORD": "${{ secrets.POSTGRES_PASSWORD }}",
-        "POSTGRES_INITDB_ARGS": "--encoding=UTF8 --locale=C"
-      },
-      "healthcheck": {
-        "test": ["CMD-SHELL", "pg_isready -U postgres -d quran_apps_db"],
-        "interval": 30,
-        "timeout": 10,
-        "retries": 3,
-        "startPeriod": 60
-      },
-      "ports": [
-        {
-          "port": 5432,
-          "type": "private"
-        }
-      ],
-      "volumes": [
-        {
-          "name": "postgres_data",
-          "path": "/var/lib/postgresql/data"
-        }
-      ]
-    },
-    {
-      "id": "quran-backend-api",
-      "name": "Django API (Backend)",
-      "serviceType": "dockerfile",
-      "dockerfilePath": "backend/Dockerfile",
-      "dockerfileTarget": "production",
-      "rootDirectory": "backend",
-      "environment": {
-        "DJANGO_SETTINGS_MODULE": "config.settings.production",
-        "PYTHONUNBUFFERED": "1",
-        "PYTHONDONTWRITEBYTECODE": "1",
-        "DEBUG": "False",
-        "SECRET_KEY": "${{ secrets.DJANGO_SECRET_KEY }}",
-        "DB_ENGINE": "django.db.backends.postgresql",
-        "DB_NAME": "quran_apps_db",
-        "DB_USER": "postgres",
-        "DB_PASSWORD": "${{ secrets.POSTGRES_PASSWORD }}",
-        "DB_HOST": "quran-postgres",
-        "DB_PORT": "5432",
-        "ALLOWED_HOSTS": "${{ vars.ALLOWED_HOSTS }}",
-        "CORS_ALLOWED_ORIGINS": "${{ vars.CORS_ALLOWED_ORIGINS }}",
-        "SECURE_SSL_REDIRECT": "True",
-        "SESSION_COOKIE_SECURE": "True",
-        "CSRF_COOKIE_SECURE": "True"
-      },
-      "healthcheck": {
-        "test": ["CMD", "curl", "-f", "http://localhost:8000/api/categories/"],
-        "interval": 30,
-        "timeout": 10,
-        "retries": 3,
-        "startPeriod": 60
-      },
-      "depends": [
-        {
-          "id": "quran-postgres",
-          "condition": "service_healthy"
-        }
-      ]
-    },
-    {
-      "id": "quran-frontend",
-      "name": "Angular Frontend",
-      "serviceType": "dockerfile",
-      "dockerfilePath": "Dockerfile",
-      "dockerfileTarget": "production",
-      "rootDirectory": ".",
-      "port": 3000,
-      "environment": {
-        "PORT": "3000",
-        "NODE_ENV": "production",
-        "NG_APP_API_BASE_URL": "${{ vars.NG_APP_API_BASE_URL }}",
-        "NG_APP_SITE_DOMAIN": "${{ vars.NG_APP_SITE_DOMAIN }}",
-        "NG_APP_ENABLE_DARK_MODE": "true",
-        "NG_APP_ENABLE_ANALYTICS": "false",
-        "NG_APP_FORCE_HTTPS": "true"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "path": "/api/*",
-      "service": "quran-backend-api",
-      "rewrite": "/api/$1"
-    },
-    {
-      "path": "/*",
-      "service": "quran-frontend"
-    }
-  ]
+  "build": {
+    "builder": "dockerfile"
+  },
+  "deploy": {
+    "healthcheckPath": "/",
+    "healthcheckTimeout": 300,
+    "restartPolicyType": "on_failure",
+    "restartPolicyMaxRetries": 10
+  }
 }

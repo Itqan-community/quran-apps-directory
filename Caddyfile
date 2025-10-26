@@ -1,0 +1,34 @@
+{
+	# Security headers
+	header X-Frame-Options "SAMEORIGIN"
+	header X-Content-Type-Options "nosniff"
+	header X-XSS-Protection "1; mode=block"
+	header Referrer-Policy "strict-origin-when-cross-origin"
+	header Content-Security-Policy "default-src 'self'; img-src 'self' data: blob: https: *; style-src 'self' 'unsafe-inline' https: *; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data: https: *; font-src 'self' data: https: *; connect-src 'self' blob: data: https: *; media-src 'self' https: *; object-src 'none'; frame-src 'self' https: *;"
+
+	# Enable gzip compression
+	encode gzip zstd
+
+	# Handle static assets
+	@static {
+		path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot *.avif *.webp *.webmanifest
+	}
+	header @static Cache-Control "public, max-age=31536000, immutable"
+
+	# Service Worker
+	@sw path /sw.js
+	header @sw Cache-Control "no-cache"
+
+	# Health check
+	@health path /health
+	respond @health 200 "healthy\n"
+
+	# Handle client-side routing (fallback to index.html)
+	try_files {path} /index.html
+}
+
+# Handle different environments
+:{$PORT:3000} {
+	root * /usr/share/nginx/html
+	file_server
+}

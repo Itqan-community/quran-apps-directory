@@ -303,4 +303,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Made with ❤️ by [ITQAN Community](https://itqan.dev) for the global Muslim community.
+Made with ❤️ by [ITQAN Community](https://itqan.dev) for the global Muslim community.Forcing new build
+# Force rebuild Sun Oct 26 15:46:19 SAST 2025
+# Force Docker build Sun Oct 26 15:47:58 SAST 2025
+# Added Caddyfile with CSP Sun Oct 26 15:49:12 SAST 2025
