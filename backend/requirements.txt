@@ -1,4 +1,6 @@
-Django==4.2.25
+# Django Core
+ Django==4.2.25
+gunicorn==22.0.*
 django-ninja==1.2.0
 djangorestframework==3.16.1
 drf-spectacular==0.28.0
