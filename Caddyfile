@@ -4,7 +4,11 @@
 	header X-Content-Type-Options "nosniff"
 	header X-XSS-Protection "1; mode=block"
 	header Referrer-Policy "strict-origin-when-cross-origin"
-	header Content-Security-Policy "default-src 'self'; img-src 'self' data: blob: https: *; style-src 'self' 'unsafe-inline' https: *; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data: https: *; font-src 'self' data: https: *; connect-src 'self' blob: data: https: *; media-src 'self' https: *; object-src 'none'; frame-src 'self' https: *;"
+	# CSP: Allow Angular's dynamic module loading and inline scripts
+	# Note: 'unsafe-inline' and 'unsafe-eval' required for Angular runtime
+	# blob: scheme must be explicitly allowed for dynamic imports
+	# script-src-elem explicitly set to prevent fallback issues
+	header Content-Security-Policy "default-src 'self'; base-uri 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; script-src-elem 'self' 'unsafe-inline' https: blob:; worker-src 'self' blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-src 'self' https:; child-src 'self' blob:;"
 
 	# Enable gzip compression
 	encode gzip zstd
