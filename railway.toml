@@ -38,6 +38,9 @@ source = "backend"
 dockerfilePath = "backend/Dockerfile"
 dockerfileTarget = "production"
 
+[services.deploy]
+startCommand = "/start.sh"
+
 [services.variables]
 DJANGO_SETTINGS_MODULE = "config.settings.production"
 PYTHONUNBUFFERED = "1"
