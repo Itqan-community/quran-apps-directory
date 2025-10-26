@@ -54,6 +54,9 @@ RUN pip install --no-cache-dir -r requirements/production.txt
 # Copy project
 COPY . /app/
 
+# Rename manage.py to avoid Railway Django auto-detection
+RUN mv /app/manage.py /app/django_manage.py
+
 # Create necessary directories
 RUN mkdir -p /app/staticfiles /app/logs
 
@@ -73,6 +76,6 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:8000/health/ || exit 1
 
-# Default command for production (using start script)
+# Default command for production (using Python startup script)
 # Using ENTRYPOINT to prevent Railway from overriding the startup command
-ENTRYPOINT ["/start.sh"]
+ENTRYPOINT ["python3", "/app/railway_start.py"]

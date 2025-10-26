@@ -2,6 +2,9 @@
 set -e
 
 echo "Starting Django application..."
+echo "DEBUG: PORT environment variable is: '$PORT'"
+echo "DEBUG: All environment variables:"
+env | grep -E "(PORT|RAILWAY)" || echo "No PORT/RAILWAY vars found"
 
 # Run migrations
 echo "Running database migrations..."
