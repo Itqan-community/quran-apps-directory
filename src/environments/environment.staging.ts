@@ -13,6 +13,7 @@ export const environment = {
   features: {
     debugMode: true,
     logging: true,
-    showStagingBanner: true
+    showStagingBanner: true,
+    enableServiceWorker: false
   }
 };

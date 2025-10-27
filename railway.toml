@@ -25,11 +25,19 @@ NG_APP_SITE_DOMAIN = "${{ publicDomain }}"
 NG_APP_ENABLE_DARK_MODE = "true"
 NG_APP_ENABLE_ANALYTICS = "false"
 NG_APP_FORCE_HTTPS = "true"
-NG_APP_ENABLE_SERVICE_WORKER = "true"
+NG_APP_ENABLE_SERVICE_WORKER = "false"
+
+[services.variables]
+# Set CSP via environment variable for Railway
+CSP_HEADER = "default-src 'self'; base-uri 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; script-src-elem 'self' 'unsafe-inline' https: blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-src 'self' https:;"
+X_FRAME_OPTIONS = "SAMEORIGIN"
+X_CONTENT_TYPE_OPTIONS = "nosniff"
+X_XSS_PROTECTION = "1; mode=block"
+REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 [services.headers]
-# Comprehensive CSP headers to allow Angular dynamic loading and blob URLs
-Content-Security-Policy = "default-src 'self'; base-uri 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; script-src-elem 'self' 'unsafe-inline' https: blob:; worker-src 'self' blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-src 'self' https:; child-src 'self' blob:;"
+# Fallback CSP headers (simpler format)
+Content-Security-Policy = "default-src 'self'; base-uri 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-src 'self' https:;"
 X-Frame-Options = "SAMEORIGIN"
 X-Content-Type-Options = "nosniff"
 X-XSS-Protection = "1; mode=block"
