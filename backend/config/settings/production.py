@@ -30,7 +30,7 @@ ALLOWED_HOSTS = config(
 # CORS configuration
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='https://quran-apps.itqan.dev,https://www.quran-apps.itqan.dev,https://qad-frontend-production.up.railway.app',
+    default='https://quran-apps.itqan.dev,https://www.quran-apps.itqan.dev,https://staging.quran-apps.itqan.dev,https://dev.quran-apps.itqan.dev,https://qad-frontend-production.up.railway.app',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 CORS_ALLOW_CREDENTIALS = True
