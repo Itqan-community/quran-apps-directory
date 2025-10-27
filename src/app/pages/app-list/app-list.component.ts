@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule, ActivatedRoute } from "@angular/router";
 import { FormsModule } from "@angular/forms";
@@ -14,8 +14,8 @@ import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { AppService, QuranApp } from "../../services/app.service";
 import { ApiService, App, Category } from "../../services/api.service";
 import { DomSanitizer, SafeHtml, Title, Meta } from "@angular/platform-browser";
-import { combineLatest, of } from "rxjs";
-import { catchError, finalize, take } from "rxjs/operators";
+import { combineLatest, of, Subject } from "rxjs";
+import { catchError, finalize, take, takeUntil } from "rxjs/operators";
 import { SeoService } from "../../services/seo.service";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
@@ -42,12 +42,12 @@ import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
   templateUrl: "./app-list.component.html",
   styleUrls: ["./app-list.component.scss"],
 })
-export class AppListComponent implements OnInit {
+export class AppListComponent implements OnInit, OnDestroy {
   apps: QuranApp[] = [];
   filteredApps: QuranApp[] = [];
   searchQuery: string = "";
   categories: Category[] = [];
-  isLoading = false;
+  isLoading = true;
   error: string | null = null;
   isDragging = false;
   startX = 0;
@@ -56,6 +56,7 @@ export class AppListComponent implements OnInit {
   private categoriesContainer: HTMLElement | null = null;
   currentLang: "en" | "ar" = 'en'; // Initialize with browser language
   selectedCategory: string = 'all';
+  private destroy$ = new Subject<void>();
 
   constructor(
     private appService: AppService,
@@ -70,18 +71,24 @@ export class AppListComponent implements OnInit {
     // Set initial language based on browser
     this.currentLang = this.translateService.currentLang as "en" | "ar";
     // Subscribe to language changes
-    this.translateService.onLangChange.subscribe((event) => {
-      this.currentLang = event.lang as "en" | "ar";
-    });
+    this.translateService.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event) => {
+        this.currentLang = event.lang as "en" | "ar";
+      });
 
     // Subscribe to API service observables for reactive updates
-    this.apiService.loading$.subscribe(loading => {
-      this.isLoading = loading;
-    });
+    this.apiService.loading$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(loading => {
+        this.isLoading = loading;
+      });
 
-    this.apiService.error$.subscribe(error => {
-      this.error = error;
-    });
+    this.apiService.error$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(error => {
+        this.error = error;
+      });
   }
 
   ngOnInit() {
@@ -89,58 +96,89 @@ export class AppListComponent implements OnInit {
     this.loadData();
 
     // Subscribe to route changes for category filtering
-    this.route.paramMap.subscribe(params => {
-      const lang = params.get('lang');
-      const category = params.get('category');
+    this.route.paramMap
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        const lang = params.get('lang');
+        const category = params.get('category');
 
-      if (lang) {
-        this.currentLang = lang as "en" | "ar";
-      }
+        if (lang) {
+          this.currentLang = lang as "en" | "ar";
+        }
 
-      // If we're on a category-specific route, use that category
-      // If we're on the base route (no category), show all apps
-      if (category) {
-        this.selectedCategory = category.toLowerCase();
-        this.filterByCategory(this.selectedCategory);
-      } else {
-        this.selectedCategory = 'all';
-        this.filteredApps = this.apps; // Show all apps
-      }
+        // If we're on a category-specific route, use that category
+        // If we're on the base route (no category), show all apps
+        if (category) {
+          this.selectedCategory = category.toLowerCase();
+          this.filterByCategory(this.selectedCategory);
+        } else {
+          this.selectedCategory = 'all';
+          this.filteredApps = this.apps; // Show all apps
+        }
 
-      // Update SEO data after apps and route parameters are set
-      this.updateSeoData();
-    });
+        // Update SEO data after apps and route parameters are set
+        this.updateSeoData();
+      });
 
     // Subscribe to apps from API service for reactive updates
-    this.apiService.apps$.subscribe(apiApps => {
-      this.apps = apiApps.map(app => this.apiService.formatAppForDisplay(app));
-      // If no category is selected, update filtered apps
-      if (this.selectedCategory === 'all' && !this.searchQuery.trim()) {
-        this.filteredApps = this.apps;
-      }
-    });
+    this.apiService.apps$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(apiApps => {
+        this.apps = apiApps.map(app => this.apiService.formatAppForDisplay(app));
+        // If no category is selected, update filtered apps
+        if (this.selectedCategory === 'all' && !this.searchQuery.trim()) {
+          this.filteredApps = this.apps;
+        }
+      });
 
     // Subscribe to categories from API service
-    this.apiService.categories$.subscribe(apiCategories => {
-      this.categories = apiCategories;
-    });
+    this.apiService.categories$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(apiCategories => {
+        this.categories = apiCategories;
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private loadData() {
-    // Load both categories and apps concurrently
-    this.apiService.getCategories().pipe(
-      catchError(error => {
-        console.error('Failed to load categories:', error);
-        return of([]);
-      })
-    ).subscribe();
-
-    this.apiService.getApps().pipe(
-      catchError(error => {
-        console.error('Failed to load apps:', error);
-        return of({ count: 0, next: null, previous: null, results: [] });
-      })
-    ).subscribe();
+    // Load both categories and apps concurrently using combineLatest for better control
+    combineLatest([
+      this.apiService.getCategories().pipe(
+        catchError(error => {
+          console.error('Failed to load categories:', error);
+          return of([]);
+        })
+      ),
+      this.apiService.getApps().pipe(
+        catchError(error => {
+          console.error('Failed to load apps:', error);
+          return of({ count: 0, next: null, previous: null, results: [] });
+        })
+      )
+    ])
+      .pipe(
+        finalize(() => {
+          // Ensure loading state is set to false after both requests complete
+          this.isLoading = false;
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(([categories, appsResponse]) => {
+        // Categories are already handled by the service and subject
+        // Apps are already handled by the service and subject
+        // Just ensure our local state is updated properly
+        if (!categories || categories.length === 0) {
+          this.categories = [];
+        }
+        if (!appsResponse || !appsResponse.results || appsResponse.results.length === 0) {
+          this.apps = [];
+          this.filteredApps = [];
+        }
+      });
   }
 
   onSearch() {
