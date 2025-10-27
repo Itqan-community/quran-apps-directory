@@ -31,6 +31,6 @@
 
 # Handle different environments
 :{$PORT:3000} {
-	root * /usr/share/nginx/html
+	root * dist/browser
 	file_server
 }
