@@ -11,11 +11,11 @@ import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzSpinModule } from "ng-zorro-antd/spin";
 import { NzAlertModule } from "ng-zorro-antd/alert";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
-import { AppService, QuranApp } from "../../services/app.service";
-import { ApiService, App, Category } from "../../services/api.service";
-import { DomSanitizer, SafeHtml, Title, Meta } from "@angular/platform-browser";
+import type { QuranApp } from "../../services/app.service";
+import { ApiService, Category } from "../../services/api.service";
+import { Title, Meta } from "@angular/platform-browser";
 import { combineLatest, of, Subject } from "rxjs";
-import { catchError, finalize, take, takeUntil } from "rxjs/operators";
+import { catchError, finalize, takeUntil } from "rxjs/operators";
 import { SeoService } from "../../services/seo.service";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
@@ -59,9 +59,7 @@ export class AppListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private appService: AppService,
     private apiService: ApiService,
-    private sanitizer: DomSanitizer,
     private translateService: TranslateService,
     private route: ActivatedRoute,
     private seoService: SeoService,
