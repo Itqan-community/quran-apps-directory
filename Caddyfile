@@ -1,9 +1,13 @@
-{
-	# Security headers.
+# Handle different environments
+:{$PORT:3000} {
+	root * dist/browser
+
+	# Security headers
 	header X-Frame-Options "SAMEORIGIN"
 	header X-Content-Type-Options "nosniff"
 	header X-XSS-Protection "1; mode=block"
 	header Referrer-Policy "strict-origin-when-cross-origin"
+
 	# CSP with blob: support for Angular dynamic module loading
 	# Includes blob: for script-src and script-src-elem to support dynamic script loading
 	header Content-Security-Policy "default-src 'self'; base-uri 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; script-src-elem 'self' 'unsafe-inline' https: blob:; worker-src 'self' blob:; font-src 'self' data: https:; connect-src 'self' https:; media-src 'self' https:; object-src 'none'; frame-src 'self' https:; child-src 'self' blob:;"
@@ -27,10 +31,6 @@
 
 	# Handle client-side routing (fallback to index.html)
 	try_files {path} /index.html
-}
 
-# Handle different environments
-:{$PORT:3000} {
-	root * dist/browser
 	file_server
 }
