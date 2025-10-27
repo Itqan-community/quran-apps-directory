@@ -28,14 +28,14 @@ NG_APP_FORCE_HTTPS = "true"
 NG_APP_ENABLE_SERVICE_WORKER = "false"
 
 [services.variables]
+# Railway CSP configuration with blob: support
+CSP = "default-src 'self'; base-uri 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; script-src-elem 'self' 'unsafe-inline' https: blob:; worker-src 'self' blob:; font-src 'self' data: https:; connect-src 'self' https: wss:; media-src 'self' https:; object-src 'none'; frame-src 'self' https:; child-src 'self' blob:;"
 X_FRAME_OPTIONS = "SAMEORIGIN"
 X_CONTENT_TYPE_OPTIONS = "nosniff"
 X_XSS_PROTECTION = "1; mode=block"
 REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 [services.headers]
-# CSP headers with blob: support for Angular dynamic module loading
-Content-Security-Policy = "default-src 'self'; base-uri 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; script-src-elem 'self' 'unsafe-inline' https: blob:; worker-src 'self' blob:; font-src 'self' data: https:; connect-src 'self' https: wss:; media-src 'self' https:; object-src 'none'; frame-src 'self' https:; child-src 'self' blob:;"
 X-Frame-Options = "SAMEORIGIN"
 X-Content-Type-Options = "nosniff"
 X-XSS-Protection = "1; mode=block"
