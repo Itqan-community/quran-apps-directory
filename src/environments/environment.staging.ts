@@ -4,7 +4,7 @@ export const environment = {
   development: false,
   appName: 'Quran Apps Directory (Staging)',
   appUrl: 'https://staging.quran-apps.itqan.dev',
-  apiUrl: 'https://staging-api.quran-apps.itqan.dev',
+  apiUrl: 'https://dev.api.quran-apps.itqan.dev/api',
   version: '1.0.0-staging',
   analytics: {
     enabled: false,

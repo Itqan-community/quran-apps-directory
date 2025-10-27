@@ -4,7 +4,7 @@ export const environment = {
   development: false,
   appName: 'Quran Apps Directory',
   appUrl: 'https://qad-frontend-production.up.railway.app',
-  apiUrl: 'https://qad-api-production.up.railway.app/api',
+  apiUrl: 'https://dev.api.quran-apps.itqan.dev/api',
   version: '1.0.0',
   analytics: {
     enabled: true,
