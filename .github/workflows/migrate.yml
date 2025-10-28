@@ -75,6 +75,7 @@ jobs:
           set -e
           echo "📦 Pulling latest code from develop branch..."
           cd /var/www/quran-apps-backend || exit 1
+          git config --global --add safe.directory /var/www/quran-apps-backend
           git fetch origin develop
           git checkout develop
           git pull origin develop
@@ -94,6 +95,7 @@ jobs:
           set -e
           echo "📦 Pulling latest code from staging branch..."
           cd /var/www/quran-apps-backend || exit 1
+          git config --global --add safe.directory /var/www/quran-apps-backend
           git fetch origin staging
           git checkout staging
           git pull origin staging
@@ -114,6 +116,7 @@ jobs:
           echo "⚠️  PRODUCTION MIGRATION INITIATED"
           echo "📦 Pulling latest code from main branch..."
           cd /var/www/quran-apps-backend || exit 1
+          git config --global --add safe.directory /var/www/quran-apps-backend
           git fetch origin main
           git checkout main
           git pull origin main
