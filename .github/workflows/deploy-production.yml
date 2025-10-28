@@ -1,0 +1,80 @@
+name: Deploy to Production Environment (DO)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        cd backend
+        pip install -r requirements.txt
+
+    - name: Deploy to Production (DO)
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.DO_PROD_HOST }}
+        username: ${{ secrets.DO_PROD_USERNAME }}
+        key: ${{ secrets.DO_PROD_SSH_KEY }}
+        port: ${{ secrets.DO_PROD_PORT }}
+        script: |
+          cd /var/www/quran-apps-backend/backend
+
+          # Pull latest changes
+          git pull origin main
+
+          # Clean production database before migrations
+          python manage.py shell << 'EOF'
+          from apps.models import App
+          from categories.models import Category
+
+          print('Cleaning production database...')
+          app_count = App.objects.count()
+          cat_count = Category.objects.count()
+          print(f'Deleting {app_count} apps and {cat_count} categories...')
+          App.objects.all().delete()
+          Category.objects.all().delete()
+          print('✅ Production database cleaned!')
+          EOF
+
+          # Reset migrations to clean state
+          python manage.py migrate apps 0001
+          python manage.py migrate categories 0001
+
+          # Run migrations
+          echo "🚀 Running production migrations..."
+          python manage.py migrate
+
+          # Collect static files
+          python manage.py collectstatic --noinput
+
+          # Restart services
+          sudo systemctl reload gunicorn
+          sudo systemctl reload nginx
+
+          echo "✅ Production deployment completed successfully!"
+
+    - name: Verify production deployment
+      run: |
+        echo "⏳ Waiting for production services to start..."
+        sleep 45
+
+        echo "🔍 Verifying production API endpoints..."
+        curl -f https://api.quran-apps.itqan.dev/api/categories/ || echo "Production Categories API not ready yet"
+        curl -f https://api.quran-apps.itqan.dev/api/apps/ || echo "Production Apps API not ready yet"
+
+        echo "✅ Production deployment verification completed!"
