@@ -47,3 +47,6 @@ Thumbs.db
 .angular
 .cursor
 venv
+# Deployment scripts with secrets
+backend-update-spec.json
+backend-userdata.sh

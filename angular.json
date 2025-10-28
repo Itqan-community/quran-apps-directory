@@ -18,6 +18,12 @@
               "sourceMap": true
             },
             "staging": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
+                }
+              ],
               "aot": true,
               "extractLicenses": true,
               "namedChunks": true,
@@ -26,6 +32,12 @@
               "sourceMap": true
             },
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
               "aot": true,
               "extractLicenses": true,
               "namedChunks": false,
