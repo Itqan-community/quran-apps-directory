@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { Observable, BehaviorSubject, of, combineLatest } from "rxjs";
+import { map, shareReplay, tap, catchError, switchMap, debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { environment } from "../../environments/environment";
+import { BrowserStorageService } from "./browser-storage.service";
 
 // Backend API response interfaces
 interface BackendCategory {
@@ -94,7 +95,46 @@ export class AppService {
   private apiUrl = environment.apiUrl;
   private apiVersion = (environment as any).apiVersion || 'v1';
 
-  constructor(private http: HttpClient) {}
+  // Cache subjects for reactive data
+  private appsCache$ = new BehaviorSubject<QuranApp[]>([]);
+  private categoriesCache$ = new BehaviorSubject<string[]>([]);
+  private searchCache = new Map<string, QuranApp[]>();
+  private categoryCache = new Map<string, QuranApp[]>();
+
+  // Observable streams with caching
+  private allApps$!: Observable<QuranApp[]>;
+  private cachedApps$!: Observable<QuranApp[]>;
+
+  constructor(
+    private http: HttpClient,
+    private browserStorage: BrowserStorageService
+  ) {
+    this.initializeCaches();
+  }
+
+  /**
+   * Initialize reactive caches
+   */
+  private initializeCaches(): void {
+    // Try to load from browser storage first
+    this.allApps$ = this.browserStorage.getOrSet<QuranApp[]>(
+      'all_apps',
+      () => this.loadAppsFromAPI(),
+      30 * 60 * 1000 // 30 minutes TTL
+    ).pipe(
+      shareReplay(1), // Cache the last emission
+      tap(apps => {
+        this.appsCache$.next(apps);
+        this.extractAndCacheCategories(apps);
+        // Save categories to browser storage
+        const allCategories = apps.flatMap(app => app.categories);
+        const uniqueCategories = Array.from(new Set(allCategories)).sort();
+        this.browserStorage.set('categories', uniqueCategories, 60 * 60 * 1000).subscribe();
+      })
+    );
+
+    this.cachedApps$ = this.appsCache$.asObservable();
+  }
 
   /**
    * Get HTTP headers with API versioning
@@ -139,17 +179,53 @@ export class AppService {
   }
 
   /**
-   * Get all apps from the backend API
+   * Load apps from API with error handling
    */
-  getApps(): Observable<QuranApp[]> {
+  private loadAppsFromAPI(): Observable<QuranApp[]> {
     return this.http
       .get<BackendListResponse>(`${this.apiUrl}/apps/`, { headers: this.getHeaders() })
       .pipe(
         map((response) => {
-          // Fetch all pages if needed (simplified version - just get first page)
           return response.results.map((app) => this.mapBackendApp(app));
+        }),
+        catchError(error => {
+          console.error('[AppService] Error loading apps:', error);
+          // Return cached apps if available, otherwise empty array
+          const cachedApps = this.appsCache$.value;
+          return of(cachedApps.length > 0 ? cachedApps : []);
         })
       );
+  }
+
+  /**
+   * Get all apps with caching
+   */
+  getApps(): Observable<QuranApp[]> {
+    // If we have cached data, return it immediately
+    const cachedApps = this.appsCache$.value;
+    if (cachedApps.length > 0) {
+      return this.cachedApps$;
+    }
+
+    // Otherwise, load from API
+    return this.allApps$;
+  }
+
+  /**
+   * Force refresh apps cache
+   */
+  refreshApps(): Observable<QuranApp[]> {
+    this.allApps$ = this.loadAppsFromAPI().pipe(
+      shareReplay(1),
+      tap(apps => {
+        this.appsCache$.next(apps);
+        this.extractAndCacheCategories(apps);
+        // Clear related caches
+        this.searchCache.clear();
+        this.categoryCache.clear();
+      })
+    );
+    return this.allApps$;
   }
 
   /**
@@ -164,37 +240,139 @@ export class AppService {
   }
 
   /**
-   * Search apps using backend search
+   * Search apps with caching and debouncing
    */
   searchApps(query: string): Observable<QuranApp[]> {
-    const params = new HttpParams().set('search', query);
-    return this.http
-      .get<BackendListResponse>(`${this.apiUrl}/apps/`, {
-        params,
-        headers: this.getHeaders()
-      })
-      .pipe(
-        map((response) => response.results.map((app) => this.mapBackendApp(app)))
-      );
+    const normalizedQuery = query.toLowerCase().trim();
+    const cacheKey = `search_${normalizedQuery}`;
+
+    // Return empty for empty queries
+    if (!normalizedQuery) {
+      return of([]);
+    }
+
+    // Check browser storage cache first
+    return this.browserStorage.getOrSet<QuranApp[]>(
+      cacheKey,
+      () => {
+        // Check memory cache
+        if (this.searchCache.has(normalizedQuery)) {
+          return of(this.searchCache.get(normalizedQuery)!);
+        }
+
+        // Perform search
+        return this.getApps().pipe(
+          map(apps => {
+            const filtered = apps.filter(app =>
+              app.Name_En?.toLowerCase().includes(normalizedQuery) ||
+              app.Name_Ar?.toLowerCase().includes(normalizedQuery) ||
+              app.Short_Description_En?.toLowerCase().includes(normalizedQuery) ||
+              app.Short_Description_Ar?.toLowerCase().includes(normalizedQuery) ||
+              app.Description_En?.toLowerCase().includes(normalizedQuery) ||
+              app.Description_Ar?.toLowerCase().includes(normalizedQuery) ||
+              app.Developer_Name_En?.toLowerCase().includes(normalizedQuery) ||
+              app.Developer_Name_Ar?.toLowerCase().includes(normalizedQuery) ||
+              app.categories.some(cat => cat.toLowerCase().includes(normalizedQuery))
+            );
+
+            // Cache the results in memory
+            this.searchCache.set(normalizedQuery, filtered);
+            return filtered;
+          })
+        );
+      },
+      15 * 60 * 1000 // 15 minutes TTL for search results
+    );
   }
 
   /**
-   * Get apps by category using backend filtering
+   * Create a reactive search stream with debouncing
+   */
+  createSearchStream(searchQuery$: Observable<string>): Observable<QuranApp[]> {
+    return searchQuery$.pipe(
+      debounceTime(300), // Wait 300ms after user stops typing
+      distinctUntilChanged(),
+      switchMap(query => this.searchApps(query))
+    );
+  }
+
+  /**
+   * Get apps by category with caching
    */
   getAppsByCategory(category: string): Observable<QuranApp[]> {
     if (category === 'all') {
       return this.getApps();
     }
 
-    const params = new HttpParams().set('categories__slug', category);
-    return this.http
-      .get<BackendListResponse>(`${this.apiUrl}/apps/`, {
-        params,
-        headers: this.getHeaders()
-      })
-      .pipe(
-        map((response) => response.results.map((app) => this.mapBackendApp(app)))
-      );
+    const cacheKey = `category_${category}`;
+
+    // Check browser storage cache first
+    return this.browserStorage.getOrSet<QuranApp[]>(
+      cacheKey,
+      () => {
+        // Check memory cache
+        if (this.categoryCache.has(category)) {
+          return of(this.categoryCache.get(category)!);
+        }
+
+        // Perform category filtering
+        return this.getApps().pipe(
+          map(apps => {
+            const filtered = apps.filter(app =>
+              app.categories.includes(category)
+            );
+
+            // Cache the results in memory
+            this.categoryCache.set(category, filtered);
+            return filtered;
+          })
+        );
+      },
+      20 * 60 * 1000 // 20 minutes TTL for category results
+    );
+  }
+
+  /**
+   * Get categories from cached apps
+   */
+  getCategories(): Observable<string[]> {
+    return this.categoriesCache$.asObservable();
+  }
+
+  /**
+   * Extract and cache categories from apps
+   */
+  private extractAndCacheCategories(apps: QuranApp[]): void {
+    const allCategories = apps.flatMap(app => app.categories);
+    const uniqueCategories = Array.from(new Set(allCategories)).sort();
+    this.categoriesCache$.next(uniqueCategories);
+  }
+
+  /**
+   * Clear all caches
+   */
+  clearCaches(): void {
+    this.searchCache.clear();
+    this.categoryCache.clear();
+    this.appsCache$.next([]);
+    this.categoriesCache$.next([]);
+  }
+
+  /**
+   * Get cache statistics
+   */
+  getCacheStats(): {
+    appsCacheSize: number;
+    searchCacheSize: number;
+    categoryCacheSize: number;
+    categoriesCount: number;
+  } {
+    return {
+      appsCacheSize: this.appsCache$.value.length,
+      searchCacheSize: this.searchCache.size,
+      categoryCacheSize: this.categoryCache.size,
+      categoriesCount: this.categoriesCache$.value.length
+    };
   }
 
   /**

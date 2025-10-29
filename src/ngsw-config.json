@@ -1,0 +1,88 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|avif|webp|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    },
+    {
+      "name": "critical-resources",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/i18n/*.json",
+          "/assets/images/**/*.webp",
+          "/assets/images/**/*.avif"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-cache",
+      "urls": [
+        "https://api.quran-apps.itqan.dev/**",
+        "https://staging.quran-apps.itqan.dev/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "1h",
+        "timeout": "10s",
+        "strategy": "performance"
+      }
+    },
+    {
+      "name": "translations-cache",
+      "urls": [
+        "/assets/i18n/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 10,
+        "maxAge": "7d",
+        "timeout": "5s",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "images-cache",
+      "urls": [
+        "/assets/images/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 200,
+        "maxAge": "30d",
+        "timeout": "5s",
+        "strategy": "performance"
+      }
+    }
+  ],
+  "navigationUrls": [
+    "/**",
+    "!/**/.*",
+    "!/**/*/*",
+    "!/**/*/**/.*",
+    "!/**/*.{js,html,json}"
+  ],
+  "navigationRequestStrategy": "performance"
+}

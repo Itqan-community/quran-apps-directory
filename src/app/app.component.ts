@@ -18,6 +18,7 @@ import { CacheOptimizationService } from "./services/cache-optimization.service"
 import { CacheValidatorService } from "./services/cache-validator.service";
 import { Http2OptimizationService } from "./services/http2-optimization.service";
 import { CriticalResourcePreloaderService } from "./services/critical-resource-preloader.service";
+import { CacheMonitorService } from "./services/cache-monitor.service";
 import { filter } from "rxjs";
 
 // Icons globally registered in main.ts
@@ -50,14 +51,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   private router = inject(Router);
 
   constructor(
-    private languageService: LanguageService, 
+    private languageService: LanguageService,
     private themeService: ThemeService,
     private performanceService: PerformanceService,
     private deferredAnalytics: DeferredAnalyticsService,
     private lcpMonitor: LcpMonitorService,
     private cacheOptimization: CacheOptimizationService,
     private cacheValidator: CacheValidatorService,
-    private http2Optimization: Http2OptimizationService
+    private http2Optimization: Http2OptimizationService,
+    private cacheMonitor: CacheMonitorService
   ) {
     // Icons are globally registered in main.ts
     // Get browser language
@@ -123,14 +125,19 @@ export class AppComponent implements OnInit, AfterViewInit {
         setTimeout(() => {
           this.performanceService.measurePerformance();
           this.performanceService.optimizeImages();
-          
+
           // Initialize cache optimization monitoring
           this.cacheOptimization.monitorCachePerformance();
           this.cacheOptimization.preloadCriticalResources();
-          
+
           // Initialize HTTP/2 optimization monitoring
           this.http2Optimization.generateHTTP2Report();
           this.http2Optimization.monitorHTTP2Usage();
+
+          // Initialize cache monitoring
+          this.cacheMonitor.getMetrics().subscribe(metrics => {
+            console.log('[Cache Monitor] Cache metrics updated:', metrics);
+          });
         }, 1000);
 
     // Track route changes for analytics (when analytics is ready)

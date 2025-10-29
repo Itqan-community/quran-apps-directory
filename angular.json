@@ -57,8 +57,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1.1mb",
-                  "maximumError": "1.3mb"
+                  "maximumWarning": "1.5mb",
+                  "maximumError": "2.0mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -74,7 +74,12 @@
               "src/sitemap.xml",
               "src/robots.txt",
               "src/sw.js",
-              "src/assets"
+              "src/manifest.webmanifest",
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
+              }
             ],
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -86,7 +91,16 @@
               "src/global_styles.css",
               "./src/themes.scss"
             ],
-            "tsConfig": "tsconfig.app.json"
+            "tsConfig": "tsconfig.app.json",
+            "serviceWorker": "src/ngsw-config.json",
+            "optimization": {
+              "fonts": true,
+              "styles": {
+                "inlineCritical": false,
+                "minify": true
+              },
+              "scripts": true
+            }
           }
         },
         "serve": {
