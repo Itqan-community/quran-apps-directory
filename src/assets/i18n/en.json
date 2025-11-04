@@ -2,7 +2,8 @@
   "common": {
     "back": "Back",
     "submit": "Submit",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "share": "Share"
   },
   "header": {
     "title": "Quran Apps Directory",

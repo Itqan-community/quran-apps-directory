@@ -783,3 +783,17 @@ html[dir="rtl"] .content-section {
   margin-left: 8px;
   margin-right: 0;
 }
+
+.share-btn {
+  margin-inline-start: auto;
+}
+
+@media screen and (max-width: 768px) {
+  .share-btn {
+    padding: 4px 7px;
+
+    span:first-of-type {
+      display: none;
+    }
+  }
+}

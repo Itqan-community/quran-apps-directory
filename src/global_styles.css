@@ -62,3 +62,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 !important;
   margin-inline-end: 6px !important;
 }
+
+.ant-btn {
+  border-radius: 8px !important;
+}
