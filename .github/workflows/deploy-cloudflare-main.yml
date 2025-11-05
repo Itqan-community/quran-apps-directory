@@ -1,0 +1,92 @@
+name: Deploy to Cloudflare Pages (Main)
+
+on:
+  push:
+    branches:
+      - feature/cloudflare-main-deployment
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy to Cloudflare Pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-20-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-20-
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate sitemap
+        run: node generate-sitemap.js
+
+      - name: Build Angular application
+        run: npm run build:prod
+
+      - name: Verify build output
+        run: |
+          echo "Verifying build output directory..."
+          ls -la dist/browser/
+          if [ ! -f "dist/browser/index.html" ]; then
+            echo "Error: index.html not found in build output"
+            exit 1
+          fi
+          if [ ! -f "dist/browser/_redirects" ]; then
+            echo "Error: _redirects not found in build output"
+            exit 1
+          fi
+          if [ ! -f "dist/browser/_headers" ]; then
+            echo "Error: _headers not found in build output"
+            exit 1
+          fi
+          echo "Build output verified successfully"
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist/browser --project-name=quran-apps-directory-frontend --branch=feature/cloudflare-main-deployment
+
+      - name: Wait for deployment propagation
+        run: sleep 30
+
+      - name: Health check deployment
+        run: |
+          echo "Running health check on deployed site..."
+          DEPLOY_URL="https://feature-cloudflare-main-deployment.quran-apps-directory-frontend.pages.dev"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOY_URL")
+
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "✅ Health check passed: $DEPLOY_URL returned $HTTP_STATUS"
+          else
+            echo "❌ Health check failed: $DEPLOY_URL returned $HTTP_STATUS"
+            exit 1
+          fi
+
+      - name: Deployment summary
+        run: |
+          echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Status:** Deployed successfully" >> $GITHUB_STEP_SUMMARY
+          echo "🌐 **URL:** https://feature-cloudflare-main-deployment.quran-apps-directory-frontend.pages.dev" >> $GITHUB_STEP_SUMMARY
+          echo "🔀 **Branch:** feature/cloudflare-main-deployment" >> $GITHUB_STEP_SUMMARY
+          echo "📦 **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "👤 **Triggered by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
