@@ -14,7 +14,7 @@ Automatically runs Django migrations when migration files are modified in any br
 
 **Features:**
 - Auto-detects environment based on branch:
-  - `develop` → Development
+  - `develop` → Development 
   - `staging` → Staging
   - `main` → Production
 - Pulls latest code before running migrations
