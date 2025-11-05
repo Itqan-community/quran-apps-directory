@@ -4,7 +4,7 @@ This directory contains automated workflows for deploying the Quran Apps backend
 
 ## Workflows
 
-### 1. `migrate.yml` - Run Django Migrations
+### 1. `migrate.yml` - Run Django Migrations 
 
 Automatically runs Django migrations when migration files are modified in any branch.
 
