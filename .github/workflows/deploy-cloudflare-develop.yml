@@ -63,7 +63,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist/browser --project-name=quran-apps-directory-frontend-dev --branch=${{ github.ref_name }}
+          command: pages deploy dist/browser --project-name=quran-apps-directory-frontend --branch=${{ github.ref_name }}
 
       - name: Wait for deployment propagation
         run: sleep 30
@@ -71,7 +71,7 @@ jobs:
       - name: Health check deployment
         run: |
           echo "Running health check on deployed site..."
-          DEPLOY_URL="https://quran-apps-directory-frontend-dev.pages.dev"
+          DEPLOY_URL="https://quran-apps-directory-frontend.pages.dev"
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOY_URL")
 
           if [ "$HTTP_STATUS" -eq 200 ]; then
@@ -86,7 +86,7 @@ jobs:
           echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "✅ **Status:** Deployed successfully" >> $GITHUB_STEP_SUMMARY
-          echo "🌐 **URL:** https://quran-apps-directory-frontend-dev.pages.dev" >> $GITHUB_STEP_SUMMARY
+          echo "🌐 **URL:** https://quran-apps-directory-frontend.pages.dev" >> $GITHUB_STEP_SUMMARY
           echo "🔀 **Branch:** develop" >> $GITHUB_STEP_SUMMARY
           echo "📦 **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
           echo "👤 **Triggered by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
