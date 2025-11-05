@@ -76,6 +76,16 @@
               "src/sw.js",
               "src/manifest.webmanifest",
               {
+                "glob": "_redirects",
+                "input": "src/assets",
+                "output": "/"
+              },
+              {
+                "glob": "_headers",
+                "input": "src/assets",
+                "output": "/"
+              },
+              {
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"

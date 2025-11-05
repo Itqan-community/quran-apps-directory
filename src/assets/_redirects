@@ -1,0 +1,4 @@
+# Cloudflare Pages Redirects Configuration
+# SPA routing: All routes should serve index.html for Angular client-side routing
+
+/* /index.html 200

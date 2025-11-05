@@ -4,7 +4,7 @@
   <!-- Homepage URLs - Priority 1.0 -->
   <url>
     <loc>https://quran-apps.itqan.dev/ar</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://quran-apps.itqan.dev/ar"/>
@@ -13,7 +13,7 @@
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://quran-apps.itqan.dev/ar"/>
@@ -24,133 +24,133 @@
   <!-- Category Pages - Priority 0.9 -->
   <url>
     <loc>https://quran-apps.itqan.dev/ar/Mushaf</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/Mushaf</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/Translations</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/Translations</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/Recite</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/Recite</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/Kids</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/Kids</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/Tafsir</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/Tafsir</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/Riwayat</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/Riwayat</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/Audio</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/Audio</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/Memorize</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/Memorize</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/Tajweed</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/Tajweed</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/Accessibility</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/Accessibility</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/Tools</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/Tools</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -158,529 +158,529 @@
   <!-- Individual App Pages - Priority 0.8 -->
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/1_Wahy</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/1_Wahy</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/15_Ayah</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/15_Ayah</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/14_Quran Mobasher</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/14_Quran Mobasher</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/10_Adnan The Quran Teacher</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/10_Adnan The Quran Teacher</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/17_Al Fatiha</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/17_Al Fatiha</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/5_Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/5_Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/36_Mushaf Altdabbor</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/36_Mushaf Altdabbor</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/11_Tarteel</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/11_Tarteel</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/6_Rayyaan &amp; Bayaan</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/6_Rayyaan &amp; Bayaan</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/39_Ayah widget</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/39_Ayah widget</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/48_Mushaf Mecca</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/48_Mushaf Mecca</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/9_Maher</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/9_Maher</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/49_Elmohafez</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/49_Elmohafez</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/7_Moddakir</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/7_Moddakir</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/38_MA&#39;ANONI DA SHIRIYAR ALQUR&#39;ANI</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/38_MA&#39;ANONI DA SHIRIYAR ALQUR&#39;ANI</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/50_Mofassal</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/50_Mofassal</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/51_The Correct Quotation</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/51_The Correct Quotation</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/52_Satr</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/52_Satr</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/53_Moeen</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/53_Moeen</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/80_Quran Tadabbur</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/80_Quran Tadabbur</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/69_Translations of Quran meanings</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/69_Translations of Quran meanings</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/54_Ana Atlou</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/54_Ana Atlou</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/55_Alfanous</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/55_Alfanous</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/57_Noor International Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/57_Noor International Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/58_Werdy</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/58_Werdy</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/37_Interactive Tafsir</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/37_Interactive Tafsir</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/59_School Mushaf</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/59_School Mushaf</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/60_School Mushaf - Sign Language</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/60_School Mushaf - Sign Language</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/23_Quran Hafs</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/23_Quran Hafs</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/65_Tangheem Al Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/65_Tangheem Al Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/56_Tebyan Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/56_Tebyan Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/62_Quran Warsh</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/62_Quran Warsh</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/70_Quranic Recitations Collection</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/70_Quranic Recitations Collection</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/64_Kaedat Alnoor</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/64_Kaedat Alnoor</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/81_Amazighi Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/81_Amazighi Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/82_Quran Indonesia Kemenag koran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/82_Quran Indonesia Kemenag koran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/47_Convey</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/47_Convey</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/67_Salem</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/67_Salem</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/83_Telawa Warsh</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/83_Telawa Warsh</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/63_Wiqaya</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/63_Wiqaya</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/35_Study Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/35_Study Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/13_The Holy Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/13_The Holy Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/41_Ghareeb</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/41_Ghareeb</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/app/61_Ehfaz Al Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/app/61_Ehfaz Al Quran</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -688,409 +688,409 @@
   <!-- Developer Pages - Priority 0.7 -->
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/tafsir-center-for-quranic-studies</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/tafsir-center-for-quranic-studies</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/abdullah-bajaber</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/abdullah-bajaber</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/maknon</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/maknon</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/kidsapp-company</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/kidsapp-company</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/quran-audio-library</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/quran-audio-library</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/qurancom</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/qurancom</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/malem-altdabbor</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/malem-altdabbor</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/tarteel-inc</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/tarteel-inc</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/badr-alhanaky</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/badr-alhanaky</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/mushaf-makkah</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/mushaf-makkah</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/al-borhan-charity-for-sunnah-quran-services</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/al-borhan-charity-for-sunnah-quran-services</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/elmohafez</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/elmohafez</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/moddakir</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/moddakir</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/basayir</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/basayir</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/ministry-of-islamic-affairs-dawah-and-guidance</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/ministry-of-islamic-affairs-dawah-and-guidance</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/digital-corners</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/digital-corners</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/faisal-haddad</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/faisal-haddad</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/almenhaj-center-for-educational-supervision-and-training</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/almenhaj-center-for-educational-supervision-and-training</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/the-noble-quran-encyclopedia</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/the-noble-quran-encyclopedia</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/noor-taibah-foundation</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/noor-taibah-foundation</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/islam-phone</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/islam-phone</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/noor-international</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/noor-international</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/arabia-it</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/arabia-it</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/nuqayah</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/nuqayah</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/arabic-it</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/arabic-it</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/king-fahd-glorious-quran-printing-complex</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/king-fahd-glorious-quran-printing-complex</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/-</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/-</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/liajlehum</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/liajlehum</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/quranic-recitations-collection</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/quranic-recitations-collection</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/jabal-al-noor-scientific-complex-in-makkah</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/jabal-al-noor-scientific-complex-in-makkah</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/qaf-group-for-research-translation-publication-and-it-solutions</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/qaf-group-for-research-translation-publication-and-it-solutions</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/wiqaya</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/wiqaya</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/-</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/-</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/developer/ealamy-group</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/developer/ealamy-group</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -1098,37 +1098,37 @@
   <!-- Static Pages - Priority 0.6 -->
   <url>
     <loc>https://quran-apps.itqan.dev/ar/about-us</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/about-us</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/contact-us</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/contact-us</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/ar/request</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://quran-apps.itqan.dev/en/request</loc>
-    <lastmod>2025-10-29</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
