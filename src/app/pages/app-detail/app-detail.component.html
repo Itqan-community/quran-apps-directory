@@ -16,6 +16,18 @@
 
         </button>
         <h1>{{ currentLang == "en" ? app.Name_En : app.Name_Ar }}</h1>
+        <button nz-button nzType="primary" class="icon-btn share-btn" (click)="shareApp()">
+          <span>{{ "common.share" | translate }}</span>
+          <span class="custom-share-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle;">
+              <circle cx="14" cy="4" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="4" cy="9" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="14" cy="14" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+              <line x1="6.02" y1="7.91" x2="11.98" y2="5.09" stroke="currentColor" stroke-width="1.25"/>
+              <line x1="6.08" y1="10.13" x2="11.92" y2="12.87" stroke="currentColor" stroke-width="1.25"/>
+            </svg>
+          </span>
+        </button>
       </div>
       <div *ngIf="loading" class="swiper-loader"><span></span></div>
       <swiper-container #swiperContainer *ngIf="hideSwiper" init="false" [dir]="currentLang == 'en' ? 'ltr' : 'rtl'">

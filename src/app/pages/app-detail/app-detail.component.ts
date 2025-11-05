@@ -17,6 +17,7 @@ import { FormsModule } from "@angular/forms";
 import { register } from 'swiper/element/bundle';
 import {Nl2brPipe} from "../../pipes/nl2br.pipe";
 import { SeoService } from "../../services/seo.service";
+import { NzMessageService } from "ng-zorro-antd/message";
 // register Swiper custom elements
 register();
 
@@ -74,7 +75,8 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     private router: Router,
     private seoService: SeoService,
     private titleService: Title,
-    private metaService: Meta
+    private metaService: Meta,
+    private message: NzMessageService
   ) {
     this.currentLang = this.translateService.currentLang as 'ar' | 'en';
     // Subscribe to language changes
@@ -156,6 +158,22 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       this.isExpanded = false;
     });;
+  }
+
+  // Add a method to handle sharing the app
+  shareApp() {
+    if (this.app) {
+      console.log(this.app);
+      const title = this.currentLang === 'ar' ? this.app.Name_Ar : this.app.Name_En;
+      const url = `https://quran-apps.itqan.dev/${this.currentLang}/app/${this.app.id}`;
+
+      if (navigator.share) {
+        navigator.share({ title, url });
+      } else {
+        navigator.clipboard.writeText(url);
+        this.message.success(this.currentLang === 'ar' ? 'تم نسخ الرابط' : 'URL copied to clipboard');
+      }
+    }
   }
 
 
