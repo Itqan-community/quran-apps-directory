@@ -1,4 +1,22 @@
 # Cloudflare Pages Redirects Configuration
-# SPA routing: All routes should serve index.html for Angular client-side routing
+# SPA routing: Serve index.html for all routes EXCEPT static assets
 
+# Exclude static assets from redirect
+/assets/* 200
+/*.css 200
+/*.js 200
+/chunk-*.js 200
+/styles-*.css 200
+/main-*.js 200
+/polyfills-*.js 200
+/*.svg 200
+/*.json 200
+/_headers 200
+/_redirects 200
+/ngsw-worker.js 200
+/sw.js 200
+/worker-basic.min.js 200
+/sitemap.xml 200
+
+# SPA routing: All other routes serve index.html
 /* /index.html 200
