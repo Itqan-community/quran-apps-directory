@@ -10,8 +10,10 @@
           "/favicon.ico",
           "/index.html",
           "/manifest.webmanifest",
-          "/*.css",
-          "/*.js"
+          "/main-*.js",
+          "/polyfills-*.js",
+          "/chunk-*.js",
+          "/styles-*.css"
         ]
       }
     },
