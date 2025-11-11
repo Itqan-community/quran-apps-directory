@@ -12,7 +12,9 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 USE_SQLITE = False
 
 # Security settings
-SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
+# Note: Set to False during Railway deployment to debug SSL redirect issues
+# Railway proxies requests properly, so this may not be needed
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
 SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS', default=31536000, cast=int)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = config('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True, cast=bool)
 SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=True, cast=bool)
@@ -23,7 +25,7 @@ X_FRAME_OPTIONS = 'DENY'
 # Allowed hosts - required for production
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='quran-apps.itqan.dev,www.quran-apps.itqan.dev,qad-api-production.up.railway.app,railway.app,quran-apps-directory.railway.internal',
+    default='quran-apps.itqan.dev,www.quran-apps.itqan.dev,qad-backend-api-production.up.railway.app,qad-api-production.up.railway.app,api.quran-apps.itqan.dev,.railway.app,railway.app,quran-apps-directory.railway.internal',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
@@ -36,19 +38,34 @@ CORS_ALLOWED_ORIGINS = config(
 CORS_ALLOW_CREDENTIALS = True
 
 # Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-        'OPTIONS': {
-            'sslmode': 'prefer',  # Use 'prefer' for Railway internal connections
-        },
+# Support Railway's DATABASE_URL or individual config variables
+import dj_database_url
+
+database_url = config('DATABASE_URL', default='')
+if database_url:
+    # Use Railway's DATABASE_URL if available
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=database_url,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    # Fall back to individual environment variables
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_NAME', default='postgres'),
+            'USER': config('DB_USER', default='postgres'),
+            'PASSWORD': config('DB_PASSWORD', default=''),
+            'HOST': config('DB_HOST', default='localhost'),
+            'PORT': config('DB_PORT', default='5432'),
+            'OPTIONS': {
+                'sslmode': 'prefer',  # Use 'prefer' for Railway internal connections
+            },
+        }
+    }
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
