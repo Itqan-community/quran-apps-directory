@@ -6,3 +6,37 @@
   X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=()
+
+# MIME types for static assets - CRITICAL for SPA routing
+/*.css
+  Content-Type: text/css; charset=utf-8
+
+/*.js
+  Content-Type: application/javascript; charset=utf-8
+
+/chunk-*.js
+  Content-Type: application/javascript; charset=utf-8
+
+/main-*.js
+  Content-Type: application/javascript; charset=utf-8
+
+/polyfills-*.js
+  Content-Type: application/javascript; charset=utf-8
+
+/styles-*.css
+  Content-Type: text/css; charset=utf-8
+
+/*.json
+  Content-Type: application/json; charset=utf-8
+
+/*.svg
+  Content-Type: image/svg+xml
+
+/ngsw-worker.js
+  Content-Type: application/javascript; charset=utf-8
+
+/sw.js
+  Content-Type: application/javascript; charset=utf-8
+
+/worker-basic.min.js
+  Content-Type: application/javascript; charset=utf-8
