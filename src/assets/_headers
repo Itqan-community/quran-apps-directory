@@ -8,19 +8,16 @@
   Permissions-Policy: geolocation=(), microphone=(), camera=()
 
 # MIME types for static assets - CRITICAL for SPA routing
-/*.css
-  Content-Type: text/css; charset=utf-8
-
-/*.js
-  Content-Type: application/javascript; charset=utf-8
-
-/chunk-*.js
-  Content-Type: application/javascript; charset=utf-8
+# Only match actual built files with hashes (e.g., main-ABCD1234.js)
+# Do NOT use catch-all patterns like /*.js as they conflict with SPA routing
 
 /main-*.js
   Content-Type: application/javascript; charset=utf-8
 
 /polyfills-*.js
+  Content-Type: application/javascript; charset=utf-8
+
+/chunk-*.js
   Content-Type: application/javascript; charset=utf-8
 
 /styles-*.css
@@ -40,3 +37,6 @@
 
 /worker-basic.min.js
   Content-Type: application/javascript; charset=utf-8
+
+/assets/*
+  # Assets folder files inherit their natural MIME types from Cloudflare
