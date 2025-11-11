@@ -30,10 +30,22 @@ ALLOWED_HOSTS = config(
 # CORS configuration
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='https://quran-apps.itqan.dev,https://www.quran-apps.itqan.dev,https://staging.quran-apps.itqan.dev,https://dev.quran-apps.itqan.dev,https://qad-frontend-production.up.railway.app',
+    default='https://quran-apps.itqan.dev,https://www.quran-apps.itqan.dev,https://staging.quran-apps.itqan.dev,https://dev.quran-apps.itqan.dev,https://qad-frontend-production.up.railway.app,https://quran-apps-directory-frontend.pages.dev',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'cache-control',  # Allow cache-control header for HTTP caching
+]
 
 # Database
 DATABASES = {
