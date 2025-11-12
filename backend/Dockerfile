@@ -65,9 +65,6 @@ RUN chown -R appuser:appuser /app
 
 USER appuser
 
-# Copy start script and make it executable
-COPY --chown=appuser:appuser start.sh /start.sh
-
 # Expose port
 EXPOSE 8000
 
