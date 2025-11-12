@@ -47,6 +47,7 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
     'cache-control',  # Allow cache-control header for HTTP caching
+    'x-api-version',  # Allow custom API version header
 ]
 
 # Database

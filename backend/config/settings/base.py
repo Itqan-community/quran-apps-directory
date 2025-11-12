@@ -122,7 +122,7 @@ REST_FRAMEWORK = {
 
     # Pagination
     'DEFAULT_PAGINATION_CLASS': 'core.pagination.StandardResultsSetPagination',
-    'PAGE_SIZE': 20,
+    'PAGE_SIZE': 100,
 
     # Filtering & Searching
     'DEFAULT_FILTER_BACKENDS': [
@@ -241,7 +241,7 @@ API_CONFIGURATION = {
         'BURST_LIMIT': '10/minute',
     },
     'PAGINATION': {
-        'DEFAULT_PAGE_SIZE': 20,
+        'DEFAULT_PAGE_SIZE': 100,
         'MAX_PAGE_SIZE': 100,
         'PAGE_SIZE_QUERY_PARAM': 'page_size',
     },
