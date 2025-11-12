@@ -27,7 +27,17 @@ def main():
     except subprocess.CalledProcessError as e:
         print(f"✗ Migration failed: {e}")
         sys.exit(1)
-    
+
+    # Load categories from frontend
+    print("\n=== Loading Categories from Frontend ===")
+    try:
+        subprocess.run([sys.executable, "django_manage.py", "load_categories_from_frontend"], check=True)
+        print("✓ Categories loaded successfully")
+    except subprocess.CalledProcessError as e:
+        print(f"✗ Categories loading failed: {e}")
+        # Don't exit on failure - categories might already exist
+        print("  Continuing with deployment...")
+
     # Collect static files
     print("\n=== Collecting Static Files ===")
     try:
