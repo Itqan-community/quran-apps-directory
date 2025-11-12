@@ -86,7 +86,7 @@ export class DeveloperComponent implements OnInit {
   private loadDeveloperData(developerName: string) {
     this.appService.getAppsByDeveloper(developerName).subscribe((apps) => {
       this.developerApps = apps;
-      
+
       // Get developer info from the first app
       if (apps.length > 0) {
         const firstApp = apps[0];
@@ -97,10 +97,13 @@ export class DeveloperComponent implements OnInit {
           website: firstApp.Developer_Website
         };
       }
-      
+
       this.updatePageTitle();
       this.updateSeoData();
       this.loading = false;
+
+      // Scroll to top when page finishes loading
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
