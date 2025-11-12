@@ -33,7 +33,7 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     environment:
       DEBUG: "True"
-      DJANGO_SETTINGS_MODULE: config.settings.local
+      DJANGO_SETTINGS_MODULE: config.settings.development
       DB_ENGINE: django.db.backends.postgresql
       DB_NAME: quran_apps_db
       DB_USER: postgres

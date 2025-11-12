@@ -160,6 +160,15 @@ start_database() {
         cp .env.example .env
     fi
 
+    # Unset Railway environment variables to prevent conflicts with local dev
+    unset RAILWAY_ENVIRONMENT
+    unset RAILWAY_PROJECT_ID
+    unset RAILWAY_SERVICE_ID
+    unset DB_HOST_OVERRIDE
+    unset DB_NAME_OVERRIDE
+    unset DB_USER_OVERRIDE
+    unset DB_PASSWORD_OVERRIDE
+
     # Start database
     if command_exists docker-compose; then
         docker-compose up -d db
@@ -175,6 +184,10 @@ start_database() {
     print_status "Running database migrations..."
     source venv/bin/activate
     python manage.py migrate
+
+    # Create superuser for admin access
+    print_status "Creating Django superuser..."
+    python manage.py create_superuser
 
     # Load 44 real apps from JSON
     print_status "Loading 44 real Quran applications..."
@@ -243,10 +256,16 @@ start_dev_servers() {
     sleep 5
 
     echo ""
-    echo -e "${GREEN}=== Servers are running! ===${NC}"
-    echo -e "${CYAN}• Frontend (Angular):${NC} http://localhost:4200"
-    echo -e "${CYAN}• Backend (Django API):${NC} http://localhost:8000/api/v1/"
-    echo -e "${CYAN}• API Documentation:${NC} http://localhost:8000/api/docs/"
+    echo -e "${GREEN}=== 🚀 Servers are running! ===${NC}"
+    echo ""
+    echo -e "${CYAN}📱 Frontend (Angular):${NC} http://localhost:4200"
+    echo -e "${CYAN}🔌 Backend API:${NC} http://localhost:8000/api/"
+    echo -e "${CYAN}📚 API Categories:${NC} http://localhost:8000/api/categories/"
+    echo -e "${CYAN}📚 API Apps:${NC} http://localhost:8000/api/apps/"
+    echo ""
+    echo -e "${CYAN}🔐 Django Admin:${NC} http://localhost:8000/admin/"
+    echo -e "${CYAN}   Username: ${YELLOW}admin${NC}"
+    echo -e "${CYAN}   Password: ${YELLOW}admin${NC}"
     echo ""
     print_status "Press Ctrl+C to stop all servers"
     echo ""
@@ -350,19 +369,22 @@ show_help() {
     echo "  -h, --help     Show this help message"
     echo ""
     echo "Features:"
-    echo "  • Starts PostgreSQL in Docker container"
-    echo "  • Sets up Python virtual environment for backend"
-    echo "  • Installs all dependencies (frontend + backend)"
-    echo "  • Runs database migrations"
-    echo "  • Loads sample data"
-    echo "  • Starts both Angular (port 4200) and Django (port 8000) servers"
-    echo "  • Opens browser automatically"
-    echo "  • Handles port conflicts automatically"
+    echo "  ✓ Single entry point for entire development environment"
+    echo "  ✓ Starts PostgreSQL in Docker container"
+    echo "  ✓ Sets up Python virtual environment for backend"
+    echo "  ✓ Installs all dependencies (frontend + backend)"
+    echo "  ✓ Runs database migrations"
+    echo "  ✓ Loads 44 sample Quran applications"
+    echo "  ✓ Starts both Angular (port 4200) and Django (port 8000) servers"
+    echo "  ✓ Opens browser automatically"
+    echo "  ✓ Handles port conflicts automatically"
     echo ""
     echo "Services Started:"
-    echo "  • Frontend: http://localhost:4200"
-    echo "  • Backend API: http://localhost:8000/api/v1/"
-    echo "  • API Docs: http://localhost:8000/api/docs/"
+    echo "  📱 Frontend (Angular): http://localhost:4200"
+    echo "  🔌 Backend API: http://localhost:8000/api/"
+    echo "  📚 Categories API: http://localhost:8000/api/categories/"
+    echo "  📚 Apps API: http://localhost:8000/api/apps/"
+    echo "  🔐 Django Admin: http://localhost:8000/admin/ (admin/admin)"
     echo ""
     echo "Examples:"
     echo "  ./dev-start.sh           # Normal start"

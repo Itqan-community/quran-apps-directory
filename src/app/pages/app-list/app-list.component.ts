@@ -114,6 +114,12 @@ export class AppListComponent implements OnInit, OnDestroy {
           this.filteredApps = this.apps; // Show all apps
         }
 
+        // Scroll to top of page when route changes
+        window.scrollTo({ top: 0, behavior: 'auto' });
+
+        // Scroll selected category into view (horizontally within categories section)
+        setTimeout(() => this.scrollSelectedCategoryIntoView(), 100);
+
         // Update SEO data after apps and route parameters are set
         this.updateSeoData();
       });
@@ -423,5 +429,22 @@ export class AppListComponent implements OnInit, OnDestroy {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
       <path fill="#A0533B" d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
     </svg>`;
+  }
+
+  /**
+   * Scroll the selected category into view
+   */
+  private scrollSelectedCategoryIntoView(): void {
+    // Find the selected category element
+    const selectedElement = document.querySelector('.category-item.selected');
+
+    if (selectedElement) {
+      // Scroll into view with smooth behavior
+      selectedElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center'
+      });
+    }
   }
 }

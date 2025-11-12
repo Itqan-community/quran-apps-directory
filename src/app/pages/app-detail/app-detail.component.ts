@@ -116,7 +116,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     this.route.params.subscribe((params) => {
       const newLang = params["lang"];
       const newId = params["id"];
-      
+
       // Update language if changed
       if (newLang && newLang !== this.currentLang) {
         this.currentLang = newLang as "en" | "ar";
@@ -125,6 +125,8 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
       // Load app data when ID changes (or on initial load)
       if (newId) {
         this.loading = true;
+        // Scroll to top of page when loading new app detail
+        window.scrollTo({ top: 0, behavior: 'auto' });
         this.loadAppData(newId);
       }
     });
