@@ -141,45 +141,13 @@ WHITENOISE_AUTOREFRESH = False
 # Database connection pooling
 DATABASES['default']['CONN_MAX_AGE'] = 600
 
-# Cache configuration - Redis for production
-# Supports both Redis URL and individual connection parameters from Railway
-REDIS_URL = config('REDIS_URL', default='')
-
-if REDIS_URL:
-    # Use Redis if URL is provided (Railway managed Redis)
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-            'LOCATION': REDIS_URL,
-            'OPTIONS': {
-                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-                'CONNECTION_POOL_KWARGS': {'max_connections': 50, 'retry_on_timeout': True},
-                'SOCKET_CONNECT_TIMEOUT': 5,  # 5 seconds
-                'SOCKET_TIMEOUT': 5,  # 5 seconds
-            },
-            'KEY_PREFIX': 'quran_apps',
-            'TIMEOUT': 300,  # 5 minutes default
-        }
+# Cache configuration disabled - frontend handles HTTP caching
+# Backend API serves fresh data on each request to reduce memory usage
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
-else:
-    # Fallback to in-memory cache if Redis is not available
-    # In-memory cache is stateless and doesn't require database table creation
-    # API-level caching in controllers.py handles the actual HTTP response caching
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-            'LOCATION': 'quran-apps-cache',
-            'TIMEOUT': 300,  # 5 minutes default
-            'OPTIONS': {
-                'MAX_ENTRIES': 10000
-            }
-        }
-    }
-
-# Cache middleware settings for better HTTP caching
-CACHE_MIDDLEWARE_ALIAS = 'default'
-CACHE_MIDDLEWARE_SECONDS = 600  # 10 minutes
-CACHE_MIDDLEWARE_KEY_PREFIX = 'quran_apps'
+}
 
 # ===== ERROR TRACKING (Optional - Sentry) =====
 SENTRY_DSN = config('SENTRY_DSN', default='')
