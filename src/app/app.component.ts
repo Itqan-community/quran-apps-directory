@@ -6,19 +6,13 @@ import { NzSpaceModule } from "ng-zorro-antd/space";
 import { NzDividerModule } from "ng-zorro-antd/divider";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { NzIconModule } from "ng-zorro-antd/icon";
-// Icons are now globally registered in main.ts for better tree-shaking
 import { Title, Meta } from '@angular/platform-browser';
 import { LanguageService } from "./services/language.service";
 import { ThemeService } from "./services/theme.service";
 import { ThemeToggleComponent } from "./components/theme-toggle/theme-toggle.component";
 import { PerformanceService } from "./services/performance.service";
 import { DeferredAnalyticsService } from "./services/deferred-analytics.service";
-import { LcpMonitorService } from "./services/lcp-monitor.service";
-import { CacheOptimizationService } from "./services/cache-optimization.service";
-import { CacheValidatorService } from "./services/cache-validator.service";
 import { Http2OptimizationService } from "./services/http2-optimization.service";
-import { CriticalResourcePreloaderService } from "./services/critical-resource-preloader.service";
-import { CacheMonitorService } from "./services/cache-monitor.service";
 import { AppImagePreloaderService } from "./services/app-image-preloader.service";
 import { filter } from "rxjs";
 
@@ -56,11 +50,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private themeService: ThemeService,
     private performanceService: PerformanceService,
     private deferredAnalytics: DeferredAnalyticsService,
-    private lcpMonitor: LcpMonitorService,
-    private cacheOptimization: CacheOptimizationService,
-    private cacheValidator: CacheValidatorService,
     private http2Optimization: Http2OptimizationService,
-    private cacheMonitor: CacheMonitorService,
     private appImagePreloader: AppImagePreloaderService
   ) {
     // Icons are globally registered in main.ts
@@ -125,25 +115,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     // Language service will handle URL changes
     this.languageService.setLanguageFromUrl();
-    
+
     // Initialize performance monitoring
-        setTimeout(() => {
-          this.performanceService.measurePerformance();
-          this.performanceService.optimizeImages();
+    setTimeout(() => {
+      this.performanceService.measurePerformance();
+      this.performanceService.optimizeImages();
 
-          // Initialize cache optimization monitoring
-          this.cacheOptimization.monitorCachePerformance();
-          this.cacheOptimization.preloadCriticalResources();
-
-          // Initialize HTTP/2 optimization monitoring
-          this.http2Optimization.generateHTTP2Report();
-          this.http2Optimization.monitorHTTP2Usage();
-
-          // Initialize cache monitoring
-          this.cacheMonitor.getMetrics().subscribe(metrics => {
-            console.log('[Cache Monitor] Cache metrics updated:', metrics);
-          });
-        }, 1000);
+      // Initialize HTTP/2 optimization monitoring
+      this.http2Optimization.generateHTTP2Report();
+      this.http2Optimization.monitorHTTP2Usage();
+    }, 1000);
 
     // Track route changes for analytics (when analytics is ready)
     this.router.events.pipe(

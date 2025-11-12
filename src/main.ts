@@ -3,7 +3,6 @@ import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CacheInterceptor } from './app/interceptors/cache.interceptor';
-import { CacheHeadersInterceptor } from './app/services/cache-headers.service';
 import { routes } from './app/app.routes';
 import { NzConfig, provideNzConfig } from 'ng-zorro-antd/core/config';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -49,11 +48,6 @@ bootstrapApplication(AppComponent, {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: CacheInterceptor,
-      multi: true
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: CacheHeadersInterceptor,
       multi: true
     },
     importProvidersFrom(

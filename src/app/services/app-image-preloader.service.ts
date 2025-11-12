@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ApiService, App } from './api.service';
-import { BrowserStorageService } from './browser-storage.service';
 
 /**
  * Service to preload all application images from Cloudflare R2
@@ -10,32 +9,29 @@ import { BrowserStorageService } from './browser-storage.service';
   providedIn: 'root'
 })
 export class AppImagePreloaderService {
-  private readonly PRELOAD_CACHE_KEY = 'app_images:preload_status';
-  private readonly PRELOAD_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
   private readonly R2_CDN_URL = 'pub-e11717db663c469fb51c65995892b449.r2.dev';
+  private preloadingStarted = false;
 
-  constructor(
-    private apiService: ApiService,
-    private browserStorage: BrowserStorageService
-  ) {}
+  constructor(private apiService: ApiService) {}
 
   /**
    * Start preloading images in background without blocking app initialization
    */
   startPreloadingInBackground(): void {
-    // Check if preloading was already done today
-    this.browserStorage.get(this.PRELOAD_CACHE_KEY).subscribe(cached => {
-      if (!cached) {
-        // Defer preloading to after user interaction
-        if (typeof window !== 'undefined' && window.requestIdleCallback) {
-          // Use requestIdleCallback if available (Chrome, Edge, Opera)
-          window.requestIdleCallback(() => this.preloadAllAppImages(), { timeout: 5000 });
-        } else {
-          // Fallback: defer with setTimeout
-          setTimeout(() => this.preloadAllAppImages(), 3000);
-        }
-      }
-    });
+    // Only start preloading once
+    if (this.preloadingStarted) {
+      return;
+    }
+    this.preloadingStarted = true;
+
+    // Defer preloading to after user interaction
+    if (typeof window !== 'undefined' && window.requestIdleCallback) {
+      // Use requestIdleCallback if available (Chrome, Edge, Opera)
+      window.requestIdleCallback(() => this.preloadAllAppImages(), { timeout: 5000 });
+    } else {
+      // Fallback: defer with setTimeout
+      setTimeout(() => this.preloadAllAppImages(), 3000);
+    }
   }
 
   /**
@@ -198,52 +194,20 @@ export class AppImagePreloaderService {
    * Mark preloading as complete
    */
   private markPreloadingComplete(): void {
-    this.browserStorage.set(
-      this.PRELOAD_CACHE_KEY,
-      { completedAt: new Date().toISOString() },
-      this.PRELOAD_CACHE_TTL
-    ).subscribe(
-      success => {
-        if (success) {
-          console.log('[ImagePreloader] Image preloading completed and cached');
-        }
-      }
-    );
+    console.log('[ImagePreloader] Image preloading completed');
   }
 
   /**
    * Get preload progress (for debugging)
    */
   getPreloadStatus(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.browserStorage.get(this.PRELOAD_CACHE_KEY).subscribe(
-        cached => {
-          if (cached) {
-            resolve({ status: 'completed', data: cached });
-          } else {
-            resolve({ status: 'pending' });
-          }
-        },
-        error => reject(error)
-      );
-    });
+    return Promise.resolve({ status: 'running' });
   }
 
   /**
    * Clear preload cache (for testing/debugging)
    */
   clearPreloadCache(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.browserStorage.delete(this.PRELOAD_CACHE_KEY).subscribe(
-        success => {
-          if (success) {
-            console.log('[ImagePreloader] Preload cache cleared');
-            resolve();
-          } else {
-            reject(new Error('Failed to clear cache'));
-          }
-        }
-      );
-    });
+    return Promise.resolve();
   }
 }
