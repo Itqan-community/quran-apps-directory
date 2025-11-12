@@ -19,6 +19,7 @@ import { CacheValidatorService } from "./services/cache-validator.service";
 import { Http2OptimizationService } from "./services/http2-optimization.service";
 import { CriticalResourcePreloaderService } from "./services/critical-resource-preloader.service";
 import { CacheMonitorService } from "./services/cache-monitor.service";
+import { AppImagePreloaderService } from "./services/app-image-preloader.service";
 import { filter } from "rxjs";
 
 // Icons globally registered in main.ts
@@ -59,7 +60,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     private cacheOptimization: CacheOptimizationService,
     private cacheValidator: CacheValidatorService,
     private http2Optimization: Http2OptimizationService,
-    private cacheMonitor: CacheMonitorService
+    private cacheMonitor: CacheMonitorService,
+    private appImagePreloader: AppImagePreloaderService
   ) {
     // Icons are globally registered in main.ts
     // Get browser language
@@ -115,6 +117,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
       }
     });
+
+    // Start preloading app images in background (non-blocking)
+    this.appImagePreloader.startPreloadingInBackground();
   }
 
   ngAfterViewInit() {
