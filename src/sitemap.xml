@@ -143,13 +143,13 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://quran-apps.itqan.dev/ar/Tools</loc>
+    <loc>https://quran-apps.itqan.dev/ar/Other</loc>
     <lastmod>2025-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://quran-apps.itqan.dev/en/Tools</loc>
+    <loc>https://quran-apps.itqan.dev/en/Other</loc>
     <lastmod>2025-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
