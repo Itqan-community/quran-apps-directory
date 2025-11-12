@@ -162,12 +162,17 @@ if REDIS_URL:
         }
     }
 else:
-    # Fallback to database cache if Redis is not available
+    # Fallback to in-memory cache if Redis is not available
+    # In-memory cache is stateless and doesn't require database table creation
+    # API-level caching in controllers.py handles the actual HTTP response caching
     CACHES = {
         'default': {
-            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-            'LOCATION': 'django_cache_table',
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'quran-apps-cache',
             'TIMEOUT': 300,  # 5 minutes default
+            'OPTIONS': {
+                'MAX_ENTRIES': 10000
+            }
         }
     }
 
