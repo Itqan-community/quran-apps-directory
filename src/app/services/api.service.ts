@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, tap, shareReplay, switchMap, finalize } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { BrowserStorageService } from './browser-storage.service';
 
 export interface App {
   id: string;
@@ -78,7 +79,54 @@ export class ApiService {
   loading$ = this.loadingSubject.asObservable();
   error$ = this.errorSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  // Cache TTL configuration (in milliseconds)
+  private readonly CACHE_TTL = {
+    categories: 7 * 24 * 60 * 60 * 1000,      // 7 days
+    apps: 60 * 60 * 1000,                     // 1 hour
+    appDetail: 60 * 60 * 1000,                // 1 hour
+    featured: 60 * 60 * 1000,                 // 1 hour
+    byPlatform: 60 * 60 * 1000,               // 1 hour
+    search: 30 * 60 * 1000                    // 30 minutes
+  };
+
+  // Request deduplication with shareReplay
+  private cachedRequests = new Map<string, Observable<any>>();
+
+  constructor(
+    private http: HttpClient,
+    private storageService: BrowserStorageService
+  ) {}
+
+  /**
+   * Helper method to fetch data with caching and request deduplication
+   */
+  private cachedFetch<T>(
+    cacheKey: string,
+    fetcher: () => Observable<T>,
+    ttl: number
+  ): Observable<T> {
+    // Check if request is already in flight (deduplication)
+    if (this.cachedRequests.has(cacheKey)) {
+      return this.cachedRequests.get(cacheKey) as Observable<T>;
+    }
+
+    // Use BrowserStorageService's getOrSet method for cache-first strategy
+    const request$ = this.storageService.getOrSet(
+      cacheKey,
+      fetcher,
+      ttl
+    ).pipe(
+      // Clean up in-flight requests after completion
+      finalize(() => this.cachedRequests.delete(cacheKey)),
+      // Cache the observable for concurrent requests (shareReplay prevents multiple emissions)
+      shareReplay(1)
+    );
+
+    // Store the request to deduplicate concurrent calls
+    this.cachedRequests.set(cacheKey, request$);
+
+    return request$;
+  }
 
   /**
    * Get all published applications with optional filtering and search
@@ -95,29 +143,37 @@ export class ApiService {
     this.setLoading(true);
     this.setError(null);
 
-    let httpParams = new HttpParams();
+    // Generate cache key based on params
+    const cacheKey = `apps:${JSON.stringify(params || {})}`;
 
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          httpParams = httpParams.set(key, value.toString());
+    return this.cachedFetch(
+      cacheKey,
+      () => {
+        let httpParams = new HttpParams();
+
+        if (params) {
+          Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+              httpParams = httpParams.set(key, value.toString());
+            }
+          });
         }
-      });
-    }
 
-    return this.http.get<AppListResponse>(`${this.apiUrl}/apps/`, { params: httpParams })
-      .pipe(
-        tap(response => {
-          this.setLoading(false);
-          // Update the apps subject with the new results
-          this.appsSubject.next(response.results);
-        }),
-        catchError(error => {
-          this.setError('Failed to load applications. Please try again later.');
-          this.setLoading(false);
-          return of({ count: 0, next: null, previous: null, results: [] });
-        })
-      );
+        return this.http.get<AppListResponse>(`${this.apiUrl}/apps/`, { params: httpParams });
+      },
+      this.CACHE_TTL.apps
+    ).pipe(
+      tap(response => {
+        this.setLoading(false);
+        // Update the apps subject with the new results
+        this.appsSubject.next(response.results);
+      }),
+      catchError(error => {
+        this.setError('Failed to load applications. Please try again later.');
+        this.setLoading(false);
+        return of({ count: 0, next: null, previous: null, results: [] });
+      })
+    );
   }
 
   /**
@@ -127,16 +183,19 @@ export class ApiService {
     this.setLoading(true);
     this.setError(null);
 
-    return this.http.get<App>(`${this.apiUrl}/apps/${identifier}/`)
-      .pipe(
-        map(app => app || null),
-        tap(() => this.setLoading(false)),
-        catchError(error => {
-          this.setError('Application not found or failed to load.');
-          this.setLoading(false);
-          return of(null);
-        })
-      );
+    return this.cachedFetch(
+      `app:${identifier}`,
+      () => this.http.get<App>(`${this.apiUrl}/apps/${identifier}/`),
+      this.CACHE_TTL.appDetail
+    ).pipe(
+      map(app => app || null),
+      tap(() => this.setLoading(false)),
+      catchError(error => {
+        this.setError('Application not found or failed to load.');
+        this.setLoading(false);
+        return of(null);
+      })
+    );
   }
 
   /**
@@ -146,26 +205,33 @@ export class ApiService {
     this.setLoading(true);
     this.setError(null);
 
-    let params = new HttpParams();
-    if (category && category !== 'all') {
-      params = params.set('category', category);
-    }
+    const cacheKey = `featured:${category || 'all'}`;
 
-    return this.http.get<App[]>(`${this.apiUrl}/apps/featured/`, { params })
-      .pipe(
-        tap(apps => {
-          this.setLoading(false);
-          // Update featured apps in the subject
-          const currentApps = this.appsSubject.value;
-          const otherApps = currentApps.filter(app => !app.featured);
-          this.appsSubject.next([...apps, ...otherApps]);
-        }),
-        catchError(error => {
-          this.setError('Failed to load featured applications.');
-          this.setLoading(false);
-          return of([]);
-        })
-      );
+    return this.cachedFetch(
+      cacheKey,
+      () => {
+        let params = new HttpParams();
+        if (category && category !== 'all') {
+          params = params.set('category', category);
+        }
+
+        return this.http.get<App[]>(`${this.apiUrl}/apps/featured/`, { params });
+      },
+      this.CACHE_TTL.featured
+    ).pipe(
+      tap(apps => {
+        this.setLoading(false);
+        // Update featured apps in the subject
+        const currentApps = this.appsSubject.value;
+        const otherApps = currentApps.filter(app => !app.featured);
+        this.appsSubject.next([...apps, ...otherApps]);
+      }),
+      catchError(error => {
+        this.setError('Failed to load featured applications.');
+        this.setLoading(false);
+        return of([]);
+      })
+    );
   }
 
   /**
@@ -175,15 +241,18 @@ export class ApiService {
     this.setLoading(true);
     this.setError(null);
 
-    return this.http.get<App[]>(`${this.apiUrl}/apps/by_platform/?platform=${platform}`)
-      .pipe(
-        tap(() => this.setLoading(false)),
-        catchError(error => {
-          this.setError('Failed to load applications for this platform.');
-          this.setLoading(false);
-          return of([]);
-        })
-      );
+    return this.cachedFetch(
+      `platform:${platform}`,
+      () => this.http.get<App[]>(`${this.apiUrl}/apps/by_platform/?platform=${platform}`),
+      this.CACHE_TTL.byPlatform
+    ).pipe(
+      tap(() => this.setLoading(false)),
+      catchError(error => {
+        this.setError('Failed to load applications for this platform.');
+        this.setLoading(false);
+        return of([]);
+      })
+    );
   }
 
   /**
@@ -193,18 +262,21 @@ export class ApiService {
     this.setLoading(true);
     this.setError(null);
 
-    return this.http.get<Category[]>(`${this.apiUrl}/categories/`)
-      .pipe(
-        tap(categories => {
-          this.setLoading(false);
-          this.categoriesSubject.next(categories);
-        }),
-        catchError(error => {
-          this.setError('Failed to load categories.');
-          this.setLoading(false);
-          return of([]);
-        })
-      );
+    return this.cachedFetch(
+      'categories:all',
+      () => this.http.get<Category[]>(`${this.apiUrl}/categories/`),
+      this.CACHE_TTL.categories
+    ).pipe(
+      tap(categories => {
+        this.setLoading(false);
+        this.categoriesSubject.next(categories);
+      }),
+      catchError(error => {
+        this.setError('Failed to load categories.');
+        this.setLoading(false);
+        return of([]);
+      })
+    );
   }
 
   /**
@@ -218,13 +290,22 @@ export class ApiService {
     this.setLoading(true);
     this.setError(null);
 
-    const params: any = { search: query };
-    if (filters) {
-      Object.assign(params, filters);
-    }
+    // Generate cache key based on search query and filters
+    const cacheKey = `search:${query}:${JSON.stringify(filters || {})}`;
 
-    return this.getApps(params).pipe(
-      map(response => response.results)
+    return this.cachedFetch(
+      cacheKey,
+      () => {
+        const params: any = { search: query };
+        if (filters) {
+          Object.assign(params, filters);
+        }
+
+        return this.getApps(params).pipe(
+          map(response => response.results)
+        );
+      },
+      this.CACHE_TTL.search
     );
   }
 

@@ -5,9 +5,12 @@ Following ITQAN community standards using Django Ninja framework.
 """
 
 from typing import List, Optional
+from django.core.cache import cache
 from ninja import Router, ModelSchema, Schema
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+import hashlib
+import json
 
 from ..services.app_service_simple import AppService
 from .schemas import AppSchema, AppListSchema, AppCreateSchema, AppUpdateSchema, PaginatedAppListSchema, CategorySchema
@@ -47,6 +50,25 @@ def list_apps(request):
     if featured_str:
         featured = featured_str.lower() in ('true', '1', 'yes', 'on')
 
+    # Generate cache key based on query parameters
+    cache_key = hashlib.md5(
+        json.dumps({
+            'search': search,
+            'category': category,
+            'platform': platform,
+            'featured': featured,
+            'ordering': ordering,
+            'page': page,
+            'page_size': page_size
+        }, sort_keys=True).encode()
+    ).hexdigest()
+    cache_key = f'api:apps:list:{cache_key}'
+
+    # Try to get from cache first
+    cached_result = cache.get(cache_key)
+    if cached_result:
+        return cached_result
+
     app_service = AppService()
 
     filters = {}
@@ -59,12 +81,17 @@ def list_apps(request):
     if featured is not None:
         filters['featured'] = featured
 
-    return app_service.get_apps(
+    result = app_service.get_apps(
         filters=filters,
         ordering=ordering or 'sort_order,name_en',
         page=page,
         page_size=page_size
     )
+
+    # Cache for 1 hour
+    cache.set(cache_key, result, 60 * 60)
+
+    return result
 
 
 # More specific routes BEFORE the catch-all /{app_id} route
@@ -87,18 +114,31 @@ def get_featured_apps(request):
     except (ValueError, TypeError):
         page_size = 100
 
+    # Generate cache key
+    cache_key = f'api:apps:featured:{category}:{page}:{page_size}'
+
+    # Try to get from cache first
+    cached_result = cache.get(cache_key)
+    if cached_result:
+        return cached_result
+
     app_service = AppService()
     filters = {'featured': True}
 
     if category != "all":
         filters['category'] = category
 
-    return app_service.get_apps(
+    result = app_service.get_apps(
         filters=filters,
         ordering='-sort_order,name_en',
         page=page,
         page_size=page_size
     )
+
+    # Cache for 1 hour
+    cache.set(cache_key, result, 60 * 60)
+
+    return result
 
 
 @router.get("/by-platform/", response=PaginatedAppListSchema)
@@ -122,13 +162,26 @@ def get_apps_by_platform(request):
     except (ValueError, TypeError):
         page_size = 100
 
+    # Generate cache key
+    cache_key = f'api:apps:platform:{platform}:{page}:{page_size}'
+
+    # Try to get from cache first
+    cached_result = cache.get(cache_key)
+    if cached_result:
+        return cached_result
+
     app_service = AppService()
-    return app_service.get_apps(
+    result = app_service.get_apps(
         filters={'platform': platform},
         ordering='-sort_order,name_en',
         page=page,
         page_size=page_size
     )
+
+    # Cache for 1 hour
+    cache.set(cache_key, result, 60 * 60)
+
+    return result
 
 
 # Catch-all route for getting individual app by ID or slug
@@ -142,6 +195,14 @@ def get_app(request, app_id: str):
     Automatically increments view count.
     """
     from apps.models import App
+
+    # Generate cache key
+    cache_key = f'api:apps:detail:{app_id}'
+
+    # Try to get from cache first
+    cached_result = cache.get(cache_key)
+    if cached_result:
+        return cached_result
 
     # Find app by ID or slug
     app_obj = None
@@ -164,7 +225,12 @@ def get_app(request, app_id: str):
 
     # Use AppService to convert to dictionary with full category objects for detailed view
     app_service = AppService()
-    return app_service._app_to_dict(app_obj, include_full_categories=True)
+    result = app_service._app_to_dict(app_obj, include_full_categories=True)
+
+    # Cache for 30 minutes (shorter due to view count updates)
+    cache.set(cache_key, result, 30 * 60)
+
+    return result
 
 
 # Categories endpoint - query actual database
