@@ -38,9 +38,9 @@ def list_apps(request):
         page = 1
 
     try:
-        page_size = int(request.GET.get('page_size', 20) or 20)
+        page_size = int(request.GET.get('page_size', 100) or 100)
     except (ValueError, TypeError):
-        page_size = 20
+        page_size = 100
 
     # Parse featured boolean
     featured = None
@@ -83,9 +83,9 @@ def get_featured_apps(request):
         page = 1
 
     try:
-        page_size = int(request.GET.get('page_size', 20) or 20)
+        page_size = int(request.GET.get('page_size', 100) or 100)
     except (ValueError, TypeError):
-        page_size = 20
+        page_size = 100
 
     app_service = AppService()
     filters = {'featured': True}
@@ -118,9 +118,9 @@ def get_apps_by_platform(request):
         page = 1
 
     try:
-        page_size = int(request.GET.get('page_size', 20) or 20)
+        page_size = int(request.GET.get('page_size', 100) or 100)
     except (ValueError, TypeError):
-        page_size = 20
+        page_size = 100
 
     app_service = AppService()
     return app_service.get_apps(

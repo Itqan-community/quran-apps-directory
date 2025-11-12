@@ -81,7 +81,7 @@ class AppService:
     def get_apps(self, filters: Dict[str, Any] = None,
                 ordering: str = 'sort_order,name_en',
                 page: int = 1,
-                page_size: int = 20) -> Dict[str, Any]:
+                page_size: int = 100) -> Dict[str, Any]:
         """
         Get applications from database with filtering and pagination.
         """
