@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
-import { catchError, map, tap, shareReplay, switchMap, finalize } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { BrowserStorageService } from './browser-storage.service';
 
 export interface App {
   id: string;
@@ -79,57 +78,11 @@ export class ApiService {
   loading$ = this.loadingSubject.asObservable();
   error$ = this.errorSubject.asObservable();
 
-  // Cache TTL configuration (in milliseconds)
-  private readonly CACHE_TTL = {
-    categories: 7 * 24 * 60 * 60 * 1000,      // 7 days
-    apps: 60 * 60 * 1000,                     // 1 hour
-    appDetail: 60 * 60 * 1000,                // 1 hour
-    featured: 60 * 60 * 1000,                 // 1 hour
-    byPlatform: 60 * 60 * 1000,               // 1 hour
-    search: 30 * 60 * 1000                    // 30 minutes
-  };
-
-  // Request deduplication with shareReplay
-  private cachedRequests = new Map<string, Observable<any>>();
-
-  constructor(
-    private http: HttpClient,
-    private storageService: BrowserStorageService
-  ) {}
-
-  /**
-   * Helper method to fetch data with caching and request deduplication
-   */
-  private cachedFetch<T>(
-    cacheKey: string,
-    fetcher: () => Observable<T>,
-    ttl: number
-  ): Observable<T> {
-    // Check if request is already in flight (deduplication)
-    if (this.cachedRequests.has(cacheKey)) {
-      return this.cachedRequests.get(cacheKey) as Observable<T>;
-    }
-
-    // Use BrowserStorageService's getOrSet method for cache-first strategy
-    const request$ = this.storageService.getOrSet(
-      cacheKey,
-      fetcher,
-      ttl
-    ).pipe(
-      // Clean up in-flight requests after completion
-      finalize(() => this.cachedRequests.delete(cacheKey)),
-      // Cache the observable for concurrent requests (shareReplay prevents multiple emissions)
-      shareReplay(1)
-    );
-
-    // Store the request to deduplicate concurrent calls
-    this.cachedRequests.set(cacheKey, request$);
-
-    return request$;
-  }
+  constructor(private http: HttpClient) {}
 
   /**
    * Get all published applications with optional filtering and search
+   * Uses ETag caching via browser and server Cache-Control headers
    */
   getApps(params?: {
     search?: string;
@@ -143,29 +96,19 @@ export class ApiService {
     this.setLoading(true);
     this.setError(null);
 
-    // Generate cache key based on params
-    const cacheKey = `apps:${JSON.stringify(params || {})}`;
+    let httpParams = new HttpParams();
 
-    return this.cachedFetch(
-      cacheKey,
-      () => {
-        let httpParams = new HttpParams();
-
-        if (params) {
-          Object.entries(params).forEach(([key, value]) => {
-            if (value !== undefined && value !== null) {
-              httpParams = httpParams.set(key, value.toString());
-            }
-          });
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          httpParams = httpParams.set(key, value.toString());
         }
+      });
+    }
 
-        return this.http.get<AppListResponse>(`${this.apiUrl}/apps/`, { params: httpParams });
-      },
-      this.CACHE_TTL.apps
-    ).pipe(
+    return this.http.get<AppListResponse>(`${this.apiUrl}/apps/`, { params: httpParams }).pipe(
       tap(response => {
         this.setLoading(false);
-        // Update the apps subject with the new results
         this.appsSubject.next(response.results);
       }),
       catchError(error => {
@@ -183,11 +126,7 @@ export class ApiService {
     this.setLoading(true);
     this.setError(null);
 
-    return this.cachedFetch(
-      `app:${identifier}`,
-      () => this.http.get<App>(`${this.apiUrl}/apps/${identifier}/`),
-      this.CACHE_TTL.appDetail
-    ).pipe(
+    return this.http.get<App>(`${this.apiUrl}/apps/${identifier}/`).pipe(
       map(app => app || null),
       tap(() => this.setLoading(false)),
       catchError(error => {
@@ -205,26 +144,15 @@ export class ApiService {
     this.setLoading(true);
     this.setError(null);
 
-    const cacheKey = `featured:${category || 'all'}`;
+    let params = new HttpParams().set('featured', 'true');
+    if (category && category !== 'all') {
+      params = params.set('category', category);
+    }
 
-    return this.cachedFetch(
-      cacheKey,
-      () => {
-        let params = new HttpParams();
-        if (category && category !== 'all') {
-          params = params.set('category', category);
-        }
-
-        return this.http.get<App[]>(`${this.apiUrl}/apps/featured/`, { params });
-      },
-      this.CACHE_TTL.featured
-    ).pipe(
+    return this.http.get<AppListResponse>(`${this.apiUrl}/apps/`, { params }).pipe(
+      map(response => response.results),
       tap(apps => {
         this.setLoading(false);
-        // Update featured apps in the subject
-        const currentApps = this.appsSubject.value;
-        const otherApps = currentApps.filter(app => !app.featured);
-        this.appsSubject.next([...apps, ...otherApps]);
       }),
       catchError(error => {
         this.setError('Failed to load featured applications.');
@@ -241,11 +169,10 @@ export class ApiService {
     this.setLoading(true);
     this.setError(null);
 
-    return this.cachedFetch(
-      `platform:${platform}`,
-      () => this.http.get<App[]>(`${this.apiUrl}/apps/by_platform/?platform=${platform}`),
-      this.CACHE_TTL.byPlatform
-    ).pipe(
+    const params = new HttpParams().set('platform', platform);
+
+    return this.http.get<AppListResponse>(`${this.apiUrl}/apps/`, { params }).pipe(
+      map(response => response.results),
       tap(() => this.setLoading(false)),
       catchError(error => {
         this.setError('Failed to load applications for this platform.');
@@ -262,11 +189,7 @@ export class ApiService {
     this.setLoading(true);
     this.setError(null);
 
-    return this.cachedFetch(
-      'categories:all',
-      () => this.http.get<Category[]>(`${this.apiUrl}/categories/`),
-      this.CACHE_TTL.categories
-    ).pipe(
+    return this.http.get<Category[]>(`${this.apiUrl}/categories/`).pipe(
       tap(categories => {
         this.setLoading(false);
         this.categoriesSubject.next(categories);
@@ -290,22 +213,13 @@ export class ApiService {
     this.setLoading(true);
     this.setError(null);
 
-    // Generate cache key based on search query and filters
-    const cacheKey = `search:${query}:${JSON.stringify(filters || {})}`;
+    const params: any = { search: query };
+    if (filters) {
+      Object.assign(params, filters);
+    }
 
-    return this.cachedFetch(
-      cacheKey,
-      () => {
-        const params: any = { search: query };
-        if (filters) {
-          Object.assign(params, filters);
-        }
-
-        return this.getApps(params).pipe(
-          map(response => response.results)
-        );
-      },
-      this.CACHE_TTL.search
+    return this.getApps(params).pipe(
+      map(response => response.results)
     );
   }
 
@@ -350,15 +264,12 @@ export class ApiService {
    * Utility method to format app data for components
    */
   formatAppForDisplay(app: App) {
-    // Handle categories - they can be either strings or objects
     let formattedCategories: string[] = [];
     if (app.categories && Array.isArray(app.categories)) {
       formattedCategories = (app.categories as any[]).reduce((acc: string[], cat: any) => {
         if (typeof cat === 'string') {
-          // Cat is already a string (slug)
           acc.push(cat.toLowerCase());
         } else if (cat && typeof cat === 'object' && cat.name_en) {
-          // Cat is an object with name_en property
           const name = (cat.name_en as string).toLowerCase();
           if (name) acc.push(name);
         }
