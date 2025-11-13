@@ -1,5 +1,16 @@
 # Cloudflare Pages Security Headers Configuration
 
+# HTML files - Prevent caching to avoid stale references
+/index.html
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
@@ -13,15 +24,19 @@
 
 /main-*.js
   Content-Type: application/javascript; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable
 
 /polyfills-*.js
   Content-Type: application/javascript; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable
 
 /chunk-*.js
   Content-Type: application/javascript; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable
 
 /styles-*.css
   Content-Type: text/css; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable
 
 /*.json
   Content-Type: application/json; charset=utf-8
@@ -31,12 +46,19 @@
 
 /ngsw-worker.js
   Content-Type: application/javascript; charset=utf-8
+  Cache-Control: no-cache, must-revalidate
 
 /sw.js
   Content-Type: application/javascript; charset=utf-8
+  Cache-Control: no-cache, must-revalidate
 
 /worker-basic.min.js
   Content-Type: application/javascript; charset=utf-8
+  Cache-Control: no-cache, must-revalidate
+
+/ngsw.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: no-cache, must-revalidate
 
 /assets/*
   # Assets folder files inherit their natural MIME types from Cloudflare
