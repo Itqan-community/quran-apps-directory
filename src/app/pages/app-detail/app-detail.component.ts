@@ -1,5 +1,5 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, Inject, PLATFORM_ID } from "@angular/core";
+import { CommonModule, DOCUMENT, isPlatformBrowser } from "@angular/common";
 import { ActivatedRoute, RouterModule, Router } from "@angular/router";
 import { NzCardModule } from "ng-zorro-antd/card";
 import { NzButtonModule } from "ng-zorro-antd/button";
@@ -75,7 +75,9 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     private seoService: SeoService,
     private titleService: Title,
     private metaService: Meta,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.currentLang = this.translateService.currentLang as 'ar' | 'en';
     // Subscribe to language changes
@@ -295,11 +297,17 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     const appDescription = this.currentLang === 'ar' ? this.app.Short_Description_Ar : this.app.Short_Description_En;
     const fullDescription = this.currentLang === 'ar' ? this.app.Description_Ar : this.app.Description_En;
 
+    // Preload first screenshot for LCP optimization
+    const screenshots = this.currentLang === 'ar' ? this.app.screenshots_ar : this.app.screenshots_en;
+    if (screenshots && screenshots.length > 0) {
+      this.addPreloadLink(screenshots[0]);
+    }
+
     // Update page title and meta tags
-    const title = this.currentLang === 'ar' 
+    const title = this.currentLang === 'ar'
       ? `${appName} - تطبيق قرآني من دليل التطبيقات القرآنية`
       : `${appName} - Quran App from Comprehensive Quranic Directory`;
-    
+
     this.titleService.setTitle(title);
     this.metaService.updateTag({ name: 'title', content: title });
     this.metaService.updateTag({ name: 'description', content: `${appDescription} - ${fullDescription?.substring(0, 150)}...` });
@@ -371,22 +379,41 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     const stars = [];
     const fullStars = Math.floor(rating);
     const remainder = rating % 1;
-    
+
     // Add full stars
     for (let i = 0; i < fullStars; i++) {
       stars.push({ fillPercent: 100 });
     }
-    
+
     // Add partial star if needed
     if (remainder > 0 && fullStars < 5) {
       stars.push({ fillPercent: remainder * 100 });
     }
-    
+
     // Add empty stars to reach 5 total
     while (stars.length < 5) {
       stars.push({ fillPercent: 0 });
     }
-    
+
     return stars;
+  }
+
+  private addPreloadLink(imageUrl: string) {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    // Remove existing preload link for screenshots if any
+    const existingLink = this.document.querySelector('link[rel="preload"][data-screenshot-preload]');
+    if (existingLink) {
+      existingLink.remove();
+    }
+
+    // Add new preload link for LCP image
+    const link = this.document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = imageUrl;
+    link.setAttribute('fetchpriority', 'high');
+    link.setAttribute('data-screenshot-preload', 'true');
+    this.document.head.appendChild(link);
   }
 }

@@ -24,7 +24,8 @@
             [src]="screenshot"
             [alt]="app.Name_En + ' screenshot ' + (i + 1)"
             class="carousel-image"
-            loading="lazy"
+            [loading]="i === 0 ? 'eager' : 'lazy'"
+            [attr.fetchpriority]="i === 0 ? 'high' : 'auto'"
             decoding="async"
             (load)="loading = false"
           />
