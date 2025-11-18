@@ -1,0 +1,351 @@
+{
+  "timestamp": "2025-11-13T11:22:05.753Z",
+  "analysis": {
+    "elementsFound": 34,
+    "elements": [
+      {
+        "tagName": "nz-layout",
+        "className": "ant-layout app-layout",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 1920,
+        "height": 1397,
+        "isVisible": true
+      },
+      {
+        "tagName": "div",
+        "className": "logo-wrapper",
+        "id": "",
+        "zIndex": "20",
+        "position": "relative",
+        "width": 58,
+        "height": 58,
+        "isVisible": true
+      },
+      {
+        "tagName": "img",
+        "className": "logo-image",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 48,
+        "height": 48,
+        "isVisible": true,
+        "src": "http://localhost:4200/assets/images/logo-svg.svg"
+      },
+      {
+        "tagName": "span",
+        "className": "nav-icon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 16,
+        "height": 16,
+        "isVisible": true
+      },
+      {
+        "tagName": "span",
+        "className": "nav-icon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 16,
+        "height": 16,
+        "isVisible": true
+      },
+      {
+        "tagName": "span",
+        "className": "external-icon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 12,
+        "height": 40,
+        "isVisible": true
+      },
+      {
+        "tagName": "span",
+        "className": "nav-icon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 16,
+        "height": 16,
+        "isVisible": true
+      },
+      {
+        "tagName": "span",
+        "className": "nav-icon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 16,
+        "height": 16,
+        "isVisible": true
+      },
+      {
+        "tagName": "button",
+        "className": "ant-btn theme-toggle-btn ant-btn-link ant-btn-icon-only",
+        "id": "",
+        "zIndex": "auto",
+        "position": "relative",
+        "width": 36,
+        "height": 36,
+        "isVisible": true
+      },
+      {
+        "tagName": "span",
+        "className": "anticon anticon-moon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 16,
+        "height": 16,
+        "isVisible": true
+      },
+      {
+        "tagName": "span",
+        "className": "language-icon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 16,
+        "height": 25,
+        "isVisible": true
+      },
+      {
+        "tagName": "div",
+        "className": "logo-wrapper",
+        "id": "",
+        "zIndex": "20",
+        "position": "relative",
+        "width": 50,
+        "height": 50,
+        "isVisible": true
+      },
+      {
+        "tagName": "img",
+        "className": "logo-image",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 40,
+        "height": 40,
+        "isVisible": true,
+        "src": "http://localhost:4200/assets/images/logo-svg.svg"
+      },
+      {
+        "tagName": "span",
+        "className": "mobile-nav-icon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 20,
+        "height": 20,
+        "isVisible": true
+      },
+      {
+        "tagName": "span",
+        "className": "mobile-nav-icon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 20,
+        "height": 20,
+        "isVisible": true
+      },
+      {
+        "tagName": "span",
+        "className": "external-icon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 16,
+        "height": 38,
+        "isVisible": true
+      },
+      {
+        "tagName": "span",
+        "className": "mobile-nav-icon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 20,
+        "height": 20,
+        "isVisible": true
+      },
+      {
+        "tagName": "span",
+        "className": "mobile-nav-icon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 20,
+        "height": 20,
+        "isVisible": true
+      },
+      {
+        "tagName": "button",
+        "className": "ant-btn theme-toggle-btn ant-btn-link ant-btn-icon-only",
+        "id": "",
+        "zIndex": "auto",
+        "position": "relative",
+        "width": 36,
+        "height": 36,
+        "isVisible": true
+      },
+      {
+        "tagName": "span",
+        "className": "anticon anticon-moon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 16,
+        "height": 16,
+        "isVisible": true
+      },
+      {
+        "tagName": "span",
+        "className": "mobile-nav-icon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 20,
+        "height": 27,
+        "isVisible": true
+      },
+      {
+        "tagName": "div",
+        "className": "search-section-wrapper",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 1152,
+        "height": 94,
+        "isVisible": true
+      },
+      {
+        "tagName": "nz-input-group",
+        "className": "ant-input-affix-wrapper",
+        "id": "",
+        "zIndex": "auto",
+        "position": "relative",
+        "width": 196,
+        "height": 32,
+        "isVisible": true
+      },
+      {
+        "tagName": "span",
+        "className": "anticon anticon-search ng-star-inserted",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 14,
+        "height": 14,
+        "isVisible": true
+      },
+      {
+        "tagName": "div",
+        "className": "ant-alert-icon ng-tns-c449714735-2 ng-star-inserted",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 14,
+        "height": 15,
+        "isVisible": true
+      },
+      {
+        "tagName": "nz-icon",
+        "className": "anticon ng-tns-c449714735-2 anticon-close-circle ng-star-inserted",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 14,
+        "height": 14,
+        "isVisible": true
+      },
+      {
+        "tagName": "button",
+        "className": "ant-alert-close-icon ng-tns-c449714735-2 ng-star-inserted",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 12,
+        "height": 13,
+        "isVisible": true
+      },
+      {
+        "tagName": "nz-icon",
+        "className": "anticon ng-tns-c449714735-2 anticon-close ng-star-inserted",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 12,
+        "height": 12,
+        "isVisible": true
+      },
+      {
+        "tagName": "span",
+        "className": "category-icon",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 24,
+        "height": 24,
+        "isVisible": true
+      },
+      {
+        "tagName": "div",
+        "className": "apps-section",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 1152,
+        "height": 56,
+        "isVisible": true
+      },
+      {
+        "tagName": "nz-icon",
+        "className": "anticon anticon-export",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 12,
+        "height": 12,
+        "isVisible": true
+      },
+      {
+        "tagName": "nz-icon",
+        "className": "anticon anticon-export",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 12,
+        "height": 12,
+        "isVisible": true
+      },
+      {
+        "tagName": "nz-icon",
+        "className": "anticon anticon-export",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 12,
+        "height": 12,
+        "isVisible": true
+      },
+      {
+        "tagName": "nz-icon",
+        "className": "anticon anticon-export",
+        "id": "",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 12,
+        "height": 12,
+        "isVisible": true
+      }
+    ]
+  },
+  "recommendations": []
+}

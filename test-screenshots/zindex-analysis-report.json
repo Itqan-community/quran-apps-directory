@@ -1,0 +1,53 @@
+{
+  "timestamp": "2025-11-13T11:20:34.990Z",
+  "listPage": {
+    "url": "http://localhost:4200/en",
+    "images": [
+      {
+        "index": 1,
+        "src": "logo-svg.svg",
+        "className": "logo-image",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 48,
+        "height": 48,
+        "isVisible": true
+      },
+      {
+        "index": 2,
+        "src": "logo-svg.svg",
+        "className": "logo-image",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 40,
+        "height": 40,
+        "isVisible": true
+      }
+    ]
+  },
+  "detailPage": {
+    "url": "http://localhost:4200/en/app/35-study%20quran",
+    "images": [
+      {
+        "index": 1,
+        "src": "logo-svg.svg",
+        "className": "logo-image",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 48,
+        "height": 48,
+        "isVisible": true
+      },
+      {
+        "index": 2,
+        "src": "logo-svg.svg",
+        "className": "logo-image",
+        "zIndex": "auto",
+        "position": "static",
+        "width": 40,
+        "height": 40,
+        "isVisible": true
+      }
+    ]
+  }
+}

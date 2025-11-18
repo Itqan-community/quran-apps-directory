@@ -186,49 +186,81 @@ export class AppListComponent implements OnInit, OnDestroy {
   }
 
   onSearch() {
-    if (!this.searchQuery.trim()) {
-      this.filteredApps = this.apps;
-    } else {
-      this.apiService.searchApps(this.searchQuery, {
-        category: this.selectedCategory !== 'all' ? this.selectedCategory : undefined
-      }).subscribe(apiApps => {
-        this.filteredApps = apiApps.map(app => this.apiService.formatAppForDisplay(app));
-      });
+    const query = this.searchQuery.trim();
+
+    // If query is empty, just respect current category filter
+    if (!query) {
+      this.applyCategoryAndSearchFilters();
+      return;
     }
+
+    // Local, tolerant search on already-loaded apps (avoids strict backend matching)
+    this.applyCategoryAndSearchFilters();
   }
 
   filterByCategory(category: string) {
     this.selectedCategory = category.toLowerCase();
+    this.applyCategoryAndSearchFilters();
+  }
 
-    if (category === 'all') {
-      // If showing all, use the main apps array
-      this.filteredApps = this.searchQuery.trim() ?
-        this.apps.filter(app => this.isAppInSearchResults(app)) :
-        this.apps;
-    } else {
-      // Filter by category using API
-      this.apiService.getApps({
-        category: this.selectedCategory,
-        search: this.searchQuery.trim() || undefined
-      }).subscribe(response => {
-        this.filteredApps = response.results.map(app => this.apiService.formatAppForDisplay(app));
-      });
-    }
+  /**
+   * Apply current category + search query to the in-memory apps list.
+   * This allows us to normalize Arabic text and be tolerant to hamza/diacritics.
+   */
+  private applyCategoryAndSearchFilters(): void {
+    const query = this.searchQuery.trim();
+    const hasQuery = !!query;
+
+    this.filteredApps = this.apps.filter(app => {
+      // Category filter
+      const inCategory = this.selectedCategory === 'all'
+        ? true
+        : (app.categories || []).map(c => c.toLowerCase()).includes(this.selectedCategory);
+
+      if (!inCategory) return false;
+
+      // Search filter
+      return hasQuery ? this.isAppInSearchResults(app) : true;
+    });
+  }
+
+  /**
+   * Normalize text to make search tolerant for Arabic spelling variants
+   * (e.g. "القران" vs "القرآن") and case-insensitive in English.
+   */
+  private normalizeText(text: string): string {
+    if (!text) return '';
+
+    let normalized = text.toLowerCase();
+
+    // Normalize common Arabic variants
+    normalized = normalized
+      // Different forms of alif with hamza/mand
+      .replace(/[أإآ]/g, 'ا')
+      // taa marbuta to ha
+      .replace(/ة/g, 'ه')
+      // yaa/aleph maqsura
+      .replace(/ى/g, 'ي')
+      // remove common Arabic diacritics
+      .replace(/[\u064B-\u0652]/g, '');
+
+    return normalized;
   }
 
   private isAppInSearchResults(app: QuranApp): boolean {
-    if (!this.searchQuery.trim()) return true;
+    const query = this.searchQuery.trim();
+    if (!query) return true;
 
-    const searchLower = this.searchQuery.toLowerCase();
-    const nameEn = app.Name_En?.toLowerCase() || '';
-    const nameAr = app.Name_Ar?.toLowerCase() || '';
-    const descEn = app.Short_Description_En?.toLowerCase() || '';
-    const descAr = app.Short_Description_Ar?.toLowerCase() || '';
+    const searchNorm = this.normalizeText(query);
+    const nameEn = this.normalizeText(app.Name_En || '');
+    const nameAr = this.normalizeText(app.Name_Ar || '');
+    const descEn = this.normalizeText(app.Short_Description_En || '');
+    const descAr = this.normalizeText(app.Short_Description_Ar || '');
 
-    return nameEn.includes(searchLower) ||
-           nameAr.includes(searchLower) ||
-           descEn.includes(searchLower) ||
-           descAr.includes(searchLower);
+    return nameEn.includes(searchNorm) ||
+           nameAr.includes(searchNorm) ||
+           descEn.includes(searchNorm) ||
+           descAr.includes(searchNorm);
   }
 
   startDragging(e: MouseEvent) {

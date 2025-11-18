@@ -58,12 +58,13 @@
       opacity: 0.7;
     }
     
-    &:focus {
-      border-color: var(--primary-color) !important;
-      box-shadow: 0 0 0 2px rgba(255, 140, 66, 0.2) !important;
-      background: var(--surface-color) !important;
-      color: var(--text-color) !important;
-    }
+      &:focus {
+        /* Simplified focus style: consistent dark border, no colored glow */
+        border-color: #000000 !important;
+        box-shadow: none !important;
+        background: var(--surface-color) !important;
+        color: var(--text-color) !important;
+      }
     
     &:hover {
       border-color: var(--primary-color) !important;
@@ -203,9 +204,10 @@
   // Enhanced search input styling for dark mode - comprehensive fix
   .search-section {
     .ant-input-group {
+      /* Dark-mode search box: match cards and other controls */
       background: var(--surface-color) !important;
       border: 1px solid var(--border-color) !important;
-      border-radius: 6px !important;
+      border-radius: 9999px !important;
       overflow: hidden;
       
       .ant-input {
@@ -278,8 +280,9 @@
       }
 
       &:focus-within {
-        border-color: var(--primary-color) !important;
-        box-shadow: 0 0 0 2px rgba(255, 140, 66, 0.2) !important;
+        /* Simplified focus style for the whole search group */
+        border-color: var(--border-color) !important;
+        box-shadow: none !important;
         background: var(--surface-color) !important;
 
         .ant-input-group-addon {
@@ -298,6 +301,11 @@
   
   // Enhanced search icon visibility fix for dark mode
   .search-section {
+    /* Remove native focus outlines in dark mode that appear white */
+    input.ant-input:focus {
+      outline: none !important;
+    }
+
     nz-input-group .ant-input-group-addon {
       [nz-icon] {
         color: #000000 !important;
@@ -561,6 +569,13 @@
 // Smooth transitions for theme changes
 * {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+/* Global search box rounding for light theme as well */
+.search-section .ant-input-group,
+.search-section .ant-input-affix-wrapper,
+.search-section input.ant-input {
+  border-radius: 9999px !important;
 }
 
 // Apply theme colors to body and ensure text is always visible

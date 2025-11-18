@@ -4,41 +4,46 @@
   
   // Search input base styling - theme overrides in themes.scss
   :host ::ng-deep {
+    /* One pill only: style the group as the pill container */
     .ant-input-group {
-      border-radius: 6px;
+      border-radius: 9999px !important;
       overflow: hidden;
       transition: all 0.3s ease;
+    }
+
+    /* Let the input be flat inside the pill and inherit background */
+    .ant-input {
+      border-radius: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      font-size: 16px;
+      padding: 8px 16px;
+      transition: all 0.3s ease;
+    }
+
+    .ant-input-group-addon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 14px;
       
-      .ant-input {
-        font-size: 16px;
-        padding: 8px 12px;
+      .anticon {
+        font-size: 14px;
         transition: all 0.3s ease;
       }
       
-      .ant-input-group-addon {
+      span[nz-icon] {
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 8px 12px;
+        width: 14px;
+        height: 14px;
         
-        .anticon {
-          font-size: 14px;
-          transition: all 0.3s ease;
-        }
-        
-        span[nz-icon] {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 14px;
-          height: 14px;
-          
-          // Ensure search icon is visible in both light and dark modes
-          svg {
-            width: 14px !important;
-            height: 14px !important;
-            fill: currentColor !important;
-          }
+        svg {
+          width: 14px !important;
+          height: 14px !important;
+          fill: currentColor !important;
         }
       }
     }
@@ -49,20 +54,21 @@
     .ant-input-group {
       .ant-input-group-addon {
         span[nz-icon] {
-          color: #000000 !important;
+          /* In dark mode, use light icon color so it’s visible on dark background */
+          color: #ffffff !important;
           opacity: 1 !important;
           
           svg {
-            fill: #000000 !important;
-            color: #000000 !important;
+            fill: #ffffff !important;
+            color: #ffffff !important;
           }
           
           .anticon {
-            color: #000000 !important;
+            color: #ffffff !important;
             
             svg {
-              fill: #000000 !important;
-              color: #000000 !important;
+              fill: #ffffff !important;
+              color: #ffffff !important;
             }
           }
         }
@@ -402,11 +408,15 @@
     overflow: hidden;
     .app-icon-container {
       margin-inline-end: 16px;
+      position: relative;
+      z-index: 2; // Ensure icon stays above screenshot images
       .app-icon {
         width: 57px;
         height: 57px;
         border-radius: 12px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 2; // Safari fix: explicit z-index for icon
       }
     }
     .card-data-container {

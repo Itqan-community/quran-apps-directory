@@ -328,11 +328,15 @@ html[dir="rtl"] .content-section {
     overflow: hidden;
     .app-icon-container {
       margin-inline-end: 16px;
+      position: relative;
+      z-index: 2; // Ensure icon stays above screenshot images
       .app-icon {
         width: 57px;
         height: 57px;
         border-radius: 12px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 2; // Safari fix: explicit z-index for icon
       }
     }
     .card-data-container {
