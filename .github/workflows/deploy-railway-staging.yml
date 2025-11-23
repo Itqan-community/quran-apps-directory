@@ -1,0 +1,65 @@
+name: Deploy to Railway (Staging)
+
+on:
+  push:
+    branches:
+      - staging
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-railway-staging.yml'
+  workflow_dispatch:
+
+env:
+  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+jobs:
+  deploy:
+    name: Deploy Backend to Railway Staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm i -g @railway/cli
+
+      - name: Deploy to Railway (Staging)
+        run: |
+          railway up --service quran-apps-api-staging --detach
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Wait for deployment
+        run: sleep 30
+
+      - name: Health check staging API
+        run: |
+          echo "Running health check on staging API..."
+          DEPLOY_URL="https://staging.api.quran-apps.itqan.dev"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOY_URL/health" || echo "0")
+
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "✅ Health check passed: Staging API is healthy"
+          else
+            echo "⚠️  Health check returned: $HTTP_STATUS (may still be starting up)"
+          fi
+
+      - name: Deployment summary
+        run: |
+          echo "## Staging Backend Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Status:** Deployment initiated" >> $GITHUB_STEP_SUMMARY
+          echo "🌐 **URL:** https://staging.api.quran-apps.itqan.dev" >> $GITHUB_STEP_SUMMARY
+          echo "🔀 **Branch:** staging" >> $GITHUB_STEP_SUMMARY
+          echo "📦 **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "👤 **Triggered by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "🚀 **Service:** quran-apps-api-staging" >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Staging deployment failed"
+          echo "Please check Railway dashboard: https://railway.app"
+        continue-on-error: true
