@@ -15,7 +15,7 @@ import type { QuranApp } from "../../services/app.service";
 import { ApiService, Category } from "../../services/api.service";
 import { Title, Meta } from "@angular/platform-browser";
 import { combineLatest, of, Subject } from "rxjs";
-import { catchError, finalize, takeUntil } from "rxjs/operators";
+import { catchError, finalize, takeUntil, switchMap, debounceTime } from "rxjs/operators";
 import { SeoService } from "../../services/seo.service";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
@@ -112,26 +112,37 @@ export class AppListComponent implements OnInit, OnDestroy {
     this.loadData();
 
     // Subscribe to route changes for category filtering
+    // Use debounceTime to prevent race conditions from rapid clicks
     this.route.paramMap
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(params => {
-        const lang = params.get('lang');
-        const category = params.get('category');
+      .pipe(
+        debounceTime(50),
+        switchMap(params => {
+          const lang = params.get('lang');
+          const category = params.get('category');
 
-        if (lang) {
-          this.currentLang = lang as "en" | "ar";
-        }
+          if (lang) {
+            this.currentLang = lang as "en" | "ar";
+          }
 
-        // If we're on a category-specific route, use that category
-        // If we're on the base route (no category), show all apps
-        if (category) {
-          this.selectedCategory = category.toLowerCase();
-          this.filterByCategory(this.selectedCategory);
-        } else {
-          this.selectedCategory = 'all';
-          this.filteredApps = this.apps; // Show all apps
-        }
+          // Set the selected category
+          this.selectedCategory = category ? category.toLowerCase() : 'all';
 
+          // Wait for apps to be loaded before filtering
+          return this.apiService.apps$.pipe(
+            switchMap(() => {
+              // Now that apps are loaded, apply the filter
+              if (this.selectedCategory === 'all') {
+                this.filteredApps = this.apps;
+              } else {
+                this.filterByCategory(this.selectedCategory);
+              }
+              return of(params);
+            })
+          );
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
         // Scroll to top of page when route changes
         window.scrollTo({ top: 0, behavior: 'auto' });
 
