@@ -38,7 +38,7 @@ jobs:
         run: node generate-sitemap.js
 
       - name: Build Angular application
-        run: npm run build:dev
+        run: node generate-sitemap.js && ng build --configuration=develop
 
       - name: Verify build output
         run: |

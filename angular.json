@@ -31,6 +31,20 @@
               "outputHashing": "all",
               "sourceMap": true
             },
+            "develop": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.develop.ts"
+                }
+              ],
+              "aot": true,
+              "extractLicenses": true,
+              "namedChunks": true,
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true
+            },
             "production": {
               "fileReplacements": [
                 {

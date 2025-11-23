@@ -3,8 +3,9 @@ export const environment = {
   staging: true,
   development: false,
   appName: 'Quran Apps Directory (Staging)',
-  appUrl: 'https://staging.quran-apps.itqan.dev',
-  apiUrl: 'https://staging.api.quran-apps.itqan.dev/api',
+  appUrl: 'https://staging.quran-apps-directory-frontend.pages.dev',
+  // Update this with the actual Railway staging service URL
+  apiUrl: 'https://qad-backend-api-staging.up.railway.app/api',
   version: '1.0.0-staging',
   analytics: {
     enabled: false,
