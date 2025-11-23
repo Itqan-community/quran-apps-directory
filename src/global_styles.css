@@ -14,9 +14,40 @@
 }
 
 /* Critical layout styles only */
+html {
+  background: #ffffff;
+}
+
 body {
   margin: 0;
+  background: #ffffff;
+  display: block;
+  min-height: 100vh;
   font-family: 'Rubik', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+app-root {
+  display: block;
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+/* Dark theme support for initial load */
+.dark-theme app-root,
+[data-theme="dark"] app-root,
+[data-theme="dark"] body,
+[data-theme="dark"] html {
+  background: #1a1a1a;
+}
+
+.dark-theme body,
+[data-theme="dark"] body {
+  background: #1a1a1a;
+}
+
+.dark-theme html,
+[data-theme="dark"] html {
+  background: #1a1a1a;
 }
 
 h1, h2, h3, h4, h5, h6 {

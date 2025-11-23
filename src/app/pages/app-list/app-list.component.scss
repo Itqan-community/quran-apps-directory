@@ -1,7 +1,7 @@
 .search-section {
   margin-bottom: 32px;
   margin-top: 30px;
-  
+
   // Search input base styling - theme overrides in themes.scss
   :host ::ng-deep {
     /* One pill only: style the group as the pill container */
@@ -27,19 +27,19 @@
       align-items: center;
       justify-content: center;
       padding: 0 14px;
-      
+
       .anticon {
         font-size: 14px;
         transition: all 0.3s ease;
       }
-      
+
       span[nz-icon] {
         display: flex;
         align-items: center;
         justify-content: center;
         width: 14px;
         height: 14px;
-        
+
         svg {
           width: 14px !important;
           height: 14px !important;
@@ -48,45 +48,52 @@
       }
     }
   }
-  
+
   // Enhanced dark mode search icon visibility
   :host-context(.dark-theme) ::ng-deep {
     .ant-input-group {
       .ant-input-group-addon {
-        span[nz-icon] {
-          /* In dark mode, use light icon color so it’s visible on dark background */
-          color: #ffffff !important;
+        /* Make addon background transparent to see icon */
+        background: transparent !important;
+
+        /* Target the icon span and all descendants */
+        span[nz-icon],
+        span[nz-icon] *,
+        .anticon,
+        .anticon * {
+          color: #000000 !important;
+          fill: #000000 !important;
+          stroke: #000000 !important;
+        }
+
+        /* Force black on SVG elements */
+        svg,
+        svg path,
+        svg circle,
+        svg line,
+        svg rect,
+        svg g {
+          color: #000000 !important;
+          fill: #000000 !important;
+          stroke: #000000 !important;
           opacity: 1 !important;
-          
-          svg {
-            fill: #ffffff !important;
-            color: #ffffff !important;
-          }
-          
-          .anticon {
-            color: #ffffff !important;
-            
-            svg {
-              fill: #ffffff !important;
-              color: #ffffff !important;
-            }
-          }
+          visibility: visible !important;
         }
       }
-      
+
       &:hover {
         .ant-input-group-addon {
           span[nz-icon] {
             color: #ff8c42 !important;
-            
+
             svg {
               fill: #ff8c42 !important;
               color: #ff8c42 !important;
             }
-            
+
             .anticon {
               color: #ff8c42 !important;
-              
+
               svg {
                 fill: #ff8c42 !important;
                 color: #ff8c42 !important;
@@ -95,20 +102,20 @@
           }
         }
       }
-      
+
       &:focus-within {
         .ant-input-group-addon {
           span[nz-icon] {
             color: #ff8c42 !important;
-            
+
             svg {
               fill: #ff8c42 !important;
               color: #ff8c42 !important;
             }
-            
+
             .anticon {
               color: #ff8c42 !important;
-              
+
               svg {
                 fill: #ff8c42 !important;
                 color: #ff8c42 !important;
@@ -121,25 +128,24 @@
   }
 }
 .search-section-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 16px;
   margin-top: 30px;
   h1 {
     margin: 0;
     color: var(--text-color, #000);
   }
-  // responsive
+  // responsive - mobile adjustments
   @media screen and (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
     margin-top: 15px;
+    row-gap: 12px;
     h1 {
-      margin-bottom: 10px;
+      margin-bottom: 0;
     }
     .search-section {
       margin-top: 0;
-      margin-bottom: 10px;
+      margin-bottom: 0;
       width: 100%;
     }
   }
@@ -200,7 +206,7 @@
     .ant-rate-star:not(:last-child) {
       margin-right: 3px;
     }
-    
+
     /* RTL: Fix star spacing */
     [dir="rtl"] & .ant-rate-star:not(:last-child) {
       margin-right: 0;
@@ -214,67 +220,67 @@
       display: inline-flex;
       align-items: center;
     }
-    
+
     /* Color stars based on rating quality */
     &.excellent .ant-rate-star-full .anticon {
       color: #52c41a !important; /* Bright green stars for excellent */
     }
-    
+
     &.very-good .ant-rate-star-full .anticon {
       color: #73d13d !important; /* Light green stars for very good */
     }
-    
+
     &.good .ant-rate-star-full .anticon {
       color: #faad14 !important; /* Yellow stars for good */
     }
-    
+
     &.fair .ant-rate-star-full .anticon {
       color: #fa8c16 !important; /* Orange stars for fair */
     }
-    
+
     &.poor .ant-rate-star-full .anticon {
       color: #ff4d4f !important; /* Red stars for poor */
     }
-    
+
     /* Half stars also get colored */
     &.excellent .ant-rate-star-half .anticon {
       color: #52c41a !important;
     }
-    
+
     &.very-good .ant-rate-star-half .anticon {
       color: #73d13d !important;
     }
-    
+
     &.good .ant-rate-star-half .anticon {
       color: #faad14 !important;
     }
-    
+
     &.fair .ant-rate-star-half .anticon {
       color: #fa8c16 !important;
     }
-    
+
     &.poor .ant-rate-star-half .anticon {
       color: #ff4d4f !important;
     }
-    
+
     /* Empty stars get subtle background color */
     .ant-rate-star-zero .anticon {
       color: #f0f0f0 !important;
     }
   }
-  
+
   /* Custom star system for precise ratings */
   .custom-stars {
     display: flex;
     gap: 2px;
     align-items: center;
-    
+
     .star-container {
       position: relative;
       width: 14px;
       height: 14px;
       overflow: hidden;
-      
+
       .star-base {
         position: absolute;
         top: 0;
@@ -284,7 +290,7 @@
         color: #f0f0f0;
         user-select: none;
       }
-      
+
       .star-fill {
         position: absolute;
         top: 0;
@@ -296,7 +302,7 @@
         transition: width 0.3s ease;
       }
     }
-    
+
     /* RTL: Fix partial star fill direction - stars should fill from right to left */
     [dir="rtl"] & .star-container {
       .star-fill {
@@ -305,24 +311,24 @@
         direction: rtl;
       }
     }
-    
+
     /* Color the filled stars based on rating quality */
     &.excellent .star-fill {
       color: #52c41a;
     }
-    
+
     &.very-good .star-fill {
       color: #73d13d;
     }
-    
+
     &.good .star-fill {
       color: #faad14;
     }
-    
+
     &.fair .star-fill {
       color: #fa8c16;
     }
-    
+
     &.poor .star-fill {
       color: #ff4d4f;
     }
@@ -368,7 +374,6 @@
           transform: scaleX(-1) !important;
         }
       }
-
     }
     &--title {
       font-size: 14px;
@@ -395,41 +400,219 @@
 .app-grid {
   margin-bottom: 30px;
 
+  .app-grid-col {
+    display: flex; /* Safari fix: ensure columns are flex containers */
+  }
+
+  .app-grid-row {
+    align-items: stretch; /* Safari fix: ensure columns stretch equally */
+  }
+
   .app-card {
     border-radius: 16px;
     background-color: #ffffff;
     border: 1px solid #e8e8e8;
     height: 100%;
+    width: 100%;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     overflow: hidden;
-    .app-icon-container {
-      margin-inline-end: 16px;
-      position: relative;
-      z-index: 2; // Ensure icon stays above screenshot images
-      .app-icon {
-        width: 57px;
-        height: 57px;
-        border-radius: 12px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        position: relative;
-        z-index: 2; // Safari fix: explicit z-index for icon
-      }
-    }
-    .card-data-container {
-      min-width: 0;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+
     &:hover {
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       border-color: #d0d0d0;
+    }
+  }
+
+  .app-card__cover {
+    aspect-ratio: 300 / 220;
+    max-height: 220px;
+    overflow: hidden;
+    background: #f5f5f5;
+
+    .app-card__cover-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  .app-card__body {
+    background: #ffffff;
+    color: #212529;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .app-card__row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .app-card__icon-wrap {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .app-card__icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
+
+  .app-card__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .app-card__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .app-card__desc {
+    font-size: 13px;
+    color: #6c757d;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .app-card__rating {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-top: 8px;
+  }
+
+  .app-card__rating-value {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    min-width: 36px;
+    padding: 2px 6px;
+    border-radius: 4px;
+
+    &.excellent {
+      background-color: #52c41a;
+      color: white;
+    }
+
+    &.very-good {
+      background-color: #73d13d;
+      color: white;
+    }
+
+    &.good {
+      background-color: #faad14;
+      color: white;
+    }
+
+    &.fair {
+      background-color: #fa8c16;
+      color: white;
+    }
+
+    &.poor {
+      background-color: #ff4d4f;
+      color: white;
+    }
+  }
+
+  .app-card__stars {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+
+    .star-container {
+      position: relative;
+      width: 14px;
+      height: 14px;
+      overflow: hidden;
+
+      .star-base {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 14px;
+        line-height: 1;
+        color: #f0f0f0;
+        user-select: none;
+      }
+
+      .star-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 14px;
+        line-height: 1;
+        overflow: hidden;
+        user-select: none;
+        transition: width 0.3s ease;
+      }
+    }
+
+    /* RTL: Fix partial star fill direction */
+    [dir="rtl"] & .star-container {
+      .star-fill {
+        left: auto;
+        right: 0;
+        direction: rtl;
+      }
+    }
+
+    &.excellent .star-fill {
+      color: #52c41a;
+    }
+
+    &.very-good .star-fill {
+      color: #73d13d;
+    }
+
+    &.good .star-fill {
+      color: #faad14;
+    }
+
+    &.fair .star-fill {
+      color: #fa8c16;
+    }
+
+    &.poor .star-fill {
+      color: #ff4d4f;
     }
   }
 
@@ -445,24 +628,16 @@
       padding: 0 12px;
     }
 
-    .app-card {
-      border-radius: 16px;
-      background: #ffffff;
-      border: 1px solid #e8e8e8;
-      padding: 16px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    .app-card__body {
+      padding: 12px 16px;
+    }
 
-      .ant-card-cover {
-        margin: -16px -16px 16px;
-      }
+    .app-card__title {
+      font-size: 15px;
+    }
 
-      .ant-card-body {
-        padding: 0;
-      }
-
-      .card-data-container {
-        margin-top: 12px;
-      }
+    .app-card__desc {
+      font-size: 12px;
     }
   }
 }
@@ -485,7 +660,8 @@
   padding: 14px 16px 12px 16px; /* Reduced bottom padding */
   display: flex;
   flex-direction: column;
-  min-height: 165px; /* Reduced minimum height for tighter layout */
+  flex: 1 1 auto; /* Allow body to stretch inside card for consistent heights */
+  min-height: 120px; /* Reduced minimum height for tighter layout */
 
   .ant-flex {
     flex: 1;
@@ -493,6 +669,9 @@
     flex-direction: row;
     gap: 0;
     margin-bottom: 8px; /* Space between content and rating */
+    align-items: flex-start;
+    width: 100%; /* Safari fix: explicit width for flex container */
+    min-width: 0; /* Safari fix: allow flex children to shrink below content size */
   }
 
   .ant-card-meta {
@@ -518,28 +697,28 @@
   min-width: 36px; /* Ensures consistent width for ratings */
   padding: 2px 6px;
   border-radius: 4px;
-  
+
   /* Color coding based on rating ranges */
   &.excellent {
     background-color: #52c41a;
     color: white;
   }
-  
+
   &.very-good {
     background-color: #73d13d;
     color: white;
   }
-  
+
   &.good {
     background-color: #faad14;
     color: white;
   }
-  
+
   &.fair {
     background-color: #fa8c16;
     color: white;
   }
-  
+
   &.poor {
     background-color: #ff4d4f;
     color: white;
@@ -570,13 +749,13 @@
     &--title {
       font-weight: normal;
     }
-    .category-icon { 
+    .category-icon {
       width: 40px;
       height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #F8F8F8;
+      background-color: #f8f8f8;
       border-radius: 5px;
       font-weight: normal;
       svg {
@@ -597,8 +776,6 @@
     }
   }
 
- 
-
   /* Make ratings more compact on mobile */
   .app-rating nz-rate {
     font-size: 16px;
@@ -611,12 +788,32 @@
 
 /* Dark theme card styling */
 :host-context(.dark-theme) .app-card {
-  background: var(--bg-secondary) !important;
-  border-color: var(--border-color) !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
-  
+  border-color: var(--border-color, #333333) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+
   &:hover {
     border-color: rgba(255, 140, 66, 0.4) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
   }
+}
+
+:host-context(.dark-theme) .app-card__cover {
+  background: #1a1a1a;
+}
+
+:host-context(.dark-theme) .app-card__body {
+  background: #1e1e1e;
+  color: #e2e8f0;
+}
+
+:host-context(.dark-theme) .app-card__icon-wrap {
+  background: #2a2a2a;
+}
+
+:host-context(.dark-theme) .app-card__title {
+  color: #ffffff;
+}
+
+:host-context(.dark-theme) .app-card__desc {
+  color: #b3b3b3;
 }

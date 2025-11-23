@@ -56,6 +56,7 @@ export class AppListComponent implements OnInit, OnDestroy {
   private categoriesContainer: HTMLElement | null = null;
   currentLang: "en" | "ar" = 'en'; // Initialize with browser language
   selectedCategory: string = 'all';
+  isDarkMode = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -90,6 +91,23 @@ export class AppListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // Check initial dark mode state
+    this.updateDarkModeState();
+
+    // Listen for dark mode changes
+    const observer = new MutationObserver(() => {
+      this.updateDarkModeState();
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    this.destroy$.subscribe(() => {
+      observer.disconnect();
+    });
+
     // Load categories and apps from API
     this.loadData();
 
@@ -146,6 +164,10 @@ export class AppListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private updateDarkModeState() {
+    this.isDarkMode = document.documentElement.classList.contains('dark-theme');
   }
 
   private loadData() {

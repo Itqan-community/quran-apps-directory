@@ -19,7 +19,7 @@
         </nz-input-group>
         <!-- Search icon template -->
         <ng-template #searchPrefix>
-          <span nz-icon nzType="search" nzTheme="outline"></span>
+          <span nz-icon nzType="search" nzTheme="outline" [style.color]="isDarkMode ? '#000000' : 'inherit'"></span>
         </ng-template>
       </div>
     </div>
@@ -32,7 +32,7 @@
       nzShowIcon
       nzCloseable
       (nzOnClose)="error = null"
-      style="margin-bottom: 20px;"
+      style="margin-bottom: 20px"
     ></nz-alert>
 
     <!-- Loading Spinner -->
@@ -51,7 +51,7 @@
       <!-- Grid of category buttons -->
       <div
         class="categories-grid"
-        style="padding-right: 10px; padding-left: 10px;"
+        style="padding-right: 10px; padding-left: 10px"
         (mousedown)="startDragging($event)"
         (mousemove)="onDrag($event)"
         (mouseup)="stopDragging()"
@@ -68,11 +68,21 @@
           data-category="all"
         >
           <span class="category-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-              <path fill="#A0533B" d="M3.75 3.75v4.5h4.5v-4.5zm-2.25 0A2.25 2.25 0 0 1 3.75 1.5h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5A2.25 2.25 0 0 1 1.5 8.25zm2.25 12v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25zm18.75-12h-4.5v4.5h4.5zm-4.5-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25v-4.5a2.25 2.25 0 0 1 2.25-2.25m0 14.25v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25z"/>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+            >
+              <path
+                fill="#A0533B"
+                d="M3.75 3.75v4.5h4.5v-4.5zm-2.25 0A2.25 2.25 0 0 1 3.75 1.5h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5A2.25 2.25 0 0 1 1.5 8.25zm2.25 12v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25zm18.75-12h-4.5v4.5h4.5zm-4.5-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25v-4.5a2.25 2.25 0 0 1 2.25-2.25m0 14.25v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25z"
+              />
             </svg>
           </span>
-          <span class="category-item--title">{{ "appList.categories.all" | translate }}</span>
+          <span class="category-item--title">{{
+            "appList.categories.all" | translate
+          }}</span>
         </div>
 
         <!-- Dynamic Categories from API -->
@@ -82,11 +92,19 @@
           [routerLink]="['/', currentLang, category.slug]"
           [routerLinkActive]="'selected'"
           role="button"
-          [attr.aria-label]="'Filter by ' + (currentLang === 'ar' ? category.name_ar : category.name_en)"
+          [attr.aria-label]="
+            'Filter by ' +
+            (currentLang === 'ar' ? category.name_ar : category.name_en)
+          "
           [attr.data-category]="category.slug"
         >
-          <span class="category-icon" [innerHTML]="(category.icon || getDefaultCategoryIcon()) | safeHtml"></span>
-          <span class="category-item--title">{{ currentLang === 'ar' ? category.name_ar : category.name_en }}</span>
+          <span
+            class="category-icon"
+            [innerHTML]="category.icon || getDefaultCategoryIcon() | safeHtml"
+          ></span>
+          <span class="category-item--title">{{
+            currentLang === "ar" ? category.name_ar : category.name_en
+          }}</span>
         </div>
       </div>
     </div>
@@ -100,7 +118,10 @@
     </div>
 
     <!-- Loading State for Apps -->
-    <div class="loading-container" *ngIf="isLoading && filteredApps.length === 0">
+    <div
+      class="loading-container"
+      *ngIf="isLoading && filteredApps.length === 0"
+    >
       <nz-spin [nzSpinning]="true" nzSize="large">
         <div class="loading-placeholder">
           <p>{{ "loading.apps" | translate }}</p>
@@ -119,7 +140,16 @@
     <!-- Grid of app cards -->
     <div class="app-grid" *ngIf="filteredApps.length > 0">
       <div nz-row [nzGutter]="[24, 24]" class="app-grid-row">
-        <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="6" nzXl="6" class="app-grid-col" *ngFor="let app of filteredApps; let i = index">
+        <div
+          nz-col
+          nzXs="24"
+          nzSm="12"
+          nzMd="8"
+          nzLg="6"
+          nzXl="6"
+          class="app-grid-col"
+          *ngFor="let app of filteredApps; let i = index"
+        >
           <!-- App card with cover image -->
           <nz-card
             [nzCover]="coverTemplate"
@@ -130,56 +160,102 @@
             itemtype="https://schema.org/SoftwareApplication"
           >
             <ng-template #coverTemplate>
-              <div style="max-height: 220px; overflow: hidden; aspect-ratio: 300/220;">
+              <div class="app-card__cover">
                 <!-- Use optimized images with smart loading strategy -->
                 <app-optimized-image
-                  [src]="(currentLang === 'en' ? app.mainImage_en : app.mainImage_ar) || ''"
+                  [src]="
+                    (currentLang === 'en'
+                      ? app.mainImage_en
+                      : app.mainImage_ar) || ''
+                  "
                   [alt]="app.Name_En + ' screenshot'"
-                  cssStyle="width: 100%; height: 100%; object-fit: cover;"
-                  cssClass="cover-image"
+                  cssClass="app-card__cover-image"
                   width="300"
                   height="220"
                   aspectRatio="300/220"
                   [loading]="getImageLoadingStrategy(i)"
-                  [fetchpriority]="getImagePriority(i)">
+                  [fetchpriority]="getImagePriority(i)"
+                >
                 </app-optimized-image>
               </div>
             </ng-template>
-    
-            <div class="ant-flex">
-              <div class="app-icon-container">
-                <!-- Optimized app icon with fixed aspect ratio -->
-                <app-optimized-image
-                  [src]="app.applicationIcon || ''"
-                  [alt]="app.Name_En + ' icon'"
-                  [aspectRatio]="getImageAspectRatio('icon')"
-                  cssClass="app-icon"
-                  width="38"
-                  height="38"
-                  aspectRatio="1/1"
-                  loading="lazy"
-                  fetchpriority="low">
-                </app-optimized-image>
+
+            <div class="app-card__body">
+              <div class="app-card__row">
+                <div class="app-card__icon-wrap">
+                  <!-- Optimized app icon with fixed aspect ratio -->
+                  <app-optimized-image
+                    [src]="app.applicationIcon || ''"
+                    [alt]="app.Name_En + ' icon'"
+                    cssClass="app-card__icon"
+                    width="60"
+                    height="60"
+                    aspectRatio="1/1"
+                    loading="lazy"
+                    fetchpriority="low"
+                  >
+                  </app-optimized-image>
+                </div>
+                <div class="app-card__text">
+                  <div class="app-card__title">
+                    {{ currentLang === "en" ? app.Name_En : app.Name_Ar }}
+                  </div>
+                  <div class="app-card__desc">
+                    {{
+                      currentLang === "en"
+                        ? app.Short_Description_En
+                        : app.Short_Description_Ar
+                    }}
+                  </div>
+                </div>
               </div>
-              <div class="card-data-container">
-                <nz-card-meta
-                  [nzTitle]="currentLang === 'en' ? app.Name_En : app.Name_Ar"
-                  [nzDescription]="currentLang === 'en' ? app.Short_Description_En : app.Short_Description_Ar"
-                ></nz-card-meta>
-                <meta itemprop="name" [content]="currentLang === 'en' ? app.Name_En : app.Name_Ar">
-                <meta itemprop="description" [content]="currentLang === 'en' ? app.Short_Description_En : app.Short_Description_Ar">
-                <meta itemprop="applicationCategory" content="Islamic Application">
-                <meta itemprop="operatingSystem" [content]="'Mobile App'">
-                <meta itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
-                <meta itemprop="ratingValue" [content]="app.Apps_Avg_Rating">
-                <meta itemprop="ratingCount" content="100">
-                <!-- Rating display -->
-                <div class="app-rating">
-                  <span class="rating-number" [ngClass]="getRatingClass(app.Apps_Avg_Rating)">{{ (app.Apps_Avg_Rating || 0) | number:'1.1-1' }}</span>
-                  <div class="custom-stars" [ngClass]="getRatingClass(app.Apps_Avg_Rating)">
-                    <div class="star-container" *ngFor="let star of getStarArray(app.Apps_Avg_Rating); let i = index">
-                      <div class="star-base">★</div>
-                      <div class="star-fill" [style.width.%]="star.fillPercent">★</div>
+
+              <meta
+                itemprop="name"
+                [content]="currentLang === 'en' ? app.Name_En : app.Name_Ar"
+              />
+              <meta
+                itemprop="description"
+                [content]="
+                  currentLang === 'en'
+                    ? app.Short_Description_En
+                    : app.Short_Description_Ar
+                "
+              />
+              <meta
+                itemprop="applicationCategory"
+                content="Islamic Application"
+              />
+              <meta itemprop="operatingSystem" [content]="'Mobile App'" />
+              <meta
+                itemprop="aggregateRating"
+                itemscope
+                itemtype="https://schema.org/AggregateRating"
+              />
+              <meta itemprop="ratingValue" [content]="app.Apps_Avg_Rating" />
+              <meta itemprop="ratingCount" content="100" />
+
+              <!-- Rating display -->
+              <div class="app-card__rating">
+                <span
+                  class="app-card__rating-value"
+                  [ngClass]="getRatingClass(app.Apps_Avg_Rating)"
+                  >{{ app.Apps_Avg_Rating || 0 | number: "1.1-1" }}</span
+                >
+                <div
+                  class="app-card__stars"
+                  [ngClass]="getRatingClass(app.Apps_Avg_Rating)"
+                >
+                  <div
+                    class="star-container"
+                    *ngFor="
+                      let star of getStarArray(app.Apps_Avg_Rating);
+                      let i = index
+                    "
+                  >
+                    <div class="star-base">★</div>
+                    <div class="star-fill" [style.width.%]="star.fillPercent">
+                      ★
                     </div>
                   </div>
                 </div>
@@ -188,7 +264,6 @@
           </nz-card>
         </div>
       </div>
-
     </div>
   </div>
 </div>

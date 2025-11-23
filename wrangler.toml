@@ -1,0 +1,17 @@
+name = "quran-apps-directory-frontend"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "quran-apps-directory-frontend"
+
+[[env.production.route]]
+pattern = "quran-apps.itqan.dev"
+
+[build]
+command = "npm run build:prod"
+cwd = "."
+watch_dir = "src"
+
+[build.upload]
+format = "service-worker"
+dir = "dist/browser"

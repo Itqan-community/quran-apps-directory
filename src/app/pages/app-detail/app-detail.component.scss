@@ -272,6 +272,21 @@ html[dir="rtl"] .content-section {
     margin-top: 6px;
     margin-inline-end: 10px;
   }
+
+  @media screen and (max-width: 600px) {
+    flex-direction: column;
+    align-items: center;
+
+    .icon {
+      margin-inline-end: 0;
+      margin-bottom: 8px;
+    }
+
+    .dev-data {
+      text-align: center;
+      width: 100%;
+    }
+  }
 }
 
 .download-links {
@@ -380,15 +395,25 @@ html[dir="rtl"] .content-section {
   display: none;
 }
 ::ng-deep .ant-card-body {
-  padding: 20px;
+  padding: 14px 16px 12px 16px; /* Match app-list styling */
   display: flex;
   flex-direction: column;
-  height: 60%;
-  
+  flex: 1 1 auto; /* Allow body to stretch inside card for consistent heights */
+  min-height: 120px; /* Reduced minimum height for tighter layout */
+
   .ant-flex {
     flex: 1;
     display: flex;
-    height: 100%;
+    flex-direction: row;
+    gap: 0;
+    margin-bottom: 8px; /* Space between content and rating */
+    align-items: flex-start;
+    width: 100%; /* Safari fix: explicit width for flex container */
+    min-width: 0; /* Safari fix: allow flex children to shrink below content size */
+  }
+
+  .ant-card-meta {
+    margin-bottom: 0;
   }
 }
 
@@ -526,10 +551,10 @@ html[dir="rtl"] .content-section {
 
 .app-rating {
   margin-top: auto; /* Push to bottom */
-  padding-top: 16px; /* Increased space from description */
+  padding-top: 8px; /* Reduced space from description */
   display: flex;
   align-items: center;
-  height: 24px; /* Fixed height for consistent alignment */
+  height: auto; /* Let content determine height */
   gap: 8px; /* Consistent spacing */
 }
 

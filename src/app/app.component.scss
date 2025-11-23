@@ -1,18 +1,18 @@
-.app-layout {
-  min-height: 100vh;
-}
-
 // Modern Header Styles
 .modern-header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
   background: transparent;
   border-bottom: none;
   backdrop-filter: none;
   box-shadow: none;
-  margin-top: 30px;
-  padding: 0 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: max(16px, env(safe-area-inset-top, 0));
+  padding-bottom: 16px;
 
   .header-container {
     display: flex;
@@ -26,7 +26,7 @@
     border-radius: 16px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     border: 1px solid var(--border-color);
-    
+
     .dark-theme & {
       background: #1a1a1a;
       border-color: #333333;
@@ -35,6 +35,8 @@
 
     // Logo Section
       .logo-section {
+        margin-inline-end: 24px;
+
         .logo-wrapper {
     position: relative;
           display: inline-block;
@@ -272,7 +274,7 @@
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
-    z-index: 999;
+    z-index: 900;
 
     &.visible {
       opacity: 1;
@@ -588,6 +590,15 @@ nz-footer.main-footer {
 }
 :host ::ng-deep .ant-layout-content {
   min-height: 100vh !important;
+  padding-top: 85px !important;
+
+  @media (max-width: 768px) {
+    padding-top: 78px !important;
+  }
+
+  @media (max-width: 480px) {
+    padding-top: 72px !important;
+  }
 }
 
 // Light theme specific adjustments for modern header

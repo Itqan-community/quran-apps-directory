@@ -49,3 +49,5 @@ venv
 # Deployment scripts with secrets
 backend-update-spec.json
 backend-userdata.sh
+AGENTS.md
+.code/
