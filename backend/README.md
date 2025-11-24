@@ -400,3 +400,4 @@ For support and questions:
 - Create an issue in the repository
 - Email: connect@itqan.dev
 - Website: https://quran-apps.itqan.dev
+<!-- Deployment trigger: 2025-11-24 -->
