@@ -21,12 +21,23 @@ def list_apps(request):
     """
     List all published Quranic applications.
 
-    Supports filtering by category, platform, and featured status.
+    Supports filtering by category, platform, featured status, and developer.
     Supports search in English and Arabic.
     Supports ordering by various fields.
+
+    Query Parameters:
+    - search: Search in app names and descriptions
+    - developer_id: Filter by developer ID (most robust)
+    - category: Filter by category slug
+    - platform: Filter by platform (android, ios, web, cross_platform)
+    - featured: Filter by featured status (true/false)
+    - ordering: Order by field(s) (default: sort_order,name_en)
+    - page: Page number (default: 1)
+    - page_size: Items per page (default: 100)
     """
     # Extract query parameters manually from request
     search = request.GET.get('search', '').strip() or None
+    developer_id = request.GET.get('developer_id', '').strip() or None
     category = request.GET.get('category', '').strip() or None
     platform = request.GET.get('platform', '').strip() or None
     featured_str = request.GET.get('featured', '').strip()
@@ -52,6 +63,8 @@ def list_apps(request):
     filters = {}
     if search:
         filters['search'] = search
+    if developer_id:
+        filters['developer_id'] = developer_id
     if category:
         filters['category'] = category
     if platform:

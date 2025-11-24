@@ -90,6 +90,10 @@ class AppService:
 
         # Apply filters
         if filters:
+            # Developer ID filter (most robust - exact match by ID)
+            if filters.get('developer_id'):
+                queryset = queryset.filter(developer_id=filters['developer_id'])
+
             # Search filter (search in name and descriptions)
             if filters.get('search'):
                 search_term = filters['search']

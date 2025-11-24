@@ -153,7 +153,7 @@
           <!-- App card with cover image -->
           <nz-card
             [nzCover]="coverTemplate"
-            [routerLink]="['/', currentLang, 'app', app.slug]"
+            [routerLink]="['/', currentLang, 'app', getAppUrlParam(app)]"
             [attr.aria-label]="'View details for ' + app.Name_En"
             class="app-card"
             itemscope

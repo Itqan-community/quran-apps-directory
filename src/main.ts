@@ -6,17 +6,17 @@ import { CacheInterceptor } from './app/interceptors/cache.interceptor';
 import { routes } from './app/app.routes';
 import { NzConfig, provideNzConfig } from 'ng-zorro-antd/core/config';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { importProvidersFrom } from '@angular/core';
+import { importProvidersFrom, ErrorHandler, Injectable, NgZone } from '@angular/core';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app/app.component';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from './environments/environment';
-import { 
-  MenuOutline, 
-  ArrowUpOutline, 
-  ArrowDownOutline, 
+import {
+  MenuOutline,
+  ArrowUpOutline,
+  ArrowDownOutline,
   SearchOutline,
   SunOutline,
   MoonOutline,
@@ -39,6 +39,16 @@ const ngZorroConfig: NzConfig = {
   }
 };
 
+@Injectable({ providedIn: 'root' })
+class GlobalErrorHandler implements ErrorHandler {
+  constructor(private ngZone: NgZone) {}
+  handleError(error: Error): void {
+    console.error('🚨 Global error caught:', error);
+  }
+}
+
+console.log('📍 main.ts: Bootstrapping with routes:', routes.length);
+
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
@@ -49,6 +59,10 @@ bootstrapApplication(AppComponent, {
       provide: HTTP_INTERCEPTORS,
       useClass: CacheInterceptor,
       multi: true
+    },
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandler
     },
     importProvidersFrom(
       HttpClientModule,
@@ -66,4 +80,4 @@ bootstrapApplication(AppComponent, {
       })
     )
   ]
-}).catch(err => console.error(err));
+}).catch(err => console.error('Bootstrap error:', err));

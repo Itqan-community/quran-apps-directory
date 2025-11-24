@@ -85,6 +85,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    console.log('🚀 AppComponent ngOnInit - listening to router events');
+
+    // Subscribe to router events
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      console.log('🔀 NavigationEnd:', event.url, 'Matched route config:', this.getCurrentRouteParams());
+    });
+
     this.updateMetaTags();
     this.translate.onLangChange.subscribe(() => {
       this.updateMetaTags();

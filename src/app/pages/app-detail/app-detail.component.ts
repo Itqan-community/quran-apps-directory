@@ -134,9 +134,24 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     });
   }
 
-  private loadAppData(id: string) {
-    console.log('🔍 DEBUG: Loading app data for ID:', id);
-    this.appService.getAppById(id).subscribe((app) => {
+  private loadAppData(appParam: string) {
+    // Parse the app parameter: format is "appSlug_appId"
+    // Extract app ID from URL parameter
+    const lastUnderscoreIndex = appParam.lastIndexOf('_');
+    let appId: string = appParam;
+
+    if (lastUnderscoreIndex !== -1) {
+      const potentialId = appParam.substring(lastUnderscoreIndex + 1);
+      // Check if the part after underscore is a valid ID (numeric or string)
+      if (potentialId && potentialId.length > 0) {
+        appId = potentialId;
+        const appSlug = appParam.substring(0, lastUnderscoreIndex);
+        console.log('✅ Parsed app ID from URL:', appId, 'Slug:', appSlug);
+      }
+    }
+
+    console.log('🔍 Loading app data for ID:', appId);
+    this.appService.getAppById(appId).subscribe((app) => {
       if (app) {
         console.log('✅ DEBUG: App data loaded successfully:', app.Name_En);
         console.log('📊 DEBUG: Screenshots count (EN):', app.screenshots_en?.length || 0);
@@ -185,7 +200,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
 
         console.log('⚙️ DEBUG: Component state after loading - hideSwiper:', this.hideSwiper, 'loading:', this.loading);
       } else {
-        console.error('❌ DEBUG: No app data returned for ID:', id);
+        console.error('❌ DEBUG: No app data returned for ID:', appId);
       }
     }, (error) => {
       console.error('❌ DEBUG: Error loading app data:', error);
@@ -200,7 +215,33 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     this.relevantApps = [];
     this.cdr.detectChanges();
 
-    this.router.navigate([`/${this.currentLang}/app/${appId}`]).then(() => {
+    // Find the app in relevantApps to get its slug
+    const targetApp = this.relevantApps.find(app => app.id === appId);
+
+    let slug = targetApp?.slug || '';
+
+    // Normalize the slug: convert spaces to hyphens
+    slug = slug.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+    // If no slug after normalization, generate from app name
+    if (!slug && targetApp) {
+      slug = targetApp.Name_En.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    }
+
+    // Extract just the name part of the slug if it includes a numeric prefix (like "1-wahy" -> "wahy")
+    if (slug && slug.includes('-')) {
+      const parts = slug.split('-');
+      // If first part is numeric, remove it
+      if (/^\d+$/.test(parts[0])) {
+        slug = parts.slice(1).join('-');
+      }
+    }
+
+    slug = slug || appId;
+
+    // Format: "slug_appId" (e.g., "wahy_1")
+    const urlParam = `${slug}_${appId}`;
+    this.router.navigate([`/${this.currentLang}/app/${urlParam}`]).then(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       this.isExpanded = false;
     });
@@ -285,8 +326,20 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
 
   navigateToDeveloper() {
     if (this.app && this.app.Developer_Name_En) {
-      const developerName = encodeURIComponent(this.app.Developer_Name_En);
-      this.router.navigate([`/${this.currentLang}/developer/${developerName}`]);
+      // Format: "developer-slug_developerId"
+      // The developer ID comes from the API response (app.Developer_Id)
+      // Developer name is normalized to slug format (dashes, lowercase) for SEO purposes
+      const developerName = this.app.Developer_Name_En.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const developerId = this.app.Developer_Id || '';
+
+      if (developerId) {
+        // Use ID-based URL for robust API queries
+        // Format: "developer-slug_id" (e.g., "quran-com_6")
+        const urlParam = `${developerName}_${developerId}`;
+        this.router.navigate([`/${this.currentLang}/developer/${urlParam}`]);
+      } else {
+        console.warn('⚠️ No developer ID found for app:', this.app.Name_En);
+      }
     }
   }
 
@@ -316,7 +369,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     this.metaService.updateTag({ property: 'og:title', content: title });
     this.metaService.updateTag({ property: 'og:description', content: appDescription || '' });
     this.metaService.updateTag({ property: 'og:image', content: this.app.applicationIcon || '' });
-    this.metaService.updateTag({ property: 'og:url', content: `https://quran-apps.itqan.dev/${this.currentLang}/app/${this.app.id}` });
+    this.metaService.updateTag({ property: 'og:url', content: `https://quran-apps.itqan.dev/${this.currentLang}/app/${this.app.slug}_${this.app.id}` });
     this.metaService.updateTag({ property: 'og:type', content: 'website' });
     
     // Update Twitter Card tags

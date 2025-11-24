@@ -180,9 +180,21 @@ start_database() {
     print_status "Waiting for database to be ready..."
     sleep 5
 
+    cd ..
+    print_status "Database is running ✓"
+}
+
+# Reset database and load fresh data
+reset_database() {
+    print_warning "Resetting database..."
+
+    cd backend
+
+    # Activate virtual environment
+    source venv/bin/activate
+
     # Run migrations
     print_status "Running database migrations..."
-    source venv/bin/activate
     python manage.py migrate
 
     # Create superuser for admin access
@@ -194,7 +206,7 @@ start_database() {
     python manage.py load_apps_from_json
 
     cd ..
-    print_status "Database is ready ✓"
+    print_status "Database reset complete ✓"
 }
 
 # Kill processes on ports
@@ -337,9 +349,13 @@ main() {
     echo ""
 
     # Handle command line arguments
+    RESET_DB=false
     if [ "$1" = "--clean" ] || [ "$1" = "-c" ]; then
         clean_install
+        RESET_DB=true
         echo ""
+    elif [ "$1" = "--reset" ] || [ "$1" = "-r" ]; then
+        RESET_DB=true
     fi
 
     # Install dependencies
@@ -354,6 +370,15 @@ main() {
     start_database
     echo ""
 
+    # Reset database if requested
+    if [ "$RESET_DB" = true ]; then
+        reset_database
+        echo ""
+    else
+        print_status "Database running with existing data. Use --reset to reset the database."
+        echo ""
+    fi
+
     # Start servers
     start_dev_servers
 }
@@ -365,16 +390,23 @@ show_help() {
     echo "Usage: ./dev-start.sh [OPTIONS]"
     echo ""
     echo "Options:"
-    echo "  -c, --clean    Clean install (removes all dependencies and containers)"
+    echo "  (none)         Start dev environment with existing database data"
+    echo "  -r, --reset    Reset database (run migrations, create superuser, load apps)"
+    echo "  -c, --clean    Clean install (removes all dependencies and containers, resets DB)"
     echo "  -h, --help     Show this help message"
+    echo ""
+    echo "Database Behavior:"
+    echo "  • Default (no flags): Database persists between runs - your data is preserved"
+    echo "  • --reset flag: Database is reset with fresh migrations and sample data"
+    echo "  • --clean flag: Everything is deleted and reinstalled from scratch"
     echo ""
     echo "Features:"
     echo "  ✓ Single entry point for entire development environment"
     echo "  ✓ Starts PostgreSQL in Docker container"
     echo "  ✓ Sets up Python virtual environment for backend"
     echo "  ✓ Installs all dependencies (frontend + backend)"
-    echo "  ✓ Runs database migrations"
-    echo "  ✓ Loads 44 sample Quran applications"
+    echo "  ✓ Runs database migrations (with --reset or --clean)"
+    echo "  ✓ Loads 44 sample Quran applications (with --reset or --clean)"
     echo "  ✓ Starts both Angular (port 4200) and Django (port 8000) servers"
     echo "  ✓ Opens browser automatically"
     echo "  ✓ Handles port conflicts automatically"
@@ -387,8 +419,9 @@ show_help() {
     echo "  🔐 Django Admin: http://localhost:8000/admin/ (admin/admin)"
     echo ""
     echo "Examples:"
-    echo "  ./dev-start.sh           # Normal start"
-    echo "  ./dev-start.sh --clean   # Clean install and start"
+    echo "  ./dev-start.sh           # Normal start (preserve database)"
+    echo "  ./dev-start.sh --reset   # Start with fresh database"
+    echo "  ./dev-start.sh --clean   # Clean install and start with fresh database"
 }
 
 # Handle arguments

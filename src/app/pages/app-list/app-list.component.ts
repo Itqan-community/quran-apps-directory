@@ -512,4 +512,31 @@ export class AppListComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  /**
+   * Get the URL parameter for an app (slug_id format without numeric prefix)
+   */
+  getAppUrlParam(app: QuranApp): string {
+    let slug = app.slug || '';
+
+    // Normalize the slug: convert spaces to hyphens
+    slug = slug.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+    // Extract just the name part of the slug if it includes a numeric prefix (like "1-wahy" -> "wahy")
+    if (slug && slug.includes('-')) {
+      const parts = slug.split('-');
+      // If first part is numeric, remove it
+      if (/^\d+$/.test(parts[0])) {
+        slug = parts.slice(1).join('-');
+      }
+    }
+
+    // If no slug after normalization, generate from app name
+    if (!slug) {
+      slug = app.Name_En.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    }
+
+    // Return format: "slug_appId" (e.g., "wahy_1")
+    return `${slug}_${app.id}`;
+  }
 }

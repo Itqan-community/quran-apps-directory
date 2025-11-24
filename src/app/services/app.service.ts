@@ -77,6 +77,7 @@ export interface QuranApp {
   Developer_Name_En: string | null;
   Developer_Name_Ar: string | null;
   Developer_Website: string | null;
+  Developer_Id?: string; // ID for robust developer page linking
   status: string;
   Apps_Avg_Rating: number;
   categories: string[];
@@ -127,6 +128,7 @@ export class AppService {
       Developer_Name_En: backendApp.developer?.name_en || backendApp.developer_name || null,
       Developer_Name_Ar: backendApp.developer?.name_ar || backendApp.developer_name_ar || null,
       Developer_Website: null,
+      Developer_Id: backendApp.developer?.id, // Include developer ID for robust linking
       status: backendApp.status,
       Apps_Avg_Rating: parseFloat(backendApp.avg_rating),
       categories: backendApp.categories.map(cat => cat.slug),
@@ -172,7 +174,26 @@ export class AppService {
   }
 
   /**
-   * Get apps by developer
+   * Get apps by developer ID (preferred method - most robust)
+   */
+  getAppsByDeveloperId(developerId: string): Observable<QuranApp[]> {
+    const params = new HttpParams().set('developer_id', developerId);
+    return this.http
+      .get<BackendListResponse>(`${this.apiUrl}/apps/`, { headers: this.getHeaders(), params })
+      .pipe(
+        map((response) => {
+          return response.results.map((app) => this.mapBackendApp(app));
+        }),
+        catchError(error => {
+          console.error('[AppService] Error loading apps by developer ID:', error);
+          return of([]);
+        })
+      );
+  }
+
+  /**
+   * Get apps by developer (legacy method - kept for backward compatibility)
+   * Note: Delegates to getAppsByDeveloperId if ID is provided
    */
   getAppsByDeveloper(developerName: string): Observable<QuranApp[]> {
     const params = new HttpParams().set('search', developerName);
