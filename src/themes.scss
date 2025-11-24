@@ -577,7 +577,7 @@
 .search-section .ant-input-affix-wrapper,
 .search-section input.ant-input {
   border-radius: 10px !important;
-  border: 1px solid #ffffff !important;
+  border: 1px solid var(--border-color, #d9d9d9) !important;
   text-align: center;
 }
 
