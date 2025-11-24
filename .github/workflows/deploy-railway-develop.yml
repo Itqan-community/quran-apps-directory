@@ -1,4 +1,4 @@
-name: Deploy to Railway (Development)
+name: Railway Development Health Check
 
 on:
   push:
@@ -9,12 +9,9 @@ on:
       - '.github/workflows/deploy-railway-develop.yml'
   workflow_dispatch:
 
-env:
-  RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-
 jobs:
-  deploy:
-    name: Deploy Backend to Railway Development
+  health-check:
+    name: Development Backend Health Check
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -22,17 +19,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Railway CLI
-        run: npm i -g @railway/cli
-
-      - name: Deploy to Railway (Development)
-        run: |
-          railway up --service quran-apps-api-dev --detach
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-
-      - name: Wait for deployment
-        run: sleep 30
+      # Railway automatically deploys on git push - no manual deployment needed
+      - name: Wait for Railway auto-deployment
+        run: sleep 45
 
       - name: Health check development API
         run: |
