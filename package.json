@@ -9,6 +9,7 @@
     "dev": "ng serve",
     "build": "node generate-sitemap.js && ng build",
     "build:dev": "node generate-sitemap.js && ng build --configuration=development",
+    "build:develop": "node generate-sitemap.js && ng build --configuration=develop && node compress-assets.js",
     "build:staging": "node generate-sitemap.js && ng build --configuration=staging && node compress-assets.js",
     "build:prod": "node generate-sitemap.js && ng build --configuration=production && node compress-assets.js",
     "analyze": "npx webpack-bundle-analyzer dist/stats.json",
