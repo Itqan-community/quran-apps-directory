@@ -1,12 +1,23 @@
 name = "quran-apps-directory-frontend"
 compatibility_date = "2024-01-01"
+type = "javascript"
 
+# Production environment (deployed from main branch)
 [env.production]
 name = "quran-apps-directory-frontend"
+routes = [
+  { pattern = "quran-apps.itqan.dev", zone_name = "itqan.dev" }
+]
 
-[[env.production.route]]
-pattern = "quran-apps.itqan.dev"
+# Staging environment (deployed from staging branch via Pages)
+[env.staging]
+name = "quran-apps-directory-staging"
 
+# Development environment
+[env.development]
+name = "quran-apps-directory-dev"
+
+# Build configuration for production
 [build]
 command = "npm run build:prod"
 cwd = "."
@@ -14,4 +25,4 @@ watch_dir = "src"
 
 [build.upload]
 format = "service-worker"
-dir = "dist/browser"
+dir = "dist/demo/browser"
