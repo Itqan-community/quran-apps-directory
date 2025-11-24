@@ -63,7 +63,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist/browser --project-name=quran-apps-directory-frontend --branch=staging
+          command: pages deploy dist/browser --project-name=staging-quran-apps-directory-frontend
 
       - name: Wait for deployment propagation
         run: sleep 30
@@ -80,7 +80,7 @@ jobs:
       - name: Health check deployment
         run: |
           echo "Running health check on deployed site..."
-          DEPLOY_URL="https://staging.quran-apps-directory-frontend.pages.dev"
+          DEPLOY_URL="https://staging.quran-apps.itqan.dev"
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOY_URL")
 
           if [ "$HTTP_STATUS" -eq 200 ]; then
