@@ -63,7 +63,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist/browser --project-name=staging-quran-apps-directory-frontend
+          command: pages deploy dist/browser --project-name=staging-quran-apps-directory-frontend --branch=staging
 
       - name: Wait for deployment propagation
         run: sleep 30
