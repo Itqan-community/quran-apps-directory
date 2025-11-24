@@ -1,32 +1,37 @@
 .search-section {
-  margin-bottom: 32px;
-  margin-top: 30px;
+  margin-bottom: 30px;
+  margin-top: 26px;
 
   // Search input base styling - theme overrides in themes.scss
   :host ::ng-deep {
-    /* One pill only: style the group as the pill container */
-    .ant-input-group {
-      border-radius: 9999px !important;
+    /* Style both standard and affix wrappers since nz-input-group renders .ant-input-affix-wrapper */
+    .ant-input-group,
+    .ant-input-affix-wrapper {
+      border-radius: 10px !important;
       overflow: hidden;
       transition: all 0.3s ease;
     }
 
     /* Let the input be flat inside the pill and inherit background */
-    .ant-input {
+    .ant-input,
+    .ant-input-affix-wrapper input {
       border-radius: 0 !important;
       border: none !important;
       box-shadow: none !important;
       background: transparent !important;
       font-size: 16px;
-      padding: 8px 16px;
+      padding: 14px 20px; /* base inset */
+      text-align: center !important;
       transition: all 0.3s ease;
     }
 
-    .ant-input-group-addon {
+    .ant-input-group-addon,
+    .ant-input-prefix,
+    .ant-input-suffix {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 14px;
+      padding: 0 16px; /* keep icon spacing balanced after input inset */
 
       .anticon {
         font-size: 14px;
@@ -49,54 +54,93 @@
     }
   }
 
-  // Enhanced dark mode search icon visibility
+  // Enhanced dark mode search styling - match category button aesthetic
   :host-context(.dark-theme) ::ng-deep {
-    .ant-input-group {
-      .ant-input-group-addon {
-        /* Make addon background transparent to see icon */
-        background: transparent !important;
+    .ant-input-group,
+    .ant-input-affix-wrapper {
+      /* Dark background similar to category buttons */
+      background: #2a2a2a !important;
+      border: 1px solid #1a1a1a !important; /* keep outline extremely subtle */
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) !important; /* gentle depth instead of bright border */
+      color: #ffffff !important;
+
+      /* Suppress default AntD borders on interaction; keep subtle glow only */
+      &.ant-input-affix-wrapper-focused,
+      &:focus,
+      &:hover,
+      &:active {
+        background: #303030 !important;
+        border-color: #1f1f1f !important;
+        box-shadow: 0 0 0 2px rgba(255, 140, 66, 0.16), 0 3px 8px rgba(0, 0, 0, 0.55) !important;
+      }
+
+      /* Make cursor and text visible in dark mode */
+      .ant-input,
+      input {
+        caret-color: #ffffff !important;
+        color: #ffffff !important;
+
+        &::placeholder {
+          color: #9a9a9a !important;
+        }
+      }
+
+      .ant-input-group-addon,
+      .ant-input-prefix,
+      .ant-input-suffix {
+        /* Match dark background */
+        background: #2a2a2a !important;
+        border: none !important;
 
         /* Target the icon span and all descendants */
         span[nz-icon],
         span[nz-icon] *,
         .anticon,
         .anticon * {
-          color: #000000 !important;
-          fill: #000000 !important;
-          stroke: #000000 !important;
+          color: #888888 !important;
+          fill: #888888 !important;
+          stroke: #888888 !important;
         }
 
-        /* Force black on SVG elements */
+        /* Force icon color on SVG elements */
         svg,
         svg path,
         svg circle,
         svg line,
         svg rect,
         svg g {
-          color: #000000 !important;
-          fill: #000000 !important;
-          stroke: #000000 !important;
+          color: #888888 !important;
+          fill: #888888 !important;
+          stroke: #888888 !important;
           opacity: 1 !important;
           visibility: visible !important;
         }
       }
 
       &:hover {
-        .ant-input-group-addon {
+        background: #323232 !important;
+        border-color: #1f1f1f !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
+
+        .ant-input-group-addon,
+        .ant-input-prefix,
+        .ant-input-suffix {
+          background: #323232 !important;
+
           span[nz-icon] {
-            color: #ff8c42 !important;
+            color: #cfcfcf !important;
 
             svg {
-              fill: #ff8c42 !important;
-              color: #ff8c42 !important;
+              fill: #cfcfcf !important;
+              color: #cfcfcf !important;
             }
 
             .anticon {
-              color: #ff8c42 !important;
+              color: #cfcfcf !important;
 
               svg {
-                fill: #ff8c42 !important;
-                color: #ff8c42 !important;
+                fill: #cfcfcf !important;
+                color: #cfcfcf !important;
               }
             }
           }
@@ -104,21 +148,29 @@
       }
 
       &:focus-within {
-        .ant-input-group-addon {
+        background: #303030 !important;
+        border-color: #1f1f1f !important;
+        box-shadow: 0 0 0 2px rgba(255, 140, 66, 0.16), 0 3px 8px rgba(0, 0, 0, 0.55) !important;
+
+        .ant-input-group-addon,
+        .ant-input-prefix,
+        .ant-input-suffix {
+          background: #303030 !important;
+
           span[nz-icon] {
-            color: #ff8c42 !important;
+            color: #ffd7b0 !important;
 
             svg {
-              fill: #ff8c42 !important;
-              color: #ff8c42 !important;
+              fill: #ffd7b0 !important;
+              color: #ffd7b0 !important;
             }
 
             .anticon {
-              color: #ff8c42 !important;
+              color: #ffd7b0 !important;
 
               svg {
-                fill: #ff8c42 !important;
-                color: #ff8c42 !important;
+                fill: #ffd7b0 !important;
+                color: #ffd7b0 !important;
               }
             }
           }
@@ -130,16 +182,16 @@
 .search-section-wrapper {
   display: grid;
   grid-template-columns: 1fr;
-  row-gap: 16px;
-  margin-top: 30px;
+  row-gap: 18px;
+  margin-top: 26px;
   h1 {
     margin: 0;
     color: var(--text-color, #000);
   }
   // responsive - mobile adjustments
   @media screen and (max-width: 768px) {
-    margin-top: 15px;
-    row-gap: 12px;
+    margin-top: 16px;
+    row-gap: 14px;
     h1 {
       margin-bottom: 0;
     }
@@ -742,37 +794,18 @@
   }
 
   .category-item {
-    min-width: unset;
-    background: none;
-    padding: 0;
+    min-width: 80px;
+    padding: 10px 12px 8px;
 
-    &--title {
-      font-weight: normal;
-    }
     .category-icon {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #f8f8f8;
-      border-radius: 5px;
-      font-weight: normal;
       svg {
         width: 20px;
         height: 20px;
       }
     }
-    &:hover {
-      background: none;
-    }
-    &.selected {
-      background: none;
-      .category-icon {
-        background: #ede0c090;
-      }
-      color: black;
-      font-weight: 500;
+
+    &--title {
+      font-size: 13px;
     }
   }
 

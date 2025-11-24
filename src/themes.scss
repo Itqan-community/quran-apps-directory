@@ -76,6 +76,7 @@
     background: var(--surface-color) !important;
     color: var(--text-color) !important;
     border-color: var(--border-color) !important;
+    text-align: center;
     
     &::placeholder {
       color: var(--text-secondary) !important;
@@ -575,7 +576,9 @@
 .search-section .ant-input-group,
 .search-section .ant-input-affix-wrapper,
 .search-section input.ant-input {
-  border-radius: 9999px !important;
+  border-radius: 10px !important;
+  border: 1px solid #ffffff !important;
+  text-align: center;
 }
 
 // Apply theme colors to body and ensure text is always visible
