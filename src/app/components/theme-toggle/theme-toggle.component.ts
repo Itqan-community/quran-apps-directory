@@ -1,9 +1,12 @@
 import { Component, computed } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map, startWith } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { ThemeService, Theme } from '../../services/theme.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-theme-toggle',
@@ -101,10 +104,20 @@ import { ThemeService, Theme } from '../../services/theme.service';
   `]
 })
 export class ThemeToggleComponent {
-  constructor(private themeService: ThemeService) {}
+  constructor(
+    private themeService: ThemeService,
+    private translate: TranslateService
+  ) {}
 
   currentTheme = this.themeService.theme;
   isDark = this.themeService.isDark;
+  lang = toSignal(
+    this.translate.onLangChange.pipe(
+      map((ev) => ev.lang),
+      startWith(this.translate.currentLang || this.translate.defaultLang || 'en')
+    ),
+    { initialValue: this.translate.currentLang || this.translate.defaultLang || 'en' }
+  );
 
   iconType = computed(() => {
     const theme = this.currentTheme();
@@ -120,12 +133,37 @@ export class ThemeToggleComponent {
 
   tooltipText = computed(() => {
     const theme = this.currentTheme();
-    
-    return theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+    const key = theme === 'light' ? 'theme.switchToDark' : 'theme.switchToLight';
+    return this.translateWithFallback(key, this.lang());
   });
 
   toggleTheme(): void {
     this.themeService.toggleTheme();
   }
-}
 
+  /**
+   * Resolve translation with a friendly fallback so we never surface raw keys
+   * (useful if translations load late or a locale is missing the string).
+   */
+  private translateWithFallback(key: string, lang?: string): string {
+    const resolved = this.translate.instant(key);
+    if (resolved && resolved !== key) {
+      return resolved;
+    }
+
+    const current = lang || this.translate.currentLang || this.translate.defaultLang || 'en';
+    const isAr = current.startsWith('ar');
+    const fallback: Record<string, { ar: string; en: string }> = {
+      'theme.switchToDark': {
+        en: 'Switch to dark mode',
+        ar: 'تفعيل الوضع الداكن',
+      },
+      'theme.switchToLight': {
+        en: 'Switch to light mode',
+        ar: 'تفعيل الوضع الفاتح',
+      },
+    };
+
+    return fallback[key]?.[isAr ? 'ar' : 'en'] ?? key;
+  }
+}

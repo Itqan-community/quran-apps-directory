@@ -27,6 +27,10 @@
       "en": "English"
     }
   },
+  "theme": {
+    "switchToDark": "Switch to dark mode",
+    "switchToLight": "Switch to light mode"
+  },
   "footer": {
     "copyright": "an Open Source Project, by ITQAN community for Quran technologies, 1447 H",
     "itqan_projects": "Other ITQAN Projects",
