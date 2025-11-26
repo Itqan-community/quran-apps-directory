@@ -78,6 +78,19 @@
             </span>
             {{ "header.contact" | translate }}
           </a>
+          <a
+            nz-button
+            nzType="text"
+            [routerLink]="['/', currentLang, 'submit-app']"
+            class="nav-link submit-app-link"
+          >
+            <span class="nav-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+            </span>
+            {{ "header.submitApp" | translate }}
+          </a>
         </nav>
 
         <!-- Action Buttons -->
@@ -214,6 +227,22 @@
               </svg>
             </span>
             {{ "header.contact" | translate }}
+          </a>
+          <a
+            nz-button
+            nzType="text"
+            nzBlock
+            nzSize="large"
+            [routerLink]="['/', currentLang, 'submit-app']"
+            (click)="toggleMobileMenu()"
+            class="mobile-nav-link submit-app-link"
+          >
+            <span class="mobile-nav-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+            </span>
+            {{ "header.submitApp" | translate }}
           </a>
         </nav>
 

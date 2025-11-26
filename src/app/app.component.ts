@@ -111,6 +111,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
       const lang = this.route.snapshot.firstChild?.paramMap.get('lang') || this.translate.getDefaultLang();
       if (lang !== this.currentLang) {
+        this.translate.use(lang);
         this.currentLang = lang as "en" | "ar";
         this.isRtl = this.currentLang === 'ar';
         document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';

@@ -20,6 +20,7 @@
     "home": "Home",
     "about": "About",
     "contact": "Contact Us",
+    "submitApp": "Submit App",
     "itqan_community": "ITQAN Community",
     "theme": "Theme",
     "language": {
@@ -161,6 +162,8 @@
   "submitApp": {
     "title": "Submit Your App",
     "subtitle": "Share your Quran app with the community",
+    "alreadySubmitted": "Already submitted an app?",
+    "trackYourSubmission": "Track your submission here",
     "sections": {
       "contact": "Contact Information",
       "appDetails": "App Details",

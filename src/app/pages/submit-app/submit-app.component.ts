@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -74,6 +74,7 @@ interface FormData {
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
     TranslateModule,
     NzFormModule,
     NzInputModule,
@@ -140,18 +141,35 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
     private message: NzMessageService,
     private modal: NzModalService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
-    this.currentLang = (this.translate.currentLang as 'en' | 'ar') || 'en';
+    // Start with loading state
+    this.isLoading = true;
+
+    // Get language from route parameter to avoid race condition
+    const routeLang = this.route.snapshot.paramMap.get('lang');
+    this.currentLang = (routeLang as 'en' | 'ar') || (this.translate.currentLang as 'en' | 'ar') || 'en';
+
+    // Ensure TranslateService uses the correct language and wait for translations to load
+    const langToUse = routeLang || this.currentLang;
+    this.translate.use(langToUse).pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => {
+        // Translations are now loaded
+        this.loadCategories();
+      },
+      error: () => {
+        // Even on error, try to load categories
+        this.loadCategories();
+      }
+    });
 
     this.translate.onLangChange
       .pipe(takeUntil(this.destroy$))
       .subscribe(event => {
         this.currentLang = event.lang as 'en' | 'ar';
       });
-
-    this.loadCategories();
   }
 
   ngOnDestroy(): void {

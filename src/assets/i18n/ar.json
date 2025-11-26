@@ -20,6 +20,7 @@
     "home": "الرئيسة",
     "about": "عن المشروع",
     "contact": "تواصل معنا",
+    "submitApp": "أضف تطبيقك",
     "itqan_community": "مجتمع إتقان",
     "theme": "المظهر",
     "language": {
@@ -160,6 +161,8 @@
   "submitApp": {
     "title": "أضف تطبيقك",
     "subtitle": "شارك تطبيقك القرآني مع المجتمع",
+    "alreadySubmitted": "هل أرسلت تطبيقاً من قبل؟",
+    "trackYourSubmission": "تتبع طلبك",
     "sections": {
       "contact": "معلومات التواصل",
       "appDetails": "تفاصيل التطبيق",
