@@ -85,6 +85,8 @@ class AppSubmissionAdmin(admin.ModelAdmin):
         'reviewed_by',
         'created_app_link',
         'icon_preview_large',
+        'main_image_preview_en',
+        'main_image_preview_ar',
         'screenshots_preview_en',
         'screenshots_preview_ar',
     ]
@@ -145,6 +147,10 @@ class AppSubmissionAdmin(admin.ModelAdmin):
             'fields': (
                 'app_icon_url',
                 'icon_preview_large',
+                'main_image_en',
+                'main_image_preview_en',
+                'main_image_ar',
+                'main_image_preview_ar',
                 'screenshots_en',
                 'screenshots_preview_en',
                 'screenshots_ar',
@@ -194,6 +200,26 @@ class AppSubmissionAdmin(admin.ModelAdmin):
             )
         return 'No icon uploaded'
     icon_preview_large.short_description = 'Icon Preview'
+
+    def main_image_preview_en(self, obj):
+        """Display English main cover image preview."""
+        if obj.main_image_en:
+            return format_html(
+                '<img src="{}" style="max-width: 300px; max-height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;" />',
+                obj.main_image_en
+            )
+        return 'No English cover image'
+    main_image_preview_en.short_description = 'English Cover Preview'
+
+    def main_image_preview_ar(self, obj):
+        """Display Arabic main cover image preview."""
+        if obj.main_image_ar:
+            return format_html(
+                '<img src="{}" style="max-width: 300px; max-height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;" />',
+                obj.main_image_ar
+            )
+        return 'No Arabic cover image'
+    main_image_preview_ar.short_description = 'Arabic Cover Preview'
 
     def screenshots_preview_en(self, obj):
         """Display English screenshots preview."""

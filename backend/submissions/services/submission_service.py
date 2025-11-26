@@ -98,7 +98,7 @@ class SubmissionService:
         # Find or create developer
         developer = self._get_or_create_developer(submission)
 
-        # Create the App
+        # Create the App with default rating of 2.5
         app = App.objects.create(
             name_en=submission.app_name_en,
             name_ar=submission.app_name_ar,
@@ -107,6 +107,8 @@ class SubmissionService:
             description_en=submission.description_en or submission.short_description_en,
             description_ar=submission.description_ar or submission.short_description_ar,
             application_icon=submission.app_icon_url,
+            main_image_en=submission.main_image_en or '',
+            main_image_ar=submission.main_image_ar or '',
             google_play_link=submission.google_play_link,
             app_store_link=submission.app_store_link,
             app_gallery_link=submission.app_gallery_link,
@@ -115,6 +117,7 @@ class SubmissionService:
             developer=developer,
             status='published',
             platform=self._detect_platform(submission),
+            avg_rating=2.5,  # Default rating for newly approved apps
         )
 
         # Set categories

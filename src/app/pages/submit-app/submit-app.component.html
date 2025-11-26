@@ -308,7 +308,7 @@
         </h2>
 
         <nz-form-item>
-          <nz-form-label>{{ 'submitApp.fields.iconUrl' | translate }}</nz-form-label>
+          <nz-form-label nzRequired>{{ 'submitApp.fields.iconUrl' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
                    [(ngModel)]="formData.app_icon_url"
@@ -319,7 +319,31 @@
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label>{{ 'submitApp.fields.screenshotsEn' | translate }}</nz-form-label>
+          <nz-form-label nzRequired>{{ 'submitApp.fields.mainImageEn' | translate }}</nz-form-label>
+          <nz-form-control>
+            <input nz-input
+                   [(ngModel)]="formData.main_image_en"
+                   name="main_image_en"
+                   [placeholder]="'submitApp.placeholders.mainImageEn' | translate"
+                   required />
+          </nz-form-control>
+          <div class="field-hint">{{ 'submitApp.hints.mainImage' | translate }}</div>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>{{ 'submitApp.fields.mainImageAr' | translate }}</nz-form-label>
+          <nz-form-control>
+            <input nz-input
+                   dir="rtl"
+                   [(ngModel)]="formData.main_image_ar"
+                   name="main_image_ar"
+                   [placeholder]="'submitApp.placeholders.mainImageAr' | translate"
+                   required />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>{{ 'submitApp.fields.screenshotsEn' | translate }}</nz-form-label>
           <nz-form-control>
             <textarea nz-input
                       [nzAutosize]="{ minRows: 3, maxRows: 6 }"
@@ -335,7 +359,7 @@
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label>{{ 'submitApp.fields.screenshotsAr' | translate }}</nz-form-label>
+          <nz-form-label nzRequired>{{ 'submitApp.fields.screenshotsAr' | translate }}</nz-form-label>
           <nz-form-control>
             <textarea nz-input
                       dir="rtl"

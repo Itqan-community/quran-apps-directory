@@ -195,6 +195,8 @@
       "devWebsite": "Developer Website",
       "devEmail": "Developer Email",
       "iconUrl": "App Icon URL",
+      "mainImageEn": "Main Cover Image (English)",
+      "mainImageAr": "Main Cover Image (Arabic)",
       "screenshotsEn": "Screenshots (English)",
       "screenshotsAr": "Screenshots (Arabic)",
       "contentConfirmation": "I confirm that the information provided is accurate and I have the right to submit this app. I understand it will be reviewed before publication."
@@ -220,6 +222,8 @@
       "devWebsite": "https://developer-website.com",
       "devEmail": "developer@email.com",
       "iconUrl": "https://example.com/icon.png",
+      "mainImageEn": "https://example.com/cover-image-en.png",
+      "mainImageAr": "https://example.com/cover-image-ar.png",
       "screenshots": "Enter one URL per line",
       "additionalNotes": "Any additional information about your app..."
     },
@@ -228,6 +232,7 @@
     },
     "hints": {
       "iconUrl": "Recommended: 512x512 PNG or JPG image",
+      "mainImage": "Featured image shown on app cards. Recommended: 600x400 PNG or JPG",
       "screenshots": "Enter one URL per line. Up to 5 screenshots recommended."
     },
     "screenshotsDetected": "screenshots detected",

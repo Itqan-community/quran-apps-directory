@@ -11,10 +11,9 @@ export class LanguageService {
   private defaultLanguage = 'en';
 
   constructor(private route: ActivatedRoute, private router: Router, private translate: TranslateService) {
-    const browserLang = navigator.language;
-    this.defaultLanguage = browserLang.startsWith("ar") ? "ar" : "en";
-    this.translate.setDefaultLang(this.defaultLanguage);
-    this.translate.use(this.defaultLanguage);
+    // Translations are initialized via APP_INITIALIZER in main.ts
+    // Just get the current language and set up URL change listener
+    this.defaultLanguage = this.translate.currentLang || this.translate.getDefaultLang() || 'en';
     this.setLanguageFromUrl();
   }
 
@@ -30,9 +29,11 @@ export class LanguageService {
 
       if (this.supportedLanguages.includes(lang)) {
         this.translate.setDefaultLang(lang);
-        this.translate.use(lang);
-        document.documentElement.lang = lang;
-        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'; // Adjust direction
+        // Wait for translations to load before updating DOM
+        this.translate.use(lang).subscribe(() => {
+          document.documentElement.lang = lang;
+          document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'; // Adjust direction
+        });
       } else {
         // Redirect to default language (preserve any additional path segments)
         const remainingPath = pathSegments.slice(1).join('/');
@@ -58,17 +59,20 @@ export class LanguageService {
 
   changeLanguage(lang: string) {
     if (this.supportedLanguages.includes(lang)) {
-      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-      this.translate.use(lang);
+      // Wait for translations to load before navigating
+      this.translate.use(lang).subscribe(() => {
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = lang;
 
-      // Preserve path segments when changing language
-      const currentUrl = this.router.url;
-      const urlPath = currentUrl.split('?')[0];
-      const pathSegments = urlPath.split('/').filter(segment => segment);
-      const remainingPath = pathSegments.slice(1).join('/'); // Remove existing language, keep rest
-      const targetUrl = `/${lang}/${remainingPath}`;
+        // Preserve path segments when changing language
+        const currentUrl = this.router.url;
+        const urlPath = currentUrl.split('?')[0];
+        const pathSegments = urlPath.split('/').filter(segment => segment);
+        const remainingPath = pathSegments.slice(1).join('/'); // Remove existing language, keep rest
+        const targetUrl = `/${lang}/${remainingPath}`;
 
-      this.router.navigateByUrl(targetUrl);
+        this.router.navigateByUrl(targetUrl);
+      });
     }
   }
 

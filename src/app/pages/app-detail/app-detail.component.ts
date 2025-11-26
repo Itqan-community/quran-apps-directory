@@ -12,6 +12,7 @@ import { DomSanitizer, SafeHtml, Title, Meta } from "@angular/platform-browser";
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { categories } from "../../services/applicationsData";
 import { NzRateModule } from "ng-zorro-antd/rate";
+import { NzImageModule, NzImageService } from "ng-zorro-antd/image";
 import { FormsModule } from "@angular/forms";
 // import function to register Swiper custom elements
 import { register } from 'swiper/element/bundle';
@@ -32,6 +33,7 @@ register();
     NzIconModule,
     NzDividerModule,
     NzRateModule,
+    NzImageModule,
     NzTagModule,
     NzGridModule,
     TranslateModule,
@@ -76,6 +78,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     private titleService: Title,
     private metaService: Meta,
     private cdr: ChangeDetectorRef,
+    private nzImageService: NzImageService,
     @Inject(DOCUMENT) private document: Document,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
@@ -247,6 +250,27 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     });
   }
 
+
+  /**
+   * Open lightbox gallery starting at the specified image index
+   */
+  openLightbox(index: number): void {
+    const screenshots = this.currentLang === 'en' ? this.app?.screenshots_en : this.app?.screenshots_ar;
+    if (!screenshots || screenshots.length === 0) return;
+
+    const images = screenshots.map((src, i) => ({
+      src: src,
+      alt: `${this.app?.Name_En || 'App'} screenshot ${i + 1}`
+    }));
+
+    // Reorder images array so clicked image is first, maintaining circular order
+    const reorderedImages = [
+      ...images.slice(index),
+      ...images.slice(0, index)
+    ];
+
+    this.nzImageService.preview(reorderedImages, { nzZoom: 1, nzRotate: 0, nzNoAnimation: false });
+  }
 
   // Add a method to handle category click navigation
   navigateToCategory(categoryName: string) {

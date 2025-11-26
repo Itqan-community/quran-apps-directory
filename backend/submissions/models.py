@@ -102,6 +102,14 @@ class AppSubmission(BaseModel):
 
     # Media (URLs after R2 upload)
     app_icon_url = models.URLField(blank=True)
+    main_image_en = models.URLField(
+        blank=True,
+        help_text="Main cover image URL for English listing"
+    )
+    main_image_ar = models.URLField(
+        blank=True,
+        help_text="Main cover image URL for Arabic listing"
+    )
     screenshots_en = models.JSONField(
         default=list,
         blank=True,

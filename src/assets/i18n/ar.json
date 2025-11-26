@@ -194,6 +194,8 @@
       "devWebsite": "موقع المطور",
       "devEmail": "بريد المطور",
       "iconUrl": "رابط أيقونة التطبيق",
+      "mainImageEn": "صورة الغلاف الرئيسية (إنجليزي)",
+      "mainImageAr": "صورة الغلاف الرئيسية (عربي)",
       "screenshotsEn": "لقطات الشاشة (إنجليزي)",
       "screenshotsAr": "لقطات الشاشة (عربي)",
       "contentConfirmation": "أؤكد أن المعلومات المقدمة صحيحة ولدي الحق في تقديم هذا التطبيق. أفهم أنه سيتم مراجعته قبل النشر."
@@ -219,6 +221,8 @@
       "devWebsite": "https://developer-website.com",
       "devEmail": "developer@email.com",
       "iconUrl": "https://example.com/icon.png",
+      "mainImageEn": "https://example.com/cover-image-en.png",
+      "mainImageAr": "https://example.com/cover-image-ar.png",
       "screenshots": "أدخل رابطاً واحداً في كل سطر",
       "additionalNotes": "أي معلومات إضافية عن تطبيقك..."
     },
@@ -227,6 +231,7 @@
     },
     "hints": {
       "iconUrl": "يُفضل: صورة PNG أو JPG بحجم 512×512",
+      "mainImage": "الصورة المميزة المعروضة على بطاقات التطبيقات. يُفضل: 600×400 PNG أو JPG",
       "screenshots": "أدخل رابطاً واحداً في كل سطر. يُفضل حتى 5 لقطات."
     },
     "screenshotsDetected": "لقطة شاشة مكتشفة",

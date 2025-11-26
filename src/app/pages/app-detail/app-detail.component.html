@@ -18,19 +18,32 @@
       </div>
 
       <div *ngIf="loading" class="swiper-loader"><span></span></div>
-      <swiper-container #swiperContainer init="false" [dir]="currentLang == 'en' ? 'ltr' : 'rtl'">
+      <!-- Show swiper if screenshots exist -->
+      <swiper-container #swiperContainer init="false" [dir]="currentLang == 'en' ? 'ltr' : 'rtl'" *ngIf="(currentLang === 'en' ? app.screenshots_en : app.screenshots_ar)?.length">
         <swiper-slide class="swiper-slide" *ngFor="let screenshot of currentLang === 'en' ? app.screenshots_en : app.screenshots_ar; let i = index">
           <img
             [src]="screenshot"
             [alt]="app.Name_En + ' screenshot ' + (i + 1)"
-            class="carousel-image"
+            class="carousel-image clickable"
             [loading]="i === 0 ? 'eager' : 'lazy'"
             [attr.fetchpriority]="i === 0 ? 'high' : 'auto'"
             decoding="async"
             (load)="loading = false"
+            (click)="openLightbox(i)"
           />
         </swiper-slide>
       </swiper-container>
+      <!-- Show default image if no screenshots -->
+      <div class="default-screenshot" *ngIf="!(currentLang === 'en' ? app.screenshots_en : app.screenshots_ar)?.length">
+        <img
+          src="https://itqan.dev/images/home/hero-card-mushaf.svg"
+          [alt]="app.Name_En + ' default image'"
+          class="carousel-image default-image"
+          loading="eager"
+          decoding="async"
+          (load)="loading = false"
+        />
+      </div>
       <div part="button-next" [dir]="currentLang == 'en' ? 'ltr' : 'rtl'" class="swiper-button-next" tabindex="0" role="button" aria-label="Next slide" aria-controls="swiper-wrapper-b8ddbe4e0197ba1e" aria-disabled="false"><svg width="11" height="20" viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z" fill="currentColor"></path></svg>
       </div>
       <div part="button-prev" [dir]="currentLang == 'en' ? 'ltr' : 'rtl'" class="swiper-button-prev" tabindex="0" role="button" aria-label="Previous slide" aria-controls="swiper-wrapper-251019db751410bc35" aria-disabled="false"><svg width="11" height="20" viewBox="0 0 11 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.38296 20.0762C0.111788 19.805 0.111788 19.3654 0.38296 19.0942L9.19758 10.2796L0.38296 1.46497C0.111788 1.19379 0.111788 0.754138 0.38296 0.482966C0.654131 0.211794 1.09379 0.211794 1.36496 0.482966L10.4341 9.55214C10.8359 9.9539 10.8359 10.6053 10.4341 11.007L1.36496 20.0762C1.09379 20.3474 0.654131 20.3474 0.38296 20.0762Z" fill="currentColor" transform-origin="center" transform="rotate(180)"></path></svg>
@@ -269,7 +282,7 @@
                 <div style="max-height: 220px; overflow: hidden;">
                   <img
                     [alt]="relatedApp.Name_En + ' screenshot'"
-                    [src]="currentLang === 'en' ? relatedApp.mainImage_en : relatedApp.mainImage_ar"
+                    [src]="(currentLang === 'en' ? relatedApp.mainImage_en : relatedApp.mainImage_ar) || 'https://itqan.dev/images/home/hero-card-mushaf.svg'"
                     style="width: 100%;"
                     loading="lazy"
                     decoding="async"

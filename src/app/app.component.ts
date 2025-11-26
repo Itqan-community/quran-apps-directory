@@ -54,20 +54,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     private appImagePreloader: AppImagePreloaderService
   ) {
     // Icons are globally registered in main.ts
-    // Get browser language
-    const browserLang = navigator.language;
-    const defaultLang = browserLang.startsWith("ar") ? "ar" : "en";
+    // Translations are initialized via APP_INITIALIZER in main.ts (ensures they load before render)
 
-    // Set initial RTL state based on language
-    this.isRtl = defaultLang === "ar";
-    document.documentElement.dir = this.isRtl ? "rtl" : "ltr";
-
-    // Set up translations
-    this.translate.setDefaultLang(defaultLang);
-    this.translate.use(defaultLang);
-    this.currentLang = defaultLang;
-
-    // Critical resource preloading removed - handled by optimized image component
+    // Get current language from TranslateService (already set by APP_INITIALIZER)
+    const currentLang = this.translate.currentLang || this.translate.getDefaultLang() || 'en';
+    this.currentLang = currentLang as "en" | "ar";
+    this.isRtl = this.currentLang === "ar";
   }
 
   getCurrentRouteParams(): any {
@@ -111,10 +103,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
       const lang = this.route.snapshot.firstChild?.paramMap.get('lang') || this.translate.getDefaultLang();
       if (lang !== this.currentLang) {
-        this.translate.use(lang);
-        this.currentLang = lang as "en" | "ar";
-        this.isRtl = this.currentLang === 'ar';
-        document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+        // Wait for translations to load before updating state
+        this.translate.use(lang).subscribe(() => {
+          this.currentLang = lang as "en" | "ar";
+          this.isRtl = this.currentLang === 'ar';
+          document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+        });
       }
     });
 

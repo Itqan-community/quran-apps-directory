@@ -36,6 +36,8 @@ export interface SubmissionRequest {
 
   // Media URLs
   app_icon_url?: string;
+  main_image_en?: string;
+  main_image_ar?: string;
   screenshots_en?: string[];
   screenshots_ar?: string[];
 

@@ -58,6 +58,8 @@ interface FormData {
   app_icon_url: string;
   icon_input_mode: 'file' | 'url';
   icon_url_input: string;
+  main_image_en: string;
+  main_image_ar: string;
   screenshots_en: string[];
   screenshots_ar: string[];
   screenshots_en_input: string;
@@ -121,6 +123,8 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
     app_icon_url: '',
     icon_input_mode: 'url',
     icon_url_input: '',
+    main_image_en: '',
+    main_image_ar: '',
     screenshots_en: [],
     screenshots_ar: [],
     screenshots_en_input: '',
@@ -248,6 +252,10 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
     if (!this.formData.developer_name_en) return false;
     if (!this.hasStoreLink) return false;
     if (this.formData.categories.length === 0) return false;
+    if (!this.formData.app_icon_url) return false;
+    if (!this.formData.main_image_en || !this.formData.main_image_ar) return false;
+    if (this.formData.screenshots_en.length === 0) return false;
+    if (this.formData.screenshots_ar.length === 0) return false;
     if (!this.formData.content_confirmation) return false;
 
     return true;
@@ -287,6 +295,8 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
       developer_website: this.formData.developer_website,
       developer_email: this.formData.developer_email,
       app_icon_url: this.formData.app_icon_url,
+      main_image_en: this.formData.main_image_en,
+      main_image_ar: this.formData.main_image_ar,
       screenshots_en: this.formData.screenshots_en,
       screenshots_ar: this.formData.screenshots_ar,
       additional_notes: this.formData.additional_notes,
@@ -310,24 +320,86 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
   private showSuccessModal(trackingId: string): void {
     const isArabic = this.currentLang === 'ar';
 
+    // Get translations using instant() for use in template strings
+    const title = this.translate.instant('submitApp.success.title');
+    const message = this.translate.instant('submitApp.success.message');
+    const trackingIdLabel = this.translate.instant('submitApp.success.trackingId');
+    const trackingIdNote = this.translate.instant('submitApp.success.trackingIdNote');
+    const trackSubmission = this.translate.instant('submitApp.success.trackSubmission');
+    const submitAnother = this.translate.instant('submitApp.success.submitAnother');
+    const emailConfirmation = isArabic
+      ? 'سيتم إرسال رقم التتبع إلى بريدك الإلكتروني'
+      : 'A confirmation email with your tracking ID has been sent';
+    const clickToCopy = isArabic ? 'انقر للنسخ' : 'Click to copy';
+    const copiedText = isArabic ? 'تم النسخ!' : 'Copied!';
+
     this.modal.success({
-      nzTitle: isArabic ? 'تم استلام طلبك!' : 'Submission Received!',
+      nzTitle: '',
       nzContent: `
-        <div style="text-align: center; padding: 20px 0;">
-          <p>${isArabic ? 'شكراً لإرسال تطبيقك. رقم التتبع الخاص بك هو:' : 'Thank you for submitting your app. Your tracking ID is:'}</p>
-          <div style="font-size: 24px; font-weight: bold; color: #a0533b; background: #fdf2f0; padding: 15px; border-radius: 8px; margin: 15px 0;">
-            ${trackingId}
+        <div style="text-align: center; padding: 40px 20px;">
+          <!-- Success Icon -->
+          <div style="margin-bottom: 25px;">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto;">
+              <circle cx="40" cy="40" r="38" fill="#e8f5e9" stroke="#4caf50" stroke-width="3"/>
+              <path d="M25 40l10 10 20-20" stroke="#4caf50" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
-          <p style="font-size: 14px; color: #666;">
-            ${isArabic ? 'احفظ هذا الرقم لتتبع حالة طلبك. سنرسل لك تحديثات عبر البريد الإلكتروني.' : 'Save this ID to track your submission status. We will send you updates via email.'}
+
+          <!-- Title -->
+          <h2 style="margin: 0 0 20px 0; font-size: 28px; font-weight: 700; color: #1a1a1a;">
+            ${title}
+          </h2>
+
+          <!-- Message -->
+          <p style="margin: 0 0 30px 0; font-size: 16px; color: #666; line-height: 1.6;">
+            ${message}
+          </p>
+
+          <!-- Tracking ID Box -->
+          <div style="background: linear-gradient(135deg, #fdf2f0 0%, #fff5f2 100%); border: 2px solid #e8b8a8; border-radius: 12px; padding: 25px; margin: 30px 0;">
+            <p style="margin: 0 0 12px 0; font-size: 14px; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+              ${trackingIdLabel}
+            </p>
+            <div
+              id="tracking-id-copy"
+              onclick="navigator.clipboard.writeText('${trackingId}').then(() => { this.querySelector('.copy-hint').textContent = '${copiedText}'; setTimeout(() => { this.querySelector('.copy-hint').textContent = '${clickToCopy}'; }, 2000); })"
+              style="font-size: 32px; font-weight: 800; color: #a0533b; font-family: 'Monaco', 'Courier New', monospace; letter-spacing: 2px; word-break: break-all; cursor: pointer; transition: transform 0.1s;"
+              onmouseover="this.style.transform='scale(1.02)'"
+              onmouseout="this.style.transform='scale(1)'"
+            >
+              ${trackingId}
+              <div class="copy-hint" style="font-size: 12px; color: #888; font-weight: 400; margin-top: 8px; letter-spacing: 0;">
+                ${clickToCopy}
+              </div>
+            </div>
+          </div>
+
+          <!-- Note -->
+          <div style="background: #f5f5f5; border-radius: 8px; padding: 15px; margin: 20px 0; border-left: 4px solid #a0533b;">
+            <p style="margin: 0; font-size: 14px; color: #555; line-height: 1.6;">
+              <strong style="color: #a0533b;">${trackingIdNote}</strong>
+            </p>
+          </div>
+
+          <!-- Email Confirmation -->
+          <p style="margin: 20px 0 0 0; font-size: 13px; color: #999;">
+            ✓ ${emailConfirmation}
           </p>
         </div>
       `,
-      nzOkText: isArabic ? 'حسناً' : 'OK',
+      nzWidth: 500,
+      nzCentered: true,
+      nzClosable: false,
+      nzMaskClosable: false,
+      nzOkText: trackSubmission,
+      nzCancelText: submitAnother,
       nzOnOk: () => {
         this.router.navigate([`/${this.currentLang}/track-submission`], {
           queryParams: { id: trackingId }
         });
+      },
+      nzOnCancel: () => {
+        this.router.navigate([`/${this.currentLang}/submit-app`]);
       }
     });
   }

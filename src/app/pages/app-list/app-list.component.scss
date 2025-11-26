@@ -356,15 +356,6 @@
       }
     }
 
-    /* RTL: Fix partial star fill direction - stars should fill from right to left */
-    [dir="rtl"] & .star-container {
-      .star-fill {
-        left: auto;
-        right: 0;
-        direction: rtl;
-      }
-    }
-
     /* Color the filled stars based on rating quality */
     &.excellent .star-fill {
       color: #52c41a;
@@ -458,7 +449,7 @@
   }
 
   .app-grid-row {
-    align-items: stretch; /* Safari fix: ensure columns stretch equally */
+    align-items: stretch; /* Ensure columns stretch equally for bottom alignment */
   }
 
   .app-card {
@@ -486,6 +477,7 @@
     max-height: 220px;
     overflow: hidden;
     background: #f5f5f5;
+    flex-shrink: 0; /* Prevent cover from shrinking */
 
     .app-card__cover-image {
       width: 100%;
@@ -502,7 +494,8 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    flex: 1;
+    flex: 1 1 auto;
+    min-height: 0; /* Allow flex shrinking */
   }
 
   .app-card__row {
@@ -562,12 +555,17 @@
     -webkit-box-orient: vertical;
   }
 
+  /* ===========================================
+     RATING COMPONENT - BASE STYLES
+     =========================================== */
   .app-card__rating {
     margin-top: auto;
     display: flex;
     align-items: center;
     gap: 6px;
     padding-top: 8px;
+    /* Default (LTR/English): badge left, stars right - natural flex row */
+    flex-direction: row;
   }
 
   .app-card__rating-value {
@@ -610,6 +608,8 @@
     display: flex;
     gap: 2px;
     align-items: center;
+    /* Default (LTR/English): stars flow left to right */
+    flex-direction: row;
 
     .star-container {
       position: relative;
@@ -623,28 +623,20 @@
         left: 0;
         font-size: 14px;
         line-height: 1;
-        color: #f0f0f0;
+        color: #e0e0e0;
         user-select: none;
       }
 
       .star-fill {
         position: absolute;
         top: 0;
-        left: 0;
         font-size: 14px;
         line-height: 1;
         overflow: hidden;
         user-select: none;
-        transition: width 0.3s ease;
-      }
-    }
-
-    /* RTL: Fix partial star fill direction */
-    [dir="rtl"] & .star-container {
-      .star-fill {
-        left: auto;
-        right: 0;
-        direction: rtl;
+        /* Default (LTR/English): fill from left */
+        left: 0;
+        right: auto;
       }
     }
 
@@ -667,6 +659,17 @@
     &.poor .star-fill {
       color: #ff4d4f;
     }
+  }
+
+  /* Dark mode: adjust empty star color */
+  :host-context(.dark-theme) .app-card__stars .star-container .star-base {
+    color: #404040;
+  }
+
+  /* RTL (Arabic): Partial star fill from right side */
+  :host-context([dir="rtl"]) .app-card__stars .star-container .star-fill {
+    left: auto;
+    right: 0;
   }
 
   // responsive
@@ -709,13 +712,22 @@
   box-shadow: 0 0 0 2px rgba(27, 94, 41, 0.2);
 }
 
-::ng-deep .ant-card-body {
-  padding: 14px 16px 12px 16px; /* Reduced bottom padding */
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto; /* Allow body to stretch inside card for consistent heights */
-  min-height: 120px; /* Reduced minimum height for tighter layout */
+/* Target only app-card's structure */
+::ng-deep .app-card {
+  /* Ensure the card cover doesn't overlap with body */
+  > .ant-card-cover {
+    flex-shrink: 0;
+  }
 
+  > .ant-card-body {
+    padding: 0 !important; /* Remove ng-zorro default padding - we handle it in .app-card__body */
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important; /* Allow body to stretch inside card for consistent heights */
+  }
+}
+
+::ng-deep .ant-card-body {
   .ant-flex {
     flex: 1;
     display: flex;
