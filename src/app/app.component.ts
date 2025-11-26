@@ -140,10 +140,17 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   toggleLanguage() {
-    this.isRtl = !this.isRtl;
-    const newLang = this.isRtl ? "ar" : "en";
-    this.languageService.changeLanguage(newLang);
-    this.currentLang = newLang;
+    const newLang = this.isRtl ? "en" : "ar";
+
+    // Build the new URL with the new language
+    const currentUrl = this.router.url;
+    const urlPath = currentUrl.split('?')[0];
+    const pathSegments = urlPath.split('/').filter(segment => segment);
+    const remainingPath = pathSegments.slice(1).join('/');
+    const targetUrl = remainingPath ? `/${newLang}/${remainingPath}` : `/${newLang}`;
+
+    // Navigate to new URL and reload the page to ensure translations load correctly
+    window.location.href = targetUrl;
   }
 
   toggleMobileMenu() {
