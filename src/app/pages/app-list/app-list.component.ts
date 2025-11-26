@@ -67,8 +67,9 @@ export class AppListComponent implements OnInit, OnDestroy {
     private titleService: Title,
     private metaService: Meta
   ) {
-    // Set initial language based on browser
-    this.currentLang = this.translateService.currentLang as "en" | "ar";
+    // Set initial language based on current translation or URL
+    const lang = this.translateService.currentLang || this.translateService.getDefaultLang() || 'en';
+    this.currentLang = lang as "en" | "ar";
     // Subscribe to language changes
     this.translateService.onLangChange
       .pipe(takeUntil(this.destroy$))

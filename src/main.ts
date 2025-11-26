@@ -39,8 +39,12 @@ import {
 
 
 // AoT requires an exported function for factories
+// Add cache-busting suffix to prevent stale translation files in Safari/Firefox
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  // Use version from environment for cache busting (changes with each deploy)
+  const cacheVersion = environment.version || '1.0.0';
+  const suffix = `.json?v=${cacheVersion}`;
+  return new TranslateHttpLoader(http, './assets/i18n/', suffix);
 }
 
 // Factory to initialize translations before app renders

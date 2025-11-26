@@ -6,7 +6,7 @@ export const environment = {
   appUrl: 'http://localhost:4200',
   apiUrl: 'http://localhost:8000/api',
   apiVersion: 'v1',
-  version: '1.0.0-dev',
+  version: '1.0.1-dev',
   analytics: {
     enabled: false,
     trackingId: ''
