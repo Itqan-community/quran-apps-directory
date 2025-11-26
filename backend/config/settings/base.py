@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'apps',  # Reverted to use single 'apps' app
     'categories',
     'developers',
+    'submissions',
 ]
 
 MIDDLEWARE = [
@@ -69,7 +70,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR.parent / 'core' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -331,3 +332,26 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Email Configuration (Pluggable)
+EMAIL_BACKEND_CLASS = config('EMAIL_BACKEND', default='core.services.email.console.ConsoleEmailService')
+EMAIL_HOST = config('EMAIL_HOST', default='in-v3.mailjet.com')
+EMAIL_PORT = config('EMAIL_PORT', default=2525, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='connect@itqan.dev')
+DEFAULT_FROM_NAME = config('DEFAULT_FROM_NAME', default='Quran Apps Directory')
+
+
+# Cloudflare R2 Storage Configuration
+R2_ACCOUNT_ID = config('R2_ACCOUNT_ID', default='71be39fa76ea6261ea925d02b6ee15e6')
+R2_ACCESS_KEY_ID = config('R2_ACCESS_KEY_ID', default='')
+R2_SECRET_ACCESS_KEY = config('R2_SECRET_ACCESS_KEY', default='')
+R2_BUCKET_NAME = config('R2_BUCKET_NAME', default='quran-apps-directory')
+R2_PUBLIC_URL = config('R2_PUBLIC_URL', default='https://pub-e11717db663c469fb51c65995892b449.r2.dev')
+
+
+# Site Configuration
+SITE_URL = config('SITE_URL', default='https://quran-apps.itqan.dev')

@@ -156,5 +156,110 @@
     },
     "acknowledgments": "شكر وتقدير",
     "acknowledgementsText": "نشكر جميع المطورين والمبدعين الذين يبذلون جهودهم لخدمة القرآن الكريم عبر التقنية. ونخص بالشكر الإخوة في مشروع التطبيقات الإسلامية على مشاركتهم لنا القائمة الأولية للتطبيقات."
+  },
+  "submitApp": {
+    "title": "أضف تطبيقك",
+    "subtitle": "شارك تطبيقك القرآني مع المجتمع",
+    "sections": {
+      "contact": "معلومات التواصل",
+      "appDetails": "تفاصيل التطبيق",
+      "storeLinks": "روابط المتاجر",
+      "categories": "التصنيفات",
+      "developer": "معلومات المطور",
+      "media": "الوسائط",
+      "additional": "ملاحظات إضافية"
+    },
+    "fields": {
+      "yourName": "اسمك",
+      "yourEmail": "بريدك الإلكتروني",
+      "phone": "رقم الهاتف",
+      "organization": "المؤسسة",
+      "isDeveloper": "أنا مطور/مالك هذا التطبيق",
+      "appNameEn": "اسم التطبيق (إنجليزي)",
+      "appNameAr": "اسم التطبيق (عربي)",
+      "shortDescEn": "وصف مختصر (إنجليزي)",
+      "shortDescAr": "وصف مختصر (عربي)",
+      "descEn": "الوصف الكامل (إنجليزي)",
+      "descAr": "الوصف الكامل (عربي)",
+      "googlePlay": "رابط Google Play",
+      "appStore": "رابط App Store",
+      "appGallery": "رابط Huawei AppGallery",
+      "website": "رابط الموقع",
+      "categories": "التصنيفات",
+      "devNameEn": "اسم المطور (إنجليزي)",
+      "devNameAr": "اسم المطور (عربي)",
+      "devWebsite": "موقع المطور",
+      "devEmail": "بريد المطور",
+      "iconUrl": "رابط أيقونة التطبيق",
+      "screenshotsEn": "لقطات الشاشة (إنجليزي)",
+      "screenshotsAr": "لقطات الشاشة (عربي)",
+      "contentConfirmation": "أؤكد أن المعلومات المقدمة صحيحة ولدي الحق في تقديم هذا التطبيق. أفهم أنه سيتم مراجعته قبل النشر."
+    },
+    "placeholders": {
+      "yourName": "أدخل اسمك الكامل",
+      "yourEmail": "your@email.com",
+      "phone": "+1234567890",
+      "organization": "اسم الشركة أو المؤسسة",
+      "appNameEn": "أدخل اسم التطبيق بالإنجليزية",
+      "appNameAr": "أدخل اسم التطبيق بالعربية",
+      "shortDescEn": "وصف مختصر لتطبيقك (150 حرف كحد أقصى)",
+      "shortDescAr": "وصف مختصر بالعربية (150 حرف كحد أقصى)",
+      "descEn": "وصف تفصيلي لتطبيقك...",
+      "descAr": "وصف تفصيلي بالعربية...",
+      "googlePlay": "https://play.google.com/store/apps/details?id=...",
+      "appStore": "https://apps.apple.com/app/...",
+      "appGallery": "https://appgallery.huawei.com/...",
+      "website": "https://your-app-website.com",
+      "categories": "اختر تصنيفاً واحداً أو أكثر",
+      "devNameEn": "اسم المطور أو الشركة",
+      "devNameAr": "اسم المطور بالعربية",
+      "devWebsite": "https://developer-website.com",
+      "devEmail": "developer@email.com",
+      "iconUrl": "https://example.com/icon.png",
+      "screenshots": "أدخل رابطاً واحداً في كل سطر",
+      "additionalNotes": "أي معلومات إضافية عن تطبيقك..."
+    },
+    "validation": {
+      "storeLink": "مطلوب رابط متجر واحد على الأقل (Google Play أو App Store)"
+    },
+    "hints": {
+      "iconUrl": "يُفضل: صورة PNG أو JPG بحجم 512×512",
+      "screenshots": "أدخل رابطاً واحداً في كل سطر. يُفضل حتى 5 لقطات."
+    },
+    "screenshotsDetected": "لقطة شاشة مكتشفة",
+    "submitButton": "إرسال التطبيق",
+    "success": {
+      "title": "تم إرسال التطبيق بنجاح!",
+      "message": "شكراً لك على إرسالك. سنراجع تطبيقك ونُعلمك بقرارنا.",
+      "trackingId": "رقم التتبع الخاص بك",
+      "trackingIdNote": "احفظ هذا الرقم لتتبع حالة طلبك",
+      "trackSubmission": "تتبع الطلب",
+      "submitAnother": "إرسال تطبيق آخر"
+    }
+  },
+  "trackSubmission": {
+    "title": "تتبع طلبك",
+    "subtitle": "تحقق من حالة طلب تطبيقك",
+    "byTrackingId": "برقم التتبع",
+    "byEmail": "بالبريد الإلكتروني",
+    "trackingIdPlaceholder": "أدخل رقم التتبع (مثال: QAD-ABC123)",
+    "trackingIdHint": "رقم التتبع الذي حصلت عليه عند إرسال التطبيق",
+    "emailPlaceholder": "أدخل البريد الإلكتروني المستخدم في الإرسال",
+    "emailHint": "يعرض جميع الطلبات المرتبطة بهذا البريد",
+    "search": "بحث",
+    "submittedOn": "تاريخ الإرسال",
+    "reviewedOn": "تاريخ المراجعة",
+    "viewAppListing": "عرض صفحة التطبيق",
+    "foundSubmissions": "الطلبات الموجودة",
+    "noSubmissions": "لم يتم العثور على طلبات لهذا البريد الإلكتروني",
+    "wantToSubmit": "هل تريد إرسال تطبيق جديد؟",
+    "submitNewApp": "إرسال تطبيق جديد",
+    "status": {
+      "pending": "قيد الانتظار",
+      "under_review": "قيد المراجعة",
+      "info_requested": "مطلوب معلومات إضافية",
+      "approved": "مقبول",
+      "rejected": "مرفوض"
+    }
   }
 }

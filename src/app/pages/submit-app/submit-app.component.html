@@ -1,0 +1,438 @@
+<div class="submit-app-container">
+  <div class="page-header">
+    <h1>{{ 'submitApp.title' | translate }}</h1>
+    <p>{{ 'submitApp.subtitle' | translate }}</p>
+  </div>
+
+  <nz-spin [nzSpinning]="isLoading">
+    <form #submitForm="ngForm" (ngSubmit)="onSubmit()">
+
+      <!-- Section 1: Contact Information -->
+      <nz-card class="form-section">
+        <h2 class="section-title">
+          <span nz-icon nzType="user" nzTheme="outline"></span>
+          {{ 'submitApp.sections.contact' | translate }}
+        </h2>
+
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>{{ 'submitApp.fields.yourName' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       [(ngModel)]="formData.submitter_name"
+                       name="submitter_name"
+                       [placeholder]="'submitApp.placeholders.yourName' | translate"
+                       required />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>{{ 'submitApp.fields.yourEmail' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       type="email"
+                       [(ngModel)]="formData.submitter_email"
+                       name="submitter_email"
+                       [placeholder]="'submitApp.placeholders.yourEmail' | translate"
+                       required />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.phone' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       [(ngModel)]="formData.submitter_phone"
+                       name="submitter_phone"
+                       [placeholder]="'submitApp.placeholders.phone' | translate" />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.organization' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       [(ngModel)]="formData.submitter_organization"
+                       name="submitter_organization"
+                       [placeholder]="'submitApp.placeholders.organization' | translate" />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="24">
+            <label nz-checkbox [(ngModel)]="formData.is_developer" name="is_developer">
+              {{ 'submitApp.fields.isDeveloper' | translate }}
+            </label>
+          </div>
+        </div>
+      </nz-card>
+
+      <!-- Section 2: App Details -->
+      <nz-card class="form-section">
+        <h2 class="section-title">
+          <span nz-icon nzType="mobile" nzTheme="outline"></span>
+          {{ 'submitApp.sections.appDetails' | translate }}
+        </h2>
+
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>{{ 'submitApp.fields.appNameEn' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       [(ngModel)]="formData.app_name_en"
+                       name="app_name_en"
+                       [placeholder]="'submitApp.placeholders.appNameEn' | translate"
+                       required />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>{{ 'submitApp.fields.appNameAr' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       dir="rtl"
+                       [(ngModel)]="formData.app_name_ar"
+                       name="app_name_ar"
+                       [placeholder]="'submitApp.placeholders.appNameAr' | translate"
+                       required />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>
+                {{ 'submitApp.fields.shortDescEn' | translate }}
+                <span class="char-count" [class.warning]="shortDescEnCount > 150">
+                  ({{ shortDescEnCount }}/150)
+                </span>
+              </nz-form-label>
+              <nz-form-control>
+                <textarea nz-input
+                          [nzAutosize]="{ minRows: 2, maxRows: 4 }"
+                          [(ngModel)]="formData.short_description_en"
+                          name="short_description_en"
+                          [placeholder]="'submitApp.placeholders.shortDescEn' | translate"
+                          maxlength="150"
+                          required></textarea>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>
+                {{ 'submitApp.fields.shortDescAr' | translate }}
+                <span class="char-count" [class.warning]="shortDescArCount > 150">
+                  ({{ shortDescArCount }}/150)
+                </span>
+              </nz-form-label>
+              <nz-form-control>
+                <textarea nz-input
+                          dir="rtl"
+                          [nzAutosize]="{ minRows: 2, maxRows: 4 }"
+                          [(ngModel)]="formData.short_description_ar"
+                          name="short_description_ar"
+                          [placeholder]="'submitApp.placeholders.shortDescAr' | translate"
+                          maxlength="150"
+                          required></textarea>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.descEn' | translate }}</nz-form-label>
+              <nz-form-control>
+                <textarea nz-input
+                          [nzAutosize]="{ minRows: 4, maxRows: 8 }"
+                          [(ngModel)]="formData.description_en"
+                          name="description_en"
+                          [placeholder]="'submitApp.placeholders.descEn' | translate"></textarea>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.descAr' | translate }}</nz-form-label>
+              <nz-form-control>
+                <textarea nz-input
+                          dir="rtl"
+                          [nzAutosize]="{ minRows: 4, maxRows: 8 }"
+                          [(ngModel)]="formData.description_ar"
+                          name="description_ar"
+                          [placeholder]="'submitApp.placeholders.descAr' | translate"></textarea>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </nz-card>
+
+      <!-- Section 3: Store Links -->
+      <nz-card class="form-section">
+        <h2 class="section-title">
+          <span nz-icon nzType="link" nzTheme="outline"></span>
+          {{ 'submitApp.sections.storeLinks' | translate }}
+        </h2>
+
+        <nz-alert
+          *ngIf="!hasStoreLink"
+          nzType="warning"
+          [nzMessage]="'submitApp.validation.storeLink' | translate"
+          nzShowIcon
+          class="store-link-warning">
+        </nz-alert>
+
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.googlePlay' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       [(ngModel)]="formData.google_play_link"
+                       name="google_play_link"
+                       [placeholder]="'submitApp.placeholders.googlePlay' | translate" />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.appStore' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       [(ngModel)]="formData.app_store_link"
+                       name="app_store_link"
+                       [placeholder]="'submitApp.placeholders.appStore' | translate" />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.appGallery' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       [(ngModel)]="formData.app_gallery_link"
+                       name="app_gallery_link"
+                       [placeholder]="'submitApp.placeholders.appGallery' | translate" />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.website' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       [(ngModel)]="formData.website_link"
+                       name="website_link"
+                       [placeholder]="'submitApp.placeholders.website' | translate" />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </nz-card>
+
+      <!-- Section 4: Categories -->
+      <nz-card class="form-section">
+        <h2 class="section-title">
+          <span nz-icon nzType="appstore" nzTheme="outline"></span>
+          {{ 'submitApp.sections.categories' | translate }}
+        </h2>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>{{ 'submitApp.fields.categories' | translate }}</nz-form-label>
+          <nz-form-control>
+            <nz-select
+              [(ngModel)]="formData.categories"
+              name="categories"
+              nzMode="multiple"
+              [nzPlaceHolder]="'submitApp.placeholders.categories' | translate"
+              nzShowSearch
+              nzAllowClear
+              [nzMaxTagCount]="5"
+              style="width: 100%;">
+              <nz-option
+                *ngFor="let cat of categories"
+                [nzValue]="cat.id"
+                [nzLabel]="getCategoryName(cat)">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-card>
+
+      <!-- Section 5: Developer -->
+      <nz-card class="form-section">
+        <h2 class="section-title">
+          <span nz-icon nzType="code" nzTheme="outline"></span>
+          {{ 'submitApp.sections.developer' | translate }}
+        </h2>
+
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>{{ 'submitApp.fields.devNameEn' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       [(ngModel)]="formData.developer_name_en"
+                       name="developer_name_en"
+                       [placeholder]="'submitApp.placeholders.devNameEn' | translate"
+                       required />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.devNameAr' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       dir="rtl"
+                       [(ngModel)]="formData.developer_name_ar"
+                       name="developer_name_ar"
+                       [placeholder]="'submitApp.placeholders.devNameAr' | translate" />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.devWebsite' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       [(ngModel)]="formData.developer_website"
+                       name="developer_website"
+                       [placeholder]="'submitApp.placeholders.devWebsite' | translate" />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="12" [nzXs]="24" [nzSm]="12">
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.devEmail' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       type="email"
+                       [(ngModel)]="formData.developer_email"
+                       name="developer_email"
+                       [placeholder]="'submitApp.placeholders.devEmail' | translate" />
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </nz-card>
+
+      <!-- Section 6: Media -->
+      <nz-card class="form-section">
+        <h2 class="section-title">
+          <span nz-icon nzType="picture" nzTheme="outline"></span>
+          {{ 'submitApp.sections.media' | translate }}
+        </h2>
+
+        <div nz-row [nzGutter]="24">
+          <div nz-col [nzSpan]="24">
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.iconUrl' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                       [(ngModel)]="formData.app_icon_url"
+                       name="app_icon_url"
+                       [placeholder]="'submitApp.placeholders.iconUrl' | translate" />
+              </nz-form-control>
+              <div class="field-hint">{{ 'submitApp.hints.iconUrl' | translate }}</div>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="24">
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.screenshotsEn' | translate }}</nz-form-label>
+              <nz-form-control>
+                <textarea nz-input
+                          [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+                          [(ngModel)]="formData.screenshots_en_input"
+                          name="screenshots_en_input"
+                          (ngModelChange)="onScreenshotsEnChange()"
+                          [placeholder]="'submitApp.placeholders.screenshots' | translate"></textarea>
+              </nz-form-control>
+              <div class="field-hint">{{ 'submitApp.hints.screenshots' | translate }}</div>
+              <div *ngIf="formData.screenshots_en.length > 0" class="screenshot-count">
+                {{ formData.screenshots_en.length }} {{ 'submitApp.screenshotsDetected' | translate }}
+              </div>
+            </nz-form-item>
+          </div>
+
+          <div nz-col [nzSpan]="24">
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.screenshotsAr' | translate }}</nz-form-label>
+              <nz-form-control>
+                <textarea nz-input
+                          dir="rtl"
+                          [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+                          [(ngModel)]="formData.screenshots_ar_input"
+                          name="screenshots_ar_input"
+                          (ngModelChange)="onScreenshotsArChange()"
+                          [placeholder]="'submitApp.placeholders.screenshots' | translate"></textarea>
+              </nz-form-control>
+              <div *ngIf="formData.screenshots_ar.length > 0" class="screenshot-count">
+                {{ formData.screenshots_ar.length }} {{ 'submitApp.screenshotsDetected' | translate }}
+              </div>
+            </nz-form-item>
+          </div>
+        </div>
+      </nz-card>
+
+      <!-- Section 7: Additional Notes -->
+      <nz-card class="form-section">
+        <h2 class="section-title">
+          <span nz-icon nzType="file-text" nzTheme="outline"></span>
+          {{ 'submitApp.sections.additional' | translate }}
+        </h2>
+
+        <nz-form-item>
+          <nz-form-control>
+            <textarea nz-input
+                      [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+                      [(ngModel)]="formData.additional_notes"
+                      name="additional_notes"
+                      [placeholder]="'submitApp.placeholders.additionalNotes' | translate"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-card>
+
+      <!-- Content Confirmation -->
+      <nz-card class="form-section confirmation-section">
+        <label nz-checkbox [(ngModel)]="formData.content_confirmation" name="content_confirmation">
+          <span class="confirmation-text">
+            {{ 'submitApp.fields.contentConfirmation' | translate }}
+          </span>
+        </label>
+      </nz-card>
+
+      <!-- Submit Button -->
+      <div class="submit-section">
+        <button nz-button
+                nzType="primary"
+                nzSize="large"
+                [nzLoading]="isSubmitting"
+                [disabled]="!isFormValid()">
+          <span nz-icon nzType="send" nzTheme="outline"></span>
+          {{ 'submitApp.submitButton' | translate }}
+        </button>
+      </div>
+
+    </form>
+  </nz-spin>
+</div>

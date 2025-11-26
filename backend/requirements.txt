@@ -14,5 +14,9 @@ djangorestframework-simplejwt==5.3.0
 django-allauth==65.11.2
 django-redis==6.0.0
 
+# Storage & External Services
+boto3==1.35.*
+requests==2.32.*
+
 # Development tools (optional)
 django-debug-toolbar==4.4.6

@@ -1,0 +1,77 @@
+{% extends "email/base.html" %}
+
+{% block title %}Information Needed: {{ app_name_en }}{% endblock %}
+
+{% block content %}
+<!-- English Section -->
+<div class="greeting">
+    Assalamu Alaikum {{ submitter_name }},
+</div>
+
+<div class="content">
+    <p>
+        Thank you for submitting <strong>{{ app_name_en }}</strong> to the Quran Apps Directory.
+    </p>
+
+    <div class="info-box warning">
+        <strong>Additional Information Needed</strong>
+        <p>
+            To complete the review of your submission, we need some additional information from you.
+        </p>
+    </div>
+
+    <div style="background-color: #f5f5f5; padding: 15px; border-radius: 4px; margin: 20px 0;">
+        <strong>Please provide the following:</strong>
+        <div style="margin-top: 10px; white-space: pre-wrap;">{{ info_request_message }}</div>
+    </div>
+
+    <p>
+        Please reply to this email with the requested information, and we will continue
+        reviewing your submission.
+    </p>
+
+    <p>
+        <a href="mailto:{{ contact_email }}?subject=Re: {{ tracking_id }} - {{ app_name_en }}" class="button">
+            Reply with Information
+        </a>
+    </p>
+
+    <p style="margin-top: 20px; font-size: 14px; color: #666;">
+        Tracking ID: {{ tracking_id }}
+    </p>
+</div>
+
+<!-- Arabic Section -->
+<div class="arabic-section">
+    <div class="greeting">
+        السلام عليكم {{ submitter_name }}،
+    </div>
+
+    <div class="content">
+        <p>
+            شكراً لإرسالكم <strong>{{ app_name_ar }}</strong> إلى دليل تطبيقات القرآن.
+        </p>
+
+        <div class="info-box warning">
+            <strong>مطلوب معلومات إضافية</strong>
+            <p>
+                لاستكمال مراجعة طلبكم، نحتاج إلى بعض المعلومات الإضافية.
+            </p>
+        </div>
+
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 4px; margin: 20px 0;">
+            <strong>يرجى تزويدنا بما يلي:</strong>
+            <div style="margin-top: 10px; white-space: pre-wrap;">{{ info_request_message }}</div>
+        </div>
+
+        <p>
+            يرجى الرد على هذا البريد الإلكتروني بالمعلومات المطلوبة،
+            وسنستمر في مراجعة طلبكم.
+        </p>
+
+        <p style="margin-top: 20px; font-size: 14px; color: #666;">
+            رقم التتبع: {{ tracking_id }}
+        </p>
+    </div>
+</div>
+{% endblock %}

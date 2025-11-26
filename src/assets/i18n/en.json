@@ -157,5 +157,110 @@
     },
     "acknowledgments": "Acknowledgments",
     "acknowledgementsText": "We thank all developers and creators who dedicate their efforts to serving the Holy Quran through technology. We especially thank our colleagues in the Islamic Applications project for sharing with us the initial list of applications."
+  },
+  "submitApp": {
+    "title": "Submit Your App",
+    "subtitle": "Share your Quran app with the community",
+    "sections": {
+      "contact": "Contact Information",
+      "appDetails": "App Details",
+      "storeLinks": "Store Links",
+      "categories": "Categories",
+      "developer": "Developer Information",
+      "media": "Media",
+      "additional": "Additional Notes"
+    },
+    "fields": {
+      "yourName": "Your Name",
+      "yourEmail": "Your Email",
+      "phone": "Phone Number",
+      "organization": "Organization",
+      "isDeveloper": "I am the developer/owner of this app",
+      "appNameEn": "App Name (English)",
+      "appNameAr": "App Name (Arabic)",
+      "shortDescEn": "Short Description (English)",
+      "shortDescAr": "Short Description (Arabic)",
+      "descEn": "Full Description (English)",
+      "descAr": "Full Description (Arabic)",
+      "googlePlay": "Google Play URL",
+      "appStore": "App Store URL",
+      "appGallery": "Huawei AppGallery URL",
+      "website": "Website URL",
+      "categories": "Categories",
+      "devNameEn": "Developer Name (English)",
+      "devNameAr": "Developer Name (Arabic)",
+      "devWebsite": "Developer Website",
+      "devEmail": "Developer Email",
+      "iconUrl": "App Icon URL",
+      "screenshotsEn": "Screenshots (English)",
+      "screenshotsAr": "Screenshots (Arabic)",
+      "contentConfirmation": "I confirm that the information provided is accurate and I have the right to submit this app. I understand it will be reviewed before publication."
+    },
+    "placeholders": {
+      "yourName": "Enter your full name",
+      "yourEmail": "your@email.com",
+      "phone": "+1234567890",
+      "organization": "Company or organization name",
+      "appNameEn": "Enter app name in English",
+      "appNameAr": "Enter app name in Arabic",
+      "shortDescEn": "Brief description of your app (max 150 characters)",
+      "shortDescAr": "Brief description in Arabic (max 150 characters)",
+      "descEn": "Detailed description of your app...",
+      "descAr": "Detailed description in Arabic...",
+      "googlePlay": "https://play.google.com/store/apps/details?id=...",
+      "appStore": "https://apps.apple.com/app/...",
+      "appGallery": "https://appgallery.huawei.com/...",
+      "website": "https://your-app-website.com",
+      "categories": "Select one or more categories",
+      "devNameEn": "Developer or company name",
+      "devNameAr": "Developer name in Arabic",
+      "devWebsite": "https://developer-website.com",
+      "devEmail": "developer@email.com",
+      "iconUrl": "https://example.com/icon.png",
+      "screenshots": "Enter one URL per line",
+      "additionalNotes": "Any additional information about your app..."
+    },
+    "validation": {
+      "storeLink": "At least one store link (Google Play or App Store) is required"
+    },
+    "hints": {
+      "iconUrl": "Recommended: 512x512 PNG or JPG image",
+      "screenshots": "Enter one URL per line. Up to 5 screenshots recommended."
+    },
+    "screenshotsDetected": "screenshots detected",
+    "submitButton": "Submit App",
+    "success": {
+      "title": "App Submitted Successfully!",
+      "message": "Thank you for your submission. We will review your app and notify you of our decision.",
+      "trackingId": "Your tracking ID",
+      "trackingIdNote": "Save this ID to track your submission status",
+      "trackSubmission": "Track Submission",
+      "submitAnother": "Submit Another App"
+    }
+  },
+  "trackSubmission": {
+    "title": "Track Your Submission",
+    "subtitle": "Check the status of your app submission",
+    "byTrackingId": "By Tracking ID",
+    "byEmail": "By Email",
+    "trackingIdPlaceholder": "Enter your tracking ID (e.g., QAD-ABC123)",
+    "trackingIdHint": "The tracking ID was provided when you submitted your app",
+    "emailPlaceholder": "Enter the email used for submission",
+    "emailHint": "Shows all submissions associated with this email",
+    "search": "Search",
+    "submittedOn": "Submitted on",
+    "reviewedOn": "Reviewed on",
+    "viewAppListing": "View App Listing",
+    "foundSubmissions": "Submissions found",
+    "noSubmissions": "No submissions found for this email",
+    "wantToSubmit": "Want to submit a new app?",
+    "submitNewApp": "Submit New App",
+    "status": {
+      "pending": "Pending Review",
+      "under_review": "Under Review",
+      "info_requested": "More Info Requested",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    }
   }
 }

@@ -40,6 +40,16 @@ export const routes: Routes = [
     data: { title: 'Contact Us' },
     loadComponent: () => import('./pages/contact-us/contact-us.component').then(m => m.ContactUsComponent)
   },
+  {
+    path: ':lang/submit-app',
+    data: { title: 'Submit App' },
+    loadComponent: () => import('./pages/submit-app/submit-app.component').then(m => m.SubmitAppComponent)
+  },
+  {
+    path: ':lang/track-submission',
+    data: { title: 'Track Submission' },
+    loadComponent: () => import('./pages/track-submission/track-submission.component').then(m => m.TrackSubmissionComponent)
+  },
 
   // Generic category route (must come AFTER all specific routes)
   {

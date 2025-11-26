@@ -24,7 +24,15 @@ import {
   ExportOutline,
   GlobalOutline,
   LeftOutline,
-  RightOutline
+  RightOutline,
+  UserOutline,
+  MobileOutline,
+  LinkOutline,
+  AppstoreOutline,
+  CodeOutline,
+  PictureOutline,
+  FileTextOutline,
+  SendOutline
 } from '@ant-design/icons-angular/icons';
 
 
@@ -70,7 +78,7 @@ bootstrapApplication(AppComponent, {
         enabled: environment.production,
         registrationStrategy: 'registerWhenStable:30000'
       }),
-      NzIconModule.forRoot([MenuOutline, ArrowUpOutline, ArrowDownOutline, SearchOutline, SunOutline, MoonOutline, BgColorsOutline, ExportOutline, GlobalOutline, LeftOutline, RightOutline]),
+      NzIconModule.forRoot([MenuOutline, ArrowUpOutline, ArrowDownOutline, SearchOutline, SunOutline, MoonOutline, BgColorsOutline, ExportOutline, GlobalOutline, LeftOutline, RightOutline, UserOutline, MobileOutline, LinkOutline, AppstoreOutline, CodeOutline, PictureOutline, FileTextOutline, SendOutline]),
       TranslateModule.forRoot({
         loader: {
           provide: TranslateLoader,

@@ -19,17 +19,10 @@
       <div class="dev-container ant-flex ant-flex-align-center">
         <div class="icon">
           <img
-            *ngIf="developerInfo.logo && !developerInfo.logo.includes('Not Found')"
-            [src]="developerInfo.logo"
+            [src]="(developerInfo.logo && !developerInfo.logo.includes('Not Found')) ? developerInfo.logo : 'https://itqan.dev/images/home/hero-card-laptop.svg'"
             [alt]="(currentLang === 'en' ? developerInfo.name_en : developerInfo.name_ar) + ' logo'"
             class="developer-logo"
           />
-          <div *ngIf="!developerInfo.logo || developerInfo.logo.includes('Not Found')" class="default-logo">
-            <svg width="60" height="61" viewBox="0 0 60 61" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect y="0.5" width="60" height="60" rx="30" fill="#F8F8F8"/>
-              <path d="M21 44.5V42.5C21 41.4391 21.4214 40.4217 22.1716 39.6716C22.9217 38.9214 23.9391 38.5 25 38.5H32.25M42 44.5L44 42.5L42 40.5M37.5 40.5L35.5 42.5L37.5 44.5M24 30.5C24 31.5609 24.4214 32.5783 25.1716 33.3284C25.9217 34.0786 26.9391 34.5 28 34.5C29.0609 34.5 30.0783 34.0786 30.8284 33.3284C31.5786 32.5783 32 31.5609 32 30.5C32 29.4391 31.5786 28.4217 30.8284 27.6716C30.0783 26.9214 29.0609 26.5 28 26.5C26.9391 26.5 25.9217 26.9214 25.1716 27.6716C24.4214 28.4217 24 29.4391 24 30.5Z" stroke="#A0533B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
         </div>
         <div class="dev-data">
           <h2 style="margin-bottom: 8px;">{{ currentLang === 'en' ? developerInfo.name_en : developerInfo.name_ar }}</h2>
@@ -79,7 +72,7 @@
 
             <div class="ant-flex">
               <div class="app-icon-container">
-                <img class="app-icon" [src]="app.applicationIcon" [alt]="app.Name_En + ' icon'" loading="lazy" decoding="async">
+                <img class="app-icon" [src]="app.applicationIcon || 'https://itqan.dev/images/home/hero-card-mushaf.svg'" [alt]="app.Name_En + ' icon'" loading="lazy" decoding="async">
               </div>
               <div class="card-data-container">
                 <nz-card-meta

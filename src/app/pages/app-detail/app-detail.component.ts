@@ -368,7 +368,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     // Update Open Graph tags
     this.metaService.updateTag({ property: 'og:title', content: title });
     this.metaService.updateTag({ property: 'og:description', content: appDescription || '' });
-    this.metaService.updateTag({ property: 'og:image', content: this.app.applicationIcon || '' });
+    this.metaService.updateTag({ property: 'og:image', content: this.app.applicationIcon || 'https://itqan.dev/images/home/hero-card-mushaf.svg' });
     this.metaService.updateTag({ property: 'og:url', content: `https://quran-apps.itqan.dev/${this.currentLang}/app/${this.app.slug}_${this.app.id}` });
     this.metaService.updateTag({ property: 'og:type', content: 'website' });
     
@@ -376,7 +376,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     this.metaService.updateTag({ property: 'twitter:card', content: 'summary_large_image' });
     this.metaService.updateTag({ property: 'twitter:title', content: title });
     this.metaService.updateTag({ property: 'twitter:description', content: appDescription || '' });
-    this.metaService.updateTag({ property: 'twitter:image', content: this.app.applicationIcon || '' });
+    this.metaService.updateTag({ property: 'twitter:image', content: this.app.applicationIcon || 'https://itqan.dev/images/home/hero-card-mushaf.svg' });
 
     // Add app-specific keywords
     const keywords = [

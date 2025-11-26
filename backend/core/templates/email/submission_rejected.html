@@ -1,0 +1,79 @@
+{% extends "email/base.html" %}
+
+{% block title %}Submission Update: {{ app_name_en }}{% endblock %}
+
+{% block content %}
+<!-- English Section -->
+<div class="greeting">
+    Assalamu Alaikum {{ submitter_name }},
+</div>
+
+<div class="content">
+    <p>
+        Thank you for submitting <strong>{{ app_name_en }}</strong> to the Quran Apps Directory.
+    </p>
+
+    <div class="info-box error">
+        <strong>Submission Not Approved</strong>
+        <p>
+            After careful review, we were unable to approve your submission for the following reason:
+        </p>
+    </div>
+
+    <div style="background-color: #f5f5f5; padding: 15px; border-radius: 4px; margin: 20px 0;">
+        {{ rejection_reason }}
+    </div>
+
+    <p>
+        If you believe this was in error or would like to discuss this decision,
+        please reply to this email or contact us at
+        <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>.
+    </p>
+
+    <p>
+        You are welcome to submit a revised application that addresses the above concerns.
+    </p>
+
+    <p style="margin-top: 20px; font-size: 14px; color: #666;">
+        Tracking ID: {{ tracking_id }}
+    </p>
+</div>
+
+<!-- Arabic Section -->
+<div class="arabic-section">
+    <div class="greeting">
+        السلام عليكم {{ submitter_name }}،
+    </div>
+
+    <div class="content">
+        <p>
+            شكراً لإرسالكم <strong>{{ app_name_ar }}</strong> إلى دليل تطبيقات القرآن.
+        </p>
+
+        <div class="info-box error">
+            <strong>لم تتم الموافقة على الطلب</strong>
+            <p>
+                بعد المراجعة الدقيقة، لم نتمكن من الموافقة على طلبكم للسبب التالي:
+            </p>
+        </div>
+
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 4px; margin: 20px 0;">
+            {{ rejection_reason }}
+        </div>
+
+        <p>
+            إذا كنتم تعتقدون أن هذا القرار خاطئ أو تودون مناقشته،
+            يرجى الرد على هذا البريد الإلكتروني أو التواصل معنا على
+            <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>.
+        </p>
+
+        <p>
+            نرحب بإرسال طلب جديد معدّل يعالج الملاحظات المذكورة أعلاه.
+        </p>
+
+        <p style="margin-top: 20px; font-size: 14px; color: #666;">
+            رقم التتبع: {{ tracking_id }}
+        </p>
+    </div>
+</div>
+{% endblock %}

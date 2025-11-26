@@ -1,0 +1,61 @@
+{% extends "email/base.html" %}
+
+{% block title %}Approved: {{ app_name_en }}{% endblock %}
+
+{% block content %}
+<!-- English Section -->
+<div class="greeting">
+    Assalamu Alaikum {{ submitter_name }},
+</div>
+
+<div class="content">
+    <div class="info-box success">
+        <strong>Great News!</strong>
+        Your app <strong>{{ app_name_en }}</strong> has been approved and is now live on the Quran Apps Directory!
+    </div>
+
+    <p>
+        Thank you for contributing to the Muslim community by sharing this valuable application.
+        Your app is now discoverable by users looking for Quranic applications.
+    </p>
+
+    <p>
+        <a href="{{ app_url }}" class="button">View Your App Listing</a>
+    </p>
+
+    <p>
+        If you have any updates or changes to your app listing, please don't hesitate to contact us.
+    </p>
+
+    <p>
+        Jazakum Allahu Khairan for your contribution!
+    </p>
+</div>
+
+<!-- Arabic Section -->
+<div class="arabic-section">
+    <div class="greeting">
+        السلام عليكم {{ submitter_name }}،
+    </div>
+
+    <div class="content">
+        <div class="info-box success">
+            <strong>أخبار سارة!</strong>
+            تمت الموافقة على تطبيقكم <strong>{{ app_name_ar }}</strong> وهو الآن متاح في دليل تطبيقات القرآن!
+        </div>
+
+        <p>
+            شكراً لمساهمتكم في خدمة المجتمع الإسلامي من خلال مشاركة هذا التطبيق القيّم.
+            تطبيقكم الآن متاح للمستخدمين الباحثين عن تطبيقات القرآن الكريم.
+        </p>
+
+        <p>
+            <a href="{{ app_url }}" class="button">عرض صفحة التطبيق</a>
+        </p>
+
+        <p>
+            جزاكم الله خيراً على مساهمتكم!
+        </p>
+    </div>
+</div>
+{% endblock %}
