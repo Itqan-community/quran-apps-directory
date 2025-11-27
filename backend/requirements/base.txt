@@ -31,5 +31,8 @@ django-filter==24.3
 # Caching
 django-redis==6.0.0  # Redis caching backend
 
-# File Storage (future use)
-# django-storages[s3]==1.14.*
+# File Storage & External Services
+boto3==1.35.*  # AWS S3 SDK for Cloudflare R2 uploads
+requests==2.32.*  # HTTP requests for downloading images from URLs
+python-dotenv==1.0.*  # Environment variable management for local development
+# django-storages[s3]==1.14.*  # Alternative: django-storages for S3-compatible storage
