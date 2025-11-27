@@ -60,3 +60,4 @@ backend/node_modules/.mf/cf.json
 .wrangler/state/v3/r2/quran-apps-directory/blobs/1bef5c7b83c701e11d40faf4405ef16c2b635a82cfe33a4477b949d78bb7edc10000019ac53584a0
 .wrangler/state/v3/r2/quran-apps-directory/blobs/773eef08b283a9366e09fcdc1e2e5c39fbde593348d1860f4b478c95198668020000019ac522fd57
 backend/test/test_r2.txt
+backend/config/logs/staging.log
