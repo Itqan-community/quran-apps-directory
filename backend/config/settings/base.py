@@ -346,7 +346,8 @@ DEFAULT_FROM_NAME = config('DEFAULT_FROM_NAME', default='Quran Apps Directory')
 
 
 # Cloudflare R2 Storage Configuration
-R2_ACCOUNT_ID = config('R2_ACCOUNT_ID', default='71be39fa76ea6261ea925d02b6ee15e6')
+# These MUST be set via environment variables in production (Railway)
+R2_ACCOUNT_ID = config('R2_ACCOUNT_ID', default='')
 R2_ACCESS_KEY_ID = config('R2_ACCESS_KEY_ID', default='')
 R2_SECRET_ACCESS_KEY = config('R2_SECRET_ACCESS_KEY', default='')
 R2_BUCKET_NAME = config('R2_BUCKET_NAME', default='quran-apps-directory')

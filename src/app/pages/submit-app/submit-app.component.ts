@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, forkJoin, of, Observable, from, concat } from 'rxjs';
+import { catchError, map, tap, toArray, mergeMap } from 'rxjs/operators';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -136,6 +137,10 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
   categories: Category[] = [];
   isLoading = false;
   isSubmitting = false;
+  isUploading = false;
+  uploadProgress = 0;
+  totalUploads = 0;
+  completedUploads = 0;
   currentLang: 'en' | 'ar' = 'en';
   iconFileList: NzUploadFile[] = [];
 
@@ -273,48 +278,179 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
 
     this.isSubmitting = true;
 
-    const request: SubmissionRequest = {
-      submitter_name: this.formData.submitter_name,
-      submitter_email: this.formData.submitter_email,
-      submitter_phone: this.formData.submitter_phone,
-      submitter_organization: this.formData.submitter_organization,
-      is_developer: this.formData.is_developer,
-      app_name_en: this.formData.app_name_en,
-      app_name_ar: this.formData.app_name_ar,
-      short_description_en: this.formData.short_description_en,
-      short_description_ar: this.formData.short_description_ar,
-      description_en: this.formData.description_en,
-      description_ar: this.formData.description_ar,
-      google_play_link: this.formData.google_play_link,
-      app_store_link: this.formData.app_store_link,
-      app_gallery_link: this.formData.app_gallery_link,
-      website_link: this.formData.website_link,
-      categories: this.formData.categories,
-      developer_name_en: this.formData.developer_name_en,
-      developer_name_ar: this.formData.developer_name_ar,
-      developer_website: this.formData.developer_website,
-      developer_email: this.formData.developer_email,
-      app_icon_url: this.formData.app_icon_url,
-      main_image_en: this.formData.main_image_en,
-      main_image_ar: this.formData.main_image_ar,
-      screenshots_en: this.formData.screenshots_en,
-      screenshots_ar: this.formData.screenshots_ar,
-      additional_notes: this.formData.additional_notes,
-      content_confirmation: this.formData.content_confirmation,
-    };
+    // First, upload all images to R2, then submit the form
+    this.uploadAllImages().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (uploadedUrls) => {
+        // Create request with R2 URLs
+        const request: SubmissionRequest = {
+          submitter_name: this.formData.submitter_name,
+          submitter_email: this.formData.submitter_email,
+          submitter_phone: this.formData.submitter_phone,
+          submitter_organization: this.formData.submitter_organization,
+          is_developer: this.formData.is_developer,
+          app_name_en: this.formData.app_name_en,
+          app_name_ar: this.formData.app_name_ar,
+          short_description_en: this.formData.short_description_en,
+          short_description_ar: this.formData.short_description_ar,
+          description_en: this.formData.description_en,
+          description_ar: this.formData.description_ar,
+          google_play_link: this.formData.google_play_link,
+          app_store_link: this.formData.app_store_link,
+          app_gallery_link: this.formData.app_gallery_link,
+          website_link: this.formData.website_link,
+          categories: this.formData.categories,
+          developer_name_en: this.formData.developer_name_en,
+          developer_name_ar: this.formData.developer_name_ar,
+          developer_website: this.formData.developer_website,
+          developer_email: this.formData.developer_email,
+          app_icon_url: uploadedUrls.icon_url,
+          main_image_en: uploadedUrls.main_image_en,
+          main_image_ar: uploadedUrls.main_image_ar,
+          screenshots_en: uploadedUrls.screenshots_en,
+          screenshots_ar: uploadedUrls.screenshots_ar,
+          additional_notes: this.formData.additional_notes,
+          content_confirmation: this.formData.content_confirmation,
+        };
 
-    this.submissionService.submitApp(request)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.isSubmitting = false;
-          this.showSuccessModal(response.tracking_id);
-        },
-        error: (error) => {
-          this.isSubmitting = false;
-          this.message.error(error || 'Failed to submit. Please try again.');
-        }
+        this.submissionService.submitApp(request)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: (response) => {
+              this.isSubmitting = false;
+              this.showSuccessModal(response.tracking_id);
+            },
+            error: (error) => {
+              this.isSubmitting = false;
+              this.message.error(error || 'Failed to submit. Please try again.');
+            }
+          });
+      },
+      error: (error) => {
+        this.isSubmitting = false;
+        this.message.error(
+          this.currentLang === 'ar'
+            ? 'فشل في رفع الصور. يرجى المحاولة مرة أخرى.'
+            : 'Failed to upload images. Please try again.'
+        );
+        console.error('Image upload error:', error);
+      }
+    });
+  }
+
+  private uploadAllImages(): Observable<{
+    icon_url: string;
+    main_image_en: string;
+    main_image_ar: string;
+    screenshots_en: string[];
+    screenshots_ar: string[];
+  }> {
+    interface UploadTask {
+      key: string;
+      index?: number;
+      url: string;
+      mediaType: 'icon' | 'screenshot_en' | 'screenshot_ar';
+    }
+
+    const uploadTasks: UploadTask[] = [];
+
+    // Collect all upload tasks
+    if (this.formData.app_icon_url && this.isExternalUrl(this.formData.app_icon_url)) {
+      uploadTasks.push({ key: 'icon', url: this.formData.app_icon_url, mediaType: 'icon' });
+    }
+    if (this.formData.main_image_en && this.isExternalUrl(this.formData.main_image_en)) {
+      uploadTasks.push({ key: 'main_en', url: this.formData.main_image_en, mediaType: 'screenshot_en' });
+    }
+    if (this.formData.main_image_ar && this.isExternalUrl(this.formData.main_image_ar)) {
+      uploadTasks.push({ key: 'main_ar', url: this.formData.main_image_ar, mediaType: 'screenshot_ar' });
+    }
+    this.formData.screenshots_en.forEach((url, index) => {
+      if (this.isExternalUrl(url)) {
+        uploadTasks.push({ key: 'screenshot_en', index, url, mediaType: 'screenshot_en' });
+      }
+    });
+    this.formData.screenshots_ar.forEach((url, index) => {
+      if (this.isExternalUrl(url)) {
+        uploadTasks.push({ key: 'screenshot_ar', index, url, mediaType: 'screenshot_ar' });
+      }
+    });
+
+    // If no uploads needed, return original URLs immediately
+    if (uploadTasks.length === 0) {
+      return of({
+        icon_url: this.formData.app_icon_url,
+        main_image_en: this.formData.main_image_en,
+        main_image_ar: this.formData.main_image_ar,
+        screenshots_en: this.formData.screenshots_en,
+        screenshots_ar: this.formData.screenshots_ar,
       });
+    }
+
+    // Initialize progress tracking
+    this.isUploading = true;
+    this.totalUploads = uploadTasks.length;
+    this.completedUploads = 0;
+    this.uploadProgress = 0;
+
+    // Process uploads concurrently (3 at a time to avoid overwhelming the server)
+    return from(uploadTasks).pipe(
+      mergeMap((task) =>
+        this.submissionService.uploadFromUrl(task.url, task.mediaType).pipe(
+          tap(() => {
+            this.completedUploads++;
+            this.uploadProgress = Math.round((this.completedUploads / this.totalUploads) * 100);
+          }),
+          map((result) => ({ ...task, uploadedUrl: result.url })),
+          catchError(() => {
+            this.completedUploads++;
+            this.uploadProgress = Math.round((this.completedUploads / this.totalUploads) * 100);
+            return of({ ...task, uploadedUrl: task.url }); // Fallback to original URL
+          })
+        ),
+        3 // Concurrency limit
+      ),
+      toArray(),
+      tap(() => {
+        this.isUploading = false;
+      }),
+      map((results) => {
+        let iconUrl = this.formData.app_icon_url;
+        let mainImageEn = this.formData.main_image_en;
+        let mainImageAr = this.formData.main_image_ar;
+        const screenshotsEn = [...this.formData.screenshots_en];
+        const screenshotsAr = [...this.formData.screenshots_ar];
+
+        results.forEach((result) => {
+          if (result.key === 'icon') {
+            iconUrl = result.uploadedUrl;
+          } else if (result.key === 'main_en') {
+            mainImageEn = result.uploadedUrl;
+          } else if (result.key === 'main_ar') {
+            mainImageAr = result.uploadedUrl;
+          } else if (result.key === 'screenshot_en' && result.index !== undefined) {
+            screenshotsEn[result.index] = result.uploadedUrl;
+          } else if (result.key === 'screenshot_ar' && result.index !== undefined) {
+            screenshotsAr[result.index] = result.uploadedUrl;
+          }
+        });
+
+        return {
+          icon_url: iconUrl,
+          main_image_en: mainImageEn,
+          main_image_ar: mainImageAr,
+          screenshots_en: screenshotsEn,
+          screenshots_ar: screenshotsAr,
+        };
+      })
+    );
+  }
+
+  private isExternalUrl(url: string): boolean {
+    if (!url) return false;
+    // Check if it's already an R2 URL (already uploaded)
+    const r2Domain = 'r2.dev';
+    if (url.includes(r2Domain)) return false;
+    // Check if it's an external HTTP/HTTPS URL
+    return url.startsWith('http://') || url.startsWith('https://');
   }
 
   private showSuccessModal(trackingId: string): void {

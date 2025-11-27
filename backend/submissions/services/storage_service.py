@@ -213,8 +213,12 @@ class R2StorageService:
             return url
 
         try:
-            # Download the image
-            response = requests.get(url, timeout=30, stream=True)
+            # Download the image with proper headers
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'image/*,*/*;q=0.8',
+            }
+            response = requests.get(url, timeout=30, stream=True, headers=headers)
             response.raise_for_status()
 
             content_type = response.headers.get('Content-Type', 'image/png').split(';')[0]
