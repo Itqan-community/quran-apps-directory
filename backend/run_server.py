@@ -6,12 +6,24 @@ This script will run our Django application with proper port handling.
 import os
 import subprocess
 import sys
+from pathlib import Path
 
 def main():
     print("Starting Django application via custom runner...")
-    
+
     # Set working directory to the script's directory
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(script_dir)
+
+    # Load .env.local for local development if it exists
+    env_local_path = Path(script_dir) / '.env.local'
+    if env_local_path.exists():
+        print("Loading .env.local for local development...")
+        try:
+            from dotenv import load_dotenv
+            load_dotenv(env_local_path)
+        except ImportError:
+            print("Warning: python-dotenv not installed, skipping .env.local loading")
     
     # Run migrations
     print("Running database migrations...")

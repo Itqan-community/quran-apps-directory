@@ -17,6 +17,7 @@ django-redis==6.0.0
 # Storage & External Services
 boto3==1.35.*
 requests==2.32.*
+python-dotenv==1.0.*
 
 # Development tools (optional)
 django-debug-toolbar==4.4.6
