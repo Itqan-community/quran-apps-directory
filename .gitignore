@@ -51,3 +51,12 @@ backend-update-spec.json
 backend-userdata.sh
 AGENTS.md
 .code/
+.wrangler/state/v3/r2/miniflare-R2BucketObject/07e574787c601d61c40182cb412968f14426d63e7a95487b077b5777b1ca6b6b.sqlite
+.wrangler/state/v3/r2/miniflare-R2BucketObject/07e574787c601d61c40182cb412968f14426d63e7a95487b077b5777b1ca6b6b.sqlite-shm
+.wrangler/state/v3/r2/miniflare-R2BucketObject/07e574787c601d61c40182cb412968f14426d63e7a95487b077b5777b1ca6b6b.sqlite-wal
+.wrangler/state/v3/r2/quran-apps-directory/blobs/9dff0a40b7a172b747b4eaf63b9bc1e5d6140a371fc4349ee71549e4335c0d420000019ac02bc80c
+backend/node_modules/.cache/wrangler/wrangler-account.json
+backend/node_modules/.mf/cf.json
+.wrangler/state/v3/r2/quran-apps-directory/blobs/1bef5c7b83c701e11d40faf4405ef16c2b635a82cfe33a4477b949d78bb7edc10000019ac53584a0
+.wrangler/state/v3/r2/quran-apps-directory/blobs/773eef08b283a9366e09fcdc1e2e5c39fbde593348d1860f4b478c95198668020000019ac522fd57
+backend/test/test_r2.txt

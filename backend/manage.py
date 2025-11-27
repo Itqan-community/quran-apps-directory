@@ -3,6 +3,16 @@
 import os
 import sys
 
+# Load .env.local for local development (before any imports that use env vars)
+from pathlib import Path
+env_local_path = Path(__file__).resolve().parent / '.env.local'
+if env_local_path.exists():
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(env_local_path)
+    except ImportError:
+        pass  # python-dotenv not installed, skip loading .env.local
+
 
 def main():
     """Run administrative tasks."""
