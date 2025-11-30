@@ -359,11 +359,13 @@ class AppSubmissionAdmin(admin.ModelAdmin):
         """
         obj._auto_approve = False          # temp flag used in save_related
         obj._desired_status = obj.status   # track target status for clarity
+        obj._old_status = None             # track previous status for email
         obj._status_for_email = None       # track status change for email notification
 
         if change:
             old_obj = AppSubmission.objects.get(pk=obj.pk)
             status_changed = old_obj.status != obj.status
+            obj._old_status = old_obj.status
 
             # Auto-approve path: defer status change & let service handle full workflow
             if (
@@ -388,13 +390,15 @@ class AppSubmissionAdmin(admin.ModelAdmin):
     def save_related(self, request, form, formsets, change):
         """
         After the submission and its M2M fields are saved, auto-approve when needed
-        and send status change emails.
+        and send status change emails for all status transitions.
         """
         super().save_related(request, form, formsets, change)
 
         obj = form.instance
         from submissions.services.submission_service import SubmissionService
         from core.services.email import get_email_service
+        import logging
+        logger = logging.getLogger(__name__)
 
         # Handle auto-approve (full approval workflow)
         if getattr(obj, "_auto_approve", False):
@@ -417,14 +421,39 @@ class AppSubmissionAdmin(admin.ModelAdmin):
             try:
                 if status_for_email == SubmissionStatus.UNDER_REVIEW:
                     email_service.send_submission_under_review(obj)
+                    logger.info(f"Sent 'Under Review' email for {obj.tracking_id}")
+
                 elif status_for_email == SubmissionStatus.INFO_REQUESTED:
-                    # Note: For info request, the message should be set separately via request_info_view
+                    # For info request, the message should be set separately via request_info_view
                     if obj.info_request_message:
                         email_service.send_info_requested(obj, obj.info_request_message)
+                        logger.info(f"Sent 'Information Requested' email for {obj.tracking_id}")
+                    else:
+                        logger.warning(f"No info_request_message set for {obj.tracking_id}")
+
+                elif status_for_email == SubmissionStatus.REJECTED:
+                    # For rejection, the reason should be set separately
+                    if obj.rejection_reason:
+                        email_service.send_submission_rejected(obj, obj.rejection_reason)
+                        logger.info(f"Sent 'Rejected' email for {obj.tracking_id}")
+                    else:
+                        logger.warning(f"No rejection_reason set for {obj.tracking_id}")
+
+                elif status_for_email == SubmissionStatus.APPROVED:
+                    # Only send approval email if app was already created (auto-approve handled above)
+                    if obj.created_app:
+                        email_service.send_submission_approved(obj)
+                        logger.info(f"Sent 'Approved' email for {obj.tracking_id}")
+                    else:
+                        logger.warning(f"Status set to APPROVED but no created_app for {obj.tracking_id}")
+
+                elif status_for_email == SubmissionStatus.PENDING:
+                    # Send received email for pending status
+                    email_service.send_submission_received(obj)
+                    logger.info(f"Sent 'Pending Review' email for {obj.tracking_id}")
+
             except Exception as e:
                 # Log the email error but don't fail the save
-                import logging
-                logger = logging.getLogger(__name__)
                 logger.error(f"Failed to send status email for {obj.tracking_id}: {e}")
 
     def get_urls(self):
