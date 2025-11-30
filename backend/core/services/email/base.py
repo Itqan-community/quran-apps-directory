@@ -178,6 +178,34 @@ class EmailService(ABC):
             reply_to=self.from_email
         )
 
+    def send_submission_under_review(self, submission) -> bool:
+        """
+        Send email when a submission is marked as under review.
+
+        Args:
+            submission: AppSubmission instance
+
+        Returns:
+            True if email was sent successfully
+        """
+        context = {
+            'submission': submission,
+            'tracking_id': submission.tracking_id,
+            'app_name_en': submission.app_name_en,
+            'app_name_ar': submission.app_name_ar,
+            'submitter_name': submission.submitter_name,
+            'track_url': f"{self.site_url}/en/track-submission?id={submission.tracking_id}",
+        }
+
+        subject_en = f"Status Update: {submission.app_name_en} ({submission.tracking_id})"
+        html_body = self._render_template('submission_under_review.html', context)
+
+        return self.send_email(
+            to=submission.submitter_email,
+            subject=subject_en,
+            html_body=html_body
+        )
+
 
 def get_email_service() -> EmailService:
     """

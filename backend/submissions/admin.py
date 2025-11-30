@@ -291,14 +291,23 @@ class AppSubmissionAdmin(admin.ModelAdmin):
     @admin.action(description='Mark selected as Under Review')
     def mark_under_review(self, request, queryset):
         """Mark submissions as under review."""
+        from submissions.services.submission_service import SubmissionService
+
+        service = SubmissionService()
         updated = 0
+        errors = []
+
         for obj in queryset.filter(status=SubmissionStatus.PENDING):
-            old_status = obj.status
-            obj.status = SubmissionStatus.UNDER_REVIEW
-            obj.save()
-            self.log_status_change(obj, old_status, obj.status, request.user)
-            updated += 1
-        self.message_user(request, f'{updated} submission(s) marked as under review.')
+            try:
+                service.mark_under_review(obj, request.user)
+                updated += 1
+            except Exception as e:
+                errors.append(f"{obj.tracking_id}: {str(e)}")
+
+        if updated:
+            self.message_user(request, f'{updated} submission(s) marked as under review.')
+        if errors:
+            self.message_user(request, f'Errors: {"; ".join(errors)}', level=messages.ERROR)
 
     @admin.action(description='Approve selected submissions')
     def approve_submissions(self, request, queryset):
@@ -350,6 +359,7 @@ class AppSubmissionAdmin(admin.ModelAdmin):
         """
         obj._auto_approve = False          # temp flag used in save_related
         obj._desired_status = obj.status   # track target status for clarity
+        obj._status_for_email = None       # track status change for email notification
 
         if change:
             old_obj = AppSubmission.objects.get(pk=obj.pk)
@@ -370,19 +380,24 @@ class AppSubmissionAdmin(admin.ModelAdmin):
                 obj.reviewed_by = request.user
                 obj.reviewed_at = timezone.now()
                 self.log_status_change(old_obj, old_obj.status, obj.status, request.user)
+                # Store the new status for email notification
+                obj._status_for_email = obj.status
 
         super().save_model(request, obj, form, change)
 
     def save_related(self, request, form, formsets, change):
         """
-        After the submission and its M2M fields are saved, auto-approve when needed.
+        After the submission and its M2M fields are saved, auto-approve when needed
+        and send status change emails.
         """
         super().save_related(request, form, formsets, change)
 
         obj = form.instance
-        if getattr(obj, "_auto_approve", False):
-            from submissions.services.submission_service import SubmissionService
+        from submissions.services.submission_service import SubmissionService
+        from core.services.email import get_email_service
 
+        # Handle auto-approve (full approval workflow)
+        if getattr(obj, "_auto_approve", False):
             service = SubmissionService()
             try:
                 app = service.approve_submission(obj, request.user)
@@ -394,6 +409,23 @@ class AppSubmissionAdmin(admin.ModelAdmin):
                 messages.error(request, f'Error auto-approving submission: {str(e)}')
             finally:
                 obj._auto_approve = False
+
+        # Handle regular status changes (not auto-approve) - send status notification emails
+        status_for_email = getattr(obj, "_status_for_email", None)
+        if status_for_email:
+            email_service = get_email_service()
+            try:
+                if status_for_email == SubmissionStatus.UNDER_REVIEW:
+                    email_service.send_submission_under_review(obj)
+                elif status_for_email == SubmissionStatus.INFO_REQUESTED:
+                    # Note: For info request, the message should be set separately via request_info_view
+                    if obj.info_request_message:
+                        email_service.send_info_requested(obj, obj.info_request_message)
+            except Exception as e:
+                # Log the email error but don't fail the save
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f"Failed to send status email for {obj.tracking_id}: {e}")
 
     def get_urls(self):
         """Add custom URLs for approve/reject/request-info actions."""

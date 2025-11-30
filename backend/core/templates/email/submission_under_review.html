@@ -1,0 +1,65 @@
+{% extends "email/base.html" %}
+
+{% block title %}Status Update - {{ app_name_en }}{% endblock %}
+
+{% block content %}
+<!-- English Section -->
+<div class="greeting">
+    Assalamu Alaikum {{ submitter_name }},
+</div>
+
+<div class="content">
+    <p>
+        Thank you for your patience! We're pleased to inform you that your submission for <strong>{{ app_name_en }}</strong> is now under review by our team.
+    </p>
+
+    <p>
+        Our experts are carefully evaluating your application to ensure it meets our quality standards and community guidelines. This process typically takes 1-3 business days.
+    </p>
+
+    <div class="info-box">
+        <strong>Your Tracking ID:</strong>
+        <div class="tracking-id">{{ tracking_id }}</div>
+        <p style="margin-top: 10px; font-size: 14px;">
+            Use this ID to track your submission status anytime.
+        </p>
+    </div>
+
+    <p>
+        <a href="{{ track_url }}" class="button">Check Status</a>
+    </p>
+
+    <p>
+        If we need any additional information or clarification, we will contact you via email. Please keep an eye on your inbox (including spam folder) for updates.
+    </p>
+</div>
+
+<!-- Arabic Section -->
+<div class="arabic-section">
+    <div class="greeting">
+        السلام عليكم {{ submitter_name }}،
+    </div>
+
+    <div class="content">
+        <p>
+            شكراً على صبركم! يسعدنا إخبركم بأن طلبكم لـ <strong>{{ app_name_ar }}</strong> الآن قيد المراجعة من قبل فريقنا.
+        </p>
+
+        <p>
+            يقوم خبراؤنا بتقييم تطبيقكم بعناية للتأكد من أنه يلبي معايير الجودة والإرشادات المجتمعية لدينا. عادة ما تستغرق هذه العملية من 1 إلى 3 أيام عمل.
+        </p>
+
+        <div class="info-box">
+            <strong>رقم التتبع:</strong>
+            <div class="tracking-id">{{ tracking_id }}</div>
+            <p style="margin-top: 10px; font-size: 14px;">
+                استخدم هذا الرقم لتتبع حالة طلبك في أي وقت.
+            </p>
+        </div>
+
+        <p>
+            إذا احتجنا إلى أي معلومات إضافية أو توضيح، سنتواصل معكم عبر البريد الإلكتروني. يرجى الانتباه لرسائل بريدكم (بما في ذلك مجلد البريد العشوائي) للحصول على التحديثات.
+        </p>
+    </div>
+</div>
+{% endblock %}

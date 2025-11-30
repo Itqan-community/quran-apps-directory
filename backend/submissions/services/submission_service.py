@@ -409,6 +409,12 @@ class SubmissionService:
             notes='Marked as under review'
         )
 
+        # Send status update email
+        try:
+            self.email_service.send_submission_under_review(submission)
+        except Exception as e:
+            logger.error(f"Failed to send under review email for {submission.tracking_id}: {e}")
+
         return submission
 
     def _get_or_create_developer(self, submission: AppSubmission) -> Developer:
