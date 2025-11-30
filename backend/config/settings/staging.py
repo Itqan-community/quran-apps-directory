@@ -12,6 +12,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
     'staging.quran-apps.itqan.dev',
     'staging-api.quran-apps.itqan.dev',
+    'qad-backend-api-staging.up.railway.app',  # Railway staging domain
     'localhost',
     '127.0.0.1',
 ]
