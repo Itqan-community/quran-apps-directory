@@ -3,8 +3,5 @@
   "build": {
     "builder": "dockerfile",
     "context": "."
-  },
-  "deploy": {
-    "startCommand": "gunicorn config.wsgi:application"
   }
 }
