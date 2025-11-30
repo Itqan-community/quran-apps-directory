@@ -424,20 +424,16 @@ class AppSubmissionAdmin(admin.ModelAdmin):
                     logger.info(f"Sent 'Under Review' email for {obj.tracking_id}")
 
                 elif status_for_email == SubmissionStatus.INFO_REQUESTED:
-                    # For info request, the message should be set separately via request_info_view
-                    if obj.info_request_message:
-                        email_service.send_info_requested(obj, obj.info_request_message)
-                        logger.info(f"Sent 'Information Requested' email for {obj.tracking_id}")
-                    else:
-                        logger.warning(f"No info_request_message set for {obj.tracking_id}")
+                    # Send info request email with message if available
+                    message = obj.info_request_message or ""
+                    email_service.send_info_requested(obj, message)
+                    logger.info(f"Sent 'Information Requested' email for {obj.tracking_id}")
 
                 elif status_for_email == SubmissionStatus.REJECTED:
-                    # For rejection, the reason should be set separately
-                    if obj.rejection_reason:
-                        email_service.send_submission_rejected(obj, obj.rejection_reason)
-                        logger.info(f"Sent 'Rejected' email for {obj.tracking_id}")
-                    else:
-                        logger.warning(f"No rejection_reason set for {obj.tracking_id}")
+                    # Send rejection email with reason if available
+                    reason = obj.rejection_reason or "Your submission does not meet our requirements."
+                    email_service.send_submission_rejected(obj, reason)
+                    logger.info(f"Sent 'Rejected' email for {obj.tracking_id}")
 
                 elif status_for_email == SubmissionStatus.APPROVED:
                     # Only send approval email if app was already created (auto-approve handled above)
