@@ -1,5 +1,5 @@
 # Django Core
-Django==4.2.*
+Django==5.2.*
 django-ninja==1.2.0  # API framework following Itqan standards (Python 3.9 compatible)
 
 # Database
