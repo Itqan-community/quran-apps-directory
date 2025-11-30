@@ -57,11 +57,17 @@ class SubmissionService:
             notes='Submission received'
         )
 
-        # Send confirmation email
+        # Send confirmation email to submitter
         try:
             self.email_service.send_submission_received(submission)
         except Exception as e:
             logger.error(f"Failed to send confirmation email for {submission.tracking_id}: {e}")
+
+        # Send notification email to admin
+        try:
+            self.email_service.send_admin_notification_new_submission(submission)
+        except Exception as e:
+            logger.error(f"Failed to send admin notification for {submission.tracking_id}: {e}")
 
         return submission
 

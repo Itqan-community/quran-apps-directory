@@ -206,6 +206,39 @@ class EmailService(ABC):
             html_body=html_body
         )
 
+    def send_admin_notification_new_submission(self, submission) -> bool:
+        """
+        Send email to admin when a new submission is received.
+
+        Args:
+            submission: AppSubmission instance
+
+        Returns:
+            True if email was sent successfully
+        """
+        context = {
+            'submission': submission,
+            'tracking_id': submission.tracking_id,
+            'app_name_en': submission.app_name_en,
+            'app_name_ar': submission.app_name_ar,
+            'submitter_name': submission.submitter_name,
+            'submitter_email': submission.submitter_email,
+            'submitter_phone': submission.submitter_phone,
+            'organization': submission.organization,
+            'is_developer': submission.is_developer,
+            'admin_url': f"{self.site_url}/admin/submissions/appsubmission/{submission.id}/change/",
+            'track_url': f"{self.site_url}/en/track-submission?id={submission.tracking_id}",
+        }
+
+        subject_en = f"New Submission: {submission.app_name_en} ({submission.tracking_id})"
+        html_body = self._render_template('admin_submission_received.html', context)
+
+        return self.send_email(
+            to=self.from_email,
+            subject=subject_en,
+            html_body=html_body
+        )
+
 
 def get_email_service() -> EmailService:
     """

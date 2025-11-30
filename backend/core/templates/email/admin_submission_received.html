@@ -1,0 +1,66 @@
+{% extends "email/base.html" %}
+
+{% block title %}New Submission: {{ app_name_en }}{% endblock %}
+
+{% block content %}
+<div class="greeting">
+    New App Submission Received
+</div>
+
+<div class="content">
+    <p>
+        A new app submission has been received in the Quran Apps Directory.
+    </p>
+
+    <div class="info-box">
+        <strong>Tracking ID:</strong>
+        <div class="tracking-id">{{ tracking_id }}</div>
+    </div>
+
+    <h3>Submission Details:</h3>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+        <tr style="background-color: #f8f9fa;">
+            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold; width: 30%;">App Name (EN)</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ app_name_en }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">App Name (AR)</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ app_name_ar }}</td>
+        </tr>
+        <tr style="background-color: #f8f9fa;">
+            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Submitter Name</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ submitter_name }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Email</td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><a href="mailto:{{ submitter_email }}">{{ submitter_email }}</a></td>
+        </tr>
+        <tr style="background-color: #f8f9fa;">
+            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Phone</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ submitter_phone|default:"Not provided" }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Organization</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ organization|default:"Not provided" }}</td>
+        </tr>
+        <tr style="background-color: #f8f9fa;">
+            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Developer</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">{% if is_developer %}Yes{% else %}No{% endif %}</td>
+        </tr>
+    </table>
+
+    <p style="margin-top: 20px;">
+        <strong>Actions:</strong>
+    </p>
+
+    <p>
+        <a href="{{ admin_url }}" class="button" style="background-color: #1890ff;">Review in Admin Panel</a>
+        <a href="{{ track_url }}" class="button" style="background-color: #52c41a; margin-left: 10px;">View Public Tracking</a>
+    </p>
+
+    <p style="margin-top: 20px; font-size: 14px; color: #666;">
+        Log in to the admin panel to review the full submission details, including images and app descriptions.
+    </p>
+</div>
+{% endblock %}
