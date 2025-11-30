@@ -335,7 +335,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Email Configuration (Pluggable)
-EMAIL_BACKEND_CLASS = config('EMAIL_BACKEND', default='core.services.email.console.ConsoleEmailService')
+EMAIL_BACKEND_CLASS = config('EMAIL_BACKEND_CLASS', default='core.services.email.console.ConsoleEmailService')
 EMAIL_HOST = config('EMAIL_HOST', default='in-v3.mailjet.com')
 EMAIL_PORT = config('EMAIL_PORT', default=2525, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
