@@ -4,6 +4,7 @@ Staging environment settings for Quran Apps Directory
 Inherits from base.py and overrides for staging environment
 """
 
+import os
 from .base import *  # noqa
 
 # Security settings for staging
@@ -18,20 +19,33 @@ ALLOWED_HOSTS = [
 # Database - Can be overridden via environment variables
 # Default to PostgreSQL (set via DB_* env vars)
 
-# Cache configuration for staging (Redis recommended)
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://redis:6379/1',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'SOCKET_CONNECT_TIMEOUT': 5,
-            'SOCKET_TIMEOUT': 5,
-            'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',
-            'IGNORE_EXCEPTIONS': True,
+# Cache configuration for staging
+# Try Redis first, fallback to in-memory cache
+REDIS_URL = config('REDIS_URL', default=None)
+
+if REDIS_URL:
+    # If Redis is available via environment variable
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': REDIS_URL,
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+                'SOCKET_CONNECT_TIMEOUT': 5,
+                'SOCKET_TIMEOUT': 5,
+                'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',
+                'IGNORE_EXCEPTIONS': True,
+            }
         }
     }
-}
+else:
+    # Fallback to in-memory cache for staging without Redis
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
+        }
+    }
 
 # Cache timeouts for staging
 CACHE_TIMEOUTS = {
