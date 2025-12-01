@@ -480,15 +480,25 @@
             font-weight: 600;
             margin-bottom: 12px;
             box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3);
-            justify-content: center;
+            display: flex !important;
+            align-items: center !important;
+            line-height: 1 !important;
+            padding-top: 12px !important;
+            padding-bottom: 12px !important;
 
             .mobile-nav-icon {
               opacity: 1;
+              display: flex;
+              align-items: center;
+              flex-shrink: 0;
             }
 
             .external-icon {
               opacity: 0.8;
               margin-left: auto;
+              display: flex;
+              align-items: center;
+              flex-shrink: 0;
             }
 
             &:hover {
