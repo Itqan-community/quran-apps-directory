@@ -181,6 +181,44 @@
               opacity: 1;
             }
           }
+
+          &.community-badge {
+            background: linear-gradient(135deg, #ff8c42 0%, #ffa85c 100%);
+            color: #ffffff !important;
+            font-weight: 600;
+            padding: 0 18px;
+            box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3);
+            border: none;
+
+            .nav-icon {
+              opacity: 1;
+            }
+
+            .external-icon {
+              opacity: 0.8;
+            }
+
+            &:hover {
+              background: linear-gradient(135deg, #ff7a28 0%, #ff984a 100%);
+              box-shadow: 0 8px 20px rgba(255, 140, 66, 0.4);
+              color: #ffffff !important;
+              transform: translateY(-3px);
+
+              .external-icon {
+                opacity: 1;
+              }
+            }
+
+            .dark-theme & {
+              background: linear-gradient(135deg, #ff8c42 0%, #ffa85c 100%);
+              box-shadow: 0 6px 16px rgba(255, 140, 66, 0.4);
+
+              &:hover {
+                background: linear-gradient(135deg, #ff7a28 0%, #ff984a 100%);
+                box-shadow: 0 10px 24px rgba(255, 140, 66, 0.5);
+              }
+            }
+          }
         }
       }
 
@@ -433,6 +471,45 @@
               color: #ff8c42;
               box-shadow: 0 4px 12px rgba(255, 140, 66, 0.15);
               transform: translateX(-2px);
+            }
+          }
+
+          &.mobile-community-badge {
+            background: linear-gradient(135deg, #ff8c42 0%, #ffa85c 100%);
+            color: #ffffff !important;
+            font-weight: 600;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3);
+            justify-content: center;
+
+            .mobile-nav-icon {
+              opacity: 1;
+            }
+
+            .external-icon {
+              opacity: 0.8;
+              margin-left: auto;
+            }
+
+            &:hover {
+              background: linear-gradient(135deg, #ff7a28 0%, #ff984a 100%);
+              box-shadow: 0 6px 18px rgba(255, 140, 66, 0.4);
+              color: #ffffff !important;
+              transform: translateY(-2px);
+
+              .external-icon {
+                opacity: 1;
+              }
+            }
+
+            .dark-theme & {
+              background: linear-gradient(135deg, #ff8c42 0%, #ffa85c 100%);
+              box-shadow: 0 6px 16px rgba(255, 140, 66, 0.4);
+
+              &:hover {
+                background: linear-gradient(135deg, #ff7a28 0%, #ff984a 100%);
+                box-shadow: 0 8px 20px rgba(255, 140, 66, 0.5);
+              }
             }
           }
         }
