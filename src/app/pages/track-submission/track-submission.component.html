@@ -12,14 +12,14 @@
         <div class="search-form">
           <div class="search-input-group">
             <input nz-input
-                   [(ngModel)]="trackingId"
-                   [placeholder]="'trackSubmission.trackingIdPlaceholder' | translate"
-                   (keyup.enter)="searchByTrackingId()"
-                   class="search-input" />
+              [(ngModel)]="trackingId"
+              [placeholder]="'trackSubmission.trackingIdPlaceholder' | translate"
+              (keyup.enter)="searchByTrackingId()"
+              class="search-input" />
             <button nz-button
-                    nzType="primary"
-                    [nzLoading]="isLoading"
-                    (click)="searchByTrackingId()">
+              nzType="primary"
+              [nzLoading]="isLoading"
+              (click)="searchByTrackingId()">
               <span nz-icon nzType="search" nzTheme="outline"></span>
               {{ 'trackSubmission.search' | translate }}
             </button>
@@ -35,15 +35,15 @@
         <div class="search-form">
           <div class="search-input-group">
             <input nz-input
-                   type="email"
-                   [(ngModel)]="email"
-                   [placeholder]="'trackSubmission.emailPlaceholder' | translate"
-                   (keyup.enter)="searchByEmail()"
-                   class="search-input" />
+              type="email"
+              [(ngModel)]="email"
+              [placeholder]="'trackSubmission.emailPlaceholder' | translate"
+              (keyup.enter)="searchByEmail()"
+              class="search-input" />
             <button nz-button
-                    nzType="primary"
-                    [nzLoading]="isLoading"
-                    (click)="searchByEmail()">
+              nzType="primary"
+              [nzLoading]="isLoading"
+              (click)="searchByEmail()">
               <span nz-icon nzType="search" nzTheme="outline"></span>
               {{ 'trackSubmission.search' | translate }}
             </button>
@@ -57,101 +57,115 @@
   </nz-card>
 
   <!-- Error Message -->
-  <nz-alert
-    *ngIf="error"
-    nzType="error"
-    [nzMessage]="error"
-    nzShowIcon
-    class="error-alert">
-  </nz-alert>
+  @if (error) {
+    <nz-alert
+      nzType="error"
+      [nzMessage]="error"
+      nzShowIcon
+      class="error-alert">
+    </nz-alert>
+  }
 
   <!-- Loading -->
-  <div *ngIf="isLoading" class="loading-container">
-    <nz-spin nzSimple></nz-spin>
-  </div>
+  @if (isLoading) {
+    <div class="loading-container">
+      <nz-spin nzSimple></nz-spin>
+    </div>
+  }
 
   <!-- Single Submission Result -->
-  <nz-card *ngIf="submission && searchMode === 'tracking'" class="result-card">
-    <div class="result-header">
-      <div class="tracking-id">{{ submission.tracking_id }}</div>
-      <nz-tag class="status-tag" [nzColor]="getStatusColor(submission.status)">
-        <span nz-icon [nzType]="getStatusIcon(submission.status)" nzTheme="outline"></span>
-        {{ submission.status_display }}
-      </nz-tag>
-    </div>
-
-    <nz-divider></nz-divider>
-
-    <div class="result-content">
-      <div class="app-info">
-        <div class="app-info-header">
-          <img
-            [src]="submission.app_icon_url || 'https://itqan.dev/images/home/hero-card-mushaf.svg'"
-            [alt]="getAppName(submission)"
-            class="app-icon"
-          />
-          <div class="app-name-container">
-            <h2 class="app-name">{{ getAppName(submission) }}</h2>
-            <p class="app-name-secondary" *ngIf="currentLang === 'en'">{{ submission.app_name_ar }}</p>
-            <p class="app-name-secondary" *ngIf="currentLang === 'ar'">{{ submission.app_name_en }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="status-message" *ngIf="submission.message">
-        <nz-alert
-          class="status-alert"
-          [nzType]="submission.status === 'approved' ? 'success' : (submission.status === 'rejected' ? 'error' : 'info')"
-          [nzMessage]="submission.message"
-          nzShowIcon>
-        </nz-alert>
-      </div>
-
-      <div class="dates">
-        <div class="date-item">
-          <span class="date-label">{{ 'trackSubmission.submittedOn' | translate }}:</span>
-          <span class="date-value">{{ formatDate(submission.submitted_at) }}</span>
-        </div>
-        <div class="date-item" *ngIf="submission.reviewed_at">
-          <span class="date-label">{{ 'trackSubmission.reviewedOn' | translate }}:</span>
-          <span class="date-value">{{ formatDate(submission.reviewed_at) }}</span>
-        </div>
-      </div>
-
-      <!-- App Link if Approved -->
-      <div *ngIf="submission.app_url" class="app-link-section">
-        <nz-divider></nz-divider>
-        <a [href]="submission.app_url" nz-button nzType="primary" nzSize="large">
-          <span nz-icon nzType="link" nzTheme="outline"></span>
-          {{ 'trackSubmission.viewAppListing' | translate }}
-        </a>
-      </div>
-    </div>
-  </nz-card>
-
-  <!-- Multiple Submissions List (by email) -->
-  <div *ngIf="submissions.length > 0 && searchMode === 'email'" class="submissions-list">
-    <h3>{{ 'trackSubmission.foundSubmissions' | translate }}: {{ submissions.length }}</h3>
-
-    <nz-card *ngFor="let item of submissions" class="submission-item" (click)="selectSubmission(item)">
-      <div class="item-header">
-        <span class="item-tracking-id">{{ item.tracking_id }}</span>
-        <nz-tag [nzColor]="getStatusColor(item.status)">
-          {{ item.status_display }}
+  @if (submission && searchMode === 'tracking') {
+    <nz-card class="result-card">
+      <div class="result-header">
+        <div class="tracking-id">{{ submission.tracking_id }}</div>
+        <nz-tag class="status-tag" [nzColor]="getStatusColor(submission.status)">
+          <span nz-icon [nzType]="getStatusIcon(submission.status)" nzTheme="outline"></span>
+          {{ submission.status_display }}
         </nz-tag>
       </div>
-      <div class="item-content">
-        <div class="item-app-name">{{ getAppName(item) }}</div>
-        <div class="item-date">{{ formatDate(item.submitted_at) }}</div>
+      <nz-divider></nz-divider>
+      <div class="result-content">
+        <div class="app-info">
+          <div class="app-info-header">
+            <img
+              [src]="submission.app_icon_url || 'https://itqan.dev/images/home/hero-card-mushaf.svg'"
+              [alt]="getAppName(submission)"
+              class="app-icon"
+              />
+            <div class="app-name-container">
+              <h2 class="app-name">{{ getAppName(submission) }}</h2>
+              @if (currentLang === 'en') {
+                <p class="app-name-secondary">{{ submission.app_name_ar }}</p>
+              }
+              @if (currentLang === 'ar') {
+                <p class="app-name-secondary">{{ submission.app_name_en }}</p>
+              }
+            </div>
+          </div>
+        </div>
+        @if (submission.message) {
+          <div class="status-message">
+            <nz-alert
+              class="status-alert"
+              [nzType]="submission.status === 'approved' ? 'success' : (submission.status === 'rejected' ? 'error' : 'info')"
+              [nzMessage]="submission.message"
+              nzShowIcon>
+            </nz-alert>
+          </div>
+        }
+        <div class="dates">
+          <div class="date-item">
+            <span class="date-label">{{ 'trackSubmission.submittedOn' | translate }}:</span>
+            <span class="date-value">{{ formatDate(submission.submitted_at) }}</span>
+          </div>
+          @if (submission.reviewed_at) {
+            <div class="date-item">
+              <span class="date-label">{{ 'trackSubmission.reviewedOn' | translate }}:</span>
+              <span class="date-value">{{ formatDate(submission.reviewed_at) }}</span>
+            </div>
+          }
+        </div>
+        <!-- App Link if Approved -->
+        @if (submission.app_url) {
+          <div class="app-link-section">
+            <nz-divider></nz-divider>
+            <a [href]="submission.app_url" nz-button nzType="primary" nzSize="large">
+              <span nz-icon nzType="link" nzTheme="outline"></span>
+              {{ 'trackSubmission.viewAppListing' | translate }}
+            </a>
+          </div>
+        }
       </div>
     </nz-card>
-  </div>
+  }
+
+  <!-- Multiple Submissions List (by email) -->
+  @if (submissions.length > 0 && searchMode === 'email') {
+    <div class="submissions-list">
+      <h3>{{ 'trackSubmission.foundSubmissions' | translate }}: {{ submissions.length }}</h3>
+      @for (item of submissions; track item) {
+        <nz-card class="submission-item" (click)="selectSubmission(item)">
+          <div class="item-header">
+            <span class="item-tracking-id">{{ item.tracking_id }}</span>
+            <nz-tag [nzColor]="getStatusColor(item.status)">
+              {{ item.status_display }}
+            </nz-tag>
+          </div>
+          <div class="item-content">
+            <div class="item-app-name">{{ getAppName(item) }}</div>
+            <div class="item-date">{{ formatDate(item.submitted_at) }}</div>
+          </div>
+        </nz-card>
+      }
+    </div>
+  }
 
   <!-- No Results (email search) -->
-  <nz-empty
-    *ngIf="!isLoading && searchMode === 'email' && email && submissions.length === 0 && !error"
-    [nzNotFoundContent]="'trackSubmission.noSubmissions' | translate">
-  </nz-empty>
+  @if (!isLoading && searchMode === 'email' && email && submissions.length === 0 && !error) {
+    <nz-empty
+      [nzNotFoundContent]="'trackSubmission.noSubmissions' | translate">
+    </nz-empty>
+  }
 
   <!-- Submit New App Link -->
   <div class="submit-link">

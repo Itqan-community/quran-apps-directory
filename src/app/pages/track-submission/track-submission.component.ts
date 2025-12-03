@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -24,7 +24,6 @@ import { SubmissionService, SubmissionStatus, SubmissionListItem } from '../../s
   selector: 'app-track-submission',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     RouterLink,
     TranslateModule,
@@ -39,8 +38,8 @@ import { SubmissionService, SubmissionStatus, SubmissionListItem } from '../../s
     NzTagModule,
     NzDividerModule,
     NzEmptyModule,
-    NzTabsModule,
-  ],
+    NzTabsModule
+],
   templateUrl: './track-submission.component.html',
   styleUrls: ['./track-submission.component.scss']
 })

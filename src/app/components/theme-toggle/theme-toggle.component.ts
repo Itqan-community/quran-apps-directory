@@ -1,7 +1,7 @@
 import { Component, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, startWith } from 'rxjs';
-import { CommonModule } from '@angular/common';
+
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
@@ -11,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-theme-toggle',
   standalone: true,
-  imports: [CommonModule, NzButtonModule, NzIconModule, NzToolTipModule],
+  imports: [NzButtonModule, NzIconModule, NzToolTipModule],
   template: `
     <button 
       nz-button 

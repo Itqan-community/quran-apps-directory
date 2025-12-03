@@ -28,10 +28,10 @@
           <nz-form-label nzRequired>{{ 'submitApp.fields.yourName' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   [(ngModel)]="formData.submitter_name"
-                   name="submitter_name"
-                   [placeholder]="'submitApp.placeholders.yourName' | translate"
-                   required />
+              [(ngModel)]="formData.submitter_name"
+              name="submitter_name"
+              [placeholder]="'submitApp.placeholders.yourName' | translate"
+              required />
           </nz-form-control>
         </nz-form-item>
 
@@ -39,11 +39,11 @@
           <nz-form-label nzRequired>{{ 'submitApp.fields.yourEmail' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   type="email"
-                   [(ngModel)]="formData.submitter_email"
-                   name="submitter_email"
-                   [placeholder]="'submitApp.placeholders.yourEmail' | translate"
-                   required />
+              type="email"
+              [(ngModel)]="formData.submitter_email"
+              name="submitter_email"
+              [placeholder]="'submitApp.placeholders.yourEmail' | translate"
+              required />
           </nz-form-control>
         </nz-form-item>
 
@@ -51,9 +51,9 @@
           <nz-form-label>{{ 'submitApp.fields.phone' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   [(ngModel)]="formData.submitter_phone"
-                   name="submitter_phone"
-                   [placeholder]="'submitApp.placeholders.phone' | translate" />
+              [(ngModel)]="formData.submitter_phone"
+              name="submitter_phone"
+              [placeholder]="'submitApp.placeholders.phone' | translate" />
           </nz-form-control>
         </nz-form-item>
 
@@ -61,9 +61,9 @@
           <nz-form-label>{{ 'submitApp.fields.organization' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   [(ngModel)]="formData.submitter_organization"
-                   name="submitter_organization"
-                   [placeholder]="'submitApp.placeholders.organization' | translate" />
+              [(ngModel)]="formData.submitter_organization"
+              name="submitter_organization"
+              [placeholder]="'submitApp.placeholders.organization' | translate" />
           </nz-form-control>
         </nz-form-item>
 
@@ -85,10 +85,10 @@
           <nz-form-label nzRequired>{{ 'submitApp.fields.appNameEn' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   [(ngModel)]="formData.app_name_en"
-                   name="app_name_en"
-                   [placeholder]="'submitApp.placeholders.appNameEn' | translate"
-                   required />
+              [(ngModel)]="formData.app_name_en"
+              name="app_name_en"
+              [placeholder]="'submitApp.placeholders.appNameEn' | translate"
+              required />
           </nz-form-control>
         </nz-form-item>
 
@@ -96,11 +96,11 @@
           <nz-form-label nzRequired>{{ 'submitApp.fields.appNameAr' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   dir="rtl"
-                   [(ngModel)]="formData.app_name_ar"
-                   name="app_name_ar"
-                   [placeholder]="'submitApp.placeholders.appNameAr' | translate"
-                   required />
+              dir="rtl"
+              [(ngModel)]="formData.app_name_ar"
+              name="app_name_ar"
+              [placeholder]="'submitApp.placeholders.appNameAr' | translate"
+              required />
           </nz-form-control>
         </nz-form-item>
 
@@ -113,12 +113,12 @@
           </nz-form-label>
           <nz-form-control>
             <textarea nz-input
-                      [nzAutosize]="{ minRows: 2, maxRows: 4 }"
-                      [(ngModel)]="formData.short_description_en"
-                      name="short_description_en"
-                      [placeholder]="'submitApp.placeholders.shortDescEn' | translate"
-                      maxlength="150"
-                      required></textarea>
+              [nzAutosize]="{ minRows: 2, maxRows: 4 }"
+              [(ngModel)]="formData.short_description_en"
+              name="short_description_en"
+              [placeholder]="'submitApp.placeholders.shortDescEn' | translate"
+              maxlength="150"
+            required></textarea>
           </nz-form-control>
         </nz-form-item>
 
@@ -131,13 +131,13 @@
           </nz-form-label>
           <nz-form-control>
             <textarea nz-input
-                      dir="rtl"
-                      [nzAutosize]="{ minRows: 2, maxRows: 4 }"
-                      [(ngModel)]="formData.short_description_ar"
-                      name="short_description_ar"
-                      [placeholder]="'submitApp.placeholders.shortDescAr' | translate"
-                      maxlength="150"
-                      required></textarea>
+              dir="rtl"
+              [nzAutosize]="{ minRows: 2, maxRows: 4 }"
+              [(ngModel)]="formData.short_description_ar"
+              name="short_description_ar"
+              [placeholder]="'submitApp.placeholders.shortDescAr' | translate"
+              maxlength="150"
+            required></textarea>
           </nz-form-control>
         </nz-form-item>
 
@@ -145,10 +145,10 @@
           <nz-form-label>{{ 'submitApp.fields.descEn' | translate }}</nz-form-label>
           <nz-form-control>
             <textarea nz-input
-                      [nzAutosize]="{ minRows: 4, maxRows: 8 }"
-                      [(ngModel)]="formData.description_en"
-                      name="description_en"
-                      [placeholder]="'submitApp.placeholders.descEn' | translate"></textarea>
+              [nzAutosize]="{ minRows: 4, maxRows: 8 }"
+              [(ngModel)]="formData.description_en"
+              name="description_en"
+            [placeholder]="'submitApp.placeholders.descEn' | translate"></textarea>
           </nz-form-control>
         </nz-form-item>
 
@@ -156,11 +156,11 @@
           <nz-form-label>{{ 'submitApp.fields.descAr' | translate }}</nz-form-label>
           <nz-form-control>
             <textarea nz-input
-                      dir="rtl"
-                      [nzAutosize]="{ minRows: 4, maxRows: 8 }"
-                      [(ngModel)]="formData.description_ar"
-                      name="description_ar"
-                      [placeholder]="'submitApp.placeholders.descAr' | translate"></textarea>
+              dir="rtl"
+              [nzAutosize]="{ minRows: 4, maxRows: 8 }"
+              [(ngModel)]="formData.description_ar"
+              name="description_ar"
+            [placeholder]="'submitApp.placeholders.descAr' | translate"></textarea>
           </nz-form-control>
         </nz-form-item>
       </nz-card>
@@ -172,21 +172,22 @@
           {{ 'submitApp.sections.storeLinks' | translate }}
         </h2>
 
-        <nz-alert
-          *ngIf="!hasStoreLink"
-          nzType="warning"
-          [nzMessage]="'submitApp.validation.storeLink' | translate"
-          nzShowIcon
-          class="store-link-warning">
-        </nz-alert>
+        @if (!hasStoreLink) {
+          <nz-alert
+            nzType="warning"
+            [nzMessage]="'submitApp.validation.storeLink' | translate"
+            nzShowIcon
+            class="store-link-warning">
+          </nz-alert>
+        }
 
         <nz-form-item>
           <nz-form-label>{{ 'submitApp.fields.googlePlay' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   [(ngModel)]="formData.google_play_link"
-                   name="google_play_link"
-                   [placeholder]="'submitApp.placeholders.googlePlay' | translate" />
+              [(ngModel)]="formData.google_play_link"
+              name="google_play_link"
+              [placeholder]="'submitApp.placeholders.googlePlay' | translate" />
           </nz-form-control>
         </nz-form-item>
 
@@ -194,9 +195,9 @@
           <nz-form-label>{{ 'submitApp.fields.appStore' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   [(ngModel)]="formData.app_store_link"
-                   name="app_store_link"
-                   [placeholder]="'submitApp.placeholders.appStore' | translate" />
+              [(ngModel)]="formData.app_store_link"
+              name="app_store_link"
+              [placeholder]="'submitApp.placeholders.appStore' | translate" />
           </nz-form-control>
         </nz-form-item>
 
@@ -204,9 +205,9 @@
           <nz-form-label>{{ 'submitApp.fields.appGallery' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   [(ngModel)]="formData.app_gallery_link"
-                   name="app_gallery_link"
-                   [placeholder]="'submitApp.placeholders.appGallery' | translate" />
+              [(ngModel)]="formData.app_gallery_link"
+              name="app_gallery_link"
+              [placeholder]="'submitApp.placeholders.appGallery' | translate" />
           </nz-form-control>
         </nz-form-item>
 
@@ -214,9 +215,9 @@
           <nz-form-label>{{ 'submitApp.fields.website' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   [(ngModel)]="formData.website_link"
-                   name="website_link"
-                   [placeholder]="'submitApp.placeholders.website' | translate" />
+              [(ngModel)]="formData.website_link"
+              name="website_link"
+              [placeholder]="'submitApp.placeholders.website' | translate" />
           </nz-form-control>
         </nz-form-item>
       </nz-card>
@@ -239,11 +240,12 @@
               nzShowSearch
               nzAllowClear
               [nzMaxTagCount]="5">
-              <nz-option
-                *ngFor="let cat of categories"
-                [nzValue]="cat.id"
-                [nzLabel]="getCategoryName(cat)">
-              </nz-option>
+              @for (cat of categories; track cat) {
+                <nz-option
+                  [nzValue]="cat.id"
+                  [nzLabel]="getCategoryName(cat)">
+                </nz-option>
+              }
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -260,10 +262,10 @@
           <nz-form-label nzRequired>{{ 'submitApp.fields.devNameEn' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   [(ngModel)]="formData.developer_name_en"
-                   name="developer_name_en"
-                   [placeholder]="'submitApp.placeholders.devNameEn' | translate"
-                   required />
+              [(ngModel)]="formData.developer_name_en"
+              name="developer_name_en"
+              [placeholder]="'submitApp.placeholders.devNameEn' | translate"
+              required />
           </nz-form-control>
         </nz-form-item>
 
@@ -271,10 +273,10 @@
           <nz-form-label>{{ 'submitApp.fields.devNameAr' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   dir="rtl"
-                   [(ngModel)]="formData.developer_name_ar"
-                   name="developer_name_ar"
-                   [placeholder]="'submitApp.placeholders.devNameAr' | translate" />
+              dir="rtl"
+              [(ngModel)]="formData.developer_name_ar"
+              name="developer_name_ar"
+              [placeholder]="'submitApp.placeholders.devNameAr' | translate" />
           </nz-form-control>
         </nz-form-item>
 
@@ -282,9 +284,9 @@
           <nz-form-label>{{ 'submitApp.fields.devWebsite' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   [(ngModel)]="formData.developer_website"
-                   name="developer_website"
-                   [placeholder]="'submitApp.placeholders.devWebsite' | translate" />
+              [(ngModel)]="formData.developer_website"
+              name="developer_website"
+              [placeholder]="'submitApp.placeholders.devWebsite' | translate" />
           </nz-form-control>
         </nz-form-item>
 
@@ -292,10 +294,10 @@
           <nz-form-label>{{ 'submitApp.fields.devEmail' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   type="email"
-                   [(ngModel)]="formData.developer_email"
-                   name="developer_email"
-                   [placeholder]="'submitApp.placeholders.devEmail' | translate" />
+              type="email"
+              [(ngModel)]="formData.developer_email"
+              name="developer_email"
+              [placeholder]="'submitApp.placeholders.devEmail' | translate" />
           </nz-form-control>
         </nz-form-item>
       </nz-card>
@@ -311,9 +313,9 @@
           <nz-form-label nzRequired>{{ 'submitApp.fields.iconUrl' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   [(ngModel)]="formData.app_icon_url"
-                   name="app_icon_url"
-                   [placeholder]="'submitApp.placeholders.iconUrl' | translate" />
+              [(ngModel)]="formData.app_icon_url"
+              name="app_icon_url"
+              [placeholder]="'submitApp.placeholders.iconUrl' | translate" />
           </nz-form-control>
           <div class="field-hint">{{ 'submitApp.hints.iconUrl' | translate }}</div>
         </nz-form-item>
@@ -322,10 +324,10 @@
           <nz-form-label nzRequired>{{ 'submitApp.fields.mainImageEn' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   [(ngModel)]="formData.main_image_en"
-                   name="main_image_en"
-                   [placeholder]="'submitApp.placeholders.mainImageEn' | translate"
-                   required />
+              [(ngModel)]="formData.main_image_en"
+              name="main_image_en"
+              [placeholder]="'submitApp.placeholders.mainImageEn' | translate"
+              required />
           </nz-form-control>
           <div class="field-hint">{{ 'submitApp.hints.mainImage' | translate }}</div>
         </nz-form-item>
@@ -334,11 +336,11 @@
           <nz-form-label nzRequired>{{ 'submitApp.fields.mainImageAr' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
-                   dir="rtl"
-                   [(ngModel)]="formData.main_image_ar"
-                   name="main_image_ar"
-                   [placeholder]="'submitApp.placeholders.mainImageAr' | translate"
-                   required />
+              dir="rtl"
+              [(ngModel)]="formData.main_image_ar"
+              name="main_image_ar"
+              [placeholder]="'submitApp.placeholders.mainImageAr' | translate"
+              required />
           </nz-form-control>
         </nz-form-item>
 
@@ -346,32 +348,36 @@
           <nz-form-label nzRequired>{{ 'submitApp.fields.screenshotsEn' | translate }}</nz-form-label>
           <nz-form-control>
             <textarea nz-input
-                      [nzAutosize]="{ minRows: 3, maxRows: 6 }"
-                      [(ngModel)]="formData.screenshots_en_input"
-                      name="screenshots_en_input"
-                      (ngModelChange)="onScreenshotsEnChange()"
-                      [placeholder]="'submitApp.placeholders.screenshots' | translate"></textarea>
+              [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+              [(ngModel)]="formData.screenshots_en_input"
+              name="screenshots_en_input"
+              (ngModelChange)="onScreenshotsEnChange()"
+            [placeholder]="'submitApp.placeholders.screenshots' | translate"></textarea>
           </nz-form-control>
           <div class="field-hint">{{ 'submitApp.hints.screenshots' | translate }}</div>
-          <div *ngIf="formData.screenshots_en.length > 0" class="screenshot-count">
-            {{ formData.screenshots_en.length }} {{ 'submitApp.screenshotsDetected' | translate }}
-          </div>
+          @if (formData.screenshots_en.length > 0) {
+            <div class="screenshot-count">
+              {{ formData.screenshots_en.length }} {{ 'submitApp.screenshotsDetected' | translate }}
+            </div>
+          }
         </nz-form-item>
 
         <nz-form-item>
           <nz-form-label nzRequired>{{ 'submitApp.fields.screenshotsAr' | translate }}</nz-form-label>
           <nz-form-control>
             <textarea nz-input
-                      dir="rtl"
-                      [nzAutosize]="{ minRows: 3, maxRows: 6 }"
-                      [(ngModel)]="formData.screenshots_ar_input"
-                      name="screenshots_ar_input"
-                      (ngModelChange)="onScreenshotsArChange()"
-                      [placeholder]="'submitApp.placeholders.screenshots' | translate"></textarea>
+              dir="rtl"
+              [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+              [(ngModel)]="formData.screenshots_ar_input"
+              name="screenshots_ar_input"
+              (ngModelChange)="onScreenshotsArChange()"
+            [placeholder]="'submitApp.placeholders.screenshots' | translate"></textarea>
           </nz-form-control>
-          <div *ngIf="formData.screenshots_ar.length > 0" class="screenshot-count">
-            {{ formData.screenshots_ar.length }} {{ 'submitApp.screenshotsDetected' | translate }}
-          </div>
+          @if (formData.screenshots_ar.length > 0) {
+            <div class="screenshot-count">
+              {{ formData.screenshots_ar.length }} {{ 'submitApp.screenshotsDetected' | translate }}
+            </div>
+          }
         </nz-form-item>
       </nz-card>
 
@@ -385,10 +391,10 @@
         <nz-form-item>
           <nz-form-control>
             <textarea nz-input
-                      [nzAutosize]="{ minRows: 3, maxRows: 6 }"
-                      [(ngModel)]="formData.additional_notes"
-                      name="additional_notes"
-                      [placeholder]="'submitApp.placeholders.additionalNotes' | translate"></textarea>
+              [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+              [(ngModel)]="formData.additional_notes"
+              name="additional_notes"
+            [placeholder]="'submitApp.placeholders.additionalNotes' | translate"></textarea>
           </nz-form-control>
         </nz-form-item>
       </nz-card>
@@ -405,10 +411,10 @@
       <!-- Submit Button -->
       <div class="submit-section">
         <button nz-button
-                nzType="primary"
-                nzSize="large"
-                [nzLoading]="isSubmitting"
-                [disabled]="!isFormValid()">
+          nzType="primary"
+          nzSize="large"
+          [nzLoading]="isSubmitting"
+          [disabled]="!isFormValid()">
           <span nz-icon nzType="send" nzTheme="outline"></span>
           {{ 'submitApp.submitButton' | translate }}
         </button>

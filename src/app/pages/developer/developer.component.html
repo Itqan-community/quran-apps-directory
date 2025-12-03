@@ -1,116 +1,121 @@
 <!-- Developer page content -->
-<div *ngIf="!loading && developerInfo" class="developer-page">
-  <div class="container">
-    <!-- Header with back button -->
-    <div class="header">
-      <button
-        nz-button
-        nzType="text"
-        (click)="goBack()"
-        aria-label="Back to apps list"
-      >
-        <span nz-icon [nzType]="currentLang === 'en' ? 'left' : 'right'"></span>
-      </button>
-      <h1>{{ currentLang === 'en' ? 'Apps by' : 'تطبيقات' }} {{ currentLang === 'en' ? developerInfo.name_en : developerInfo.name_ar }}</h1>
-    </div>
-
-    <!-- Developer information section -->
-    <div class="developer-info">
-      <div class="dev-container ant-flex ant-flex-align-center">
-        <div class="icon">
-          <img
-            [src]="(developerInfo.logo && !developerInfo.logo.includes('Not Found')) ? developerInfo.logo : 'https://itqan.dev/images/home/hero-card-laptop.svg'"
-            [alt]="(currentLang === 'en' ? developerInfo.name_en : developerInfo.name_ar) + ' logo'"
-            class="developer-logo"
-          />
-        </div>
-        <div class="dev-data">
-          <h2 style="margin-bottom: 8px;">{{ currentLang === 'en' ? developerInfo.name_en : developerInfo.name_ar }}</h2>
-          <p style="margin-bottom: 8px; color: #666;">{{ "appDetail.developer" | translate }}</p>
-          <button
-            *ngIf="developerInfo.website"
-            nz-button
-            nzType="link"
-            (click)="visitDeveloperWebsite()"
-            style="padding: 0; height: auto;"
+@if (!loading && developerInfo) {
+  <div class="developer-page">
+    <div class="container">
+      <!-- Header with back button -->
+      <div class="header">
+        <button
+          nz-button
+          nzType="text"
+          (click)="goBack()"
+          aria-label="Back to apps list"
           >
-            <span nz-icon nzType="global"></span>
-            {{ "developer.visitWebsite" | translate }}
-          </button>
+          <span nz-icon [nzType]="currentLang === 'en' ? 'left' : 'right'"></span>
+        </button>
+        <h1>{{ currentLang === 'en' ? 'Apps by' : 'تطبيقات' }} {{ currentLang === 'en' ? developerInfo.name_en : developerInfo.name_ar }}</h1>
+      </div>
+      <!-- Developer information section -->
+      <div class="developer-info">
+        <div class="dev-container ant-flex ant-flex-align-center">
+          <div class="icon">
+            <img
+              [src]="(developerInfo.logo && !developerInfo.logo.includes('Not Found')) ? developerInfo.logo : 'https://itqan.dev/images/home/hero-card-laptop.svg'"
+              [alt]="(currentLang === 'en' ? developerInfo.name_en : developerInfo.name_ar) + ' logo'"
+              class="developer-logo"
+              />
+          </div>
+          <div class="dev-data">
+            <h2 style="margin-bottom: 8px;">{{ currentLang === 'en' ? developerInfo.name_en : developerInfo.name_ar }}</h2>
+            <p style="margin-bottom: 8px; color: #666;">{{ "appDetail.developer" | translate }}</p>
+            @if (developerInfo.website) {
+              <button
+                nz-button
+                nzType="link"
+                (click)="visitDeveloperWebsite()"
+                style="padding: 0; height: auto;"
+                >
+                <span nz-icon nzType="global"></span>
+                {{ "developer.visitWebsite" | translate }}
+              </button>
+            }
+          </div>
         </div>
       </div>
-    </div>
-
-    <nz-divider></nz-divider>
-
-    <!-- Apps count -->
-    <div class="apps-count">
-      <h3>{{ developerApps.length }} {{ developerApps.length === 1 ? ("developer.app" | translate) : ("developer.apps" | translate) }}</h3>
-    </div>
-
-    <!-- Apps grid -->
-    <div class="app-grid">
-      <div nz-row [nzGutter]="[24, 24]" class="app-grid-row">
-        <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="6" nzXl="6" *ngFor="let app of developerApps">
-          <nz-card
-            (click)="navigateToApp(app.id)"
-            [attr.aria-label]="'View details for ' + app.Name_En"
-            class="app-card"
-            [nzCover]="coverTemplate"
-          >
-            <ng-template #coverTemplate>
-              <div style="max-height: 220px; overflow: hidden;">
-                <img
-                  [alt]="app.Name_En + ' screenshot'"
-                  [src]="currentLang === 'en' ? app.mainImage_en : app.mainImage_ar"
-                  style="width: 100%;"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-            </ng-template>
-
-            <div class="ant-flex">
-              <div class="app-icon-container">
-                <img class="app-icon" [src]="app.applicationIcon || 'https://itqan.dev/images/home/hero-card-mushaf.svg'" [alt]="app.Name_En + ' icon'" loading="lazy" decoding="async">
-              </div>
-              <div class="card-data-container">
-                <nz-card-meta
-                  [nzTitle]="currentLang == 'en' ? app.Name_En : app.Name_Ar"
-                  [nzDescription]="currentLang == 'en' ? app.Short_Description_En : app.Short_Description_Ar"
-                ></nz-card-meta>
-                <!-- Rating display -->
-                <div class="app-rating">
-                  <span class="rating-number" [ngClass]="getRatingClass(app.Apps_Avg_Rating)">{{ (app.Apps_Avg_Rating || 0) | number:'1.1-1' }}</span>
-                  <div class="custom-stars" [ngClass]="getRatingClass(app.Apps_Avg_Rating)">
-                    <div class="star-container" *ngFor="let star of getStarArray(app.Apps_Avg_Rating); let i = index">
-                      <div class="star-base">★</div>
-                      <div class="star-fill" [style.width.%]="star.fillPercent">★</div>
+      <nz-divider></nz-divider>
+      <!-- Apps count -->
+      <div class="apps-count">
+        <h3>{{ developerApps.length }} {{ developerApps.length === 1 ? ("developer.app" | translate) : ("developer.apps" | translate) }}</h3>
+      </div>
+      <!-- Apps grid -->
+      <div class="app-grid">
+        <div nz-row [nzGutter]="[24, 24]" class="app-grid-row">
+          @for (app of developerApps; track app) {
+            <div nz-col nzXs="24" nzSm="12" nzMd="8" nzLg="6" nzXl="6">
+              <nz-card
+                (click)="navigateToApp(app.id)"
+                [attr.aria-label]="'View details for ' + app.Name_En"
+                class="app-card"
+                [nzCover]="coverTemplate"
+                >
+                <ng-template #coverTemplate>
+                  <div style="max-height: 220px; overflow: hidden;">
+                    <img
+                      [alt]="app.Name_En + ' screenshot'"
+                      [src]="currentLang === 'en' ? app.mainImage_en : app.mainImage_ar"
+                      style="width: 100%;"
+                      loading="lazy"
+                      decoding="async"
+                      />
+                  </div>
+                </ng-template>
+                <div class="ant-flex">
+                  <div class="app-icon-container">
+                    <img class="app-icon" [src]="app.applicationIcon || 'https://itqan.dev/images/home/hero-card-mushaf.svg'" [alt]="app.Name_En + ' icon'" loading="lazy" decoding="async">
+                  </div>
+                  <div class="card-data-container">
+                    <nz-card-meta
+                      [nzTitle]="currentLang == 'en' ? app.Name_En : app.Name_Ar"
+                      [nzDescription]="currentLang == 'en' ? app.Short_Description_En : app.Short_Description_Ar"
+                    ></nz-card-meta>
+                    <!-- Rating display -->
+                    <div class="app-rating">
+                      <span class="rating-number" [ngClass]="getRatingClass(app.Apps_Avg_Rating)">{{ (app.Apps_Avg_Rating || 0) | number:'1.1-1' }}</span>
+                      <div class="custom-stars" [ngClass]="getRatingClass(app.Apps_Avg_Rating)">
+                        @for (star of getStarArray(app.Apps_Avg_Rating); track star; let i = $index) {
+                          <div class="star-container">
+                            <div class="star-base">★</div>
+                            <div class="star-fill" [style.width.%]="star.fillPercent">★</div>
+                          </div>
+                        }
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </nz-card>
             </div>
-          </nz-card>
+          }
         </div>
       </div>
-    </div>
-
-    <!-- No apps message -->
-    <div *ngIf="developerApps.length === 0" class="no-apps">
-      <p>{{ "developer.noApps" | translate }}</p>
+      <!-- No apps message -->
+      @if (developerApps.length === 0) {
+        <div class="no-apps">
+          <p>{{ "developer.noApps" | translate }}</p>
+        </div>
+      }
     </div>
   </div>
-</div>
+}
 
 <!-- Loading state -->
-<div *ngIf="loading" class="loading-container">
-  <div class="container">
-    <div class="header">
-      <button nz-button nzType="text" aria-label="Back to apps list">
-        <span nz-icon [nzType]="currentLang === 'en' ? 'left' : 'right'"></span>
-      </button>
-      <h1>{{ "common.loading" | translate }}</h1>
+@if (loading) {
+  <div class="loading-container">
+    <div class="container">
+      <div class="header">
+        <button nz-button nzType="text" aria-label="Back to apps list">
+          <span nz-icon [nzType]="currentLang === 'en' ? 'left' : 'right'"></span>
+        </button>
+        <h1>{{ "common.loading" | translate }}</h1>
+      </div>
     </div>
   </div>
-</div>
+}

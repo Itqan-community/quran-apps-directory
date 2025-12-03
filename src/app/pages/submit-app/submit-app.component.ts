@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -75,7 +75,6 @@ interface FormData {
   selector: 'app-submit-app',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     RouterLink,
     TranslateModule,
@@ -92,8 +91,8 @@ interface FormData {
     NzCardModule,
     NzDividerModule,
     NzGridModule,
-    NzToolTipModule,
-  ],
+    NzToolTipModule
+],
   templateUrl: './submit-app.component.html',
   styleUrls: ['./submit-app.component.scss']
 })

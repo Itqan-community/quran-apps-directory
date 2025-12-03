@@ -3,13 +3,13 @@
  * to be added to the directory
  */
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
-import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 interface AppRequest {
   name: string;
@@ -22,14 +22,12 @@ interface AppRequest {
   selector: 'app-request-form',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     NzFormModule,
     NzInputModule,
     NzButtonModule,
-    NzModalModule,
-    NzMessageModule
-  ],
+    NzModalModule
+],
   templateUrl: './request-form.component.html',
   styleUrls: ['./request-form.component.css']
 })
