@@ -51,6 +51,8 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
   currentLang: "en" | "ar" = "ar";
   categoriesSet: Array<{name: string, icon: string}> = categories;
   isExpanded = false;
+  // Cache for star arrays to prevent NG0100 errors from creating new references on each change detection
+  private starArrayCache = new Map<number, { fillPercent: number }[]>();
 
   swiperParams = {
     slidesPerView: "auto",
@@ -459,10 +461,18 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     return 'poor';
   }
 
-  getStarArray(rating: number): { fillPercent: number }[] {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const remainder = rating % 1;
+  getStarArray(rating: number | undefined | null): { fillPercent: number }[] {
+    // Ensure rating is a valid number to prevent NG0100 errors
+    const safeRating = typeof rating === 'number' && !isNaN(rating) ? Math.round(rating * 10) / 10 : 0;
+
+    // Return cached array if available to prevent NG0100 errors
+    if (this.starArrayCache.has(safeRating)) {
+      return this.starArrayCache.get(safeRating)!;
+    }
+
+    const stars: { fillPercent: number }[] = [];
+    const fullStars = Math.floor(safeRating);
+    const remainder = safeRating % 1;
 
     // Add full stars
     for (let i = 0; i < fullStars; i++) {
@@ -471,13 +481,16 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
 
     // Add partial star if needed
     if (remainder > 0 && fullStars < 5) {
-      stars.push({ fillPercent: remainder * 100 });
+      stars.push({ fillPercent: Math.round(remainder * 100) });
     }
 
     // Add empty stars to reach 5 total
     while (stars.length < 5) {
       stars.push({ fillPercent: 0 });
     }
+
+    // Cache the result
+    this.starArrayCache.set(safeRating, stars);
 
     return stars;
   }
