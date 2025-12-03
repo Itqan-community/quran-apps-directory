@@ -29,15 +29,13 @@
   ],
   "dataGroups": [
     {
-      "name": "api-performance",
-      "urls": [
-        "/assets/i18n/*.json"
-      ],
+      "name": "translations-cache",
+      "urls": ["/assets/i18n/*.json"],
       "cacheConfig": {
-        "maxSize": 100,
+        "maxSize": 10,
         "maxAge": "1d",
-        "timeout": "5s",
-        "strategy": "performance"
+        "timeout": "10s",
+        "strategy": "freshness"
       }
     },
     {

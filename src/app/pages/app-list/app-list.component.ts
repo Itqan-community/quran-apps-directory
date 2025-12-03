@@ -216,6 +216,16 @@ export class AppListComponent implements OnInit, OnDestroy {
           this.apps = [];
           this.filteredApps = [];
         }
+
+        // Show error message if both categories and apps failed to load
+        // This helps users understand why the page appears blank
+        const hasNoCategories = !categories || categories.length === 0;
+        const hasNoApps = !appsResponse?.results || appsResponse.results.length === 0;
+        if (hasNoCategories && hasNoApps && !this.error) {
+          this.error = this.currentLang === 'ar'
+            ? 'تعذر تحميل المحتوى. يرجى التحقق من اتصالك بالإنترنت وإعادة تحميل الصفحة.'
+            : 'Unable to load content. Please check your connection and refresh the page.';
+        }
       });
   }
 

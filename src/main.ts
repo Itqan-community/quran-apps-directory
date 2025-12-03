@@ -62,8 +62,17 @@ export function initializeTranslations(translate: TranslateService): () => Promi
     // Set default and use the initial language
     translate.setDefaultLang(initialLang);
 
-    // Wait for translations to load before continuing
-    await firstValueFrom(translate.use(initialLang));
+    // Wait for translations to load with a timeout to prevent blocking forever
+    // This prevents blank pages on slow networks or when translation files fail to load
+    try {
+      const loadPromise = firstValueFrom(translate.use(initialLang));
+      const timeoutPromise = new Promise<void>((_, reject) =>
+        setTimeout(() => reject(new Error('Translation load timeout')), 5000)
+      );
+      await Promise.race([loadPromise, timeoutPromise]);
+    } catch (error) {
+      console.warn('Translation load failed or timed out, continuing with defaults:', error);
+    }
 
     // Set document direction and language
     document.documentElement.dir = initialLang === 'ar' ? 'rtl' : 'ltr';
