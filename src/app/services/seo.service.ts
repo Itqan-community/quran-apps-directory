@@ -1,29 +1,33 @@
-import { Injectable, inject } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SeoService {
-  private document = inject(DOCUMENT);
-
-  constructor() { }
+  constructor(
+    @Inject(PLATFORM_ID) private readonly platformId: Object,
+    @Inject(DOCUMENT) private document: Document
+  ) { }
 
   /**
    * Add JSON-LD structured data to the page
    * @param data The structured data object
    */
   addStructuredData(data: any): void {
+    // Only manipulate DOM in browser context
+    if (!isPlatformBrowser(this.platformId)) return;
+
     const script = this.document.createElement('script');
     script.type = 'application/ld+json';
     script.textContent = JSON.stringify(data);
-    
+
     // Remove existing structured data script if exists
     const existingScript = this.document.querySelector('script[type="application/ld+json"]');
     if (existingScript) {
       existingScript.remove();
     }
-    
+
     this.document.head.appendChild(script);
   }
 

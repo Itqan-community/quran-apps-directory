@@ -104,6 +104,8 @@ export class DeferredAnalyticsService {
    * Track page view (called automatically on initialization)
    */
   trackPageView(page?: string): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     const data = {
       page_title: document.title,
       page_location: window.location.href,
@@ -138,6 +140,7 @@ export class DeferredAnalyticsService {
    * Check if analytics is loaded and ready
    */
   isReady(): boolean {
+    if (!isPlatformBrowser(this.platformId)) return false;
     return this.isLoaded && !!(window as any).gtag;
   }
 }

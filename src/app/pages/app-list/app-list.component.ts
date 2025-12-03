@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from "@angular/core";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import { RouterModule, ActivatedRoute } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { NzGridModule } from "ng-zorro-antd/grid";
@@ -60,6 +60,7 @@ export class AppListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
+    @Inject(PLATFORM_ID) private readonly platformId: Object,
     private apiService: ApiService,
     private translateService: TranslateService,
     private route: ActivatedRoute,
@@ -92,22 +93,24 @@ export class AppListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Check initial dark mode state
-    this.updateDarkModeState();
-
-    // Listen for dark mode changes
-    const observer = new MutationObserver(() => {
+    // Check initial dark mode state (browser only)
+    if (isPlatformBrowser(this.platformId)) {
       this.updateDarkModeState();
-    });
 
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
+      // Listen for dark mode changes
+      const observer = new MutationObserver(() => {
+        this.updateDarkModeState();
+      });
 
-    this.destroy$.subscribe(() => {
-      observer.disconnect();
-    });
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class'],
+      });
+
+      this.destroy$.subscribe(() => {
+        observer.disconnect();
+      });
+    }
 
     // Load categories and apps from API
     this.loadData();
@@ -144,11 +147,13 @@ export class AppListComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        // Scroll to top of page when route changes
-        window.scrollTo({ top: 0, behavior: 'auto' });
+        // Scroll to top of page when route changes (browser only)
+        if (isPlatformBrowser(this.platformId)) {
+          window.scrollTo({ top: 0, behavior: 'auto' });
 
-        // Scroll selected category into view (horizontally within categories section)
-        setTimeout(() => this.scrollSelectedCategoryIntoView(), 100);
+          // Scroll selected category into view (horizontally within categories section)
+          setTimeout(() => this.scrollSelectedCategoryIntoView(), 100);
+        }
 
         // Update SEO data after apps and route parameters are set
         this.updateSeoData();
@@ -179,7 +184,9 @@ export class AppListComponent implements OnInit, OnDestroy {
   }
 
   private updateDarkModeState() {
-    this.isDarkMode = document.documentElement.classList.contains('dark-theme');
+    if (isPlatformBrowser(this.platformId)) {
+      this.isDarkMode = document.documentElement.classList.contains('dark-theme');
+    }
   }
 
   private loadData() {
@@ -423,19 +430,21 @@ export class AppListComponent implements OnInit, OnDestroy {
 
     const breadcrumbData = this.seoService.generateBreadcrumbStructuredData(breadcrumbs, this.currentLang);
     
-    // Add breadcrumb data separately to avoid conflicts
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.textContent = JSON.stringify(breadcrumbData);
-    
-    // Remove existing breadcrumb script
-    const existingBreadcrumb = document.querySelector('script[type="application/ld+json"][data-type="breadcrumb"]');
-    if (existingBreadcrumb) {
-      existingBreadcrumb.remove();
+    // Add breadcrumb data separately to avoid conflicts (browser only)
+    if (isPlatformBrowser(this.platformId)) {
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(breadcrumbData);
+
+      // Remove existing breadcrumb script
+      const existingBreadcrumb = document.querySelector('script[type="application/ld+json"][data-type="breadcrumb"]');
+      if (existingBreadcrumb) {
+        existingBreadcrumb.remove();
+      }
+
+      script.setAttribute('data-type', 'breadcrumb');
+      document.head.appendChild(script);
     }
-    
-    script.setAttribute('data-type', 'breadcrumb');
-    document.head.appendChild(script);
   }
 
   getRatingClass(rating: number): string {
@@ -511,6 +520,8 @@ export class AppListComponent implements OnInit, OnDestroy {
    * Scroll the selected category into view
    */
   private scrollSelectedCategoryIntoView(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     // Find the selected category element
     const selectedElement = document.querySelector('.category-item.selected');
 

@@ -104,6 +104,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
   }
 
   private getBrowserLanguage(): "en" | "ar" {
+    if (!isPlatformBrowser(this.platformId)) return "en";
     const browserLang = navigator.language.toLowerCase().split("-")[0];
     return browserLang === "ar" ? "ar" : "en";
   }
@@ -131,7 +132,9 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
       if (newId) {
         this.loading = true;
         // Scroll to top of page when loading new app detail
-        window.scrollTo({ top: 0, behavior: 'auto' });
+        if (isPlatformBrowser(this.platformId)) {
+          window.scrollTo({ top: 0, behavior: 'auto' });
+        }
         this.loadAppData(newId);
       }
     });
@@ -245,7 +248,9 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     // Format: "slug_appId" (e.g., "wahy_1")
     const urlParam = `${slug}_${appId}`;
     this.router.navigate([`/${this.currentLang}/app/${urlParam}`]).then(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (isPlatformBrowser(this.platformId)) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
       this.isExpanded = false;
     });
   }
@@ -285,15 +290,17 @@ export class AppDetailComponent implements OnInit, AfterViewInit  {
     this.router.navigate([targetPath], {
       replaceUrl: false // Don't replace the current URL, preserve history
     }).then((success) => {
-      if (!success) {
+      if (!success && isPlatformBrowser(this.platformId)) {
         // Fallback to direct navigation if router fails
         const fullUrl = `${window.location.origin}${targetPath}`;
         window.location.href = fullUrl;
       }
     }).catch(() => {
       // Fallback to direct navigation
-      const fullUrl = `${window.location.origin}${targetPath}`;
-      window.location.href = fullUrl;
+      if (isPlatformBrowser(this.platformId)) {
+        const fullUrl = `${window.location.origin}${targetPath}`;
+        window.location.href = fullUrl;
+      }
     });
   }
 

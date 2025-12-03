@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, inject, OnInit } from "@angular/core";
+import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
 import { RouterOutlet, RouterLink, ActivatedRoute, Router, ActivatedRouteSnapshot, NavigationEnd } from "@angular/router";
 import { NzLayoutModule } from "ng-zorro-antd/layout";
 import { NzButtonModule } from "ng-zorro-antd/button";
@@ -39,13 +40,14 @@ export class AppComponent implements OnInit, AfterViewInit {
   public isRtl: boolean;
   public isMobileMenuVisible = false;
   public currentLang: "en" | "ar" = "en";
-  private translate = inject(TranslateService);
-  private titleService = inject(Title);
-  private metaService = inject(Meta);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
 
   constructor(
+    @Inject(PLATFORM_ID) private readonly platformId: Object,
+    private translate: TranslateService,
+    private titleService: Title,
+    private metaService: Meta,
+    private route: ActivatedRoute,
+    private router: Router,
     private languageService: LanguageService,
     private themeService: ThemeService,
     private performanceService: PerformanceService,
@@ -96,7 +98,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.translate.onLangChange.subscribe((event) => {
       this.currentLang = event.lang as "en" | "ar";
       this.isRtl = this.currentLang === 'ar';
-      document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+      if (isPlatformBrowser(this.platformId)) {
+        document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+      }
     });
 
     // Also listen for route changes to update language
@@ -107,7 +111,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.translate.use(lang).subscribe(() => {
           this.currentLang = lang as "en" | "ar";
           this.isRtl = this.currentLang === 'ar';
-          document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+          if (isPlatformBrowser(this.platformId)) {
+            document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+          }
         });
       }
     });
@@ -150,7 +156,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     const targetUrl = remainingPath ? `/${newLang}/${remainingPath}` : `/${newLang}`;
 
     // Navigate to new URL and reload the page to ensure translations load correctly
-    window.location.href = targetUrl;
+    if (isPlatformBrowser(this.platformId)) {
+      window.location.href = targetUrl;
+    } else {
+      this.router.navigateByUrl(targetUrl);
+    }
   }
 
   toggleMobileMenu() {

@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -6,8 +7,10 @@ import { Injectable } from '@angular/core';
 export class PerformanceService {
   private performanceObserver?: PerformanceObserver;
 
-  constructor() {
-    this.setupPerformanceMonitoring();
+  constructor(@Inject(PLATFORM_ID) private readonly platformId: Object) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.setupPerformanceMonitoring();
+    }
   }
 
   /**
@@ -112,8 +115,10 @@ export class PerformanceService {
    * Optimize images with lazy loading and WebP support
    */
   optimizeImages(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     const images = document.querySelectorAll('img[data-src]');
-    
+
     if ('IntersectionObserver' in window) {
       const imageObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -172,6 +177,8 @@ export class PerformanceService {
    * Prefetch next pages for faster navigation
    */
   prefetchPage(url: string): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     const link = document.createElement('link');
     link.rel = 'prefetch';
     link.href = url;
@@ -182,6 +189,8 @@ export class PerformanceService {
    * Critical CSS injection for above-the-fold content
    */
   injectCriticalCSS(css: string): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     const style = document.createElement('style');
     style.textContent = css;
     document.head.appendChild(style);

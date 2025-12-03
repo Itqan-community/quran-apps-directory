@@ -62,3 +62,6 @@ backend/node_modules/.mf/cf.json
 backend/test/test_r2.txt
 backend/config/logs/staging.log
 docs/blogs/
+docs/review/
+.gemini-clipboard/
+docs/stories/

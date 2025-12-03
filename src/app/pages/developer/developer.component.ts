@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -40,6 +40,7 @@ export class DeveloperComponent implements OnInit {
   developerParam = ''; // Store the full parameter (name_id)
 
   constructor(
+    @Inject(PLATFORM_ID) private readonly platformId: Object,
     private route: ActivatedRoute,
     private router: Router,
     private appService: AppService,
@@ -167,7 +168,9 @@ export class DeveloperComponent implements OnInit {
     this.loading = false;
 
     // Scroll to top when page finishes loading
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (isPlatformBrowser(this.platformId)) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   private handleDeveloperAppsError(error: any) {
@@ -217,7 +220,9 @@ export class DeveloperComponent implements OnInit {
     // Format: "slug_appId" (e.g., "wahy_1")
     const urlParam = `${slug}_${appId}`;
     this.router.navigate([`/${this.currentLang}/app/${urlParam}`]).then(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (isPlatformBrowser(this.platformId)) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     });
   }
 
@@ -286,7 +291,7 @@ export class DeveloperComponent implements OnInit {
   }
 
   visitDeveloperWebsite() {
-    if (this.developerInfo?.website) {
+    if (this.developerInfo?.website && isPlatformBrowser(this.platformId)) {
       window.open(this.developerInfo.website, '_blank');
     }
   }

@@ -1,4 +1,5 @@
-import { Injectable, signal, effect } from '@angular/core';
+import { Injectable, signal, effect, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 export type Theme = 'light' | 'dark' | 'auto';
 
@@ -7,25 +8,34 @@ export type Theme = 'light' | 'dark' | 'auto';
 })
 export class ThemeService {
   private readonly THEME_STORAGE_KEY = 'quran-apps-theme';
-  
+  private readonly platformId: Object;
+
   // Signal for reactive theme management
   public theme = signal<Theme>('auto');
   public isDark = signal<boolean>(false);
 
-  constructor() {
-    // Load saved theme preference
-    this.loadThemeFromStorage();
-    
-    // Apply initial theme immediately
-    this.applyTheme(this.theme());
-    
-    // React to theme changes
-    effect(() => {
+  constructor(@Inject(PLATFORM_ID) platformId: Object) {
+    this.platformId = platformId;
+    // Only run browser-specific code in browser context
+    if (isPlatformBrowser(this.platformId)) {
+      // Load saved theme preference
+      this.loadThemeFromStorage();
+
+      // Apply initial theme immediately
       this.applyTheme(this.theme());
-    });
-    
-    // Listen for system theme changes
-    this.setupSystemThemeListener();
+
+      // React to theme changes
+      effect(() => {
+        this.applyTheme(this.theme());
+      });
+
+      // Listen for system theme changes
+      this.setupSystemThemeListener();
+    } else {
+      // Default to light theme during SSR/prerender
+      this.theme.set('light');
+      this.isDark.set(false);
+    }
   }
 
   /**
@@ -33,7 +43,9 @@ export class ThemeService {
    */
   setTheme(theme: Theme): void {
     this.theme.set(theme);
-    localStorage.setItem(this.THEME_STORAGE_KEY, theme);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.THEME_STORAGE_KEY, theme);
+    }
   }
 
   /**
@@ -54,7 +66,10 @@ export class ThemeService {
   getEffectiveTheme(): 'light' | 'dark' {
     const theme = this.theme();
     if (theme === 'auto') {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      if (isPlatformBrowser(this.platformId)) {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      return 'light'; // Default during SSR/prerender
     }
     return theme;
   }

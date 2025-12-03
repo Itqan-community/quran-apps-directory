@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ApiService, App } from './api.service';
 
 /**
@@ -12,12 +13,18 @@ export class AppImagePreloaderService {
   private readonly R2_CDN_URL = 'pub-e11717db663c469fb51c65995892b449.r2.dev';
   private preloadingStarted = false;
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    @Inject(PLATFORM_ID) private readonly platformId: Object,
+    private apiService: ApiService
+  ) {}
 
   /**
    * Start preloading images in background without blocking app initialization
    */
   startPreloadingInBackground(): void {
+    // Only run in browser
+    if (!isPlatformBrowser(this.platformId)) return;
+
     // Only start preloading once
     if (this.preloadingStarted) {
       return;
