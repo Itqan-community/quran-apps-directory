@@ -5,6 +5,7 @@ from django.utils.text import slugify
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.cache import cache
 from django.conf import settings
+from pgvector.django import VectorField
 from core.models import PublishedModel
 
 
@@ -16,6 +17,10 @@ class App(PublishedModel):
     name_en = models.CharField(max_length=200, db_index=True)
     name_ar = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(max_length=220, unique=True, db_index=True)
+
+    # AI Search
+    # 1536 dimensions for OpenAI text-embedding-3-small
+    embedding = VectorField(dimensions=1536, null=True, blank=True)
 
     # Descriptions
     short_description_en = models.TextField()

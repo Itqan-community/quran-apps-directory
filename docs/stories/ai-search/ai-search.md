@@ -1,74 +1,98 @@
-# AI Search Implementation Plan: Model-Agnostic Architecture
+# AI Search Implementation Plan: The "Professor & Librarian" Architecture
 
-**Status:** Draft
+**Status:** Implementation Complete
 **Date:** 9 December 2025
 **Author:** Senior Architect (Agent)
 
 ## 1. Executive Summary
 
-This document outlines the architectural plan to implement a **Model-Agnostic AI Semantic Search** feature for the Quran Apps Directory. The goal is to decouple the search functionality from any specific AI provider (e.g., OpenAI), allowing the backend to switch between providers (OpenAI, DeepSeek, Local LLMs) simply by changing configuration, without code refactoring.
+This document outlines the architectural plan to implement a **Model-Agnostic, Retrieve-Then-Reason AI Search** for the Quran Apps Directory.
+
+The system adopts a **"Professor & Librarian" architecture**:
+1.  **The Librarian (Retrieval):** Uses efficient vector embeddings (`pgvector` + `text-embedding-004`) to quickly fetch a broad set of candidate apps.
+2.  **The Professor (Reasoning):** Uses **Gemini 1.5 Pro** to "read" the user's intent and "curate" the final results, re-ranking them by strict relevance and providing synthesis.
+
+This approach combines the speed of vector search with the deep reasoning capabilities of Large Language Models (LLMs), solving the common problem of "fuzzy" or irrelevant search results in bilingual (Arabic/English) contexts.
 
 ## 2. Objectives
 
-1.  **Universal Database Support:** Enable vector storage in PostgreSQL using `pgvector`, independent of the generation source.
-2.  **Abstraction Layer:** Create a service layer that communicates with *any* OpenAI-compatible API (standard in the industry) via configurable Base URLs.
-3.  **Flexible Ingestion:** Build a re-indexing engine that transforms app data into vector-ready text blocks.
-4.  **Seamless API Integration:** Expose a clean `/api/search` endpoint that handles the complexity of vector conversion and similarity search.
+1.  **Provider Agnostic Core:** A flexible `AISearchProvider` interface that supports OpenAI, Gemini, DeepSeek, or local models.
+2.  **Rich Context Ingestion:** An ingestion engine that crawls App Store/Google Play links to index the *full* app content, not just the directory's short description.
+3.  **Intelligent Retrieval Pipeline:** A two-stage search process:
+    *   **Stage 1:** Vector Similarity Search (Fast retrieval of top 30-50 candidates).
+    *   **Stage 2:** LLM Reranking (Intelligent sorting and filtering by Gemini Pro).
+4.  **Seamless API:** A `/api/search` endpoint that abstracts this complexity from the frontend.
 
 ## 3. Architecture & Components
 
 ### 3.1. Database Infrastructure (The Storage)
 *   **Technology:** PostgreSQL 15+ with `pgvector` extension.
-*   **Schema Change:** Add `embedding` column to `App` model.
-*   **Dimension:** Default to **1536** (Standard for `text-embedding-3-small` and many others). *Note: If a model with different dimensions is chosen later, a schema migration will be required.*
+*   **Schema:** `App` model includes an `embedding` column (VectorField).
+*   **Dimension Strategy:** Default to **768** (for Google `text-embedding-004`) or **1536** (OpenAI `text-embedding-3-small`). Configurable via settings.
 
-### 3.2. Universal Translator Service (The Logic)
+### 3.2. Universal Provider Layer (The Adapters)
+*   **Interface:** `AISearchProvider` (Abstract Base Class)
+    *   `get_embedding(text)`
+    *   `rerank(query, documents)` (New capability)
+*   **Implementations:**
+    *   `GeminiSearchProvider`: Uses `google-generativeai` SDK. Implements Reranking.
+    *   `OpenAISearchProvider`: Uses `openai` SDK (also compatible with DeepSeek/Local).
+*   **Factory:** `AISearchFactory` selects provider based on `.env`.
+
+### 3.3. Ingestion Engine (The Crawler)
+*   **Component:** `AppCrawler` & `reindex_embeddings` command.
+*   **Workflow:**
+    1.  Load App.
+    2.  Check for `google_play_link` / `app_store_link`.
+    3.  **Crawl:** Fetch and sanitize text from the store page using `AppCrawler`.
+    4.  **Combine:** `Name + Category + Local Description + Crawled Store Description`.
+    5.  **Vectorize:** Generate embedding via Provider.
+    6.  **Store:** Save to DB.
+
+### 3.4. Search Service (The Orchestrator)
 *   **Class:** `AISearchService`
-*   **Location:** `backend/core/services/search.py`
-*   **Configuration:**
-    *   `AI_PROVIDER`: (e.g., 'openai', 'azure', 'custom')
-    *   `AI_API_KEY`: Secret key.
-    *   `AI_BASE_URL`: (Optional) To point to DeepSeek, vLLM, or LocalAI.
-    *   `AI_MODEL`: (e.g., `text-embedding-3-small`, `bert-base`).
-*   **Interface:** `get_embedding(text: str) -> List[float]`
+*   **Workflow (`search_apps`):**
+    1.  **Query Expansion (Optional):** Use LLM to clarify vague queries (e.g., "kids" -> "educational, hifz, alphabet, stories").
+    2.  **Vector Search:** Query `pgvector` for top 50 candidates.
+    3.  **Reranking:** Send the Query + Top 50 Metadata to Gemini Pro.
+        *   *Prompt:* "Rank these apps for the user query '{q}'. Return top 20 JSON."
+    4.  **Response:** Return the re-ordered list to the API.
 
-### 3.3. Ingestion Engine (The Worker)
-*   **Command:** `reindex_embeddings`
-*   **Location:** `backend/apps/management/commands/reindex_embeddings.py`
-*   **Logic:**
-    1.  Iterate through all `App` records.
-    2.  Construct a "Rich Text Document" for each app: `Title + Category + Description + Tags`.
-    3.  Call `AISearchService.get_embedding()`.
-    4.  Save the resulting vector to the database.
+## 4. Implementation Plan (Task List)
 
-### 3.4. Search API (The Interface)
-*   **Endpoint:** `GET /api/search?q={query}`
-*   **Logic:**
-    1.  Receive user text query.
-    2.  Convert query to vector using `AISearchService`.
-    3.  Perform Cosine Similarity search on `App` table.
-    4.  Return results sorted by distance.
+### Phase 1: Foundation (Provider & Storage)
+*   [x] **Dependencies:** Install `google-generativeai`, `openai`, `pgvector`, `beautifulsoup4`.
+*   [x] **Database:** Enable `pgvector` extension and add `embedding` field to `App`.
+*   [x] **Interface:** Define `AISearchProvider` abstract base class.
+*   [x] **Providers:** Implement `OpenAISearchProvider` and `GeminiSearchProvider`.
+*   [x] **Factory:** Implement `AISearchFactory` for dependency injection.
 
-## 4. Implementation Steps (Sub-tasks)
+### Phase 2: Data Ingestion (The Librarian)
+*   [x] **Crawler:** Implement `AppCrawler` to fetch text from URLs.
+*   [x] **Ingestion Logic:** Update `prepare_app_text` to include crawled content.
+*   [x] **Refinement:** Ensure `reindex_embeddings` handles crawling errors gracefully and respects rate limits.
 
-| Step | Task | Description | Success Criteria |
-| :--- | :--- | :--- | :--- |
-| 1 | **Dependencies** | Update `requirements.txt`. | `pip install` passes with `openai`, `pgvector`. |
-| 2 | **Database** | Create Django migration. | `pgvector` extension enabled; `App` model has `embedding` field. |
-| 3 | **Service** | Implement `AISearchService`. | Service can connect to OpenAI (or compatible URL) and return a list of floats. |
-| 4 | **Ingestion** | Create `reindex_embeddings` cmd. | Command runs without error; DB is populated with vectors. |
-| 5 | **API** | Implement `search_apps` endpoint. | Endpoint returns JSON results relevant to a semantic query. |
-| 6 | **Routing** | Register URL router. | `/api/search` is accessible. |
+### Phase 3: The "Professor" (Reasoning & Reranking)
+*   [x] **Rerank Interface:** Add `rerank(query, docs)` method to `AISearchProvider`.
+*   [x] **Gemini Rerank:** Implement `rerank` in `GeminiSearchProvider` using a specialized prompt for Gemini 1.5 Pro.
+*   [x] **OpenAI Rerank:** Implement fallback `rerank` (basic pass-through) for OpenAI.
+*   [x] **Orchestration:** Update `AISearchService.search_apps` to call `rerank` after `get_embedding`.
 
-## 5. Resources & Dependencies
+### Phase 4: Integration & Optimization
+*   [x] **API Update:** Ensure `/api/search` uses the full pipeline.
+*   [ ] **Testing:** Verify "Hifz for kids" returns better results with Reranking enabled vs disabled.
+*   [ ] **Performance:** Measure latency. If Gemini Pro Rerank is > 2s, consider falling back to Flash or caching.
 
-*   **Libraries:** `openai` (v1.x), `pgvector` (django).
-*   **Environment Variables:** `AI_API_KEY`, `AI_BASE_URL` (optional), `DB_URL`.
-*   **Database:** PostgreSQL instance with `vector` extension allowed.
+## 5. Risks & Mitigation
 
-## 6. Risks & Mitigation
+*   **Latency:** Calling an LLM for reranking adds time.
+    *   *Mitigation:* Use **Gemini 1.5 Flash** for reranking (faster/cheaper) instead of Pro if latency is high. Use Pro only for complex queries.
+*   **Cost:** Reranking every search uses input tokens.
+    *   *Mitigation:* Cache search results (Redis) for common queries. Limit reranking to top 20-30 items.
+*   **Crawling Reliability:** Store pages change structure.
+    *   *Mitigation:* `AppCrawler` should fail silently and fall back to local descriptions.
 
-*   **Risk:** Model dimension mismatch (e.g., switching from OpenAI 1536d to a 768d model).
-    *   *Mitigation:* The `App` model vector field must match the model dimensions. Changing models requires a DB migration to resize the column and a full re-index.
-*   **Risk:** API Rate Limiting.
-    *   *Mitigation:* Implement simple backoff/sleep in the re-indexing script.
+## 6. Resources
+
+*   **Google AI Studio:** For Gemini API Keys.
+*   **Railway:** For hosting PostgreSQL + Python Backend.
