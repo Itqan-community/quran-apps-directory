@@ -31,9 +31,8 @@ def search_apps(request, q: str, page: int = 1, page_size: int = 20):
     items_data = [app_service._app_to_dict(app) for app in page_items]
     
     return {
-        "items": items_data,
+        "results": items_data,
         "count": total,
-        "page": page,
-        "page_size": page_size,
-        "total_pages": (total + page_size - 1) // page_size
+        "next": None,  # Semantic search doesn't use URL pagination
+        "previous": None,
     }
