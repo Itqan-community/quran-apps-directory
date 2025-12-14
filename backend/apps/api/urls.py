@@ -4,16 +4,27 @@ Ninja API URL routing for Quranic Applications
 Following ITQAN community standards using Django Ninja framework.
 """
 
+import json
 from ninja import NinjaAPI, Router
+from ninja.renderers import JSONRenderer
 from .controllers import router as apps_router, get_categories
 from .search import router as search_router
 from submissions.api.controllers import router as submissions_router
+
+
+class UnicodeJSONRenderer(JSONRenderer):
+    """Custom JSON renderer that properly displays Arabic/Unicode characters."""
+
+    def render(self, request, data, *, response_status):
+        return json.dumps(data, ensure_ascii=False, cls=self.encoder_class)
+
 
 # Create NinjaAPI instance (disable default docs to use Scalar)
 api = NinjaAPI(
     title="Quran Apps API",
     version="1.0.0",
-    docs_url=None  # Disable default docs to use Scalar instead
+    docs_url=None,  # Disable default docs to use Scalar instead
+    renderer=UnicodeJSONRenderer()
 )
 
 # Create categories router
