@@ -19,8 +19,8 @@ class App(PublishedModel):
     slug = models.SlugField(max_length=220, unique=True, db_index=True)
 
     # AI Search
-    # 1536 dimensions for OpenAI text-embedding-3-small
-    embedding = VectorField(dimensions=1536, null=True, blank=True)
+    # 768 dimensions for Gemini text-embedding-004 (was 1536 for OpenAI)
+    embedding = VectorField(dimensions=768, null=True, blank=True)
 
     # Descriptions
     short_description_en = models.TextField()
