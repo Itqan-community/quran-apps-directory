@@ -24,6 +24,12 @@ django-extensions==4.1
 # Filtering & Search
 django-filter==24.3
 
+# Vector Search (AI Semantic Search)
+pgvector>=0.2.0
+openai>=1.0.0
+google-generativeai>=0.3.0
+beautifulsoup4>=4.12.0
+
 # Legacy Authentication & Security (being removed)
 # djangorestframework-simplejwt==5.3.2  # Legacy JWT
 # django-allauth==65.11.2  # Legacy OAuth
