@@ -27,9 +27,14 @@ def search_apps(request, q: str, page: int = 1, page_size: int = 20):
     
     page_items = all_results[start:end]
     
-    # Convert to schema format using AppService helper
-    items_data = [app_service._app_to_dict(app) for app in page_items]
-    
+    # Convert to schema format using AppService helper, include AI reasoning
+    items_data = []
+    for app in page_items:
+        app_dict = app_service._app_to_dict(app)
+        # Add AI reasoning if available (set by reranker)
+        app_dict['ai_reasoning'] = getattr(app, 'ai_reasoning', None)
+        items_data.append(app_dict)
+
     return {
         "results": items_data,
         "count": total,

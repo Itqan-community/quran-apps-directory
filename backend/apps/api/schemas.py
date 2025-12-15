@@ -90,6 +90,7 @@ class AppListSchema(BaseModel):
     developer: DeveloperSchema
     categories: List[str]  # Simplified for list view
     created_at: str
+    ai_reasoning: Optional[str] = Field(None, description="AI explanation for search relevance")
 
     class Config:
         populate_by_name = True
