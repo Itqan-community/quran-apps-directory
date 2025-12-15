@@ -2,7 +2,7 @@ import logging
 import requests
 import time
 from bs4 import BeautifulSoup
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
@@ -208,6 +208,118 @@ class AppCrawler:
             text = text.replace('  ', ' ')
 
         return text.strip()
+
+    @classmethod
+    def crawl_all_sources_detailed(
+        cls,
+        google_play_url: Optional[str] = None,
+        app_store_url: Optional[str] = None,
+        app_gallery_url: Optional[str] = None,
+        delay_between_requests: float = 0.5
+    ) -> Dict[str, CrawlResult]:
+        """
+        Crawl all available sources and return detailed per-source results.
+        Returns Dict[source_name, CrawlResult] for saving to AppCrawledData.
+        """
+        results: Dict[str, CrawlResult] = {}
+
+        url_sources = [
+            (google_play_url, 'google_play', cls._extract_google_play),
+            (app_store_url, 'app_store', cls._extract_app_store),
+            (app_gallery_url, 'app_gallery', cls._extract_app_gallery),
+        ]
+
+        for url, source, extractor in url_sources:
+            if not url:
+                continue
+
+            try:
+                content = extractor(url)
+                if content:
+                    limit = cls.CHAR_LIMITS.get(source, 1000)
+                    results[source] = CrawlResult(
+                        url=url,
+                        content=content[:limit],
+                        source=source,
+                        success=True
+                    )
+                    logger.info(f"Successfully crawled {source}: {len(content)} chars")
+                else:
+                    results[source] = CrawlResult(
+                        url=url,
+                        content='',
+                        source=source,
+                        success=False,
+                        error='No content extracted'
+                    )
+            except Exception as e:
+                logger.warning(f"Failed to crawl {source} ({url}): {e}")
+                results[source] = CrawlResult(
+                    url=url,
+                    content='',
+                    source=source,
+                    success=False,
+                    error=str(e)
+                )
+
+            # Rate limiting between requests
+            if delay_between_requests > 0:
+                time.sleep(delay_between_requests)
+
+        return results
+
+    @classmethod
+    def save_crawl_results_to_db(cls, app, results: Dict[str, CrawlResult]) -> str:
+        """
+        Save crawl results to AppCrawledData table and update App.crawled_content cache.
+        Returns the combined content string for embedding generation.
+        """
+        from apps.models import AppCrawledData, CrawlStatus
+        from django.utils import timezone
+
+        combined_sections = []
+
+        for source, result in results.items():
+            # Determine status
+            if result.success and result.content:
+                status = CrawlStatus.SUCCESS
+            elif result.error and 'not found' in result.error.lower():
+                status = CrawlStatus.NOT_FOUND
+            else:
+                status = CrawlStatus.FAILED
+
+            # Build metadata
+            metadata = {
+                'char_count': len(result.content) if result.content else 0,
+                'crawled_via': 'crawl_all_sources_detailed',
+            }
+            if result.error:
+                metadata['error_message'] = result.error
+
+            # Upsert to AppCrawledData
+            AppCrawledData.objects.update_or_create(
+                app=app,
+                source=source,
+                defaults={
+                    'url': result.url,
+                    'content': result.content or '',
+                    'status': status,
+                    'metadata': metadata,
+                }
+            )
+
+            # Build combined content section
+            if result.success and result.content:
+                source_label = source.replace('_', ' ').title()
+                combined_sections.append(f"[{source_label}] {result.content}")
+
+        # Update App.crawled_content cache
+        combined_content = "\n".join(combined_sections)
+        app.crawled_content = combined_content
+        app.crawled_at = timezone.now()
+        app.save(update_fields=['crawled_content', 'crawled_at'])
+
+        return combined_content
 
     # Legacy method for backward compatibility
     @staticmethod

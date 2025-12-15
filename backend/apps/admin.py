@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import App
+from .models import App, AppCrawledData
 
 
 @admin.register(App)
@@ -165,3 +165,82 @@ class AppAdmin(admin.ModelAdmin):
         updated = queryset.update(status='draft')
         self.message_user(request, f'{updated} apps moved to draft.')
     mark_as_draft.short_description = 'Move selected apps to draft'
+
+
+@admin.register(AppCrawledData)
+class AppCrawledDataAdmin(admin.ModelAdmin):
+    """
+    Admin interface for viewing crawled data from app stores.
+    Read-only - data is populated by the crawler service.
+    """
+    list_display = [
+        'app_name',
+        'source',
+        'status',
+        'char_count',
+        'crawled_at',
+    ]
+    list_filter = [
+        'source',
+        'status',
+        'crawled_at',
+    ]
+    search_fields = [
+        'app__name_en',
+        'app__name_ar',
+        'url',
+    ]
+    readonly_fields = [
+        'id',
+        'app',
+        'source',
+        'url',
+        'content_preview',
+        'status',
+        'metadata',
+        'crawled_at',
+    ]
+    ordering = ['-crawled_at']
+
+    fieldsets = [
+        ('Source Information', {
+            'fields': ['id', 'app', 'source', 'url', 'status', 'crawled_at']
+        }),
+        ('Content', {
+            'fields': ['content_preview']
+        }),
+        ('Metadata', {
+            'fields': ['metadata'],
+            'classes': ['collapse'],
+        }),
+    ]
+
+    def app_name(self, obj):
+        """Display app name."""
+        return obj.app.name_en
+    app_name.short_description = 'App'
+    app_name.admin_order_field = 'app__name_en'
+
+    def char_count(self, obj):
+        """Display character count."""
+        count = len(obj.content) if obj.content else 0
+        return f"{count:,}"
+    char_count.short_description = 'Chars'
+
+    def content_preview(self, obj):
+        """Display content preview (first 500 chars)."""
+        if obj.content:
+            preview = obj.content[:500]
+            if len(obj.content) > 500:
+                preview += '...'
+            return format_html('<pre style="white-space: pre-wrap; max-width: 800px;">{}</pre>', preview)
+        return '-'
+    content_preview.short_description = 'Content Preview'
+
+    def has_add_permission(self, request):
+        """Disable add - data is populated by crawler."""
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        """Disable edit - data is read-only."""
+        return False

@@ -167,33 +167,55 @@ class AISearchService:
         crawl_links: bool = False,
         use_cached: bool = True
     ) -> str:
-        """Get external content, using cache or crawling as needed."""
-        # Check for cached content first
+        """
+        Get external content from AppCrawledData table or legacy cache.
+        Falls back to crawling if requested and no fresh data exists.
+        """
+        from apps.models import AppCrawledData, CrawlStatus
+
+        # 1. Check AppCrawledData table for fresh content (less than 30 days old)
+        if use_cached:
+            fresh_threshold = timezone.now() - timedelta(days=30)
+            crawled_entries = AppCrawledData.objects.filter(
+                app=app,
+                status=CrawlStatus.SUCCESS,
+                crawled_at__gte=fresh_threshold
+            )
+
+            if crawled_entries.exists():
+                # Combine content from all successful sources
+                sections = []
+                for entry in crawled_entries:
+                    if entry.content:
+                        source_label = entry.source.replace('_', ' ').title()
+                        sections.append(f"[{source_label}] {entry.content}")
+
+                if sections:
+                    combined = "\n".join(sections)
+                    logger.debug(f"Using AppCrawledData for {app.name_en} ({crawled_entries.count()} sources)")
+                    return combined[:2000]
+
+        # 2. Fallback: Check legacy App.crawled_content cache
         if use_cached and hasattr(app, 'crawled_content') and app.crawled_content:
-            # Check if cache is fresh (less than 30 days old)
             if hasattr(app, 'crawled_at') and app.crawled_at:
                 cache_age = timezone.now() - app.crawled_at
                 if cache_age < timedelta(days=30):
-                    logger.debug(f"Using cached crawl for {app.name_en} ({cache_age.days} days old)")
+                    logger.debug(f"Using legacy cached crawl for {app.name_en} ({cache_age.days} days old)")
                     return app.crawled_content[:2000]
 
-        # Crawl if requested
+        # 3. Crawl if requested (and save to new table)
         if crawl_links:
-            crawled = AppCrawler.crawl_all_sources(
+            results = AppCrawler.crawl_all_sources_detailed(
                 google_play_url=app.google_play_link,
                 app_store_url=app.app_store_link,
                 app_gallery_url=app.app_gallery_link
             )
 
-            if crawled:
-                # Cache the result if the model supports it
-                if hasattr(app, 'crawled_content'):
-                    app.crawled_content = crawled
-                    app.crawled_at = timezone.now()
-                    app.save(update_fields=['crawled_content', 'crawled_at'])
-                    logger.info(f"Cached crawled content for {app.name_en}")
-
-                return crawled[:2000]
+            if results:
+                # Save to AppCrawledData table and update App.crawled_content cache
+                combined = AppCrawler.save_crawl_results_to_db(app, results)
+                logger.info(f"Crawled and saved to AppCrawledData for {app.name_en}")
+                return combined[:2000]
 
         return ""
 

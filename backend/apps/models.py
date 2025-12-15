@@ -176,3 +176,90 @@ class App(PublishedModel):
                 'apps_list_published',
                 'apps_list_featured',
             ])
+
+
+class CrawlSource(models.TextChoices):
+    """Enum for crawl sources."""
+    GOOGLE_PLAY = 'google_play', 'Google Play'
+    APP_STORE = 'app_store', 'App Store'
+    APP_GALLERY = 'app_gallery', 'AppGallery'
+    WEBSITE = 'website', 'Website'
+
+
+class CrawlStatus(models.TextChoices):
+    """Enum for crawl status."""
+    SUCCESS = 'success', 'Success'
+    FAILED = 'failed', 'Failed'
+    NOT_FOUND = 'not_found', 'Not Found'
+    PENDING = 'pending', 'Pending'
+
+
+class AppCrawledData(models.Model):
+    """
+    Stores crawled content from external sources for each app.
+    Each app can have multiple entries (one per source).
+    """
+    id = models.BigAutoField(primary_key=True)
+
+    app = models.ForeignKey(
+        'App',
+        on_delete=models.CASCADE,
+        related_name='crawled_data',
+        db_index=True
+    )
+
+    source = models.CharField(
+        max_length=20,
+        choices=CrawlSource.choices,
+        db_index=True
+    )
+
+    url = models.URLField(
+        max_length=500,
+        help_text="The URL that was crawled"
+    )
+
+    content = models.TextField(
+        blank=True,
+        default='',
+        help_text="Crawled text content"
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=CrawlStatus.choices,
+        default=CrawlStatus.PENDING,
+        db_index=True
+    )
+
+    metadata = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="Extra info: char_count, error_message, http_status, etc."
+    )
+
+    crawled_at = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+        help_text="Timestamp when this URL was crawled"
+    )
+
+    class Meta:
+        db_table = 'app_crawled_data'
+        ordering = ['-crawled_at']
+        indexes = [
+            models.Index(fields=['app', 'source']),
+            models.Index(fields=['status']),
+            models.Index(fields=['crawled_at']),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['app', 'source'],
+                name='unique_app_source'
+            )
+        ]
+        verbose_name = 'App Crawled Data'
+        verbose_name_plural = 'App Crawled Data'
+
+    def __str__(self):
+        return f"{self.app.name_en} - {self.get_source_display()}"
