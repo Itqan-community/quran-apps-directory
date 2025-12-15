@@ -18,6 +18,7 @@ class AppAdmin(admin.ModelAdmin):
         'view_count',
         'featured',
         'status',
+        'has_embedding',
         'developer',
         'created_at',
     ]
@@ -39,7 +40,7 @@ class AppAdmin(admin.ModelAdmin):
         'developer__name_ar',
     ]
     prepopulated_fields = {'slug': ('name_en',)}
-    readonly_fields = ['id', 'created_at', 'updated_at', 'icon_preview_large']
+    readonly_fields = ['id', 'created_at', 'updated_at', 'icon_preview_large', 'embedding_status']
     filter_horizontal = ['categories']
 
     fieldsets = [
@@ -97,6 +98,10 @@ class AppAdmin(admin.ModelAdmin):
             'fields': ['created_at', 'updated_at'],
             'classes': ['collapse'],
         }),
+        ('AI Search', {
+            'fields': ['embedding_status'],
+            'classes': ['collapse'],
+        }),
     ]
 
     ordering = ['sort_order', 'name_en']
@@ -120,6 +125,26 @@ class AppAdmin(admin.ModelAdmin):
             )
         return '-'
     icon_preview_large.short_description = 'Icon Preview'
+
+    def embedding_status(self, obj):
+        """Display embedding status with dimensions."""
+        if obj.embedding is not None:
+            dims = len(obj.embedding) if hasattr(obj.embedding, '__len__') else 768
+            return format_html(
+                '<span style="color: green; font-weight: bold;">✓ Indexed</span> '
+                '<span style="color: #666;">({} dimensions)</span>',
+                dims
+            )
+        return format_html('<span style="color: red;">✗ Not indexed</span>')
+    embedding_status.short_description = 'AI Embedding'
+
+    def has_embedding(self, obj):
+        """Show embedding status in list view."""
+        if obj.embedding is not None:
+            return format_html('<span style="color: green;">✓</span>')
+        return format_html('<span style="color: red;">✗</span>')
+    has_embedding.short_description = 'AI'
+    has_embedding.admin_order_field = 'embedding'
 
     actions = ['mark_as_featured', 'mark_as_published', 'mark_as_draft']
 
