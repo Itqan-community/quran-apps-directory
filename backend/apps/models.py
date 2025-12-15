@@ -83,6 +83,18 @@ class App(PublishedModel):
 
     featured = models.BooleanField(default=False, db_index=True, help_text="Whether this app is featured")
 
+    # Crawled content cache for AI embeddings
+    crawled_content = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Cached content crawled from external sources (Google Play, App Store, AppGallery)"
+    )
+    crawled_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        help_text="Timestamp when external content was last crawled"
+    )
+
     class Meta:
         db_table = 'apps'
         ordering = ['sort_order', 'name_en']
