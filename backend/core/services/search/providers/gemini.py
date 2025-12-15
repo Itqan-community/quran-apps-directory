@@ -11,7 +11,7 @@ class GeminiSearchProvider(AISearchProvider):
     Requires google-generativeai package.
     """
     
-    def __init__(self, api_key: str, model: str = "models/text-embedding-004", rerank_model: str = "gemini-1.5-flash"):
+    def __init__(self, api_key: str, model: str = "models/text-embedding-004", rerank_model: str = "gemini-2.5-pro"):
         self.api_key = api_key
         self.model = model
         self.rerank_model_name = rerank_model
@@ -51,7 +51,7 @@ class GeminiSearchProvider(AISearchProvider):
 
     def rerank(self, query: str, documents: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
-        Uses Gemini 1.5 Flash (or Pro) to re-rank documents.
+        Uses Gemini 2.5 Pro to re-rank documents with AI reasoning.
         """
         if not self.genai or not documents or not self._rerank_model_client:
             return documents
