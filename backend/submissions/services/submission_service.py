@@ -13,6 +13,7 @@ from submissions.models import AppSubmission, SubmissionStatus, SubmissionStatus
 from apps.models import App
 from developers.models import Developer
 from core.services.email import get_email_service
+from core.services.search import AISearchService
 from submissions.services.storage_service import get_storage_service, StorageError
 
 logger = logging.getLogger(__name__)
@@ -286,6 +287,35 @@ class SubmissionService:
 
         # Set categories
         app.categories.set(submission.categories.all())
+
+        # Generate embedding for the new app
+        try:
+            search_service = AISearchService()
+            if search_service.provider:
+                # Prepare text using the new app data
+                text = search_service.prepare_app_text(
+                    app,
+                    crawl_links=False,  # Don't re-crawl, use cached content
+                    use_cached_crawl=True,
+                    include_full_descriptions=True
+                )
+
+                # Transfer cached crawled content from submission to app
+                if submission.crawled_content:
+                    app.crawled_content = submission.crawled_content
+                    app.crawled_at = timezone.now()
+
+                # Generate embedding
+                embedding = search_service.get_embedding(text)
+                if embedding:
+                    app.embedding = embedding
+                    app.save(update_fields=['embedding', 'crawled_content', 'crawled_at'])
+                    logger.info(f"Generated embedding for app {app.id}: {len(embedding)} dims")
+                else:
+                    logger.warning(f"Failed to generate embedding for app {app.id}")
+        except Exception as e:
+            # Log error but don't fail approval - embedding can be generated later
+            logger.error(f"Error generating embedding for app {app.id}: {e}")
 
         # Update submission
         submission.status = SubmissionStatus.APPROVED

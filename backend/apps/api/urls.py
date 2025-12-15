@@ -9,6 +9,7 @@ from ninja import NinjaAPI, Router
 from ninja.renderers import JSONRenderer
 from .controllers import router as apps_router, get_categories
 from .search import router as search_router
+from .admin_controllers import router as admin_router
 from submissions.api.controllers import router as submissions_router
 
 
@@ -40,3 +41,4 @@ api.add_router("/apps", apps_router)
 api.add_router("/search", search_router)
 api.add_router("/categories", categories_router)
 api.add_router("/submissions", submissions_router)
+api.add_router("/admin", admin_router)

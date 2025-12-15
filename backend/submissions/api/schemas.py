@@ -57,6 +57,9 @@ class SubmissionCreateSchema(Schema):
     additional_notes: Optional[str] = ''
     content_confirmation: bool = False
 
+    # Crawled content (from auto-fill)
+    crawled_content: Optional[str] = ''
+
 
 class SubmissionResponseSchema(Schema):
     """Schema for submission creation response."""
@@ -100,3 +103,33 @@ class ErrorSchema(Schema):
     """Schema for error responses."""
     error: str
     detail: Optional[str] = None
+
+
+class AutoFillRequestSchema(Schema):
+    """Schema for auto-fill request."""
+    google_play_url: Optional[str] = None
+    app_store_url: Optional[str] = None
+    app_gallery_url: Optional[str] = None
+    website_url: Optional[str] = None
+
+
+class AutoFillResponseSchema(Schema):
+    """Schema for auto-fill response with extracted app data."""
+    app_name_en: str
+    app_name_ar: str
+    short_description_en: str
+    short_description_ar: str
+    description_en: str
+    description_ar: str
+    developer_name_en: str
+    developer_name_ar: Optional[str] = None
+    developer_website: Optional[str] = None
+    developer_email: Optional[str] = None
+    app_icon_url: Optional[str] = None
+    screenshots: List[str] = []
+    category_suggestion: Optional[str] = None
+    crawled_content: str
+    google_play_url: Optional[str] = None
+    app_store_url: Optional[str] = None
+    app_gallery_url: Optional[str] = None
+    website_url: Optional[str] = None

@@ -19,7 +19,10 @@ from .schemas import (
     SubmissionListItemSchema,
     MediaUploadResponseSchema,
     ErrorSchema,
+    AutoFillRequestSchema,
+    AutoFillResponseSchema,
 )
+from submissions.services.autofill_service import AutoFillService
 
 logger = logging.getLogger(__name__)
 router = Router(tags=["Submissions"])
@@ -224,3 +227,41 @@ def upload_from_url(
     except Exception as e:
         logger.error(f"Failed to upload from URL: {e}")
         raise HttpError(400, "Failed to download and upload image. Please try again.")
+
+
+@router.post("/auto-fill", response={200: AutoFillResponseSchema, 400: ErrorSchema})
+def auto_fill_from_urls(request, data: AutoFillRequestSchema):
+    """
+    Extract app data from store links and/or website using AI.
+
+    Provide at least one URL (Google Play, App Store, AppGallery, or Website).
+    The service will crawl the URLs and use AI to extract bilingual app data.
+
+    Returns pre-filled form data including:
+    - App names (English and Arabic)
+    - Descriptions (short and full, bilingual)
+    - Developer information
+    - App icon URL and screenshots
+    - Category suggestion
+    - Raw crawled content (for embedding generation)
+    """
+    # Validate at least one URL is provided
+    if not any([data.google_play_url, data.app_store_url, data.app_gallery_url, data.website_url]):
+        raise HttpError(400, "At least one URL must be provided")
+
+    try:
+        service = AutoFillService()
+        extracted_data = service.extract_from_urls(
+            google_play_url=data.google_play_url,
+            app_store_url=data.app_store_url,
+            app_gallery_url=data.app_gallery_url,
+            website_url=data.website_url
+        )
+
+        return AutoFillResponseSchema(**extracted_data)
+
+    except ValueError as e:
+        raise HttpError(400, str(e))
+    except Exception as e:
+        logger.error(f"Auto-fill failed: {e}")
+        raise HttpError(400, f"Failed to extract app data: {str(e)}")

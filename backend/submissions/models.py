@@ -100,6 +100,13 @@ class AppSubmission(BaseModel):
     developer_website = models.URLField(blank=True)
     developer_email = models.EmailField(blank=True)
 
+    # Crawled Content (for embedding generation)
+    crawled_content = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Cached content crawled from store pages/website for embedding"
+    )
+
     # Media (URLs after R2 upload)
     app_icon_url = models.URLField(blank=True)
     main_image_en = models.URLField(
