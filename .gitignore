@@ -5,3 +5,5 @@ backend/.env
 AGENTS.md
 backend/venv/
 backend/config/logs/staging.log
+.claude-flow/
+docs/review/
