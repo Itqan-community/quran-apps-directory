@@ -365,3 +365,8 @@ AI_RERANK_MODEL = config('AI_RERANK_MODEL', default='gemini-2.5-pro')
 
 # Admin API Configuration
 ADMIN_API_KEY = config('ADMIN_API_KEY', default='')
+
+# Cloudflare AI Search Configuration
+CF_ACCOUNT_ID = config('CF_ACCOUNT_ID', default='')
+CF_AI_SEARCH_NAME = config('CF_AI_SEARCH_NAME', default='quran-apps-rag')
+CF_AI_SEARCH_TOKEN = config('CF_AI_SEARCH_TOKEN', default='')
