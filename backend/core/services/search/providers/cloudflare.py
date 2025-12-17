@@ -92,25 +92,72 @@ class CloudflareSearchProvider(AISearchProvider):
 
     def search_apps(self, query: str, max_results: int = 20) -> List[Dict[str, Any]]:
         """
-        Search for apps and return full app data.
-        This method parses the JSON content from R2 files.
+        Search for apps and return app data with scores.
+
+        CF AI Search returns chunked content, so we extract app IDs from
+        filenames (apps/{id}.json) and return them with scores.
         """
-        import json
+        import re
 
-        results = self.search(query, max_results=max_results)
-        apps = []
+        if not all([self.account_id, self.rag_name, self.token]):
+            logger.warning("Cloudflare AI Search not configured properly")
+            return []
 
-        for result in results:
-            try:
-                app_data = json.loads(result.content)
-                app_data['cf_score'] = result.relevance_score
-                app_data['cf_source'] = result.source
-                apps.append(app_data)
-            except json.JSONDecodeError:
-                logger.warning(f"Could not parse app data from: {result.source}")
-                continue
+        try:
+            response = requests.post(
+                f"{self.base_url}/ai-search",
+                headers=self._get_headers(),
+                json={
+                    "query": query,
+                    "rewrite_query": True,
+                    "max_num_results": max_results,
+                    "ranking_options": {
+                        "score_threshold": 0.0
+                    },
+                    "reranking": {
+                        "enabled": True
+                    }
+                },
+                timeout=30
+            )
 
-        return apps
+            if response.status_code != 200:
+                logger.error(f"CF AI Search error: {response.status_code} - {response.text}")
+                return []
+
+            data = response.json()
+
+            if not data.get("success"):
+                logger.error(f"CF AI Search failed: {data.get('errors', [])}")
+                return []
+
+            apps = []
+            seen_ids = set()  # Dedupe apps (CF may return multiple chunks per app)
+
+            for item in data.get("result", {}).get("data", []):
+                filename = item.get("filename", "")
+                score = item.get("score", 0.0)
+
+                # Extract app ID from filename (apps/123.json -> 123)
+                match = re.search(r'apps/(\d+)\.json', filename)
+                if match:
+                    app_id = int(match.group(1))
+                    if app_id not in seen_ids:
+                        seen_ids.add(app_id)
+                        apps.append({
+                            'id': app_id,
+                            'cf_score': score,
+                            'cf_source': filename
+                        })
+
+            return apps
+
+        except requests.RequestException as e:
+            logger.error(f"CF AI Search request error: {e}")
+            return []
+        except Exception as e:
+            logger.error(f"CF AI Search unexpected error: {e}", exc_info=True)
+            return []
 
     def rerank(self, query: str, documents: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
