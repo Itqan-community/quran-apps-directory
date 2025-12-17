@@ -25,7 +25,7 @@ X_FRAME_OPTIONS = 'DENY'
 # Allowed hosts - required for production
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='quran-apps.itqan.dev,www.quran-apps.itqan.dev,qad-api-production.up.railway.app,railway.app,quran-apps-directory.railway.internal',
+    default='quran-apps.itqan.dev,www.quran-apps.itqan.dev,qad-api-production.up.railway.app,qad-backend-api-staging.up.railway.app,railway.app,quran-apps-directory.railway.internal',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
