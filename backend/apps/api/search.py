@@ -25,6 +25,9 @@ def search_apps(request, q: str, page: int = 1, page_size: int = 20, use_cf: boo
 
     if use_cf:
         # Use Cloudflare AI Search (managed RAG)
+        import logging
+        logger = logging.getLogger(__name__)
+
         cf_provider = AISearchFactory.get_cloudflare_provider()
         if not cf_provider:
             return {
@@ -35,44 +38,50 @@ def search_apps(request, q: str, page: int = 1, page_size: int = 20, use_cf: boo
                 "error": "Cloudflare AI Search not configured"
             }
 
-        # Search via CF AI Search
-        cf_results = cf_provider.search_apps(q, max_results=50)
+        try:
+            # Search via CF AI Search
+            cf_results = cf_provider.search_apps(q, max_results=50)
+            logger.info(f"CF Search returned {len(cf_results)} results for query: {q}")
 
-        total = len(cf_results)
-        start = (page - 1) * page_size
-        end = start + page_size
-        page_items = cf_results[start:end]
+            total = len(cf_results)
+            start = (page - 1) * page_size
+            end = start + page_size
+            page_items = cf_results[start:end]
 
-        # Fetch full app objects from DB for consistent response format
-        items_data = []
-        for cf_app in page_items:
-            try:
-                app = App.objects.select_related('developer').prefetch_related('categories').get(id=cf_app.get('id'))
-                app_dict = app_service._app_to_dict(app)
-                app_dict['cf_score'] = cf_app.get('cf_score')
-                app_dict['ai_reasoning'] = f"CF AI Search score: {cf_app.get('cf_score', 0):.4f}"
-                items_data.append(app_dict)
-            except App.DoesNotExist:
-                # App from R2 not in DB, use CF data directly
-                items_data.append({
-                    'id': cf_app.get('id'),
-                    'slug': cf_app.get('slug'),
-                    'name_en': cf_app.get('name_en'),
-                    'name_ar': cf_app.get('name_ar'),
-                    'short_description_en': cf_app.get('short_description_en'),
-                    'short_description_ar': cf_app.get('short_description_ar'),
-                    'application_icon': cf_app.get('application_icon'),
-                    'avg_rating': cf_app.get('avg_rating'),
-                    'cf_score': cf_app.get('cf_score'),
-                    'ai_reasoning': f"CF AI Search score: {cf_app.get('cf_score', 0):.4f}",
-                })
+            # Fetch full app objects from DB for consistent response format
+            items_data = []
+            for cf_app in page_items:
+                app_id = cf_app.get('id')
+                cf_score = cf_app.get('cf_score', 0)
+                try:
+                    app = App.objects.select_related('developer').prefetch_related('categories').get(id=app_id)
+                    app_dict = app_service._app_to_dict(app)
+                    app_dict['cf_score'] = cf_score
+                    app_dict['ai_reasoning'] = f"CF AI Search score: {cf_score:.4f}"
+                    items_data.append(app_dict)
+                except App.DoesNotExist:
+                    logger.warning(f"App {app_id} not found in DB")
+                    # Skip apps not found in database
+                    continue
+                except Exception as e:
+                    logger.error(f"Error fetching app {app_id}: {e}")
+                    continue
 
-        return {
-            "results": items_data,
-            "count": total,
-            "next": None,
-            "previous": None,
-        }
+            return {
+                "results": items_data,
+                "count": total,
+                "next": None,
+                "previous": None,
+            }
+        except Exception as e:
+            logger.exception(f"CF Search error: {e}")
+            return {
+                "results": [],
+                "count": 0,
+                "next": None,
+                "previous": None,
+                "error": str(e)
+            }
 
     # Default: Use pgvector + Gemini (existing implementation)
     search_service = AISearchService()
