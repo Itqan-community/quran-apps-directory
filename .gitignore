@@ -7,3 +7,5 @@ backend/venv/
 backend/config/logs/staging.log
 .claude-flow/
 docs/review/
+.DS_Store
+dist/
