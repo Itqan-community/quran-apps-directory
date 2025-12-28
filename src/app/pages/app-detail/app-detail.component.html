@@ -66,12 +66,12 @@
       <p [ngClass]="{'truncated': !isExpanded}"
         [innerHTML]=' currentLang == "en" ? app.Description_En : app.Description_Ar  | nl2br'>
       </p>
-      @if (!isExpanded) {
+      @if (shouldShowReadMore(currentLang == "en" ? app.Description_En : app.Description_Ar)) {
         <button
           class="read-more-button"
           (click)="isExpanded = !isExpanded"
           >
-          {{ isExpanded ? ('appDetail.readLess' | translate) : 'appDetail.readMore' | translate }}
+          {{ isExpanded ? ('appDetail.readLess' | translate) : ('appDetail.readMore' | translate) }}
         </button>
       }
     </div>

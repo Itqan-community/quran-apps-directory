@@ -835,26 +835,33 @@ html[dir="rtl"] .content-section {
   position: relative;
   margin-bottom: 16px;
 
-  p{
+  p {
     margin: 0;
-  }
-}
+    // Default expanded state - explicitly reset all truncation properties
+    display: block;
+    overflow: visible;
+    text-overflow: clip;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    -webkit-box-orient: initial;
+    max-height: none;
+    width: 100%;
 
-.truncated {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3; /* Standard property for compatibility */
-  -webkit-box-orient: vertical;
-  max-height: 90px; /* Fallback for browsers that don't support -webkit-line-clamp */
-  
-  /* Very subtle approach: slightly reduce width to give ellipsis breathing room */
-  width: calc(100% - 4px);
-  
-  /* For RTL text (Arabic), ensure same spacing */
-  [dir="rtl"] & {
-    width: calc(100% - 4px);
+    // Truncated state
+    &.truncated {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      max-height: 90px;
+      width: calc(100% - 4px);
+
+      [dir="rtl"] & {
+        width: calc(100% - 4px);
+      }
+    }
   }
 }
 
