@@ -80,6 +80,28 @@ class R2StorageService:
         """Check if R2 storage is properly configured."""
         return bool(self.access_key_id and self.secret_access_key and self.account_id)
 
+    def get_config_status(self) -> dict:
+        """Get detailed config status for debugging (without exposing secrets)."""
+        return {
+            'account_id_set': bool(self.account_id),
+            'access_key_set': bool(self.access_key_id),
+            'secret_key_set': bool(self.secret_access_key),
+            'bucket_name': self.bucket_name,
+            'public_url': self.public_url,
+            'is_configured': self.is_configured(),
+        }
+
+    def refresh_config(self):
+        """Refresh config from current Django settings to handle stale singleton."""
+        self.account_id = getattr(settings, 'R2_ACCOUNT_ID', '')
+        self.access_key_id = getattr(settings, 'R2_ACCESS_KEY_ID', '')
+        self.secret_access_key = getattr(settings, 'R2_SECRET_ACCESS_KEY', '')
+        self.bucket_name = getattr(settings, 'R2_BUCKET_NAME', 'quran-apps-directory')
+        self.public_url = getattr(settings, 'R2_PUBLIC_URL', '').rstrip('/')
+        self.endpoint_url = f"https://{self.account_id}.r2.cloudflarestorage.com"
+        self._client = None  # Reset client to use new credentials
+        logger.info(f"R2 config refreshed: {self.get_config_status()}")
+
     def validate_image(
         self,
         content_type: str,
@@ -155,8 +177,9 @@ class R2StorageService:
             StorageError: If upload fails
         """
         if not self.is_configured():
-            logger.warning("R2 not configured, returning placeholder URL")
-            return f"{self.public_url}/placeholder/{tracking_id}/{prefix or 'file'}.png"
+            raise StorageError(
+                f"R2 storage is not properly configured. Config: {self.get_config_status()}"
+            )
 
         # Validate
         is_valid, error = self.validate_image(file.content_type, file.size, is_icon)
@@ -209,8 +232,9 @@ class R2StorageService:
             StorageError: If download or upload fails
         """
         if not self.is_configured():
-            logger.warning("R2 not configured, returning original URL")
-            return url
+            raise StorageError(
+                f"R2 storage is not properly configured. Config: {self.get_config_status()}"
+            )
 
         try:
             # Download the image with proper headers

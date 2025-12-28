@@ -234,13 +234,19 @@ class SubmissionService:
         # Find or create developer
         developer = self._get_or_create_developer(submission)
 
-        # Validate R2 is configured before attempting uploads
+        # Refresh config and validate R2 is configured before attempting uploads
         storage = get_storage_service()
+        storage.refresh_config()  # Ensure we have latest settings from env vars
+
+        config_status = storage.get_config_status()
+        logger.info(f"R2 config status for {submission.tracking_id}: {config_status}")
+
         if not storage.is_configured():
             raise ValueError(
-                "R2 storage is not properly configured. "
-                "Please set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, and R2_SECRET_ACCESS_KEY "
-                "environment variables before approving submissions with images."
+                f"R2 storage is not properly configured. "
+                f"Please set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, and R2_SECRET_ACCESS_KEY "
+                f"environment variables before approving submissions with images. "
+                f"Current config: {config_status}"
             )
 
         # Upload all submission images to R2
