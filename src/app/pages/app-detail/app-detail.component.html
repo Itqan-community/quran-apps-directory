@@ -64,7 +64,7 @@
     <h2>{{ "appDetail.description" | translate }}</h2>
     <div class="app-description">
       <p [ngClass]="{'truncated': !isExpanded}"
-        [innerHTML]=' currentLang == "en" ? app.Description_En : app.Description_Ar  | nl2br'>
+        [innerHTML]='(currentLang == "en" ? app.Description_En : app.Description_Ar) | nl2br'>
       </p>
       @if (shouldShowReadMore(currentLang == "en" ? app.Description_En : app.Description_Ar)) {
         <button

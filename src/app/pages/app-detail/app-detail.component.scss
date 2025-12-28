@@ -835,34 +835,35 @@ html[dir="rtl"] .content-section {
   position: relative;
   margin-bottom: 16px;
 
-  p {
+  p{
     margin: 0;
-    // Default expanded state - explicitly reset all truncation properties
-    display: block;
-    overflow: visible;
-    text-overflow: clip;
-    -webkit-line-clamp: unset;
-    line-clamp: unset;
-    -webkit-box-orient: initial;
-    max-height: none;
-    width: 100%;
-
-    // Truncated state
-    &.truncated {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      line-clamp: 3;
-      -webkit-box-orient: vertical;
-      max-height: 90px;
-      width: calc(100% - 4px);
-
-      [dir="rtl"] & {
-        width: calc(100% - 4px);
-      }
-    }
   }
+}
+
+.truncated {
+  overflow: hidden;
+  max-height: 90px; /* Limit height for truncation */
+  position: relative;
+
+  /* Use white-space: pre-line to preserve newlines and <br> tags */
+  white-space: pre-line;
+
+  /* Add fade effect at the bottom to indicate truncation */
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(transparent, var(--bg-color, #fff));
+    pointer-events: none;
+  }
+}
+
+/* Dark theme support for truncation fade */
+:host-context(.dark-theme) .truncated::after {
+  background: linear-gradient(transparent, var(--bg-color, #1a1a2e));
 }
 
 .read-more-button {
