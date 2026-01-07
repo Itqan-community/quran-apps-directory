@@ -127,16 +127,6 @@
         font-weight: 700;
       }
       
-      /* Critical above-the-fold styles */
-      .loading {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #fff;
-        font-family: inherit;
-      }
-      
       /* Header critical styles */
       nz-header, .ant-layout-header {
         background: #fff !important;
@@ -348,28 +338,6 @@
     <base href="/">
   </head>
   <body>
-    <app-root>
-        <style>
-          .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: 'Rubik', sans-serif;
-          }
-          .loading h1 {
-            font-size: 2rem;
-            font-weight: 500;
-          }
-        </style>
-      <div class="loading">
-        <img
-              height="100"
-              src="../assets/images/logo-with-text.svg"
-              alt="Quran Apps Directory Loading"
-              decoding="async"
-            />
-      </div>
-    </app-root>
+    <app-root></app-root>
   </body>
 </html>
