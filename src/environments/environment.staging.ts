@@ -20,6 +20,7 @@ export const environment = {
   sentry: {
     enabled: true,
     dsn: 'https://10ae32f7f36add568917f16d53562358@o4510669335232512.ingest.de.sentry.io/4510669357842512',
+    tunnel: 'https://qad-backend-api-staging.up.railway.app/api/sentry-tunnel/',
     environment: 'staging',
     tracesSampleRate: 1.0,
     replaysSessionSampleRate: 0.1,

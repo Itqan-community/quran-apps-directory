@@ -20,6 +20,7 @@ export const environment = {
   sentry: {
     enabled: false,
     dsn: '',
+    tunnel: '',
     environment: 'development',
     tracesSampleRate: 1.0,
     replaysSessionSampleRate: 0,
