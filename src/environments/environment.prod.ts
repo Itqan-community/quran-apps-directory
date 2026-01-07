@@ -15,5 +15,13 @@ export const environment = {
     logging: false,
     showStagingBanner: false,
     enableServiceWorker: true
+  },
+  sentry: {
+    enabled: true,
+    dsn: 'https://10ae32f7f36add568917f16d53562358@o4510669335232512.ingest.de.sentry.io/4510669357842512',
+    environment: 'production',
+    tracesSampleRate: 0.1,
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0
   }
 };
