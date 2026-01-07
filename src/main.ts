@@ -10,6 +10,8 @@ if (environment.sentry.enabled && environment.sentry.dsn) {
     dsn: environment.sentry.dsn,
     environment: environment.sentry.environment,
     release: `quran-apps-directory@${environment.version}`,
+    // Tunnel routes requests through our backend to bypass ad blockers
+    ...(environment.sentry.tunnel && { tunnel: environment.sentry.tunnel }),
     integrations: [
       Sentry.browserTracingIntegration(),
       Sentry.replayIntegration({
