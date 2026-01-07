@@ -1,610 +1,224 @@
 # CLAUDE.md
 
+## Git Policy
+
+**NEVER auto-commit, stage, or perform any git actions unless the user explicitly requests it.** The user will review and handle git operations manually.
+
+**Commit Message Format** (ONLY when explicitly asked to commit):
+```
+{Short Title} - {Short task description}
+```
+
+**Feature Branch Creation Format** (ONLY when explicitly asked to create a feature branch):
+```
+feat/{Short Title}
+```
+
+- Never include "Co-authored-by" or any Claude/AI attribution in commits
+
+---
+
+## 0. Prompt Enhancement Protocol
+**MANDATORY: Before starting ANY task**, enhance the user's prompt through this process:
+You will act like my pm. gather requirements and understand scope before starting any task i give you. start by asking questions with simple a, b, c options. thereafter you will act like a architect to devise the best solution. thereafter you will act like a senior develop to implement code that is KISS, DRY & SOLID. 
+When given your instruction, follow this workflow for each task:
+
+  Phase 1: PM → Gather requirements through simple a/b/c questions until scope is clear
+
+  Phase 2: Architect → Design the solution with clear boundaries and interfaces
+
+  Phase 3: Developer → Implement clean code (KISS, DRY, SOLID)
+  
+
+Use the built in Claude ask user questions tool "AskUserQuestion" to ask one question at a time with options to enhance the prompt:
+When starting each phase, ensure you have a clear understanding of the task at hand and the expected outcome. This includes reviewing the context gathered in Phase 1, understanding the requirements from Phase 2, and implementing the solution in Phase 3..
+Start with outputing: "Starting Phase #: {Persona} {with emoticon})"
+---
+## 0.1. Context Gathering
+
+Identify and document:
+- **Affected files/modules** - Which code will be touched
+- **Dependencies** - What integrations and imports are involved
+- **Git state** - Current branch, uncommitted changes, recent relevant commits
+- **Tests** - Related test files and current coverage
+- **Documentation** - Relevant docs that may need updates
+- **Related tickets/issues** - If mentioned or discoverable
+
+## 0.2. Requirements Clarification
+
+Define explicitly:
+- **Acceptance criteria** - Measurable outcomes that define "done"
+- **Edge cases** - Error scenarios and boundary conditions to handle
+- **Scope boundaries** - What is explicitly IN and OUT of scope
+- **Assumptions** - Any assumptions being made
+
+## 0.3. Confirmation Loop
+
+Present the enhanced prompt back to the user:
+
+```
+📋 **Enhanced Prompt**
+
+**Task:** [clear, specific description of what will be done]
+
+**Context:**
+- Files: [list of affected files/modules]
+- Branch: [current git branch]
+- Dependencies: [relevant integrations]
+
+**Acceptance Criteria:**
+- [ ] [criterion 1]
+- [ ] [criterion 2]
+
+**Out of Scope:**
+- [explicitly excluded item]
+
+**Assumptions:**
+- [assumption 1]
+
+---
+Proceed with this understanding?
+```
+
+**⚠️ Do NOT proceed until the user confirms.**
+
+---
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## Implementation Best Practices
-
-### 0 — Purpose  
-
-These rules ensure maintainability, safety, and developer velocity. 
-**MUST** rules are enforced by CI; **SHOULD** rules are strongly recommended.
-
----
-
-### 1 — Before Coding
-
-- **BP-1 (MUST)** Ask the user clarifying questions.
-- **BP-2 (SHOULD)** Draft and confirm an approach for complex work.  
-- **BP-3 (SHOULD)** If ≥ 2 approaches exist, list clear pros and cons.
-
----
-
-### 2 — While Coding
-
-- **C-1 (MUST)** Follow TDD: scaffold stub -> write failing test -> implement.
-- **C-2 (MUST)** Name functions with existing domain vocabulary for consistency.  
-- **C-3 (SHOULD NOT)** Introduce classes when small testable functions suffice.  
-- **C-4 (SHOULD)** Prefer simple, composable, testable functions.
-- **C-5 (MUST)** Prefer branded `type`s for IDs
-  ```ts
-  type UserId = Brand<string, 'UserId'>   // ✅ Good
-  type UserId = string                    // ❌ Bad
-  ```  
-- **C-6 (MUST)** Use `import type { … }` for type-only imports.
-- **C-7 (SHOULD NOT)** Add comments except for critical caveats; rely on self‑explanatory code.
-- **C-8 (SHOULD)** Default to `type`; use `interface` only when more readable or interface merging is required. 
-- **C-9 (SHOULD NOT)** Extract a new function unless it will be reused elsewhere, is the only way to unit-test otherwise untestable logic, or drastically improves readability of an opaque block.
-
----
-
-### 3 — Testing
-
-- **T-1 (MUST)** For a simple function, colocate unit tests in `*.spec.ts` in same directory as source file.
-- **T-2 (MUST)** For any API change, add/extend integration tests in `packages/api/test/*.spec.ts`.
-- **T-3 (MUST)** ALWAYS separate pure-logic unit tests from DB-touching integration tests.
-- **T-4 (SHOULD)** Prefer integration tests over heavy mocking.  
-- **T-5 (SHOULD)** Unit-test complex algorithms thoroughly.
-- **T-6 (SHOULD)** Test the entire structure in one assertion if possible
-  ```ts
-  expect(result).toBe([value]) // Good
-
-  expect(result).toHaveLength(1); // Bad
-  expect(result[0]).toBe(value); // Bad
-  ```
-
----
-
-### 4 — Database
-
-- **D-1 (MUST)** Type DB helpers as `KyselyDatabase | Transaction<Database>`, so it works for both transactions and DB instances.  
-- **D-2 (SHOULD)** Override incorrect generated types in `packages/shared/src/db-types.override.ts`. e.g. autogenerated types show incorrect BigInt value – so we override to `string` manually.
-
----
-
-### 5 — Code Organization
-
-- **O-1 (MUST)** Place code in `packages/shared` only if used by ≥ 2 packages.
-
----
-
-### 6 — Tooling Gates
-
-- **G-1 (MUST)** `prettier --check` passes.  
-- **G-2 (MUST)** `turbo typecheck lint` passes.  
-
----
-
-### 7 - Git
-
-- **GH-1 (MUST**) Use Conventional Commits format when writing commit messages: https://www.conventionalcommits.org/en/v1.0.0
-- **GH-2 (SHOULD NOT**) Refer to Claude or Anthropic in commit messages.
-
----
-
-## Writing Functions Best Practices
-
-When evaluating whether a function you implemented is good or not, use this checklist:
-
-1. Can you read the function and HONESTLY easily follow what it's doing? If yes, then stop here.
-2. Does the function have very high cyclomatic complexity? (number of independent paths, or, in a lot of cases, number of nesting if if-else as a proxy). If it does, then it's probably sketchy.
-3. Are there any common data structures and algorithms that would make this function much easier to follow and more robust? Parsers, trees, stacks / queues, etc.
-4. Are there any unused parameters in the function?
-5. Are there any unnecessary type casts that can be moved to function arguments?
-6. Is the function easily testable without mocking core features (e.g. sql queries, redis, etc.)? If not, can this function be tested as part of an integration test?
-7. Does it have any hidden untested dependencies or any values that can be factored out into the arguments instead? Only care about non-trivial dependencies that can actually change or affect the function.
-8. Brainstorm 3 better function names and see if the current name is the best, consistent with rest of codebase.
-
-IMPORTANT: you SHOULD NOT refactor out a separate function unless there is a compelling need, such as:
-  - the refactored function is used in more than one place
-  - the refactored function is easily unit testable while the original function is not AND you can't test it any other way
-  - the original function is extremely hard to follow and you resort to putting comments everywhere just to explain it
-
-## Writing Tests Best Practices
-
-When evaluating whether a test you've implemented is good or not, use this checklist:
-
-1. SHOULD parameterize inputs; never embed unexplained literals such as 42 or "foo" directly in the test.
-2. SHOULD NOT add a test unless it can fail for a real defect. Trivial asserts (e.g., expect(2).toBe(2)) are forbidden.
-3. SHOULD ensure the test description states exactly what the final expect verifies. If the wording and assert don’t align, rename or rewrite.
-4. SHOULD compare results to independent, pre-computed expectations or to properties of the domain, never to the function’s output re-used as the oracle.
-5. SHOULD follow the same lint, type-safety, and style rules as prod code (prettier, ESLint, strict types).
-6. SHOULD express invariants or axioms (e.g., commutativity, idempotence, round-trip) rather than single hard-coded cases whenever practical. Use `fast-check` library e.g.
-```
-import fc from 'fast-check';
-import { describe, expect, test } from 'vitest';
-import { getCharacterCount } from './string';
-
-describe('properties', () => {
-  test('concatenation functoriality', () => {
-    fc.assert(
-      fc.property(
-        fc.string(),
-        fc.string(),
-        (a, b) =>
-          getCharacterCount(a + b) ===
-          getCharacterCount(a) + getCharacterCount(b)
-      )
-    );
-  });
-});
-```
-
-7. Unit tests for a function should be grouped under `describe(functionName, () => ...`.
-8. Use `expect.any(...)` when testing for parameters that can be anything (e.g. variable ids).
-9. ALWAYS use strong assertions over weaker ones e.g. `expect(x).toEqual(1)` instead of `expect(x).toBeGreaterThanOrEqual(1)`.
-10. SHOULD test edge cases, realistic input, unexpected input, and value boundaries.
-11. SHOULD NOT test conditions that are caught by the type checker.
-
-## Code Organization
-
-- `packages/api` - Fastify API server
-  - `packages/api/src/publisher/*.ts` - Specific implementations of publishing to social media platforms
-- `packages/web` - Next.js 15 app with App Router
-- `packages/shared` - Shared types and utilities
-  - `packages/shared/social.ts` - Character size and media validations for social media platforms
-- `packages/api-schema` - API contract schemas using TypeBox
-
-## Remember Shortcuts
-
-Remember the following shortcuts which the user may invoke at any time.
-
-### QNEW
-
-When I type "qnew", this means:
-
-```
-Understand all BEST PRACTICES listed in CLAUDE.md.
-Your code SHOULD ALWAYS follow these best practices.
-```
-
-### QPLAN
-When I type "qplan", this means:
-```
-Analyze similar parts of the codebase and determine whether your plan:
-- is consistent with rest of codebase
-- introduces minimal changes
-- reuses existing code
-```
-
-## QCODE
-
-When I type "qcode", this means:
-
-```
-Implement your plan and make sure your new tests pass.
-Always run tests to make sure you didn't break anything else.
-Always run `prettier` on the newly created files to ensure standard formatting.
-Always run `turbo typecheck lint` to make sure type checking and linting passes.
-```
-
-### QCHECK
-
-When I type "qcheck", this means:
-
-```
-You are a SKEPTICAL senior software engineer.
-Perform this analysis for every MAJOR code change you introduced (skip minor changes):
-
-1. CLAUDE.md checklist Writing Functions Best Practices.
-2. CLAUDE.md checklist Writing Tests Best Practices.
-3. CLAUDE.md checklist Implementation Best Practices.
-```
-
-### QCHECKF
-
-When I type "qcheckf", this means:
-
-```
-You are a SKEPTICAL senior software engineer.
-Perform this analysis for every MAJOR function you added or edited (skip minor changes):
-
-1. CLAUDE.md checklist Writing Functions Best Practices.
-```
-
-### QCHECKT
-
-When I type "qcheckt", this means:
-
-```
-You are a SKEPTICAL senior software engineer.
-Perform this analysis for every MAJOR test you added or edited (skip minor changes):
-
-1. CLAUDE.md checklist Writing Tests Best Practices.
-```
-
-### QUX
-
-When I type "qux", this means:
-
-```
-Imagine you are a human UX tester of the feature you implemented. 
-Output a comprehensive list of scenarios you would test, sorted by highest priority.
-```
-
-### QGIT
-
-When I type "qgit", this means:
-
-```
-Add all changes to staging, create a commit, and push to remote.
-
-Follow this checklist for writing your commit message:
-- SHOULD use Conventional Commits format: https://www.conventionalcommits.org/en/v1.0.0
-- SHOULD NOT refer to Claude or Anthropic in the commit message.
-- SHOULD structure commit message as follows:
-<type>[optional scope]: <description>
-[optional body]
-[optional footer(s)]
-- commit SHOULD contain the following structural elements to communicate intent: 
-fix: a commit of the type fix patches a bug in your codebase (this correlates with PATCH in Semantic Versioning).
-feat: a commit of the type feat introduces a new feature to the codebase (this correlates with MINOR in Semantic Versioning).
-BREAKING CHANGE: a commit that has a footer BREAKING CHANGE:, or appends a ! after the type/scope, introduces a breaking API change (correlating with MAJOR in Semantic Versioning). A BREAKING CHANGE can be part of commits of any type.
-types other than fix: and feat: are allowed, for example @commitlint/config-conventional (based on the Angular convention) recommends build:, chore:, ci:, docs:, style:, refactor:, perf:, test:, and others.
-footers other than BREAKING CHANGE: <description> may be provided and follow a convention similar to git trailer format.
-```
 
 ## Project Overview
 
-**Quran Apps Directory** is a comprehensive bilingual (Arabic/English) directory of Islamic applications. The frontend is built with Angular 19, featuring SEO optimization, dark mode, accessibility compliance, and performance optimizations.
+Quran Apps Directory - A bilingual (Arabic/English) Angular 20 application for discovering Islamic applications. Uses standalone components architecture with lazy loading.
 
-**Tech Stack:**
-- **Frontend:** Angular 19 with TypeScript 5.5
-- **Backend:** Django 5.2 with Django REST Framework (planned Phase 2)
-- **Styling:** SCSS with BEM methodology
-- **i18n:** ngx-translate with bilingual support (en/ar)
-- **UI Library:** ng-zorro-antd (Ant Design for Angular)
-- **Database:** PostgreSQL 15+ with Django ORM
-- **API Documentation:** 40+ REST endpoints with drf-spectacular
-
-## Development Commands
-
-### Local Development
+## Build & Development Commands
 
 ```bash
-# Start development server
-npm run dev                    # Default: http://localhost:4200
+# Development
+npm start                    # Start dev server at localhost:4200
+npm run serve:staging        # Serve with staging config
+npm run serve:prod           # Serve with production config
 
-# Build for specific environments
-npm run build                  # Development build
-npm run build:staging          # Staging build + compression
-npm run build:prod             # Production build + compression
-npm run build:dev              # Development build (alternative)
+# Building (each runs sitemap generation first)
+npm run build                # Development build
+npm run build:develop        # Develop environment + compression
+npm run build:staging        # Staging + compression
+npm run build:prod           # Production + compression
 
-# Utility commands
-npm run generate-sitemap       # Generate sitemap.xml
-npm run sitemap                # Alias for generate-sitemap
+# Utilities
+npm run generate-sitemap     # Regenerate sitemap.xml
+npm run analyze              # Bundle analysis (requires stats.json)
+npm run lighthouse           # Local Lighthouse audit
+npm run lighthouse:prod      # Production Lighthouse audit
 ```
 
-### Testing & Analysis
+## Architecture
 
-```bash
-# Testing (if configured)
-npm run test                   # Run unit tests
-npm run e2e                    # Run end-to-end tests
-npm run test:coverage          # Generate coverage report
+### Tech Stack
+- **Angular 20** with standalone components (no NgModules)
+- **ng-zorro-antd** for UI components
+- **@ngx-translate** for i18n (Arabic/English with RTL support)
+- **Sentry** for error tracking
+- **RxJS BehaviorSubjects** for state management
 
-# Performance analysis
-npm run analyze                # Analyze bundle with webpack-bundle-analyzer
-npm run lighthouse             # Run Lighthouse audit (local)
-npm run lighthouse:prod        # Run Lighthouse audit (production)
-npm run performance:test       # Full production audit
+### Project Structure
+```
+src/app/
+├── components/       # Reusable UI (optimized-image, theme-toggle)
+├── directives/       # Custom directives
+├── interceptors/     # HTTP interceptors (cache, error, timeout)
+├── pages/            # Route components (lazy loaded)
+├── pipes/            # Custom pipes (nl2br, optimized-image, safe-html)
+└── services/         # Business logic (15 services)
 ```
 
-### Deployment Variants
+### Routing Pattern
+All routes follow `/:lang/:page` pattern with language prefix (en/ar):
+- `/:lang` - Home (all apps)
+- `/:lang/:category` - Category listing (must be LAST among specific routes)
+- `/:lang/app/:id` - App detail
+- `/:lang/developer/:developer` - Developer profile
+- `/:lang/submit-app` - App submission form
+- `/:lang/track-submission` - Track submission status
 
-```bash
-# Serve with specific configurations
-npm run serve:dev              # Development server config
-npm run serve:staging          # Staging server config
-npm run serve:prod             # Production server config
+**Important**: Specific routes must be defined BEFORE the generic `/:lang/:category` route in `app.routes.ts`.
 
-# Deploy variants
-npm run deploy                 # Build and deploy (dev)
-npm run deploy:staging         # Deploy to staging
-npm run deploy:prod            # Deploy to production
+### Service Architecture
+- **ApiService** - REST API client with BehaviorSubject state management
+- **ThemeService** - Dark/light/auto theme with Angular Signals
+- **LanguageService** - URL-based language detection, RTL/LTR handling
+- **SeoService** - Schema.org structured data, dynamic meta tags
+- **SubmissionService** - App submission and tracking
+
+### HTTP Interceptor Chain
 ```
-
-## Project Architecture
-
-### High-Level Structure
-
+Request → TimeoutInterceptor → CacheInterceptor → ErrorInterceptor → Backend
 ```
-src/
-├── app/
-│   ├── pages/                    # Page-level components (routed)
-│   │   ├── app-list/            # Main directory listing
-│   │   ├── app-detail/          # Individual app detail pages
-│   │   ├── developer/           # Developer profiles
-│   │   ├── category/            # Category pages
-│   │   └── [other pages]/       # Additional page components
-│   ├── components/              # Reusable UI components
-│   │   ├── theme-toggle/        # Dark mode switcher
-│   │   ├── language-selector/   # Language switcher (i18n)
-│   │   └── [other components]/  # Shared components
-│   ├── services/                # Business logic & data management
-│   │   ├── app.service.ts       # App data management (from applicationsData.ts)
-│   │   ├── theme.service.ts     # Dark mode state management
-│   │   ├── seo.service.ts       # Meta tags, structured data
-│   │   ├── language.service.ts  # i18n management
-│   │   └── [other services]/    # Additional services
-│   ├── pipes/                   # Custom pipes
-│   ├── directives/              # Custom directives
-│   └── app.module.ts            # Root module configuration
-├── assets/
-│   ├── i18n/                    # Translation files (en.json, ar.json)
-│   ├── images/                  # Images and icons
-│   └── [other assets]/
-├── environments/                # Environment configs (dev/staging/prod)
-├── themes.scss                  # Global theme definitions
-└── styles.scss                  # Global styles
-```
-
-### Key Architectural Patterns
-
-**1. Data Source:** `src/app/services/applicationsData.ts`
-- Contains 100+ hardcoded app entries with bilingual data
-- Future: Will be replaced with Django REST API endpoints
-- Current: Exported as constant for in-memory usage
-
-**2. Dark Mode Implementation**
-- ThemeService manages state (light/dark/auto)
-- CSS custom properties define all theme colors
-- Persistent storage remembers user preference
-- System preference detection on first visit
-
-**3. Internationalization (i18n)**
-- ngx-translate library with dual language files
-- Translation keys in `assets/i18n/en.json` and `assets/i18n/ar.json`
-- Language preference persisted in localStorage
-- RTL/LTR layout toggled with language change
-
-**4. SEO Architecture**
-- SeoService handles meta tags and structured data
-- Schema.org markup for SoftwareApplication, Organization, etc.
-- Dynamic sitemap generation (run `npm run generate-sitemap`)
-- Proper canonical tags and hreflang support
-
-**5. Performance Optimizations**
-- Lazy-loaded images with loading attribute
-- Code splitting at route level (lazy loaded modules)
-- Service worker for offline support
-- Gzip/Brotli compression (staging/prod)
-- Tree-shaking enabled in production builds
-
-## Backend Architecture (Phase 2 - Django)
-
-**NOTE:** Backend is planned for Phase 2. Current frontend uses static data.
-
-### Django Structure (Documented, Not Yet Implemented)
-
-```
-backend/
-├── quran_apps/              # Django project
-│   ├── settings.py          # Configuration
-│   ├── urls.py              # URL routing
-│   └── wsgi.py              # WSGI application
-├── apps/                    # Django applications
-│   ├── apps/                # Application listings
-│   ├── users/               # User management (django-allauth)
-│   ├── reviews/             # Reviews & ratings
-│   ├── categories/          # Category management
-│   └── [other apps]/        # Additional Django apps
-├── manage.py                # Django CLI
-└── requirements.txt         # Python dependencies
-```
-
-### Key Technologies (Phase 2)
-- **ORM:** Django ORM with PostgreSQL
-- **Authentication:** django-allauth + djangorestframework-simplejwt (JWT)
-- **API:** Django REST Framework with drf-spectacular (OpenAPI)
-- **Background Tasks:** Celery for async operations
-- **2FA:** django-otp for TOTP
-- **Email:** SendGrid integration with Celery tasks
-- **Database:** PostgreSQL 15+ with 27 normalized tables
-
-## Frontend-Specific Guidelines
-
-### Adding New Pages
-
-1. Create folder in `src/app/pages/[page-name]/`
-2. Generate component: `ng generate component pages/[page-name]`
-3. Add route in `app.module.ts` or routing module
-4. Add translation keys to `assets/i18n/en.json` and `assets/i18n/ar.json`
-5. Implement SEO metadata via SeoService
-
-### Adding Components
-
-1. Create in `src/app/components/[component-name]/`
-2. Make components self-contained and reusable
-3. Support both light/dark themes via ThemeService
-4. Use SCSS with BEM methodology
-5. Add ARIA labels for accessibility
-
-### Adding Services
-
-1. Place in `src/app/services/[service-name].service.ts`
-2. Use dependency injection throughout
-3. Handle errors gracefully with logging
-4. Return Observables (RxJS) for async operations
-5. Document public methods with JSDoc
-
-### Styling Conventions
-
-- **CSS Architecture:** BEM (Block Element Modifier)
-- **Colors:** Defined in `themes.scss` using CSS custom properties
-- **Breakpoints:** Mobile-first responsive design
-- **Animations:** Smooth transitions, consider performance
-- **Accessibility:** Sufficient color contrast, focus states
-
-### Bilingual Support
-
-- All text must support both English and Arabic
-- Use `{{ 'key' | translate }}` in templates
-- RTL layouts handled automatically
-- Test with Arabic text for overflow issues
-- Date formatting must respect locale
-
-### Dark Mode Support
-
-- Use CSS custom properties defined in `themes.scss`
-- Never hardcode colors directly in components
-- Test all components in both light and dark modes
-- Consider readability and contrast ratios
-
-## Git Workflow
-
-**Branch Structure:**
-- `main` → Production (https://quran-apps.itqan.dev)
-- `staging` → Staging (https://staging.quran-apps.itqan.dev)
-- `develop` → Development (https://dev.quran-apps.itqan.dev)
-- `feature/*` → Feature branches (create from `develop`)
-
-**Commit Convention:**
-- Prefix: `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`
-- Example: `feat: add dark mode toggle to navbar`
 
 ## Environment Configuration
 
-### .env Setup
+| Environment | API URL | Branch |
+|-------------|---------|--------|
+| Development | localhost:8000/api | local |
+| Develop | dev.api.quran-apps.itqan.dev/api | develop |
+| Staging | staging API | staging |
+| Production | qad-backend-api-production.up.railway.app/api | main |
 
-```bash
-# Development (default)
-NG_DEV_PORT=4200
-NODE_ENV=development
+Environment files in `src/environments/`. Angular handles file replacement via `angular.json` fileReplacements.
 
-# Features
-NG_APP_ENABLE_DARK_MODE=true
-NG_APP_ENABLE_ANALYTICS=false
+## Key Patterns
 
-# SEO
-NG_APP_SITE_DOMAIN=https://quran-apps.itqan.dev
-NG_APP_CONTACT_EMAIL=connect@itqan.dev
+### Standalone Components
+All components use explicit imports:
+```typescript
+@Component({
+  standalone: true,
+  imports: [CommonModule, RouterModule, TranslateModule, NzGridModule],
+  // ...
+})
 ```
 
-### Configuration Files
-
-- `src/environments/environment.ts` - Development
-- `src/environments/environment.staging.ts` - Staging
-- `src/environments/environment.prod.ts` - Production
-- `angular.json` - Angular build configuration
-
-## Common Development Tasks
-
-### Updating App Data (Current Phase)
-
-1. Edit `src/app/services/applicationsData.ts`
-2. Add bilingual app entries with required fields:
-   - Arabic names/descriptions (`name_ar`, `description_ar`, etc.)
-   - English names/descriptions (`name_en`, `description_en`, etc.)
-   - Store links (Google Play, App Store, Huawei)
-   - Ratings and metadata
-3. Add images to `src/assets/images/`
-4. Test bilingual rendering and SEO
-
-### Running Performance Audits
-
-```bash
-# Local development audit
-npm run lighthouse
-
-# Production audit
-npm run lighthouse:prod
-
-# Full production performance test
-npm run performance:test
+### Subscription Cleanup
+Use `takeUntil(destroy$)` pattern with `DestroyRef` or `Subject`:
+```typescript
+private destroy$ = new Subject<void>();
+ngOnDestroy() { this.destroy$.next(); this.destroy$.complete(); }
 ```
 
-### Sitemap Generation
-
-```bash
-# Manual generation
-npm run generate-sitemap
-
-# Automatic (runs before all builds)
-npm run build
+### Platform Checking
+For browser-specific APIs:
+```typescript
+if (isPlatformBrowser(this.platformId)) {
+  // browser-only code
+}
 ```
 
-## Database Schema (Phase 2 Reference)
+### Translation Loading
+Translations load via APP_INITIALIZER before app renders. Files at `src/assets/i18n/{lang}.json`.
 
-For backend development, reference the documented schema:
-- **Location:** `/docs/database-schema/postgresql-schema.md`
-- **Django Models:** `/docs/database-schema/django-models.py`
-- **27 Tables:** Fully normalized 3NF design
-- **50+ Indexes:** Performance optimized
-- **Scales to:** 1M+ users, 10K+ applications
+## Backend API
 
-## Important Notes
+Django REST backend with endpoints:
+- `GET /api/apps/` - List apps (filters: search, category, platform, featured)
+- `GET /api/apps/{id}/` - Single app by ID or slug
+- `GET /api/categories/` - All categories
+- `POST /api/submissions/` - Submit new app
+- `GET /api/submissions/track/{trackingId}` - Track submission
 
-### Current Limitations
+## PWA & Caching
 
-- **Phase 1:** Frontend only with static data
-- **No Backend API:** Using `applicationsData.ts` for data
-- **No Authentication:** User accounts not yet implemented
-- **No Admin Panel:** Content management manual via code
+Service worker enabled in production (`ngsw-config.json`):
+- App shell prefetched
+- Translations: freshness strategy (1 day)
+- Images from R2 CDN: performance strategy (7 days)
 
-### Phase 2 Preparation
+## Build Pipeline
 
-- All backend stories already aligned to Django 5.2
-- Database schema fully documented
-- API endpoints architectured (40+ endpoints)
-- Ready for backend team to begin implementation
-- No code changes needed to frontend until API ready
+1. `generate-sitemap.js` creates sitemap.xml
+2. Angular build with environment config
+3. `compress-assets.js` adds Gzip/Brotli (staging/prod only)
 
-### Security Considerations
+## Bundle Budgets
 
-- **API Keys:** Never commit `.env` files
-- **Sensitive Data:** Use environment variables only
-- **CORS:** Configure properly for production
-- **HTTPS:** Always use in production
-- **Rate Limiting:** Implement for public APIs (Phase 2)
-
-### Performance Targets
-
-- **Mobile Lighthouse:** 70+ (currently 68)
-- **Desktop Lighthouse:** 85+ (currently 85)
-- **First Contentful Paint:** <2.5s
-- **Largest Contentful Paint:** <4s
-- **Cumulative Layout Shift:** <0.1
-
-## Resources
-
-- **Angular Docs:** https://angular.io/docs
-- **ngx-translate:** https://github.com/ngx-translate/core
-- **ng-zorro:** https://ng.ant.design/
-- **TypeScript:** https://www.typescriptlang.org/docs
-- **SCSS:** https://sass-lang.com/documentation
-- **BEM Methodology:** http://getbem.com/
-- **SEO Best Practices:** https://developers.google.com/search
-- **Accessibility:** https://www.w3.org/WAI/WCAG21/quickref/
-
-## Deployment
-
-### Automatic Deployments
-
-Deployments are triggered by branch merges:
-- Push to `main` → Production deployment
-- Push to `staging` → Staging deployment
-- Push to `develop` → Development deployment
-
-### Manual Build Process
-
-```bash
-# Production build
-npm run build:prod
-
-# Output: dist/demo/browser/ (ready to deploy)
-# Includes: Minified code, compression, sitemap
-```
-
-### Deployment URLs
-
-- **Production:** https://quran-apps.itqan.dev
-- **Staging:** https://staging.quran-apps.itqan.dev
-- **Development:** https://dev.quran-apps.itqan.dev
-
----
-
-**Last Updated:** October 19, 2025
-**Framework:** Angular 19 + TypeScript 5.5
-**Phase:** 1 (Frontend Complete, Backend Pending)
-- dont create any .md files for this session
+Configured in `angular.json`:
+- Initial bundle: 1.5MB warning, 2.0MB error
+- Component styles: 20KB warning, 40KB error

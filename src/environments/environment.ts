@@ -16,5 +16,13 @@ export const environment = {
     logging: true,
     showDevBanner: true,
     enableServiceWorker: false
+  },
+  sentry: {
+    enabled: false,
+    dsn: '',
+    environment: 'development',
+    tracesSampleRate: 1.0,
+    replaysSessionSampleRate: 0,
+    replaysOnErrorSampleRate: 0
   }
 };
