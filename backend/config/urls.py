@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from apps.api.urls import api as ninja_api
 from apps.api.views import ScalarDocumentationView
+from apps.api.sentry_tunnel import sentry_tunnel
 
 
 def health_check(request):
@@ -58,6 +59,9 @@ def health_check(request):
 urlpatterns = [
     # Health check endpoint (for monitoring/load balancers)
     path('health/', health_check, name='health_check'),
+
+    # Sentry tunnel (proxies Sentry requests to bypass ad blockers)
+    path('api/sentry-tunnel/', sentry_tunnel, name='sentry_tunnel'),
 
     # Admin interface
     path('admin/', admin.site.urls),

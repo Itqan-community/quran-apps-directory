@@ -24,16 +24,29 @@
       </div>
     </div>
 
-    <!-- Error Alert -->
+    <!-- Error Alert with Retry -->
     @if (error) {
-      <nz-alert
-        [nzMessage]="error"
-        nzType="error"
-        nzShowIcon
-        nzCloseable
-        (nzOnClose)="error = null"
-        style="margin-bottom: 20px"
-      ></nz-alert>
+      <div class="error-container" style="margin-bottom: 20px">
+        <nz-alert
+          [nzMessage]="errorMessage"
+          nzType="error"
+          nzShowIcon
+        ></nz-alert>
+        <ng-template #errorMessage>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+            <span>{{ error }}</span>
+            <button
+              nz-button
+              nzType="primary"
+              nzSize="small"
+              (click)="retryLoadData()"
+              [nzLoading]="isLoading"
+            >
+              {{ currentLang === 'ar' ? 'إعادة المحاولة' : 'Retry' }}
+            </button>
+          </div>
+        </ng-template>
+      </div>
     }
 
     <!-- Loading Spinner -->

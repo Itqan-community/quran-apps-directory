@@ -66,7 +66,11 @@
                 }
               },
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": {
+                "scripts": true,
+                "styles": false,
+                "hidden": true
+              },
               "crossOrigin": "anonymous",
               "budgets": [
                 {

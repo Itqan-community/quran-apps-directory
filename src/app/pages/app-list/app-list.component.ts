@@ -256,6 +256,12 @@ export class AppListComponent implements OnInit, OnDestroy {
     this.applyCategoryAndSearchFilters();
   }
 
+  retryLoadData() {
+    this.error = null;
+    this.isLoading = true;
+    this.loadData();
+  }
+
   /**
    * Apply current category + search query to the in-memory apps list.
    * This allows us to normalize Arabic text and be tolerant to hamza/diacritics.

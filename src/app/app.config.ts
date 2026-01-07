@@ -1,5 +1,6 @@
-import { ApplicationConfig, ErrorHandler, Injectable, NgZone, APP_INITIALIZER, PLATFORM_ID, Inject } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { ApplicationConfig, ErrorHandler, APP_INITIALIZER, PLATFORM_ID } from '@angular/core';
+import { provideRouter, Router } from '@angular/router';
+import * as Sentry from '@sentry/angular';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS, withFetch } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
@@ -12,6 +13,8 @@ import { NzConfig, provideNzConfig } from 'ng-zorro-antd/core/config';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { firstValueFrom } from 'rxjs';
 import { CacheInterceptor } from './interceptors/cache.interceptor';
+import { ErrorInterceptor } from './interceptors/error.interceptor';
+import { TimeoutInterceptor } from './interceptors/timeout.interceptor';
 import { routes } from './app.routes';
 import { environment } from '../environments/environment';
 import {
@@ -68,7 +71,7 @@ export function initializeTranslations(translate: TranslateService, platformId: 
     try {
       const loadPromise = firstValueFrom(translate.use(initialLang));
       const timeoutPromise = new Promise<void>((_, reject) =>
-        setTimeout(() => reject(new Error('Translation load timeout')), 5000)
+        setTimeout(() => reject(new Error('Translation load timeout')), 3000)
       );
       await Promise.race([loadPromise, timeoutPromise]);
     } catch (error) {
@@ -86,14 +89,6 @@ const ngZorroConfig: NzConfig = {
   }
 };
 
-@Injectable({ providedIn: 'root' })
-class GlobalErrorHandler implements ErrorHandler {
-  constructor(private ngZone: NgZone) {}
-  handleError(error: Error): void {
-    console.error('🚨 Global error caught:', error);
-  }
-}
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
@@ -102,12 +97,32 @@ export const appConfig: ApplicationConfig = {
     provideNzConfig(ngZorroConfig),
     {
       provide: HTTP_INTERCEPTORS,
+      useClass: TimeoutInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
       useClass: CacheInterceptor,
       multi: true
     },
     {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
+      multi: true
+    },
+    {
       provide: ErrorHandler,
-      useClass: GlobalErrorHandler
+      useValue: Sentry.createErrorHandler({ showDialog: false })
+    },
+    {
+      provide: Sentry.TraceService,
+      deps: [Router]
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => () => {},
+      deps: [Sentry.TraceService],
+      multi: true
     },
     {
       provide: APP_INITIALIZER,
@@ -119,7 +134,7 @@ export const appConfig: ApplicationConfig = {
       HttpClientModule,
       ServiceWorkerModule.register('ngsw-worker.js', {
         enabled: environment.production,
-        registrationStrategy: 'registerWhenStable:30000'
+        registrationStrategy: 'registerImmediately'
       }),
       NzIconModule.forRoot([
         MenuOutline, ArrowUpOutline, ArrowDownOutline, ArrowRightOutline,
