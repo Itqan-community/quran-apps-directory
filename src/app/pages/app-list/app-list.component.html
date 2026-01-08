@@ -58,8 +58,8 @@
       }
     </nz-spin>
 
-    <!-- Categories Section (only show when not loading or when we have data) -->
-    @if (!isLoading || categories.length > 0) {
+    <!-- Categories Section (only show after initial load or when we have data) -->
+    @if (initialLoadComplete || categories.length > 0) {
       <div>
         <div class="section-title">
           <h2>{{ "appList.categories.title" | translate }}</h2>
@@ -131,7 +131,7 @@
   <!-- Apps grid section -->
   <div class="apps-section">
     <!-- Only show section title when we have apps to display -->
-    @if (!isLoading && filteredApps.length > 0) {
+    @if (initialLoadComplete && filteredApps.length > 0) {
       <div class="section-title">
         <h2>{{ "appList.apps.title" | translate }}</h2>
       </div>
@@ -150,8 +150,8 @@
       </div>
     }
 
-    <!-- Empty State -->
-    @if (!isLoading && filteredApps.length === 0) {
+    <!-- Empty State (only show after initial load completes) -->
+    @if (initialLoadComplete && !isLoading && filteredApps.length === 0) {
       <div class="empty-state">
         <div class="empty-state-content">
           <h3>{{ "empty.noApps.title" | translate }}</h3>
