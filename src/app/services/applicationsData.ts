@@ -1903,6 +1903,48 @@ export const applicationsData = [
         "AppStore_Link": "https://apps.apple.com/us/app/id1070807769?l=ar",
         "App_Gallery_Link": ""
     },
+    {
+        "id": "Surah",
+        "Name_Ar":"سورة",
+        "Name_En": "Surah",
+        "Short_Description_Ar": "مصحف رقمي موثوق مع التفسير",
+        "Short_Description_En": "Noble Quran with Tafsir",
+        "Description_Ar": "تطبيق سورة أحد مبادرات مركز تفسير للدراسات القرآنية، وهو نسخة رقمية من المصحف الشريف.\n\nمميزات التطبيق:\n- القرآن الكريم كاملاً بدون إنترنت مع صفحات عالية الدقة بالرسم العثماني\n- تفسير موثق بإشراف مركز تفسير للدراسات القرآنية\n- أكثر من 60 قارئاً للاستماع بدون إنترنت\n- أدوات الحفظ مع خطط تفاعلية وتذكيرات ذكية\n- الوضع الليلي لقراءة مريحة\n- بحث متقدم بالكلمة والصوت\n- تجربة خالية من الإعلانات\n- إضافة الفواصل والملاحظات على الآيات\n- فهرس ذكي للتنقل بين السور والأجزاء والصفحات",
+        "Description_En": "Surah app combines Quranic study with authentic tafsir, clear Uthmani script, and an elegant user-friendly interface. Supervised by the Tafsir Center for Quranic Studies, it serves as a trusted digital companion for every Muslim who seeks to read and reflect on the Word of Allah offline.\n\nKey Features:\n- Complete Quran with high-resolution Uthmani pages - works offline\n- Scholar-reviewed Tafsir and translations in multiple languages\n- Over 60 world-renowned reciters available offline\n- Interactive memorization plans with smart reminders and self-testing\n- Night mode for comfortable reading\n- Advanced word and voice search capabilities\n- Completely ad-free experience\n- Add bookmarks and notes on verses\n- Smart index to navigate surahs, juz', and pages easily",
+        "status": "Done",
+        "sort": 45,
+        "Apps_Avg_Rating": 4.8,
+        "categories": [
+            "mushaf",
+            "tafsir",
+            "audio",
+            "memorize"
+        ],
+        "screenshots_ar": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/Surah/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/Surah/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/Surah/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/Surah/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/Surah/05_screenshots_ar.png"
+        ],
+        "screenshots_en": [
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/Surah/01_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/Surah/02_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/Surah/03_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/Surah/04_screenshots_ar.png",
+            "https://pub-e11717db663c469fb51c65995892b449.r2.dev/Surah/05_screenshots_ar.png"
+        ],
+        "mainImage_ar": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/Surah/cover_photo_ar.png",
+        "mainImage_en": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/Surah/cover_photo_ar.png",
+        "applicationIcon": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/Surah/app_icon.png",
+        "Developer_Logo": "https://pub-e11717db663c469fb51c65995892b449.r2.dev/Surah/developer_logo.png",
+        "Developer_Name_En": "AL BORHAN CHARITY FOR SUNNAH & QURAN SERVICES",
+        "Developer_Name_Ar": "جمعية البرهان لخدمة السنة والقرآن",
+        "Developer_Website": "https://www.alborhan.sa",
+        "Google_Play_Link": "https://play.google.com/store/apps/details?id=com.surahapp",
+        "AppStore_Link": "https://apps.apple.com/us/app/surah-al-quran/id1615829761",
+        "App_Gallery_Link": ""
+    },
 ]
 
 // categories definition
