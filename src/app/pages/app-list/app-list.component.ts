@@ -47,8 +47,10 @@ export class AppListComponent implements OnInit, OnDestroy {
   filteredApps: QuranApp[] = [];
   searchQuery: string = "";
   categories: Category[] = [];
-  // Start with false - will be set to true only if we actually need to load data
+  // Start with false - no spinner on initial load
   isLoading = false;
+  // Track if initial data load has completed (to avoid showing "no apps" before data arrives)
+  initialLoadComplete = false;
   error: string | null = null;
   isDragging = false;
   startX = 0;
@@ -207,6 +209,7 @@ export class AppListComponent implements OnInit, OnDestroy {
         finalize(() => {
           // Ensure loading state is set to false after both requests complete
           this.isLoading = false;
+          this.initialLoadComplete = true;
         }),
         takeUntil(this.destroy$)
       )
