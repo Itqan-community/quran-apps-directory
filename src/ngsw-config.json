@@ -42,14 +42,18 @@
   ],
   "dataGroups": [
     {
-      "name": "api-cache",
+      "name": "api-apps-categories",
       "urls": [
-        "https://api.quran-apps.itqan.dev/**",
-        "https://staging.quran-apps.itqan.dev/**"
+        "https://qad-backend-api-production.up.railway.app/api/apps/**",
+        "https://qad-backend-api-production.up.railway.app/api/categories/**",
+        "https://qad-backend-api-staging.up.railway.app/api/apps/**",
+        "https://qad-backend-api-staging.up.railway.app/api/categories/**",
+        "https://qad-backend-api-develop.up.railway.app/api/apps/**",
+        "https://qad-backend-api-develop.up.railway.app/api/categories/**"
       ],
       "cacheConfig": {
-        "maxSize": 100,
-        "maxAge": "1h",
+        "maxSize": 200,
+        "maxAge": "6h",
         "timeout": "10s",
         "strategy": "performance"
       }

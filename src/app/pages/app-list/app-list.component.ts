@@ -47,7 +47,8 @@ export class AppListComponent implements OnInit, OnDestroy {
   filteredApps: QuranApp[] = [];
   searchQuery: string = "";
   categories: Category[] = [];
-  isLoading = true;
+  // Start with false - will be set to true only if we actually need to load data
+  isLoading = false;
   error: string | null = null;
   isDragging = false;
   startX = 0;
