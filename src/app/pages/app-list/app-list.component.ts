@@ -15,7 +15,7 @@ import type { QuranApp } from "../../services/app.service";
 import { ApiService, Category } from "../../services/api.service";
 import { Title, Meta } from "@angular/platform-browser";
 import { combineLatest, of, Subject } from "rxjs";
-import { catchError, finalize, takeUntil, switchMap, debounceTime } from "rxjs/operators";
+import { catchError, finalize, takeUntil, switchMap, debounceTime, skip } from "rxjs/operators";
 import { SeoService } from "../../services/seo.service";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
@@ -82,8 +82,12 @@ export class AppListComponent implements OnInit, OnDestroy {
       });
 
     // Subscribe to API service observables for reactive updates
+    // Skip initial loading state - only show spinner after first data load (for retries/filters)
     this.apiService.loading$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        skip(1) // Skip initial loading state to prevent spinner on first load
+      )
       .subscribe(loading => {
         this.isLoading = loading;
       });
