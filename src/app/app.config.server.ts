@@ -1,8 +1,9 @@
 import { ApplicationConfig, mergeApplicationConfig, importProvidersFrom, APP_INITIALIZER, ErrorHandler, Injectable } from '@angular/core';
-import { provideServerRendering } from '@angular/platform-server';
+import { provideServerRendering, withRoutes } from '@angular/ssr';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { appConfig } from './app.config';
 import { translateServerLoaderFactory } from './services/translate-server-loader';
+import { serverRoutes } from './app.routes.server';
 
 // Server-side translation initializer that doesn't rely on browser APIs
 export function serverInitializeTranslations(translate: TranslateService): () => Promise<void> {
@@ -25,7 +26,7 @@ class ServerErrorHandler implements ErrorHandler {
 
 const serverConfig: ApplicationConfig = {
   providers: [
-    provideServerRendering(),
+    provideServerRendering(withRoutes(serverRoutes)),
     {
       provide: ErrorHandler,
       useClass: ServerErrorHandler

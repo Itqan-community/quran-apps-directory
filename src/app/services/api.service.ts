@@ -1,8 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject, makeStateKey, TransferState } from '@angular/core';
+import { isPlatformServer, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+
+// Transfer state keys for SSR hydration
+const APPS_STATE_KEY = makeStateKey<App[]>('apps');
+const CATEGORIES_STATE_KEY = makeStateKey<Category[]>('categories');
 
 export interface App {
   id: string;
@@ -78,11 +83,44 @@ export class ApiService {
   loading$ = this.loadingSubject.asObservable();
   error$ = this.errorSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private transferState: TransferState,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    // On browser, check if we have transferred state from SSR
+    if (isPlatformBrowser(this.platformId)) {
+      this.hydrateFromTransferState();
+    }
+  }
+
+  /**
+   * Hydrate data from TransferState on browser (SSR -> Client handoff)
+   * This prevents duplicate API calls after prerendering
+   */
+  private hydrateFromTransferState(): void {
+    // Check for apps data
+    if (this.transferState.hasKey(APPS_STATE_KEY)) {
+      const apps = this.transferState.get(APPS_STATE_KEY, []);
+      if (apps.length > 0) {
+        this.appsSubject.next(apps);
+        this.transferState.remove(APPS_STATE_KEY);
+      }
+    }
+
+    // Check for categories data
+    if (this.transferState.hasKey(CATEGORIES_STATE_KEY)) {
+      const categories = this.transferState.get(CATEGORIES_STATE_KEY, []);
+      if (categories.length > 0) {
+        this.categoriesSubject.next(categories);
+        this.transferState.remove(CATEGORIES_STATE_KEY);
+      }
+    }
+  }
 
   /**
    * Get all published applications with optional filtering and search
-   * Uses ETag caching via browser and server Cache-Control headers
+   * Uses TransferState for SSR hydration and ETag caching
    */
   getApps(params?: {
     search?: string;
@@ -93,6 +131,16 @@ export class ApiService {
     page?: number;
     page_size?: number;
   }): Observable<AppListResponse> {
+    // On browser, check if we already have data from TransferState (no params = home page)
+    const isHomePageRequest = !params || Object.keys(params).length === 0;
+    if (isPlatformBrowser(this.platformId) && isHomePageRequest) {
+      const cachedApps = this.appsSubject.value;
+      if (cachedApps.length > 0) {
+        // Return cached data immediately without loading spinner
+        return of({ count: cachedApps.length, next: null, previous: null, results: cachedApps as App[] });
+      }
+    }
+
     this.setLoading(true);
     this.setError(null);
 
@@ -110,6 +158,11 @@ export class ApiService {
       tap(response => {
         this.setLoading(false);
         this.appsSubject.next(response.results);
+
+        // On server, store data in TransferState for client hydration (only for home page)
+        if (isPlatformServer(this.platformId) && isHomePageRequest) {
+          this.transferState.set(APPS_STATE_KEY, response.results);
+        }
       }),
       catchError(error => {
         this.setError('Failed to load applications. Please try again later.');
@@ -184,8 +237,18 @@ export class ApiService {
 
   /**
    * Get all categories
+   * Uses TransferState for SSR hydration
    */
   getCategories(): Observable<Category[]> {
+    // On browser, check if we already have data from TransferState
+    if (isPlatformBrowser(this.platformId)) {
+      const cachedCategories = this.categoriesSubject.value;
+      if (cachedCategories.length > 0) {
+        // Return cached data immediately without loading spinner
+        return of(cachedCategories);
+      }
+    }
+
     this.setLoading(true);
     this.setError(null);
 
@@ -193,6 +256,11 @@ export class ApiService {
       tap(categories => {
         this.setLoading(false);
         this.categoriesSubject.next(categories);
+
+        // On server, store data in TransferState for client hydration
+        if (isPlatformServer(this.platformId)) {
+          this.transferState.set(CATEGORIES_STATE_KEY, categories);
+        }
       }),
       catchError(error => {
         this.setError('Failed to load categories.');
