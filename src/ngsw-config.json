@@ -59,6 +59,20 @@
       }
     },
     {
+      "name": "api-other",
+      "urls": [
+        "https://qad-backend-api-production.up.railway.app/api/**",
+        "https://qad-backend-api-staging.up.railway.app/api/**",
+        "https://qad-backend-api-develop.up.railway.app/api/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "10m",
+        "timeout": "10s",
+        "strategy": "performance"
+      }
+    },
+    {
       "name": "translations-cache",
       "urls": [
         "/assets/i18n/**"
