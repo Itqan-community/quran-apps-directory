@@ -263,3 +263,110 @@ class AppCrawledData(models.Model):
 
     def __str__(self):
         return f"{self.app.name_en} - {self.get_source_display()}"
+
+
+class DeviceType(models.TextChoices):
+    """Enum for device types in view analytics."""
+    MOBILE = 'mobile', 'Mobile'
+    TABLET = 'tablet', 'Tablet'
+    DESKTOP = 'desktop', 'Desktop'
+    BOT = 'bot', 'Bot'
+    UNKNOWN = 'unknown', 'Unknown'
+
+
+class AppViewEvent(models.Model):
+    """
+    Individual view event for time-series analytics.
+    Tracks each app view with extended metadata.
+    """
+    id = models.BigAutoField(primary_key=True)
+
+    app = models.ForeignKey(
+        'App',
+        on_delete=models.CASCADE,
+        related_name='view_events',
+        db_index=True
+    )
+
+    viewed_at = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True,
+        help_text="Timestamp when the view occurred"
+    )
+
+    # Request metadata
+    referrer = models.URLField(
+        max_length=2000,
+        blank=True,
+        null=True,
+        help_text="HTTP Referer header"
+    )
+
+    user_agent = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Raw User-Agent string"
+    )
+
+    session_id = models.CharField(
+        max_length=64,
+        blank=True,
+        null=True,
+        db_index=True,
+        help_text="Session identifier for deduplication"
+    )
+
+    # Privacy-compliant location
+    country_code = models.CharField(
+        max_length=2,
+        blank=True,
+        null=True,
+        db_index=True,
+        help_text="ISO 3166-1 alpha-2 country code from Cloudflare"
+    )
+
+    ip_hash = models.CharField(
+        max_length=64,
+        blank=True,
+        null=True,
+        db_index=True,
+        help_text="SHA256 hash of IP with daily rotating salt"
+    )
+
+    # Parsed user agent data
+    device_type = models.CharField(
+        max_length=20,
+        choices=DeviceType.choices,
+        default=DeviceType.UNKNOWN,
+        db_index=True,
+        help_text="Device type: mobile, tablet, desktop, bot, unknown"
+    )
+
+    browser = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text="Browser name and version"
+    )
+
+    os = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        help_text="Operating system name and version"
+    )
+
+    class Meta:
+        db_table = 'app_view_events'
+        ordering = ['-viewed_at']
+        indexes = [
+            models.Index(fields=['app', 'viewed_at']),
+            models.Index(fields=['viewed_at', 'app']),
+            models.Index(fields=['app', 'country_code']),
+            models.Index(fields=['app', 'device_type']),
+        ]
+        verbose_name = 'App View Event'
+        verbose_name_plural = 'App View Events'
+
+    def __str__(self):
+        return f"{self.app.name_en} - {self.viewed_at.strftime('%Y-%m-%d %H:%M')}"
