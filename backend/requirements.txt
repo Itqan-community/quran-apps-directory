@@ -1,5 +1,5 @@
 # Django Core
-Django==4.2.25
+Django==4.2.27
 gunicorn==22.0.*
 django-ninja==1.2.0
 djangorestframework==3.16.1
@@ -10,7 +10,7 @@ django-cors-headers==4.9.0
 Pillow==11.3.0
 django-extensions==4.1
 django-filter==24.3
-djangorestframework-simplejwt==5.3.0
+djangorestframework-simplejwt==5.5.1
 django-allauth==65.11.2
 django-redis==6.0.0
 
