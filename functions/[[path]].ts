@@ -41,6 +41,8 @@ interface OGTags {
   title: string;
   description: string;
   image: string;
+  imageWidth?: number;
+  imageHeight?: number;
   url: string;
   type: string;
   locale: string;
@@ -113,10 +115,13 @@ const generateOGTags = (route: RouteInfo, data: any): OGTags => {
       ? (data.short_description_ar || data.description_ar)
       : (data.short_description_en || data.description_en);
 
+    const hasAppIcon = !!data.application_icon;
     return {
       title: title || 'Quran App',
       description: description || '',
       image: data.application_icon || DEFAULT_IMAGE,
+      imageWidth: hasAppIcon ? 512 : 1200,
+      imageHeight: hasAppIcon ? 512 : 630,
       url: `${BASE_URL}/${route.lang}/app/${data.slug}`,
       type: 'website',
       locale: route.lang === 'ar' ? 'ar_SA' : 'en_US',
@@ -132,10 +137,13 @@ const generateOGTags = (route: RouteInfo, data: any): OGTags => {
       ? `اكتشف تطبيقات ${data.name_ar || data.name_en}`
       : `Discover apps by ${data.name_en || data.name_ar}`;
 
+    const hasLogo = !!data.logo_url;
     return {
       title,
       description,
       image: data.logo_url || DEFAULT_IMAGE,
+      imageWidth: hasLogo ? 512 : 1200,
+      imageHeight: hasLogo ? 512 : 630,
       url: `${BASE_URL}/${route.lang}/developer/${data.slug}`,
       type: 'website',
       locale: route.lang === 'ar' ? 'ar_SA' : 'en_US',
@@ -153,6 +161,8 @@ const generateOGTags = (route: RouteInfo, data: any): OGTags => {
       title: title || 'Category',
       description,
       image: DEFAULT_IMAGE,
+      imageWidth: 1200,
+      imageHeight: 630,
       url: `${BASE_URL}/${route.lang}/${route.slug}`,
       type: 'website',
       locale: route.lang === 'ar' ? 'ar_SA' : 'en_US',
@@ -168,6 +178,8 @@ const generateOGTags = (route: RouteInfo, data: any): OGTags => {
       ? 'الدليل الشامل لأفضل تطبيقات القرآن الكريم - تطبيقات المصحف، التفسير، التلاوة، التحفيظ والتدبر'
       : 'Discover the best Quran applications - Mushaf, Tafsir, Recitation, Memorization and more',
     image: DEFAULT_IMAGE,
+    imageWidth: 1200,
+    imageHeight: 630,
     url: `${BASE_URL}/${route.lang}`,
     type: 'website',
     locale: route.lang === 'ar' ? 'ar_SA' : 'en_US',
@@ -176,15 +188,16 @@ const generateOGTags = (route: RouteInfo, data: any): OGTags => {
 
 // HTML injection
 const injectOGTags = (html: string, tags: OGTags): string => {
+  const widthTag = tags.imageWidth ? `\n    <meta property="og:image:width" content="${tags.imageWidth}" />` : '';
+  const heightTag = tags.imageHeight ? `\n    <meta property="og:image:height" content="${tags.imageHeight}" />` : '';
+
   const ogTagsHtml = `<!-- Dynamic OG Tags -->
     <meta property="og:type" content="${tags.type}" />
     <meta property="og:url" content="${tags.url}" />
     <meta property="og:title" content="${escapeHtml(tags.title)}" />
     <meta property="og:description" content="${escapeHtml(tags.description)}" />
     <meta property="og:image" content="${tags.image}" />
-    <meta property="og:image:alt" content="${escapeHtml(tags.title)}" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="${escapeHtml(tags.title)}" />${widthTag}${heightTag}
     <meta property="og:locale" content="${tags.locale}" />
     <meta property="og:site_name" content="Quran Apps Directory" />
     <!-- Twitter Card -->
