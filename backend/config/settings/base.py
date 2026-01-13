@@ -289,6 +289,8 @@ CACHE_TIMEOUTS = {
     'APP_DETAIL': 600,    # 10 minutes
     'CATEGORY_LIST': 600, # 10 minutes
     'DEVELOPER_LIST': 600, # 10 minutes
+    'ANALYTICS_SUMMARY': 300,      # 5 minutes for dashboard
+    'ANALYTICS_SUMMARY_ALL': 900,  # 15 minutes for "all time" queries
 }
 
 
