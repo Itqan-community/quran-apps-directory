@@ -19,8 +19,8 @@ def fix_developer_logos(apps, schema_editor):
         ('Quranic Recitations Collection', f'{R2_BASE}/70_Quranic Recitations Collection/developer_logo.svg'),
     ]
 
-    for name, logo_url in updates:
-        updated = Developer.objects.filter(name_en=name).update(logo=logo_url)
+    for name, new_logo_url in updates:
+        updated = Developer.objects.filter(name_en=name).update(logo_url=new_logo_url)
         if updated:
             print(f"  Updated logo for: {name}")
         else:
