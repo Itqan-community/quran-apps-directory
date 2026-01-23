@@ -2,12 +2,12 @@
   <!-- Modern Header -->
   <nz-header class="modern-header">
     <div class="header-container">
-      <!-- Logo Section -->
+      <!-- Logo Section with Settings Icon -->
       <div class="logo-section">
         <div class="logo-wrapper" [routerLink]="['/', currentLang]">
           <img
             height="40"
-            src="../assets/images/logo-svg.svg"
+            src="../assets/images/logo.svg?v=20260123"
             alt="Quran Apps Directory"
             class="logo-image"
           />
@@ -15,102 +15,61 @@
         </div>
       </div>
 
-      <!-- Desktop Navigation -->
-      <div class="desktop-nav">
-        <nav class="nav-menu">
-          <a
-            nz-button
-            nzType="text"
-            [routerLink]="['/', currentLang]"
-            class="nav-link"
-          >
-            <span class="nav-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-              </svg>
-            </span>
-            {{ "header.home" | translate }}
-          </a>
-          <a
-            nz-button
-            nzType="text"
-            href="https://community.itqan.dev/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="nav-link community-badge"
-          >
-            <span class="nav-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-              </svg>
-            </span>
-            {{ "header.itqan_community" | translate }}
-            <span class="external-icon">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
-                <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7z"/>
-              </svg>
-            </span>
-          </a>
-          <a
-            nz-button
-            nzType="text"
-            [routerLink]="['/', currentLang, 'about-us']"
-            class="nav-link"
-          >
-            <span class="nav-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-                <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 3.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5Zm1 12.5h-2v-7h2v7Z"/>
-              </svg>
-            </span>
-            {{ "header.about" | translate }}
-          </a>
-          <a
-            nz-button
-            nzType="text"
-            [routerLink]="['/', currentLang, 'contact-us']"
-            class="nav-link"
-          >
-            <span class="nav-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-              </svg>
-            </span>
-            {{ "header.contact" | translate }}
-          </a>
-          <a
-            nz-button
-            nzType="text"
-            [routerLink]="['/', currentLang, 'submit-app']"
-            class="nav-link submit-app-link"
-          >
-            <span class="nav-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-              </svg>
-            </span>
-            {{ "header.submitApp" | translate }}
-          </a>
-        </nav>
+      <!-- Desktop Navigation - Centered -->
+      <nav class="nav-menu">
+        <a
+          nz-button
+          nzType="text"
+          [routerLink]="['/', currentLang]"
+          class="nav-link"
+        >
+          {{ "header.home" | translate }}
+        </a>
+        <a
+          nz-button
+          nzType="text"
+          [routerLink]="['/', currentLang, 'about-us']"
+          class="nav-link"
+        >
+          {{ "header.about" | translate }}
+        </a>
+        <a
+          nz-button
+          nzType="text"
+          [routerLink]="['/', currentLang, 'contact-us']"
+          class="nav-link"
+        >
+          {{ "header.contact" | translate }}
+        </a>
+      </nav>
 
-        <!-- Action Buttons -->
-        <div class="header-actions">
-          <app-theme-toggle></app-theme-toggle>
-          <button
-            nz-button
-            nzType="primary"
-            nzSize="large"
-            (click)="toggleLanguage()"
-            class="language-toggle"
-          >
-            <span class="language-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
-              </svg>
-            </span>
-            {{ "header.language." + (isRtl ? "en" : "ar") | translate }}
-          </button>
-        </div>
+      <!-- Action Buttons - Right Side -->
+      <div class="header-actions">
+   
+        <a
+          nz-button
+          nzType="default"
+          href="https://community.itqan.dev/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="community-btn"
+        >
+          {{ "header.itqan_community" | translate }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+            <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7z"/>
+          </svg>
+        </a>
+         <button
+          nz-button
+          nzType="text"
+          nzSize="large"
+          (click)="toggleLanguage()"
+          class="language-toggle"
+        >
+          {{ isRtl ? "EN" : "ع" }}
+        </button>
+        <!-- <app-theme-toggle></app-theme-toggle> -->
       </div>
 
       <!-- Mobile Menu Button -->
@@ -136,24 +95,32 @@
             <div class="logo-wrapper" [routerLink]="['/', currentLang]">
               <img
                 height="40"
-                src="../assets/images/logo-svg.svg"
+                src="../assets/images/logo.svg?v=20260123"
                 alt="Quran Apps Directory"
                 class="logo-image"
               />
               <span class="beta-badge">{{ "header.beta" | translate }}</span>
             </div>
           </div>
-          <button
-            nz-button
-            nzType="text"
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button
+              nz-button
+              nzType="text"
+              (click)="toggleLanguage(); toggleMobileMenu()"
+              class="mobile-language-toggle"
+            >
+              {{ isRtl ? "EN" : "ع" }}
+            </button>
+            <button
+              nz-button
+              nzType="text"
             class="mobile-menu-close"
             (click)="toggleMobileMenu()"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-            </svg>
+            <lucide-icon name="x" [size]="24"></lucide-icon>
           </button>
         </div>
+      </div>
 
         <nav class="mobile-nav">
           <a
@@ -166,9 +133,7 @@
             class="mobile-nav-link"
           >
             <span class="mobile-nav-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-              </svg>
+              <lucide-icon name="home" [size]="20"></lucide-icon>
             </span>
             {{ "header.home" | translate }}
           </a>
@@ -184,16 +149,11 @@
             class="mobile-nav-link mobile-community-badge"
           >
             <span class="mobile-nav-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-              </svg>
+              <lucide-icon name="users" [size]="20"></lucide-icon>
             </span>
             {{ "header.itqan_community" | translate }}
             <span class="external-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
-                <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7z"/>
-              </svg>
+              <lucide-icon name="external-link" [size]="16"></lucide-icon>
             </span>
           </a>
           <a
@@ -206,9 +166,7 @@
             class="mobile-nav-link"
           >
             <span class="mobile-nav-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-                <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 3.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5Zm1 12.5h-2v-7h2v7Z"/>
-              </svg>
+              <lucide-icon name="info" [size]="20"></lucide-icon>
             </span>
             {{ "header.about" | translate }}
           </a>
@@ -222,9 +180,7 @@
             class="mobile-nav-link"
           >
             <span class="mobile-nav-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-              </svg>
+              <lucide-icon name="mail" [size]="20"></lucide-icon>
             </span>
             {{ "header.contact" | translate }}
           </a>
@@ -238,9 +194,7 @@
             class="mobile-nav-link submit-app-link"
           >
             <span class="mobile-nav-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-              </svg>
+              <lucide-icon name="plus-circle" [size]="20"></lucide-icon>
             </span>
             {{ "header.submitApp" | translate }}
           </a>
@@ -249,23 +203,8 @@
         <div class="mobile-actions">
           <div class="mobile-theme-section">
             <span class="mobile-action-label">&nbsp;</span>
-            <app-theme-toggle></app-theme-toggle>
+            <!-- <app-theme-toggle></app-theme-toggle> -->
           </div>
-          <button
-            nz-button
-            nzType="primary"
-            nzBlock
-            nzSize="large"
-            (click)="toggleLanguage(); toggleMobileMenu()"
-            class="mobile-language-btn"
-          >
-            <span class="mobile-nav-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
-              </svg>
-            </span>
-            {{ "header.language." + (isRtl ? "en" : "ar") | translate }}
-          </button>
         </div>
       </div>
     </div>

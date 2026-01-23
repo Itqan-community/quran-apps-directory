@@ -16,6 +16,7 @@ import { DeferredAnalyticsService } from "./services/deferred-analytics.service"
 import { Http2OptimizationService } from "./services/http2-optimization.service";
 import { AppImagePreloaderService } from "./services/app-image-preloader.service";
 import { filter } from "rxjs";
+import { LucideAngularModule, Menu, X, Globe, Home, Info, Mail, Users, PlusCircle, ExternalLink, ChevronRight, Search } from 'lucide-angular';
 
 // Icons globally registered in main.ts
 
@@ -33,7 +34,8 @@ import { filter } from "rxjs";
     NzDividerModule,
     TranslateModule,
     NzIconModule,
-    ThemeToggleComponent,
+    // ThemeToggleComponent,
+    LucideAngularModule,
   ],
 })
 export class AppComponent implements OnInit, AfterViewInit {
