@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
 from ..services.app_service_simple import AppService
+from ..utils.user_agent_parser import parse_user_agent, hash_ip_address, get_client_ip, get_country_from_request
 from .schemas import AppSchema, AppListSchema, AppCreateSchema, AppUpdateSchema, PaginatedAppListSchema, CategorySchema
 
 
@@ -158,9 +159,9 @@ def get_app(request, app_id: str):
     Get detailed information about a specific application.
 
     Can be accessed by UUID or slug.
-    Automatically increments view count.
+    Automatically increments view count and records view event.
     """
-    from apps.models import App
+    from apps.models import App, AppViewEvent
 
     # Find app by ID or slug
     app_obj = None
@@ -180,6 +181,26 @@ def get_app(request, app_id: str):
     # Increment view count
     app_obj.view_count = (app_obj.view_count or 0) + 1
     app_obj.save(update_fields=['view_count'])
+
+    # Record view event for analytics
+    try:
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        ua_data = parse_user_agent(user_agent)
+
+        AppViewEvent.objects.create(
+            app=app_obj,
+            referrer=request.META.get('HTTP_REFERER'),
+            user_agent=user_agent,
+            session_id=request.COOKIES.get('sessionid'),
+            country_code=get_country_from_request(request),
+            ip_hash=hash_ip_address(get_client_ip(request)),
+            device_type=ua_data['device_type'],
+            browser=ua_data['browser'],
+            os=ua_data['os'],
+        )
+    except Exception:
+        # Analytics should not break main functionality
+        pass
 
     # Use AppService to convert to dictionary with full category objects for detailed view
     app_service = AppService()

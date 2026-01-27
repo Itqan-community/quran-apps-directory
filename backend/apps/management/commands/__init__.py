@@ -1,1 +1,1 @@
-# Commands package
+# Management commands for apps module

@@ -10,6 +10,7 @@ from ninja.renderers import JSONRenderer
 from .controllers import router as apps_router, get_categories
 from .search import router as search_router
 from .admin_controllers import router as admin_router
+from .analytics import router as analytics_router, dashboard_router
 from submissions.api.controllers import router as submissions_router
 
 
@@ -38,6 +39,8 @@ def list_categories(request):
 
 # Add routers to API
 api.add_router("/apps", apps_router)
+api.add_router("/apps", analytics_router)  # Analytics nested under /apps/{id}/analytics
+api.add_router("/analytics", dashboard_router)  # Dashboard summary at /api/analytics/summary
 api.add_router("/search", search_router)
 api.add_router("/categories", categories_router)
 api.add_router("/submissions", submissions_router)

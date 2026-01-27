@@ -222,3 +222,88 @@ Service worker enabled in production (`ngsw-config.json`):
 Configured in `angular.json`:
 - Initial bundle: 1.5MB warning, 2.0MB error
 - Component styles: 20KB warning, 40KB error
+
+## Adding New Apps to Directory
+
+Standard process for adding a new Islamic app:
+
+### Step 1: Gather App Data
+1. Get app store URLs (Google Play, App Store, AppGallery)
+2. Use AutoFillService or crawl manually to extract:
+   - App name (English + Arabic)
+   - Descriptions (short + long, bilingual)
+   - Developer info
+   - Screenshots
+   - App icon
+   - Category suggestions
+
+### Step 2: Upload Images to R2
+```bash
+# Download images locally first, then upload
+cd /path/to/images
+wrangler r2 object put quran-apps-directory/AppName/app_icon.png --file=app_icon.png
+wrangler r2 object put quran-apps-directory/AppName/cover_photo_en.png --file=cover.png
+# Upload all screenshots...
+```
+
+Images accessible at: `https://pub-e11717db663c469fb51c65995892b449.r2.dev/AppName/`
+
+### Step 3: Create Data Migration
+Create `backend/apps/migrations/00XX_add_<app_slug>_app.py`:
+
+```python
+from django.db import migrations
+from decimal import Decimal
+
+def add_app(apps, schema_editor):
+    App = apps.get_model('apps', 'App')
+    Developer = apps.get_model('developers', 'Developer')
+    Category = apps.get_model('categories', 'Category')
+
+    if App.objects.filter(slug='app-slug').exists():
+        print("  App already exists, skipping")
+        return
+
+    developer, _ = Developer.objects.get_or_create(
+        name_en='Developer Name',
+        defaults={'name_ar': 'اسم المطور', 'website': 'https://...'}
+    )
+
+    app = App.objects.create(
+        slug='app-slug',
+        name_en='App Name',
+        name_ar='اسم التطبيق',
+        short_description_en='...',
+        short_description_ar='...',
+        description_en='...',
+        description_ar='...',
+        application_icon='https://pub-e11717db663c469fb51c65995892b449.r2.dev/AppName/app_icon.png',
+        screenshots_en=[...],
+        screenshots_ar=[...],
+        google_play_link='...',
+        app_store_link='...',
+        avg_rating=Decimal('4.50'),
+        status='published',
+        platform='cross_platform',
+        developer=developer,
+    )
+
+    categories = Category.objects.filter(slug__in=['mushaf', 'tafsir'])
+    app.categories.set(categories)
+    print(f"Created: {app.name_en}")
+
+class Migration(migrations.Migration):
+    dependencies = [('apps', 'previous_migration')]
+    operations = [migrations.RunPython(add_app, migrations.RunPython.noop)]
+```
+
+### Step 4: Update Frontend & Sitemap
+1. Add to `src/app/services/applicationsData.ts` (for reference/backup)
+2. Run `npm run generate-sitemap` to update sitemap
+3. Run `npm run build:staging` to verify build passes
+
+### Step 5: Deploy
+Push to staging/main - migration runs automatically on Railway.
+
+### Available Categories
+`mushaf`, `tafsir`, `recite`, `memorize`, `kids`, `translations`, `audio`, `riwayat`, `tools`, `accessibility`, `tajweed`

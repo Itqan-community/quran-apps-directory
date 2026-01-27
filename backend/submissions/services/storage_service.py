@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 # Maximum file sizes
-MAX_ICON_SIZE = 2 * 1024 * 1024  # 2 MB
+MAX_ICON_SIZE = 512 * 1024  # 512 KB
 MAX_SCREENSHOT_SIZE = 5 * 1024 * 1024  # 5 MB
 
 # Allowed image types
@@ -106,7 +106,8 @@ class R2StorageService:
         self,
         content_type: str,
         size: int,
-        is_icon: bool = False
+        is_icon: bool = False,
+        file_content: bytes = None
     ) -> Tuple[bool, Optional[str]]:
         """
         Validate an image file.
@@ -115,6 +116,7 @@ class R2StorageService:
             content_type: MIME type of the image
             size: Size in bytes
             is_icon: Whether this is an app icon (stricter size limit)
+            file_content: Optional file content bytes for magic bytes validation
 
         Returns:
             Tuple of (is_valid, error_message)
@@ -124,10 +126,47 @@ class R2StorageService:
 
         max_size = MAX_ICON_SIZE if is_icon else MAX_SCREENSHOT_SIZE
         if size > max_size:
-            max_mb = max_size / (1024 * 1024)
-            return False, f"Image too large. Maximum size: {max_mb:.0f} MB"
+            if is_icon:
+                max_kb = max_size / 1024
+                return False, f"Image too large. Maximum size: {max_kb:.0f} KB"
+            else:
+                max_mb = max_size / (1024 * 1024)
+                return False, f"Image too large. Maximum size: {max_mb:.0f} MB"
+
+        # Validate magic bytes if file content is provided
+        if file_content:
+            if not self._validate_magic_bytes(content_type, file_content):
+                return False, f"File content does not match declared type. Allowed: JPEG, PNG, WebP"
 
         return True, None
+
+    def _validate_magic_bytes(self, content_type: str, content: bytes) -> bool:
+        """
+        Validate file content matches declared MIME type using magic bytes.
+
+        Args:
+            content_type: Declared MIME type
+            content: File content bytes
+
+        Returns:
+            True if magic bytes match the declared type
+        """
+        if len(content) < 12:
+            return False
+
+        # PNG: \x89PNG\r\n\x1a\n
+        if content_type == 'image/png':
+            return content[:8] == b'\x89PNG\r\n\x1a\n'
+
+        # JPEG: \xff\xd8\xff
+        if content_type == 'image/jpeg':
+            return content[:3] == b'\xff\xd8\xff'
+
+        # WebP: RIFF....WEBP
+        if content_type == 'image/webp':
+            return content[:4] == b'RIFF' and content[8:12] == b'WEBP'
+
+        return False
 
     def generate_path(self, tracking_id: str, filename: str, prefix: str = '') -> str:
         """
@@ -181,8 +220,14 @@ class R2StorageService:
                 f"R2 storage is not properly configured. Config: {self.get_config_status()}"
             )
 
-        # Validate
-        is_valid, error = self.validate_image(file.content_type, file.size, is_icon)
+        # Read file content for magic bytes validation
+        file_content = file.read()
+        file.seek(0)  # Reset file pointer for upload
+
+        # Validate with magic bytes
+        is_valid, error = self.validate_image(
+            file.content_type, file.size, is_icon, file_content
+        )
         if not is_valid:
             raise StorageError(error)
 
@@ -249,8 +294,8 @@ class R2StorageService:
             content = response.content
             size = len(content)
 
-            # Validate
-            is_valid, error = self.validate_image(content_type, size, is_icon)
+            # Validate with magic bytes
+            is_valid, error = self.validate_image(content_type, size, is_icon, content)
             if not is_valid:
                 raise StorageError(error)
 
