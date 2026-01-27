@@ -51,7 +51,7 @@ class AppService:
             "short_description_ar": app.short_description_ar,
             "description_en": app.description_en or "",
             "description_ar": app.description_ar or "",
-            "application_icon": app.application_icon or "",
+            "application_icon": app.application_icon.url if app.application_icon else "",
             "main_image_en": app.main_image_en or "",
             "main_image_ar": app.main_image_ar or "",
             "google_play_link": app.google_play_link or "",

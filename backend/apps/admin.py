@@ -109,9 +109,11 @@ class AppAdmin(admin.ModelAdmin):
     def icon_preview(self, obj):
         """Display small icon preview in list view."""
         if obj.application_icon:
+            # ImageField uses .url to get the full URL
+            icon_url = obj.application_icon.url if hasattr(obj.application_icon, 'url') else str(obj.application_icon)
             return format_html(
-                '<img src="{}" style="width: 40px; height: 40px; border-radius: 8px;" />',
-                obj.application_icon
+                '<img src="{}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;" />',
+                icon_url
             )
         return '-'
     icon_preview.short_description = 'Icon'
@@ -119,9 +121,11 @@ class AppAdmin(admin.ModelAdmin):
     def icon_preview_large(self, obj):
         """Display large icon preview in detail view."""
         if obj.application_icon:
+            # ImageField uses .url to get the full URL
+            icon_url = obj.application_icon.url if hasattr(obj.application_icon, 'url') else str(obj.application_icon)
             return format_html(
-                '<img src="{}" style="width: 100px; height: 100px; border-radius: 12px;" />',
-                obj.application_icon
+                '<img src="{}" style="width: 100px; height: 100px; border-radius: 12px; object-fit: cover;" />',
+                icon_url
             )
         return '-'
     icon_preview_large.short_description = 'Icon Preview'

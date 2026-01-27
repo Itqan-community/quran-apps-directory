@@ -7,6 +7,26 @@ from django.core.cache import cache
 from django.conf import settings
 from pgvector.django import VectorField
 from core.models import PublishedModel
+from core.storage import R2Storage
+from .validators import validate_icon_file
+
+
+def app_icon_upload_path(instance, filename):
+    """
+    Generate upload path for app icons.
+
+    Args:
+        instance: App model instance
+        filename: Original filename
+
+    Returns:
+        Path like 'app-icons/app-slug/icon.png'
+    """
+    ext = filename.split('.')[-1].lower()
+    if ext not in ['png', 'jpg', 'jpeg', 'webp']:
+        ext = 'png'
+    slug = instance.slug or 'unknown'
+    return f"app-icons/{slug}/icon.{ext}"
 
 
 class App(PublishedModel):
@@ -29,7 +49,14 @@ class App(PublishedModel):
     description_ar = models.TextField()
 
     # URLs and Links
-    application_icon = models.URLField(blank=True, null=True)
+    application_icon = models.ImageField(
+        upload_to=app_icon_upload_path,
+        storage=R2Storage(),
+        validators=[validate_icon_file],
+        blank=True,
+        null=True,
+        help_text="App icon (PNG, JPG, or WebP, max 512KB)"
+    )
     main_image_en = models.URLField(blank=True, null=True)
     main_image_ar = models.URLField(blank=True, null=True)
     google_play_link = models.URLField(blank=True, null=True)
