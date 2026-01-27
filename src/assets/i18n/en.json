@@ -235,6 +235,14 @@
       "mainImage": "Featured image shown on app cards. Recommended: 600x400 PNG or JPG",
       "screenshots": "Enter one URL per line. Up to 5 screenshots recommended."
     },
+    "iconUpload": "Application Icon",
+    "iconUploadHint": "PNG, JPG, or WebP format. Maximum 512KB.",
+    "iconUploadButton": "Click or drag to upload icon",
+    "iconRequired": "Application icon is required",
+    "iconSizeError": "Icon must be less than 512KB",
+    "iconTypeError": "Only PNG, JPG, and WebP formats are allowed",
+    "iconUploadSuccess": "Icon uploaded successfully",
+    "iconUploadError": "Failed to upload icon",
     "screenshotsDetected": "screenshots detected",
     "submitButton": "Submit App",
     "success": {

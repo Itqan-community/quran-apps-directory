@@ -161,6 +161,74 @@
   margin-top: 6px;
 }
 
+// Icon upload styles
+.icon-upload-container {
+  width: 100%;
+}
+
+.icon-uploader {
+  ::ng-deep .ant-upload-drag {
+    background: var(--surface-color, #fafafa);
+    border: 2px dashed var(--border-color, #d9d9d9);
+    border-radius: 8px;
+    padding: 16px;
+    transition: border-color 0.3s, background 0.3s;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      border-color: var(--primary-color, #a0533b);
+    }
+  }
+
+  ::ng-deep .ant-upload-list-picture-card {
+    margin-top: 12px;
+
+    .ant-upload-list-item {
+      width: 100px;
+      height: 100px;
+      border-radius: 8px;
+    }
+  }
+}
+
+.upload-drag-content {
+  text-align: center;
+  padding: 8px;
+}
+
+.upload-icon {
+  font-size: 32px;
+  color: var(--primary-color, #a0533b);
+  margin-bottom: 8px;
+}
+
+.upload-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color, #333);
+  margin: 0 0 4px 0;
+}
+
+.upload-hint {
+  font-size: 12px;
+  color: var(--text-secondary, #999);
+  margin: 0;
+}
+
+.upload-error {
+  color: #ff4d4f;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.upload-required-hint {
+  color: var(--text-secondary, #999);
+  margin-top: 8px;
+}
+
 .store-link-warning {
   margin-bottom: 14px;
 }
@@ -244,6 +312,17 @@
   }
 
   ::ng-deep nz-form-label {
+    color: var(--text-color, #e0e0e0);
+  }
+
+  .icon-uploader {
+    ::ng-deep .ant-upload-drag {
+      background: var(--surface-color, #2a2a2a);
+      border-color: var(--border-color, #444);
+    }
+  }
+
+  .upload-text {
     color: var(--text-color, #e0e0e0);
   }
 }
