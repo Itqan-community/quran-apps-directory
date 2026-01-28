@@ -6,8 +6,17 @@ from django.core.exceptions import ValidationError
 # Maximum icon file size (512 KB)
 MAX_ICON_SIZE = 512 * 1024
 
-# Allowed MIME types for icons
+# Maximum image file size for main images and screenshots (5 MB)
+MAX_IMAGE_SIZE = 5 * 1024 * 1024
+
+# Allowed MIME types for icons and images
 ALLOWED_ICON_TYPES = [
+    'image/png',
+    'image/jpeg',
+    'image/webp',
+]
+
+ALLOWED_IMAGE_TYPES = [
     'image/png',
     'image/jpeg',
     'image/webp',
@@ -42,6 +51,38 @@ def validate_icon_file(file):
             max_kb = MAX_ICON_SIZE // 1024
             raise ValidationError(
                 f'Icon must be less than {max_kb}KB. Current size: {file.size // 1024}KB.',
+                code='file_too_large'
+            )
+
+
+def validate_image_file(file):
+    """
+    Validate main images and screenshots.
+
+    Checks:
+    - File type is PNG, JPG, or WebP
+    - File size is less than 5MB
+
+    Args:
+        file: UploadedFile or ImageFieldFile
+
+    Raises:
+        ValidationError: If validation fails
+    """
+    # Check content type if available
+    if hasattr(file, 'content_type'):
+        if file.content_type not in ALLOWED_IMAGE_TYPES:
+            raise ValidationError(
+                'Image must be PNG, JPG, or WebP format.',
+                code='invalid_type'
+            )
+
+    # Check file size
+    if hasattr(file, 'size') and file.size is not None:
+        if file.size > MAX_IMAGE_SIZE:
+            max_mb = MAX_IMAGE_SIZE // (1024 * 1024)
+            raise ValidationError(
+                f'Image must be less than {max_mb}MB. Current size: {file.size // (1024 * 1024)}MB.',
                 code='file_too_large'
             )
 

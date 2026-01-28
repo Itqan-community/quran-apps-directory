@@ -1,6 +1,28 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import App, AppCrawledData
+from .models import App, AppCrawledData, AppScreenshot
+
+
+class AppScreenshotInline(admin.TabularInline):
+    """
+    Inline admin for managing app screenshots.
+    """
+    model = AppScreenshot
+    extra = 1
+    fields = ['language', 'image', 'sort_order', 'preview']
+    readonly_fields = ['preview']
+    ordering = ['language', 'sort_order']
+
+    def preview(self, obj):
+        """Display screenshot preview."""
+        if obj.image:
+            url = obj.image.url if hasattr(obj.image, 'url') else str(obj.image)
+            return format_html(
+                '<img src="{}" style="max-height: 80px; border-radius: 4px;" />',
+                url
+            )
+        return '-'
+    preview.short_description = 'Preview'
 
 
 @admin.register(App)
@@ -40,8 +62,13 @@ class AppAdmin(admin.ModelAdmin):
         'developer__name_ar',
     ]
     prepopulated_fields = {'slug': ('name_en',)}
-    readonly_fields = ['id', 'created_at', 'updated_at', 'icon_preview_large', 'embedding_status']
+    readonly_fields = [
+        'id', 'created_at', 'updated_at',
+        'icon_preview_large', 'main_image_en_preview', 'main_image_ar_preview',
+        'embedding_status'
+    ]
     filter_horizontal = ['categories']
+    inlines = [AppScreenshotInline]
 
     fieldsets = [
         ('Basic Information', {
@@ -66,10 +93,19 @@ class AppAdmin(admin.ModelAdmin):
                 'application_icon',
                 'icon_preview_large',
                 'main_image_en',
+                'main_image_en_preview',
                 'main_image_ar',
+                'main_image_ar_preview',
+            ],
+            'description': 'Screenshots are managed via the inline section below.'
+        }),
+        ('Legacy Screenshots (JSON)', {
+            'fields': [
                 'screenshots_en',
                 'screenshots_ar',
-            ]
+            ],
+            'classes': ['collapse'],
+            'description': 'Legacy JSON fields - use the Screenshots inline above for new uploads.'
         }),
         ('Store Links', {
             'fields': [
@@ -129,6 +165,28 @@ class AppAdmin(admin.ModelAdmin):
             )
         return '-'
     icon_preview_large.short_description = 'Icon Preview'
+
+    def main_image_en_preview(self, obj):
+        """Display English main image preview."""
+        if obj.main_image_en:
+            url = obj.main_image_en.url if hasattr(obj.main_image_en, 'url') else str(obj.main_image_en)
+            return format_html(
+                '<img src="{}" style="max-height: 200px; max-width: 400px; border-radius: 8px;" />',
+                url
+            )
+        return '-'
+    main_image_en_preview.short_description = 'English Main Image Preview'
+
+    def main_image_ar_preview(self, obj):
+        """Display Arabic main image preview."""
+        if obj.main_image_ar:
+            url = obj.main_image_ar.url if hasattr(obj.main_image_ar, 'url') else str(obj.main_image_ar)
+            return format_html(
+                '<img src="{}" style="max-height: 200px; max-width: 400px; border-radius: 8px;" />',
+                url
+            )
+        return '-'
+    main_image_ar_preview.short_description = 'Arabic Main Image Preview'
 
     def embedding_status(self, obj):
         """Display embedding status with dimensions."""

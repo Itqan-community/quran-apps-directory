@@ -8,7 +8,7 @@ from django.conf import settings
 from pgvector.django import VectorField
 from core.models import PublishedModel
 from core.storage import R2Storage
-from .validators import validate_icon_file
+from .validators import validate_icon_file, validate_image_file
 
 
 def app_icon_upload_path(instance, filename):
@@ -27,6 +27,60 @@ def app_icon_upload_path(instance, filename):
         ext = 'png'
     slug = instance.slug or 'unknown'
     return f"app-icons/{slug}/icon.{ext}"
+
+
+def main_image_en_upload_path(instance, filename):
+    """
+    Generate upload path for English main images.
+
+    Args:
+        instance: App model instance
+        filename: Original filename
+
+    Returns:
+        Path like 'app-images/app-slug/main_en.png'
+    """
+    ext = filename.split('.')[-1].lower()
+    if ext not in ['png', 'jpg', 'jpeg', 'webp']:
+        ext = 'png'
+    slug = instance.slug or 'unknown'
+    return f"app-images/{slug}/main_en.{ext}"
+
+
+def main_image_ar_upload_path(instance, filename):
+    """
+    Generate upload path for Arabic main images.
+
+    Args:
+        instance: App model instance
+        filename: Original filename
+
+    Returns:
+        Path like 'app-images/app-slug/main_ar.png'
+    """
+    ext = filename.split('.')[-1].lower()
+    if ext not in ['png', 'jpg', 'jpeg', 'webp']:
+        ext = 'png'
+    slug = instance.slug or 'unknown'
+    return f"app-images/{slug}/main_ar.{ext}"
+
+
+def screenshot_upload_path(instance, filename):
+    """
+    Generate upload path for app screenshots.
+
+    Args:
+        instance: AppScreenshot model instance
+        filename: Original filename
+
+    Returns:
+        Path like 'app-images/app-slug/screenshots/en_0.png'
+    """
+    ext = filename.split('.')[-1].lower()
+    if ext not in ['png', 'jpg', 'jpeg', 'webp']:
+        ext = 'png'
+    slug = instance.app.slug or 'unknown'
+    return f"app-images/{slug}/screenshots/{instance.language}_{instance.sort_order}.{ext}"
 
 
 class App(PublishedModel):
@@ -53,12 +107,28 @@ class App(PublishedModel):
         upload_to=app_icon_upload_path,
         storage=R2Storage(),
         validators=[validate_icon_file],
+        blank=False,
+        null=False,
+        help_text="App icon (PNG, JPG, or WebP, max 512KB, required)"
+    )
+    main_image_en = models.ImageField(
+        upload_to=main_image_en_upload_path,
+        storage=R2Storage(),
+        validators=[validate_image_file],
+        max_length=500,  # Full URLs can be long
         blank=True,
         null=True,
-        help_text="App icon (PNG, JPG, or WebP, max 512KB)"
+        help_text="Main cover image - English (PNG, JPG, WebP, max 5MB)"
     )
-    main_image_en = models.URLField(blank=True, null=True)
-    main_image_ar = models.URLField(blank=True, null=True)
+    main_image_ar = models.ImageField(
+        upload_to=main_image_ar_upload_path,
+        storage=R2Storage(),
+        validators=[validate_image_file],
+        max_length=500,  # Full URLs can be long
+        blank=True,
+        null=True,
+        help_text="Main cover image - Arabic (PNG, JPG, WebP, max 5MB)"
+    )
     google_play_link = models.URLField(blank=True, null=True)
     app_store_link = models.URLField(blank=True, null=True)
     app_gallery_link = models.URLField(blank=True, null=True)
@@ -397,3 +467,45 @@ class AppViewEvent(models.Model):
 
     def __str__(self):
         return f"{self.app.name_en} - {self.viewed_at.strftime('%Y-%m-%d %H:%M')}"
+
+
+class AppScreenshot(models.Model):
+    """
+    Screenshot file for an app, supports both languages.
+
+    Replaces the screenshots_en and screenshots_ar JSONFields with
+    a proper model for file uploads. Stores full R2 URLs in the database.
+    """
+    app = models.ForeignKey(
+        'App',
+        on_delete=models.CASCADE,
+        related_name='screenshot_files',
+        db_index=True
+    )
+    language = models.CharField(
+        max_length=2,
+        choices=[('en', 'English'), ('ar', 'Arabic')],
+        default='en',
+        db_index=True
+    )
+    image = models.ImageField(
+        upload_to=screenshot_upload_path,
+        storage=R2Storage(),
+        validators=[validate_image_file],
+        max_length=500,  # Full URLs can be long
+        help_text="Screenshot image (PNG, JPG, WebP, max 5MB)"
+    )
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        db_table = 'app_screenshots'
+        ordering = ['language', 'sort_order']
+        indexes = [
+            models.Index(fields=['app', 'language']),
+            models.Index(fields=['app', 'language', 'sort_order']),
+        ]
+        verbose_name = 'App Screenshot'
+        verbose_name_plural = 'App Screenshots'
+
+    def __str__(self):
+        return f"{self.app.name_en} - {self.get_language_display()} #{self.sort_order}"

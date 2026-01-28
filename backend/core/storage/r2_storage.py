@@ -78,14 +78,16 @@ class R2Storage(Storage):
 
     def _save(self, name, content):
         """
-        Save file to R2.
+        Save file to R2 and return relative path (standard Django behavior).
+
+        The url() method constructs full URLs using R2_PUBLIC_URL setting.
 
         Args:
             name: File path/name
             content: File content (File-like object)
 
         Returns:
-            The name of the saved file
+            Relative path of the saved file (e.g., 'app-icons/my-app/icon.png')
         """
         settings_dict = self._get_settings()
         full_path = self._get_full_path(name)
@@ -114,7 +116,8 @@ class R2Storage(Storage):
                 }
             )
             logger.info(f"R2Storage: Uploaded {full_path}")
-            return name
+            # Return relative path (url() method adds R2_PUBLIC_URL prefix)
+            return full_path
         except Exception as e:
             logger.error(f"R2Storage: Failed to upload {full_path}: {e}")
             raise
@@ -162,16 +165,44 @@ class R2Storage(Storage):
         except Exception as e:
             logger.warning(f"R2Storage: Failed to delete {full_path}: {e}")
 
+    def _extract_path_from_url(self, name):
+        """
+        Extract relative path from a full URL or return name as-is if already relative.
+
+        Args:
+            name: Full URL or relative path
+
+        Returns:
+            Relative path suitable for R2 operations
+        """
+        if not name:
+            return name
+        settings_dict = self._get_settings()
+        public_url = settings_dict['public_url']
+        if name.startswith(public_url):
+            # Strip the public URL prefix to get relative path
+            return name[len(public_url):].lstrip('/')
+        if name.startswith(('http://', 'https://')):
+            # External URL - can't extract path, return as-is
+            return name
+        return name
+
     def exists(self, name):
         """
         Check if a file exists in R2.
 
         Args:
-            name: File path/name
+            name: File path/name or full R2 URL
 
         Returns:
             True if file exists, False otherwise
         """
+        # Handle full URLs by extracting the path
+        name = self._extract_path_from_url(name)
+        if name and name.startswith(('http://', 'https://')):
+            # External URL - cannot check existence
+            return False
+
         settings_dict = self._get_settings()
         full_path = self._get_full_path(name)
 
