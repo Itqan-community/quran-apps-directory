@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import App, AppCrawledData, AppScreenshot
+from .widgets import AdminImageWithPreview
 
 
 class AppScreenshotInline(admin.TabularInline):
@@ -64,7 +65,6 @@ class AppAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name_en',)}
     readonly_fields = [
         'id', 'created_at', 'updated_at',
-        'icon_preview_large', 'main_image_en_preview', 'main_image_ar_preview',
         'embedding_status'
     ]
     filter_horizontal = ['categories']
@@ -91,11 +91,8 @@ class AppAdmin(admin.ModelAdmin):
         ('Media', {
             'fields': [
                 'application_icon',
-                'icon_preview_large',
                 'main_image_en',
-                'main_image_en_preview',
                 'main_image_ar',
-                'main_image_ar_preview',
             ],
             'description': 'Screenshots are managed via the inline section below.'
         }),
@@ -142,10 +139,17 @@ class AppAdmin(admin.ModelAdmin):
 
     ordering = ['sort_order', 'name_en']
 
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        """Use custom widget for image fields to show inline preview."""
+        if db_field.name == 'application_icon':
+            kwargs['widget'] = AdminImageWithPreview(preview_height=50)
+        elif db_field.name in ('main_image_en', 'main_image_ar'):
+            kwargs['widget'] = AdminImageWithPreview(preview_height=80)
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
     def icon_preview(self, obj):
         """Display small icon preview in list view."""
         if obj.application_icon:
-            # ImageField uses .url to get the full URL
             icon_url = obj.application_icon.url if hasattr(obj.application_icon, 'url') else str(obj.application_icon)
             return format_html(
                 '<img src="{}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;" />',
@@ -153,40 +157,6 @@ class AppAdmin(admin.ModelAdmin):
             )
         return '-'
     icon_preview.short_description = 'Icon'
-
-    def icon_preview_large(self, obj):
-        """Display large icon preview in detail view."""
-        if obj.application_icon:
-            # ImageField uses .url to get the full URL
-            icon_url = obj.application_icon.url if hasattr(obj.application_icon, 'url') else str(obj.application_icon)
-            return format_html(
-                '<img src="{}" style="width: 100px; height: 100px; border-radius: 12px; object-fit: cover;" />',
-                icon_url
-            )
-        return '-'
-    icon_preview_large.short_description = 'Icon Preview'
-
-    def main_image_en_preview(self, obj):
-        """Display English main image preview."""
-        if obj.main_image_en:
-            url = obj.main_image_en.url if hasattr(obj.main_image_en, 'url') else str(obj.main_image_en)
-            return format_html(
-                '<img src="{}" style="max-height: 200px; max-width: 400px; border-radius: 8px;" />',
-                url
-            )
-        return '-'
-    main_image_en_preview.short_description = 'English Main Image Preview'
-
-    def main_image_ar_preview(self, obj):
-        """Display Arabic main image preview."""
-        if obj.main_image_ar:
-            url = obj.main_image_ar.url if hasattr(obj.main_image_ar, 'url') else str(obj.main_image_ar)
-            return format_html(
-                '<img src="{}" style="max-height: 200px; max-width: 400px; border-radius: 8px;" />',
-                url
-            )
-        return '-'
-    main_image_ar_preview.short_description = 'Arabic Main Image Preview'
 
     def embedding_status(self, obj):
         """Display embedding status with dimensions."""
