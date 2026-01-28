@@ -45,9 +45,9 @@ class AppSchema(BaseModel):
     short_description_ar: str = Field(..., alias="short_description_ar")
     description_en: str = Field(..., alias="description_en")
     description_ar: str = Field(..., alias="description_ar")
-    application_icon: Optional[str] = None
-    main_image_en: Optional[str] = Field(None, alias="main_image_en")
-    main_image_ar: Optional[str] = Field(None, alias="main_image_ar")
+    application_icon: str
+    main_image_en: str = Field(..., alias="main_image_en")
+    main_image_ar: str = Field(..., alias="main_image_ar")
     google_play_link: Optional[str] = None
     app_store_link: Optional[str] = None
     app_gallery_link: Optional[str] = None
@@ -77,9 +77,9 @@ class AppListSchema(BaseModel):
     slug: str
     short_description_en: str = Field(..., alias="short_description_en")
     short_description_ar: str = Field(..., alias="short_description_ar")
-    application_icon: Optional[str] = None
-    main_image_en: Optional[str] = Field(None, alias="main_image_en")
-    main_image_ar: Optional[str] = Field(None, alias="main_image_ar")
+    application_icon: str
+    main_image_en: str = Field(..., alias="main_image_en")
+    main_image_ar: str = Field(..., alias="main_image_ar")
     avg_rating: float
     review_count: int
     view_count: int
@@ -104,9 +104,9 @@ class AppCreateSchema(BaseModel):
     short_description_ar: str = Field(..., alias="short_description_ar")
     description_en: str = Field(..., alias="description_en")
     description_ar: str = Field(..., alias="description_ar")
-    application_icon: Optional[str] = None
-    main_image_en: Optional[str] = Field(None, alias="main_image_en")
-    main_image_ar: Optional[str] = Field(None, alias="main_image_ar")
+    application_icon: str = Field(..., description="App icon (required)")
+    main_image_en: str = Field(..., alias="main_image_en", description="Main cover image - English (required)")
+    main_image_ar: str = Field(..., alias="main_image_ar", description="Main cover image - Arabic (required)")
     google_play_link: Optional[str] = None
     app_store_link: Optional[str] = None
     app_gallery_link: Optional[str] = None

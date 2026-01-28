@@ -116,18 +116,18 @@ class App(PublishedModel):
         storage=R2Storage(),
         validators=[validate_image_file],
         max_length=500,  # Full URLs can be long
-        blank=True,
-        null=True,
-        help_text="Main cover image - English (PNG, JPG, WebP, max 5MB)"
+        blank=False,
+        null=False,
+        help_text="Main cover image - English (PNG, JPG, WebP, max 5MB, required)"
     )
     main_image_ar = models.ImageField(
         upload_to=main_image_ar_upload_path,
         storage=R2Storage(),
         validators=[validate_image_file],
         max_length=500,  # Full URLs can be long
-        blank=True,
-        null=True,
-        help_text="Main cover image - Arabic (PNG, JPG, WebP, max 5MB)"
+        blank=False,
+        null=False,
+        help_text="Main cover image - Arabic (PNG, JPG, WebP, max 5MB, required)"
     )
     google_play_link = models.URLField(blank=True, null=True)
     app_store_link = models.URLField(blank=True, null=True)
