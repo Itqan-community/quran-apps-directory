@@ -1,181 +1,182 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Quran Apps Directory{% endblock %}</title>
     <style>
-        /* Reset */
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f5f5f5;
-        }
+      /* Reset */
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f5f5f5;
+      }
 
-        /* Container */
+      /* Container */
+      .email-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+      }
+
+      /* Header */
+      .email-header {
+        background-color: #a0533b;
+        padding: 30px 20px;
+        text-align: center;
+      }
+
+      .email-header h1 {
+        color: #ffffff;
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      .email-header .subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        margin-top: 5px;
+      }
+
+      /* Body */
+      .email-body {
+        padding: 30px 20px;
+      }
+
+      .greeting {
+        font-size: 18px;
+        margin-bottom: 20px;
+      }
+
+      .content {
+        margin-bottom: 20px;
+      }
+
+      .content p {
+        margin: 0 0 15px 0;
+      }
+
+      /* Info Box */
+      .info-box {
+        background-color: #f8f9fa;
+        border-left: 4px solid #a0533b;
+        padding: 15px 20px;
+        margin: 20px 0;
+      }
+
+      .info-box.success {
+        border-left-color: #52c41a;
+        background-color: #f6ffed;
+      }
+
+      .info-box.warning {
+        border-left-color: #fa8c16;
+        background-color: #fff7e6;
+      }
+
+      .info-box.error {
+        border-left-color: #ff4d4f;
+        background-color: #fff1f0;
+      }
+
+      .info-box strong {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      /* Tracking ID */
+      .tracking-id {
+        font-family: monospace;
+        font-size: 20px;
+        font-weight: bold;
+        color: #a0533b;
+        background-color: #fdf2f0;
+        padding: 10px 20px;
+        border-radius: 4px;
+        display: inline-block;
+        margin: 10px 0;
+      }
+
+      /* Button */
+      .button {
+        display: inline-block;
+        background-color: #a0533b;
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 12px 30px;
+        border-radius: 4px;
+        font-weight: 600;
+        margin: 10px 0;
+      }
+
+      .button:hover {
+        background-color: #8a4532;
+      }
+
+      /* Footer */
+      .email-footer {
+        background-color: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: #666;
+      }
+
+      .email-footer a {
+        color: #a0533b;
+        text-decoration: none;
+      }
+
+      /* Arabic Section */
+      .arabic-section {
+        direction: rtl;
+        text-align: right;
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+        margin-top: 20px;
+      }
+
+      .arabic-section .greeting {
+        font-family: "Amiri", "Traditional Arabic", serif;
+      }
+
+      /* Responsive */
+      @media only screen and (max-width: 600px) {
         .email-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
+          width: 100% !important;
         }
-
-        /* Header */
-        .email-header {
-            background-color: #a0533b;
-            padding: 30px 20px;
-            text-align: center;
-        }
-
-        .email-header h1 {
-            color: #ffffff;
-            margin: 0;
-            font-size: 24px;
-            font-weight: 600;
-        }
-
-        .email-header .subtitle {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        /* Body */
         .email-body {
-            padding: 30px 20px;
+          padding: 20px 15px;
         }
-
-        .greeting {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-
-        .content {
-            margin-bottom: 20px;
-        }
-
-        .content p {
-            margin: 0 0 15px 0;
-        }
-
-        /* Info Box */
-        .info-box {
-            background-color: #f8f9fa;
-            border-left: 4px solid #a0533b;
-            padding: 15px 20px;
-            margin: 20px 0;
-        }
-
-        .info-box.success {
-            border-left-color: #52c41a;
-            background-color: #f6ffed;
-        }
-
-        .info-box.warning {
-            border-left-color: #fa8c16;
-            background-color: #fff7e6;
-        }
-
-        .info-box.error {
-            border-left-color: #ff4d4f;
-            background-color: #fff1f0;
-        }
-
-        .info-box strong {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        /* Tracking ID */
-        .tracking-id {
-            font-family: monospace;
-            font-size: 20px;
-            font-weight: bold;
-            color: #a0533b;
-            background-color: #fdf2f0;
-            padding: 10px 20px;
-            border-radius: 4px;
-            display: inline-block;
-            margin: 10px 0;
-        }
-
-        /* Button */
-        .button {
-            display: inline-block;
-            background-color: #a0533b;
-            color: #ffffff !important;
-            text-decoration: none;
-            padding: 12px 30px;
-            border-radius: 4px;
-            font-weight: 600;
-            margin: 10px 0;
-        }
-
-        .button:hover {
-            background-color: #8a4532;
-        }
-
-        /* Footer */
-        .email-footer {
-            background-color: #f8f9fa;
-            padding: 20px;
-            text-align: center;
-            font-size: 12px;
-            color: #666;
-        }
-
-        .email-footer a {
-            color: #a0533b;
-            text-decoration: none;
-        }
-
-        /* Arabic Section */
-        .arabic-section {
-            direction: rtl;
-            text-align: right;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-            margin-top: 20px;
-        }
-
-        .arabic-section .greeting {
-            font-family: 'Amiri', 'Traditional Arabic', serif;
-        }
-
-        /* Responsive */
-        @media only screen and (max-width: 600px) {
-            .email-container {
-                width: 100% !important;
-            }
-            .email-body {
-                padding: 20px 15px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="email-container">
-        <div class="email-header">
-            <h1>Quran Apps Directory</h1>
-            <div class="subtitle">دليل تطبيقات القرآن</div>
-        </div>
+      <div class="email-header">
+        <h1>Quran Apps Directory</h1>
+        <div class="subtitle">دليل تطبيقات القرآن</div>
+      </div>
 
-        <div class="email-body">
-            {% block content %}{% endblock %}
-        </div>
+      <div class="email-body">{% block content %}{% endblock %}</div>
 
-        <div class="email-footer">
-            <p>
-                <a href="{{ site_url }}">Quran Apps Directory</a> |
-                <a href="{{ site_url }}/en/contact-us">Contact Us</a>
-            </p>
-            <p>{{ from_name }}</p>
-            <p style="color: #999; margin-top: 10px;">
-                This email was sent because you submitted an app to our directory.
-            </p>
-        </div>
+      <div class="email-footer">
+        <p>
+          <a href="{{ site_url }}">Quran Apps Directory</a> |
+          <a href="{{ site_url }}/en/contact-us">Contact Us</a>
+        </p>
+        <p>{{ from_name }}</p>
+        <p style="color: #999; margin-top: 10px">
+          This email was sent because you submitted an app to our directory.
+        </p>
+      </div>
     </div>
-</body>
+  </body>
 </html>

@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from "@angular/core";
-import { CommonModule, isPlatformBrowser } from "@angular/common";
+import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject, ChangeDetectorRef, HostListener, ElementRef, ViewChild, AfterViewInit } from "@angular/core";
+import { CommonModule, isPlatformBrowser, SlicePipe } from "@angular/common";
 import { RouterModule, ActivatedRoute } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { NzGridModule } from "ng-zorro-antd/grid";
@@ -19,6 +19,7 @@ import { catchError, finalize, takeUntil, switchMap, debounceTime } from "rxjs/o
 import { SeoService } from "../../services/seo.service";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
+import { NavbarScrollService } from "../../services/navbar-scroll.service";
 
 @Component({
   selector: "app-list",
@@ -42,10 +43,14 @@ import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
   templateUrl: "./app-list.component.html",
   styleUrls: ["./app-list.component.scss"],
 })
-export class AppListComponent implements OnInit, OnDestroy {
+export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('searchSection') searchSectionRef!: ElementRef<HTMLElement>;
+
   apps: QuranApp[] = [];
   filteredApps: QuranApp[] = [];
   searchQuery: string = "";
+  searchType: 'traditional' | 'smart' = 'traditional';
+  isSmartSearching = false;
   categories: Category[] = [];
   // Start with false - no spinner on initial load
   isLoading = false;
@@ -64,6 +69,11 @@ export class AppListComponent implements OnInit, OnDestroy {
   // Cache for star arrays to prevent NG0100 errors from creating new references on each change detection
   private starArrayCache = new Map<number, { fillPercent: number }[]>();
 
+  // Scroll-based navbar compact mode
+  private isNavbarCompact = false;
+  private searchSectionTop = 0;
+  private navbarHeight = 100; // Approximate navbar height
+
   constructor(
     @Inject(PLATFORM_ID) private readonly platformId: Object,
     private apiService: ApiService,
@@ -71,16 +81,34 @@ export class AppListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private seoService: SeoService,
     private titleService: Title,
-    private metaService: Meta
+    private metaService: Meta,
+    private cdr: ChangeDetectorRef,
+    private navbarScrollService: NavbarScrollService
   ) {
-    // Set initial language based on current translation or URL
-    const lang = this.translateService.currentLang || this.translateService.getDefaultLang() || 'en';
-    this.currentLang = lang as "en" | "ar";
+    // Get initial language from URL if in browser
+    if (isPlatformBrowser(this.platformId)) {
+      const urlPath = window.location.pathname;
+      const pathSegments = urlPath.split('/').filter(segment => segment);
+      const urlLang = pathSegments[0];
+      if (urlLang === 'ar' || urlLang === 'en') {
+        this.currentLang = urlLang;
+        // Ensure TranslateService uses the correct language
+        if (this.translateService.currentLang !== urlLang) {
+          this.translateService.use(urlLang);
+        }
+      }
+    } else {
+      // SSR fallback
+      const lang = this.translateService.currentLang || this.translateService.getDefaultLang() || 'ar';
+      this.currentLang = lang as "en" | "ar";
+    }
+
     // Subscribe to language changes
     this.translateService.onLangChange
       .pipe(takeUntil(this.destroy$))
       .subscribe((event) => {
         this.currentLang = event.lang as "en" | "ar";
+        this.cdr.detectChanges();
       });
 
     // Only subscribe to error$ - loading is managed locally for retry actions only
@@ -124,8 +152,12 @@ export class AppListComponent implements OnInit, OnDestroy {
           const lang = params.get('lang');
           const category = params.get('category');
 
-          if (lang) {
+          if (lang && (lang === 'ar' || lang === 'en')) {
             this.currentLang = lang as "en" | "ar";
+            // Ensure TranslateService uses the correct language
+            if (this.translateService.currentLang !== lang) {
+              this.translateService.use(lang);
+            }
           }
 
           // Set the selected category
@@ -178,9 +210,67 @@ export class AppListComponent implements OnInit, OnDestroy {
       });
   }
 
+  ngAfterViewInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      // Calculate search section position after view init
+      setTimeout(() => this.calculateSearchSectionPosition(), 100);
+
+      // Update navbar scroll service with initial state
+      this.updateNavbarSearchState();
+    }
+  }
+
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+    // Reset compact mode when leaving the page
+    if (isPlatformBrowser(this.platformId)) {
+      this.navbarScrollService.setCompactMode(false);
+    }
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (!isPlatformBrowser(this.platformId) || !this.navbarScrollService.isDesktopMode()) {
+      return;
+    }
+
+    const scrollY = window.scrollY;
+    const shouldBeCompact = scrollY > this.searchSectionTop - this.navbarHeight;
+
+    if (shouldBeCompact !== this.isNavbarCompact) {
+      this.isNavbarCompact = shouldBeCompact;
+      this.navbarScrollService.setCompactMode(shouldBeCompact);
+
+      if (shouldBeCompact) {
+        this.updateNavbarSearchState();
+      }
+    }
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.calculateSearchSectionPosition();
+    }
+  }
+
+  private calculateSearchSectionPosition(): void {
+    const searchContainer = document.querySelector('.search-container');
+    if (searchContainer) {
+      const rect = searchContainer.getBoundingClientRect();
+      this.searchSectionTop = rect.top + window.scrollY;
+    }
+  }
+
+  private updateNavbarSearchState(): void {
+    this.navbarScrollService.updateSearchState({
+      searchQuery: this.searchQuery,
+      searchType: this.searchType,
+      categories: this.categories.slice(0, 5), // First 5 categories
+      selectedCategory: this.selectedCategory,
+      currentLang: this.currentLang
+    });
   }
 
   private updateDarkModeState() {
@@ -237,12 +327,37 @@ export class AppListComponent implements OnInit, OnDestroy {
       });
   }
 
+  /** Fires on every keystroke — only does local filtering (no smart search animation) */
+  onTypingSearch() {
+    if (this.searchType === 'traditional') {
+      this.applyCategoryAndSearchFilters();
+    }
+    // Sync search query with navbar
+    this.navbarScrollService.updateSearchState({ searchQuery: this.searchQuery });
+    // For smart search, do nothing on typing — wait for button click / Enter
+  }
+
+  /** Fires on button click or Enter key */
   onSearch() {
     const query = this.searchQuery.trim();
 
     // If query is empty, just respect current category filter
     if (!query) {
+      this.isSmartSearching = false;
       this.applyCategoryAndSearchFilters();
+      return;
+    }
+
+    if (this.searchType === 'smart') {
+      // Smart search: show loading animation on icon
+      this.isSmartSearching = true;
+      // TODO: Replace with actual smart search API call
+      // For now, simulate with local filtering + delay
+      setTimeout(() => {
+        this.applyCategoryAndSearchFilters();
+        this.isSmartSearching = false;
+        this.cdr.detectChanges();
+      }, 1500);
       return;
     }
 

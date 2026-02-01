@@ -41,11 +41,23 @@
     "mushaf_fonts": "Uthmanic Script Fonts"
   },
   "appList": {
+    "hero": {
+      "title": "Light in your hands..",
+      "subtitle": "Choose your companion in the Quran journey"
+    },
     "search": {
-      "placeholder": "Search apps..."
+      "placeholder": "Search for: Hafs narration, Mushaf ..",
+      "traditionalPlaceholder": "Search apps...",
+      "traditional": "Traditional Search",
+      "smart": "Smart Search",
+      "button": "Search Now",
+      "sendButton": "Send",
+      "resultsFor": "Search results for",
+      "result": "result",
+      "results": "results"
     },
     "categories": {
-      "all":"All",
+      "all": "Category",
       "main-title": "Quran Apps Directory",
       "title": "Categories",
       "mushaf": "Mushaf",
@@ -82,7 +94,6 @@
     "screenshots": "Screenshots",
     "readMore": "Read More",
     "readLess": "Read Less"
-
   },
   "requestForm": {
     "title": "Request App Addition",

@@ -1,533 +1,569 @@
-import { TranslateLoader } from '@ngx-translate/core';
-import { Observable, of } from 'rxjs';
+import { TranslateLoader } from "@ngx-translate/core";
+import { Observable, of } from "rxjs";
 
 const EN_TRANSLATIONS = {
-  "loading": {
-    "apps": "Loading applications...",
-    "categories": "Loading categories..."
+  loading: {
+    apps: "Loading applications...",
+    categories: "Loading categories...",
   },
-  "empty": {
-    "noApps": {
-      "title": "No applications found",
-      "message": "Try adjusting your search criteria or browse all categories."
-    }
-  },
-  "common": {
-    "back": "Back",
-    "submit": "Submit",
-    "loading": "Loading..."
-  },
-  "header": {
-    "title": "Quran Apps Directory",
-    "beta": "Beta",
-    "home": "Home",
-    "about": "About",
-    "contact": "Contact Us",
-    "submitApp": "Submit App",
-    "itqan_community": "ITQAN Community",
-    "theme": "Theme",
-    "language": {
-      "ar": "العربية",
-      "en": "English"
-    }
-  },
-  "theme": {
-    "switchToDark": "Switch to dark mode",
-    "switchToLight": "Switch to light mode"
-  },
-  "footer": {
-    "copyright": "An Open Source Project, by ITQAN community for Quran technologies, 1447 H",
-    "itqan_projects": "Other ITQAN Projects",
-    "content_management": "Quran Content Management System",
-    "main_site": "ITQAN Community Main Site",
-    "resources": "Developer Resources",
-    "mushaf_fonts": "Uthmanic Script Fonts"
-  },
-  "appList": {
-    "search": {
-      "placeholder": "Search apps..."
+  empty: {
+    noApps: {
+      title: "No applications found",
+      message: "Try adjusting your search criteria or browse all categories.",
     },
-    "categories": {
-      "all": "All",
+  },
+  common: {
+    back: "Back",
+    submit: "Submit",
+    loading: "Loading...",
+  },
+  header: {
+    title: "Quran Apps Directory",
+    beta: "Beta",
+    home: "Home",
+    about: "About",
+    contact: "Contact Us",
+    submitApp: "Submit App",
+    itqan_community: "ITQAN Community",
+    theme: "Theme",
+    language: {
+      ar: "العربية",
+      en: "English",
+    },
+  },
+  theme: {
+    switchToDark: "Switch to dark mode",
+    switchToLight: "Switch to light mode",
+  },
+  footer: {
+    copyright:
+      "An Open Source Project, by ITQAN community for Quran technologies, 1447 H",
+    itqan_projects: "Other ITQAN Projects",
+    content_management: "Quran Content Management System",
+    main_site: "ITQAN Community Main Site",
+    resources: "Developer Resources",
+    mushaf_fonts: "Uthmanic Script Fonts",
+  },
+  appList: {
+    search: {
+      placeholder: "Search apps...",
+    },
+    categories: {
+      all: "All",
       "main-title": "Quran Apps Directory",
-      "title": "Categories",
-      "mushaf": "Mushaf",
-      "translations": "Translation",
-      "recite": "Recite",
-      "kids": "Kids",
-      "tafsir": "Tafsir",
-      "riwayat": "Riwayat",
-      "audio": "Audio",
-      "memorize": "Memorize",
-      "tajweed": "Tajweed",
-      "tools": "Other",
-      "accessibility": "Accessibility"
+      title: "Categories",
+      mushaf: "Mushaf",
+      translations: "Translation",
+      recite: "Recite",
+      kids: "Kids",
+      tafsir: "Tafsir",
+      riwayat: "Riwayat",
+      audio: "Audio",
+      memorize: "Memorize",
+      tajweed: "Tajweed",
+      tools: "Other",
+      accessibility: "Accessibility",
     },
-    "apps": {
-      "title": "Apps List",
-      "sort": "Sort by rating"
-    }
-  },
-  "developer": {
-    "visitWebsite": "Visit Website",
-    "app": "app",
-    "apps": "apps",
-    "noApps": "No apps found for this developer."
-  },
-  "appDetail": {
-    "description": "Description",
-    "developer": "Developer",
-    "downloadLinks": "Download Links",
-    "appStore": "App Store",
-    "playStore": "Google Play",
-    "huaweiStore": "Huawei AppGallery",
-    "relevantApps": "Similar Apps",
-    "screenshots": "Screenshots",
-    "readMore": "Read More",
-    "readLess": "Read Less"
-  },
-  "requestForm": {
-    "title": "Request App Addition",
-    "subtitle": "Submit a Quran app to be added to our directory",
-    "form": {
-      "name": { "label": "App Name", "placeholder": "Enter the app name" },
-      "description": { "label": "Description", "placeholder": "Describe the app's features and purpose" },
-      "link": { "label": "App Link", "placeholder": "Enter the app store or website link" },
-      "email": { "label": "Contact Email", "placeholder": "Enter your email address" }
+    apps: {
+      title: "Apps List",
+      sort: "Sort by rating",
     },
-    "success": {
-      "title": "Request Submitted",
-      "message": "Thank you for your submission! We will review your app request and get back to you soon.",
-      "reset": "Form has been reset"
-    }
   },
-  "contactUs": {
-    "title": "Contact Us",
-    "message": "We are delighted to hear from you to answer your inquiries or receive your suggestions for improving Quran Apps Directory. You can also join the ITQAN community for Quran technologies to contribute to the development of this project or participate in our other open source initiatives aimed at serving the Holy Quran.",
-    "email": "Contact Us via Email",
-    "appRequests": "Join ITQAN Community",
+  developer: {
+    visitWebsite: "Visit Website",
+    app: "app",
+    apps: "apps",
+    noApps: "No apps found for this developer.",
+  },
+  appDetail: {
+    description: "Description",
+    developer: "Developer",
+    downloadLinks: "Download Links",
+    appStore: "App Store",
+    playStore: "Google Play",
+    huaweiStore: "Huawei AppGallery",
+    relevantApps: "Similar Apps",
+    screenshots: "Screenshots",
+    readMore: "Read More",
+    readLess: "Read Less",
+  },
+  requestForm: {
+    title: "Request App Addition",
+    subtitle: "Submit a Quran app to be added to our directory",
+    form: {
+      name: { label: "App Name", placeholder: "Enter the app name" },
+      description: {
+        label: "Description",
+        placeholder: "Describe the app's features and purpose",
+      },
+      link: {
+        label: "App Link",
+        placeholder: "Enter the app store or website link",
+      },
+      email: {
+        label: "Contact Email",
+        placeholder: "Enter your email address",
+      },
+    },
+    success: {
+      title: "Request Submitted",
+      message:
+        "Thank you for your submission! We will review your app request and get back to you soon.",
+      reset: "Form has been reset",
+    },
+  },
+  contactUs: {
+    title: "Contact Us",
+    message:
+      "We are delighted to hear from you to answer your inquiries or receive your suggestions for improving Quran Apps Directory. You can also join the ITQAN community for Quran technologies to contribute to the development of this project or participate in our other open source initiatives aimed at serving the Holy Quran.",
+    email: "Contact Us via Email",
+    appRequests: "Join ITQAN Community",
     "app-request": "Request App",
-    "app-request-form": "Request Form"
+    "app-request-form": "Request Form",
   },
-  "aboutUs": {
-    "title": "About the Comprehensive Quranic Directory",
-    "subtitle": "The World's Most Complete Guide to the Best Quran Applications",
-    "intro": "Welcome to the Comprehensive Quranic Directory - the leading platform for discovering and evaluating the finest Islamic applications dedicated to serving the Holy Quran. With over 100 diverse free and premium applications, we're here to facilitate your journey in learning and contemplating the Book of Allah.",
-    "mission": "Our Mission",
-    "vision": "Our Vision",
-    "missionDescription": "The Comprehensive Quranic Directory is an open-source project designed to serve Muslims worldwide by providing a comprehensive and trusted platform for collecting, categorizing, and evaluating digital applications related to the Holy Quran.",
-    "visionDescription": "Our vision is to become the world's foremost and most trusted digital resource for Quranic applications, helping millions of Muslims worldwide connect with the Holy Quran.",
-    "whatWeDo": "What We Provide",
-    "whatWeDoList": {
-      "comprehensive": "Comprehensive evaluation of over 100 Quranic applications",
-      "categories": "Expert categorization by field (Mushaf, Tafsir, Recitation, Memorization)",
-      "bilingual": "Bilingual service (Arabic and English)",
-      "quality": "Rigorous quality testing to ensure reliability",
-      "search": "Advanced search and intelligent filtering",
-      "community": "Active community of developers and users"
+  aboutUs: {
+    title: "About the Comprehensive Quranic Directory",
+    subtitle: "The World's Most Complete Guide to the Best Quran Applications",
+    intro:
+      "Welcome to the Comprehensive Quranic Directory - the leading platform for discovering and evaluating the finest Islamic applications dedicated to serving the Holy Quran. With over 100 diverse free and premium applications, we're here to facilitate your journey in learning and contemplating the Book of Allah.",
+    mission: "Our Mission",
+    vision: "Our Vision",
+    missionDescription:
+      "The Comprehensive Quranic Directory is an open-source project designed to serve Muslims worldwide by providing a comprehensive and trusted platform for collecting, categorizing, and evaluating digital applications related to the Holy Quran.",
+    visionDescription:
+      "Our vision is to become the world's foremost and most trusted digital resource for Quranic applications, helping millions of Muslims worldwide connect with the Holy Quran.",
+    whatWeDo: "What We Provide",
+    whatWeDoList: {
+      comprehensive:
+        "Comprehensive evaluation of over 100 Quranic applications",
+      categories:
+        "Expert categorization by field (Mushaf, Tafsir, Recitation, Memorization)",
+      bilingual: "Bilingual service (Arabic and English)",
+      quality: "Rigorous quality testing to ensure reliability",
+      search: "Advanced search and intelligent filtering",
+      community: "Active community of developers and users",
     },
-    "why": "Why Choose the Quranic Directory?",
-    "whyList": {
-      "largest": "The largest collection of Quranic applications in one place",
-      "verified": "All applications are tested and verified by specialists",
-      "expert": "Professional evaluations from experts in Quranic technology",
-      "updated": "Continuous updates and addition of new applications",
-      "free": "Completely free service with no advertisements",
-      "opensource": "Open-source and transparent project"
+    why: "Why Choose the Quranic Directory?",
+    whyList: {
+      largest: "The largest collection of Quranic applications in one place",
+      verified: "All applications are tested and verified by specialists",
+      expert: "Professional evaluations from experts in Quranic technology",
+      updated: "Continuous updates and addition of new applications",
+      free: "Completely free service with no advertisements",
+      opensource: "Open-source and transparent project",
     },
-    "categories": "Application Categories",
-    "categoriesDescription": "We provide diverse applications across all fields of Quranic studies and Islamic sciences:",
-    "values": "Our Values",
-    "values_list": {
-      "accuracyAndAuthenticity": "Accuracy and reliability in Quranic content",
-      "userCentricDesignAndAccessibility": "User-centered design and ease of access",
-      "continuousImprovementAndInnovation": "Continuous improvement and innovation in service",
-      "communityEngagementAndSupport": "Building a strong community and mutual support",
-      "transparency": "Complete transparency and accountability",
-      "innovation": "Leadership in modern Quranic technologies"
+    categories: "Application Categories",
+    categoriesDescription:
+      "We provide diverse applications across all fields of Quranic studies and Islamic sciences:",
+    values: "Our Values",
+    values_list: {
+      accuracyAndAuthenticity: "Accuracy and reliability in Quranic content",
+      userCentricDesignAndAccessibility:
+        "User-centered design and ease of access",
+      continuousImprovementAndInnovation:
+        "Continuous improvement and innovation in service",
+      communityEngagementAndSupport:
+        "Building a strong community and mutual support",
+      transparency: "Complete transparency and accountability",
+      innovation: "Leadership in modern Quranic technologies",
     },
-    "acknowledgments": "Acknowledgments",
-    "acknowledgementsText": "We thank all developers and creators who dedicate their efforts to serving the Holy Quran through technology."
+    acknowledgments: "Acknowledgments",
+    acknowledgementsText:
+      "We thank all developers and creators who dedicate their efforts to serving the Holy Quran through technology.",
   },
-  "submitApp": {
-    "title": "Submit Your App",
-    "subtitle": "Share your Quran app with the community",
-    "alreadySubmitted": "Already submitted an app?",
-    "trackYourSubmission": "Track your submission here",
-    "sections": {
-      "contact": "Contact Information",
-      "appDetails": "App Details",
-      "storeLinks": "Store Links",
-      "categories": "Categories",
-      "developer": "Developer Information",
-      "media": "Media",
-      "additional": "Additional Notes"
+  submitApp: {
+    title: "Submit Your App",
+    subtitle: "Share your Quran app with the community",
+    alreadySubmitted: "Already submitted an app?",
+    trackYourSubmission: "Track your submission here",
+    sections: {
+      contact: "Contact Information",
+      appDetails: "App Details",
+      storeLinks: "Store Links",
+      categories: "Categories",
+      developer: "Developer Information",
+      media: "Media",
+      additional: "Additional Notes",
     },
-    "fields": {
-      "yourName": "Your Name",
-      "yourEmail": "Your Email",
-      "phone": "Phone Number",
-      "organization": "Organization",
-      "isDeveloper": "I am the developer/owner of this app",
-      "appNameEn": "App Name (English)",
-      "appNameAr": "App Name (Arabic)",
-      "shortDescEn": "Short Description (English)",
-      "shortDescAr": "Short Description (Arabic)",
-      "descEn": "Full Description (English)",
-      "descAr": "Full Description (Arabic)",
-      "googlePlay": "Google Play URL",
-      "appStore": "App Store URL",
-      "appGallery": "Huawei AppGallery URL",
-      "website": "Website URL",
-      "categories": "Categories",
-      "devNameEn": "Developer Name (English)",
-      "devNameAr": "Developer Name (Arabic)",
-      "devWebsite": "Developer Website",
-      "devEmail": "Developer Email",
-      "iconUrl": "App Icon URL",
-      "mainImageEn": "Main Cover Image (English)",
-      "mainImageAr": "Main Cover Image (Arabic)",
-      "screenshotsEn": "Screenshots (English)",
-      "screenshotsAr": "Screenshots (Arabic)",
-      "contentConfirmation": "I confirm that the information provided is accurate."
+    fields: {
+      yourName: "Your Name",
+      yourEmail: "Your Email",
+      phone: "Phone Number",
+      organization: "Organization",
+      isDeveloper: "I am the developer/owner of this app",
+      appNameEn: "App Name (English)",
+      appNameAr: "App Name (Arabic)",
+      shortDescEn: "Short Description (English)",
+      shortDescAr: "Short Description (Arabic)",
+      descEn: "Full Description (English)",
+      descAr: "Full Description (Arabic)",
+      googlePlay: "Google Play URL",
+      appStore: "App Store URL",
+      appGallery: "Huawei AppGallery URL",
+      website: "Website URL",
+      categories: "Categories",
+      devNameEn: "Developer Name (English)",
+      devNameAr: "Developer Name (Arabic)",
+      devWebsite: "Developer Website",
+      devEmail: "Developer Email",
+      iconUrl: "App Icon URL",
+      mainImageEn: "Main Cover Image (English)",
+      mainImageAr: "Main Cover Image (Arabic)",
+      screenshotsEn: "Screenshots (English)",
+      screenshotsAr: "Screenshots (Arabic)",
+      contentConfirmation:
+        "I confirm that the information provided is accurate.",
     },
-    "placeholders": {
-      "yourName": "Enter your full name",
-      "yourEmail": "your@email.com",
-      "phone": "+1234567890",
-      "organization": "Company or organization name",
-      "appNameEn": "Enter app name in English",
-      "appNameAr": "Enter app name in Arabic",
-      "shortDescEn": "Brief description of your app",
-      "shortDescAr": "Brief description in Arabic",
-      "descEn": "Detailed description...",
-      "descAr": "Detailed description in Arabic...",
-      "googlePlay": "https://play.google.com/store/apps/details?id=...",
-      "appStore": "https://apps.apple.com/app/...",
-      "appGallery": "https://appgallery.huawei.com/...",
-      "website": "https://your-app-website.com",
-      "categories": "Select categories",
-      "devNameEn": "Developer name",
-      "devNameAr": "Developer name in Arabic",
-      "devWebsite": "https://developer-website.com",
-      "devEmail": "developer@email.com",
-      "iconUrl": "https://example.com/icon.png",
-      "mainImageEn": "https://example.com/cover-en.png",
-      "mainImageAr": "https://example.com/cover-ar.png",
-      "screenshots": "Enter one URL per line",
-      "additionalNotes": "Additional information..."
+    placeholders: {
+      yourName: "Enter your full name",
+      yourEmail: "your@email.com",
+      phone: "+1234567890",
+      organization: "Company or organization name",
+      appNameEn: "Enter app name in English",
+      appNameAr: "Enter app name in Arabic",
+      shortDescEn: "Brief description of your app",
+      shortDescAr: "Brief description in Arabic",
+      descEn: "Detailed description...",
+      descAr: "Detailed description in Arabic...",
+      googlePlay: "https://play.google.com/store/apps/details?id=...",
+      appStore: "https://apps.apple.com/app/...",
+      appGallery: "https://appgallery.huawei.com/...",
+      website: "https://your-app-website.com",
+      categories: "Select categories",
+      devNameEn: "Developer name",
+      devNameAr: "Developer name in Arabic",
+      devWebsite: "https://developer-website.com",
+      devEmail: "developer@email.com",
+      iconUrl: "https://example.com/icon.png",
+      mainImageEn: "https://example.com/cover-en.png",
+      mainImageAr: "https://example.com/cover-ar.png",
+      screenshots: "Enter one URL per line",
+      additionalNotes: "Additional information...",
     },
-    "validation": {
-      "storeLink": "At least one store link required"
+    validation: {
+      storeLink: "At least one store link required",
     },
-    "hints": {
-      "iconUrl": "Recommended: 512x512 PNG or JPG",
-      "mainImage": "Featured image. Recommended: 600x400",
-      "screenshots": "Up to 5 screenshots recommended."
+    hints: {
+      iconUrl: "Recommended: 512x512 PNG or JPG",
+      mainImage: "Featured image. Recommended: 600x400",
+      screenshots: "Up to 5 screenshots recommended.",
     },
-    "screenshotsDetected": "screenshots detected",
-    "submitButton": "Submit App",
-    "success": {
-      "title": "App Submitted Successfully!",
-      "message": "We will review your app and notify you.",
-      "trackingId": "Your tracking ID",
-      "trackingIdNote": "Save this ID to track your submission",
-      "trackSubmission": "Track Submission",
-      "submitAnother": "Submit Another App"
-    }
+    screenshotsDetected: "screenshots detected",
+    submitButton: "Submit App",
+    success: {
+      title: "App Submitted Successfully!",
+      message: "We will review your app and notify you.",
+      trackingId: "Your tracking ID",
+      trackingIdNote: "Save this ID to track your submission",
+      trackSubmission: "Track Submission",
+      submitAnother: "Submit Another App",
+    },
   },
-  "trackSubmission": {
-    "title": "Track Your Submission",
-    "subtitle": "Check the status of your app submission",
-    "byTrackingId": "By Tracking ID",
-    "byEmail": "By Email",
-    "trackingIdPlaceholder": "Enter your tracking ID",
-    "trackingIdHint": "The tracking ID from your submission",
-    "emailPlaceholder": "Enter submission email",
-    "emailHint": "Shows all submissions for this email",
-    "search": "Search",
-    "submittedOn": "Submitted on",
-    "reviewedOn": "Reviewed on",
-    "viewAppListing": "View App Listing",
-    "foundSubmissions": "Submissions found",
-    "noSubmissions": "No submissions found",
-    "wantToSubmit": "Want to submit a new app?",
-    "submitNewApp": "Submit New App",
-    "status": {
-      "pending": "Pending Review",
-      "under_review": "Under Review",
-      "info_requested": "More Info Requested",
-      "approved": "Approved",
-      "rejected": "Rejected"
-    }
-  }
+  trackSubmission: {
+    title: "Track Your Submission",
+    subtitle: "Check the status of your app submission",
+    byTrackingId: "By Tracking ID",
+    byEmail: "By Email",
+    trackingIdPlaceholder: "Enter your tracking ID",
+    trackingIdHint: "The tracking ID from your submission",
+    emailPlaceholder: "Enter submission email",
+    emailHint: "Shows all submissions for this email",
+    search: "Search",
+    submittedOn: "Submitted on",
+    reviewedOn: "Reviewed on",
+    viewAppListing: "View App Listing",
+    foundSubmissions: "Submissions found",
+    noSubmissions: "No submissions found",
+    wantToSubmit: "Want to submit a new app?",
+    submitNewApp: "Submit New App",
+    status: {
+      pending: "Pending Review",
+      under_review: "Under Review",
+      info_requested: "More Info Requested",
+      approved: "Approved",
+      rejected: "Rejected",
+    },
+  },
 };
 
 const AR_TRANSLATIONS = {
-  "loading": {
-    "apps": "جاري تحميل التطبيقات...",
-    "categories": "جاري تحميل الفئات..."
+  loading: {
+    apps: "جاري تحميل التطبيقات...",
+    categories: "جاري تحميل الفئات...",
   },
-  "empty": {
-    "noApps": {
-      "title": "لم يتم العثور على تطبيقات",
-      "message": "حاول تعديل معايير البحث أو تصفح جميع الفئات."
-    }
-  },
-  "common": {
-    "back": "رجوع",
-    "submit": "إرسال",
-    "loading": "جار التحميل..."
-  },
-  "header": {
-    "title": "دليل التطبيقات القرآنية",
-    "beta": "تجريبي",
-    "home": "الرئيسة",
-    "about": "عن المشروع",
-    "contact": "تواصل معنا",
-    "submitApp": "أضف تطبيقك",
-    "itqan_community": "مجتمع إتقان",
-    "theme": "المظهر",
-    "language": {
-      "ar": "العربية",
-      "en": "English"
-    }
-  },
-  "theme": {
-    "switchToDark": "تفعيل الوضع الداكن",
-    "switchToLight": "تفعيل الوضع الفاتح"
-  },
-  "footer": {
-    "copyright": "مشروع مفتوح المصدر، أحد مشاريع مجتمع إتقان لتقنيات القرآن، ١٤٤٧ هـ",
-    "itqan_projects": "مشاريع إتقان الأخرى",
-    "content_management": "نظام إدارة المحتوى القرآني",
-    "main_site": "الموقع الرئيسي لمجتمع إتقان",
-    "resources": "موارد المطورين",
-    "mushaf_fonts": "خطوط المصحف العثمانية"
-  },
-  "appList": {
-    "search": {
-      "placeholder": "البحث في التطبيقات..."
+  empty: {
+    noApps: {
+      title: "لم يتم العثور على تطبيقات",
+      message: "حاول تعديل معايير البحث أو تصفح جميع الفئات.",
     },
-    "categories": {
-      "all": "الكل",
+  },
+  common: {
+    back: "رجوع",
+    submit: "إرسال",
+    loading: "جار التحميل...",
+  },
+  header: {
+    title: "دليل التطبيقات القرآنية",
+    beta: "تجريبي",
+    home: "الرئيسة",
+    about: "عن المشروع",
+    contact: "تواصل معنا",
+    submitApp: "أضف تطبيقك",
+    itqan_community: "مجتمع إتقان",
+    theme: "المظهر",
+    language: {
+      ar: "العربية",
+      en: "English",
+    },
+  },
+  theme: {
+    switchToDark: "تفعيل الوضع الداكن",
+    switchToLight: "تفعيل الوضع الفاتح",
+  },
+  footer: {
+    copyright:
+      "مشروع مفتوح المصدر، أحد مشاريع مجتمع إتقان لتقنيات القرآن، ١٤٤٧ هـ",
+    itqan_projects: "مشاريع إتقان الأخرى",
+    content_management: "نظام إدارة المحتوى القرآني",
+    main_site: "الموقع الرئيسي لمجتمع إتقان",
+    resources: "موارد المطورين",
+    mushaf_fonts: "خطوط المصحف العثمانية",
+  },
+  appList: {
+    search: {
+      placeholder: "البحث في التطبيقات...",
+    },
+    categories: {
+      all: "الكل",
       "main-title": "دليل التطبيقات القرآنية",
-      "title": "التصنيفات",
-      "mushaf": "مصحف",
-      "translations": "ترجمات",
-      "recite": "تسميع",
-      "kids": "أطفال",
-      "tafsir": "تفسير",
-      "riwayat": "روايات",
-      "audio": "صوتيات",
-      "memorize": "تحفيظ",
-      "tajweed": "تجويد",
-      "tools": "أخرى",
-      "accessibility": "ذوي الإعاقة"
+      title: "التصنيفات",
+      mushaf: "مصحف",
+      translations: "ترجمات",
+      recite: "تسميع",
+      kids: "أطفال",
+      tafsir: "تفسير",
+      riwayat: "روايات",
+      audio: "صوتيات",
+      memorize: "تحفيظ",
+      tajweed: "تجويد",
+      tools: "أخرى",
+      accessibility: "ذوي الإعاقة",
     },
-    "apps": {
-      "title": "قائمة التطبيقات",
-      "sort": "ترتيب حسب التقييم"
-    }
-  },
-  "developer": {
-    "visitWebsite": "زيارة الموقع",
-    "app": "تطبيق",
-    "apps": "تطبيقات",
-    "noApps": "لم يتم العثور على تطبيقات لهذا المطور."
-  },
-  "appDetail": {
-    "developer": "المطور",
-    "description": "الوصف",
-    "downloadLinks": "روابط التحميل",
-    "appStore": "متجر آبل",
-    "playStore": "متجر جوجل بلاي",
-    "huaweiStore": "متجر هواوي",
-    "relevantApps": "تطبيقات ذات صلة",
-    "screenshots": "لقطات الشاشة",
-    "readMore": "اقرأ المزيد",
-    "readLess": "قلّص"
-  },
-  "requestForm": {
-    "title": "طلب إضافة تطبيق",
-    "subtitle": "قدم طلباً لإضافة تطبيق قرآني إلى دليلنا",
-    "form": {
-      "name": { "label": "اسم التطبيق", "placeholder": "أدخل اسم التطبيق" },
-      "description": { "label": "الوصف", "placeholder": "صف مميزات وأهداف التطبيق" },
-      "link": { "label": "رابط التطبيق", "placeholder": "أدخل رابط المتجر أو الموقع" },
-      "email": { "label": "البريد الإلكتروني للتواصل", "placeholder": "أدخل عنوان بريدك الإلكتروني" }
+    apps: {
+      title: "قائمة التطبيقات",
+      sort: "ترتيب حسب التقييم",
     },
-    "success": {
-      "title": "تم إرسال الطلب",
-      "message": "شكراً لك! سنراجع طلبك ونتواصل معك قريباً.",
-      "reset": "تم إعادة تعيين النموذج"
-    }
   },
-  "contactUs": {
-    "title": "تواصل معنا",
-    "message": "نسعد بتواصلكم معنا للإجابة على استفساراتكم أو استقبال اقتراحاتكم لتحسين دليل التطبيقات القرآنية.",
-    "email": "البريد الإلكتروني",
-    "appRequests": "الانضمام لمجتمع إتقان",
+  developer: {
+    visitWebsite: "زيارة الموقع",
+    app: "تطبيق",
+    apps: "تطبيقات",
+    noApps: "لم يتم العثور على تطبيقات لهذا المطور.",
+  },
+  appDetail: {
+    developer: "المطور",
+    description: "الوصف",
+    downloadLinks: "روابط التحميل",
+    appStore: "متجر آبل",
+    playStore: "متجر جوجل بلاي",
+    huaweiStore: "متجر هواوي",
+    relevantApps: "تطبيقات ذات صلة",
+    screenshots: "لقطات الشاشة",
+    readMore: "اقرأ المزيد",
+    readLess: "قلّص",
+  },
+  requestForm: {
+    title: "طلب إضافة تطبيق",
+    subtitle: "قدم طلباً لإضافة تطبيق قرآني إلى دليلنا",
+    form: {
+      name: { label: "اسم التطبيق", placeholder: "أدخل اسم التطبيق" },
+      description: { label: "الوصف", placeholder: "صف مميزات وأهداف التطبيق" },
+      link: {
+        label: "رابط التطبيق",
+        placeholder: "أدخل رابط المتجر أو الموقع",
+      },
+      email: {
+        label: "البريد الإلكتروني للتواصل",
+        placeholder: "أدخل عنوان بريدك الإلكتروني",
+      },
+    },
+    success: {
+      title: "تم إرسال الطلب",
+      message: "شكراً لك! سنراجع طلبك ونتواصل معك قريباً.",
+      reset: "تم إعادة تعيين النموذج",
+    },
+  },
+  contactUs: {
+    title: "تواصل معنا",
+    message:
+      "نسعد بتواصلكم معنا للإجابة على استفساراتكم أو استقبال اقتراحاتكم لتحسين دليل التطبيقات القرآنية.",
+    email: "البريد الإلكتروني",
+    appRequests: "الانضمام لمجتمع إتقان",
     "app-request": "طلب إضافة تطبيق",
-    "app-request-form": "نموذج الطلب"
+    "app-request-form": "نموذج الطلب",
   },
-  "aboutUs": {
-    "title": "عن دليل التطبيقات القرآنية الشامل",
-    "subtitle": "الدليل الأشمل لأفضل تطبيقات القرآن الكريم في العالم",
-    "intro": "مرحباً بكم في دليل التطبيقات القرآنية الشامل - المنصة الرائدة لاكتشاف وتقييم أفضل التطبيقات الإسلامية المخصصة لخدمة القرآن الكريم.",
-    "mission": "مهمتنا",
-    "vision": "رؤيتنا",
-    "missionDescription": "دليل التطبيقات القرآنية الشامل هو مشروع مفتوح المصدر يهدف إلى خدمة عموم المسلمين حول العالم.",
-    "visionDescription": "رؤيتنا أن نصبح المصدر الرقمي الأول والأكثر موثوقية في العالم للتطبيقات القرآنية.",
-    "whatWeDo": "ماذا نقدم",
-    "whatWeDoList": {
-      "comprehensive": "تقييم شامل لأكثر من 100 تطبيق قرآني",
-      "categories": "تصنيف متقن حسب المجال",
-      "bilingual": "خدمة ثنائية اللغة",
-      "quality": "فحص جودة متقن",
-      "search": "بحث متقدم وتصفية ذكية",
-      "community": "مجتمع فعال"
+  aboutUs: {
+    title: "عن دليل التطبيقات القرآنية الشامل",
+    subtitle: "الدليل الأشمل لأفضل تطبيقات القرآن الكريم في العالم",
+    intro:
+      "مرحباً بكم في دليل التطبيقات القرآنية الشامل - المنصة الرائدة لاكتشاف وتقييم أفضل التطبيقات الإسلامية المخصصة لخدمة القرآن الكريم.",
+    mission: "مهمتنا",
+    vision: "رؤيتنا",
+    missionDescription:
+      "دليل التطبيقات القرآنية الشامل هو مشروع مفتوح المصدر يهدف إلى خدمة عموم المسلمين حول العالم.",
+    visionDescription:
+      "رؤيتنا أن نصبح المصدر الرقمي الأول والأكثر موثوقية في العالم للتطبيقات القرآنية.",
+    whatWeDo: "ماذا نقدم",
+    whatWeDoList: {
+      comprehensive: "تقييم شامل لأكثر من 100 تطبيق قرآني",
+      categories: "تصنيف متقن حسب المجال",
+      bilingual: "خدمة ثنائية اللغة",
+      quality: "فحص جودة متقن",
+      search: "بحث متقدم وتصفية ذكية",
+      community: "مجتمع فعال",
     },
-    "why": "لماذا دليل التطبيقات القرآنية؟",
-    "whyList": {
-      "largest": "أكبر مجموعة من التطبيقات القرآنية",
-      "verified": "جميع التطبيقات مفحوصة",
-      "expert": "تقييمات مهنية",
-      "updated": "تحديث مستمر",
-      "free": "خدمة مجانية",
-      "opensource": "مشروع مفتوح المصدر"
+    why: "لماذا دليل التطبيقات القرآنية؟",
+    whyList: {
+      largest: "أكبر مجموعة من التطبيقات القرآنية",
+      verified: "جميع التطبيقات مفحوصة",
+      expert: "تقييمات مهنية",
+      updated: "تحديث مستمر",
+      free: "خدمة مجانية",
+      opensource: "مشروع مفتوح المصدر",
     },
-    "categories": "فئات التطبيقات",
-    "categoriesDescription": "نوفر تطبيقات متنوعة في جميع مجالات الدراسات القرآنية:",
-    "values": "قيمنا",
-    "values_list": {
-      "accuracyAndAuthenticity": "الدقة والموثوقية",
-      "userCentricDesignAndAccessibility": "التصميم المتمحور حول المستخدم",
-      "continuousImprovementAndInnovation": "التحسين المستمر",
-      "communityEngagementAndSupport": "بناء مجتمع قوي",
-      "transparency": "الشفافية الكاملة",
-      "innovation": "الريادة في التقنية"
+    categories: "فئات التطبيقات",
+    categoriesDescription:
+      "نوفر تطبيقات متنوعة في جميع مجالات الدراسات القرآنية:",
+    values: "قيمنا",
+    values_list: {
+      accuracyAndAuthenticity: "الدقة والموثوقية",
+      userCentricDesignAndAccessibility: "التصميم المتمحور حول المستخدم",
+      continuousImprovementAndInnovation: "التحسين المستمر",
+      communityEngagementAndSupport: "بناء مجتمع قوي",
+      transparency: "الشفافية الكاملة",
+      innovation: "الريادة في التقنية",
     },
-    "acknowledgments": "شكر وتقدير",
-    "acknowledgementsText": "نشكر جميع المطورين والمبدعين الذين يبذلون جهودهم لخدمة القرآن الكريم."
+    acknowledgments: "شكر وتقدير",
+    acknowledgementsText:
+      "نشكر جميع المطورين والمبدعين الذين يبذلون جهودهم لخدمة القرآن الكريم.",
   },
-  "submitApp": {
-    "title": "أضف تطبيقك",
-    "subtitle": "شارك تطبيقك القرآني مع المجتمع",
-    "alreadySubmitted": "هل أرسلت تطبيقاً من قبل؟",
-    "trackYourSubmission": "تتبع طلبك",
-    "sections": {
-      "contact": "معلومات التواصل",
-      "appDetails": "تفاصيل التطبيق",
-      "storeLinks": "روابط المتاجر",
-      "categories": "التصنيفات",
-      "developer": "معلومات المطور",
-      "media": "الوسائط",
-      "additional": "ملاحظات إضافية"
+  submitApp: {
+    title: "أضف تطبيقك",
+    subtitle: "شارك تطبيقك القرآني مع المجتمع",
+    alreadySubmitted: "هل أرسلت تطبيقاً من قبل؟",
+    trackYourSubmission: "تتبع طلبك",
+    sections: {
+      contact: "معلومات التواصل",
+      appDetails: "تفاصيل التطبيق",
+      storeLinks: "روابط المتاجر",
+      categories: "التصنيفات",
+      developer: "معلومات المطور",
+      media: "الوسائط",
+      additional: "ملاحظات إضافية",
     },
-    "fields": {
-      "yourName": "اسمك",
-      "yourEmail": "بريدك الإلكتروني",
-      "phone": "رقم الهاتف",
-      "organization": "المؤسسة",
-      "isDeveloper": "أنا مطور/مالك هذا التطبيق",
-      "appNameEn": "اسم التطبيق (إنجليزي)",
-      "appNameAr": "اسم التطبيق (عربي)",
-      "shortDescEn": "وصف مختصر (إنجليزي)",
-      "shortDescAr": "وصف مختصر (عربي)",
-      "descEn": "الوصف الكامل (إنجليزي)",
-      "descAr": "الوصف الكامل (عربي)",
-      "googlePlay": "رابط Google Play",
-      "appStore": "رابط App Store",
-      "appGallery": "رابط Huawei AppGallery",
-      "website": "رابط الموقع",
-      "categories": "التصنيفات",
-      "devNameEn": "اسم المطور (إنجليزي)",
-      "devNameAr": "اسم المطور (عربي)",
-      "devWebsite": "موقع المطور",
-      "devEmail": "بريد المطور",
-      "iconUrl": "رابط أيقونة التطبيق",
-      "mainImageEn": "صورة الغلاف (إنجليزي)",
-      "mainImageAr": "صورة الغلاف (عربي)",
-      "screenshotsEn": "لقطات الشاشة (إنجليزي)",
-      "screenshotsAr": "لقطات الشاشة (عربي)",
-      "contentConfirmation": "أؤكد أن المعلومات صحيحة."
+    fields: {
+      yourName: "اسمك",
+      yourEmail: "بريدك الإلكتروني",
+      phone: "رقم الهاتف",
+      organization: "المؤسسة",
+      isDeveloper: "أنا مطور/مالك هذا التطبيق",
+      appNameEn: "اسم التطبيق (إنجليزي)",
+      appNameAr: "اسم التطبيق (عربي)",
+      shortDescEn: "وصف مختصر (إنجليزي)",
+      shortDescAr: "وصف مختصر (عربي)",
+      descEn: "الوصف الكامل (إنجليزي)",
+      descAr: "الوصف الكامل (عربي)",
+      googlePlay: "رابط Google Play",
+      appStore: "رابط App Store",
+      appGallery: "رابط Huawei AppGallery",
+      website: "رابط الموقع",
+      categories: "التصنيفات",
+      devNameEn: "اسم المطور (إنجليزي)",
+      devNameAr: "اسم المطور (عربي)",
+      devWebsite: "موقع المطور",
+      devEmail: "بريد المطور",
+      iconUrl: "رابط أيقونة التطبيق",
+      mainImageEn: "صورة الغلاف (إنجليزي)",
+      mainImageAr: "صورة الغلاف (عربي)",
+      screenshotsEn: "لقطات الشاشة (إنجليزي)",
+      screenshotsAr: "لقطات الشاشة (عربي)",
+      contentConfirmation: "أؤكد أن المعلومات صحيحة.",
     },
-    "placeholders": {
-      "yourName": "أدخل اسمك الكامل",
-      "yourEmail": "your@email.com",
-      "phone": "+1234567890",
-      "organization": "اسم الشركة",
-      "appNameEn": "أدخل اسم التطبيق بالإنجليزية",
-      "appNameAr": "أدخل اسم التطبيق بالعربية",
-      "shortDescEn": "وصف مختصر",
-      "shortDescAr": "وصف مختصر بالعربية",
-      "descEn": "وصف تفصيلي...",
-      "descAr": "وصف تفصيلي بالعربية...",
-      "googlePlay": "https://play.google.com/store/apps/details?id=...",
-      "appStore": "https://apps.apple.com/app/...",
-      "appGallery": "https://appgallery.huawei.com/...",
-      "website": "https://your-app-website.com",
-      "categories": "اختر تصنيفاً",
-      "devNameEn": "اسم المطور",
-      "devNameAr": "اسم المطور بالعربية",
-      "devWebsite": "https://developer-website.com",
-      "devEmail": "developer@email.com",
-      "iconUrl": "https://example.com/icon.png",
-      "mainImageEn": "https://example.com/cover-en.png",
-      "mainImageAr": "https://example.com/cover-ar.png",
-      "screenshots": "رابط واحد في كل سطر",
-      "additionalNotes": "معلومات إضافية..."
+    placeholders: {
+      yourName: "أدخل اسمك الكامل",
+      yourEmail: "your@email.com",
+      phone: "+1234567890",
+      organization: "اسم الشركة",
+      appNameEn: "أدخل اسم التطبيق بالإنجليزية",
+      appNameAr: "أدخل اسم التطبيق بالعربية",
+      shortDescEn: "وصف مختصر",
+      shortDescAr: "وصف مختصر بالعربية",
+      descEn: "وصف تفصيلي...",
+      descAr: "وصف تفصيلي بالعربية...",
+      googlePlay: "https://play.google.com/store/apps/details?id=...",
+      appStore: "https://apps.apple.com/app/...",
+      appGallery: "https://appgallery.huawei.com/...",
+      website: "https://your-app-website.com",
+      categories: "اختر تصنيفاً",
+      devNameEn: "اسم المطور",
+      devNameAr: "اسم المطور بالعربية",
+      devWebsite: "https://developer-website.com",
+      devEmail: "developer@email.com",
+      iconUrl: "https://example.com/icon.png",
+      mainImageEn: "https://example.com/cover-en.png",
+      mainImageAr: "https://example.com/cover-ar.png",
+      screenshots: "رابط واحد في كل سطر",
+      additionalNotes: "معلومات إضافية...",
     },
-    "validation": {
-      "storeLink": "مطلوب رابط متجر واحد"
+    validation: {
+      storeLink: "مطلوب رابط متجر واحد",
     },
-    "hints": {
-      "iconUrl": "يُفضل: 512×512",
-      "mainImage": "يُفضل: 600×400",
-      "screenshots": "حتى 5 لقطات"
+    hints: {
+      iconUrl: "يُفضل: 512×512",
+      mainImage: "يُفضل: 600×400",
+      screenshots: "حتى 5 لقطات",
     },
-    "screenshotsDetected": "لقطة شاشة",
-    "submitButton": "إرسال التطبيق",
-    "success": {
-      "title": "تم إرسال التطبيق!",
-      "message": "سنراجع تطبيقك ونُعلمك.",
-      "trackingId": "رقم التتبع",
-      "trackingIdNote": "احفظ هذا الرقم",
-      "trackSubmission": "تتبع الطلب",
-      "submitAnother": "إرسال تطبيق آخر"
-    }
+    screenshotsDetected: "لقطة شاشة",
+    submitButton: "إرسال التطبيق",
+    success: {
+      title: "تم إرسال التطبيق!",
+      message: "سنراجع تطبيقك ونُعلمك.",
+      trackingId: "رقم التتبع",
+      trackingIdNote: "احفظ هذا الرقم",
+      trackSubmission: "تتبع الطلب",
+      submitAnother: "إرسال تطبيق آخر",
+    },
   },
-  "trackSubmission": {
-    "title": "تتبع طلبك",
-    "subtitle": "تحقق من حالة طلب تطبيقك",
-    "byTrackingId": "برقم التتبع",
-    "byEmail": "بالبريد الإلكتروني",
-    "trackingIdPlaceholder": "أدخل رقم التتبع",
-    "trackingIdHint": "رقم التتبع من إرسالك",
-    "emailPlaceholder": "أدخل البريد الإلكتروني",
-    "emailHint": "يعرض جميع الطلبات",
-    "search": "بحث",
-    "submittedOn": "تاريخ الإرسال",
-    "reviewedOn": "تاريخ المراجعة",
-    "viewAppListing": "عرض صفحة التطبيق",
-    "foundSubmissions": "الطلبات الموجودة",
-    "noSubmissions": "لم يتم العثور على طلبات",
-    "wantToSubmit": "هل تريد إرسال تطبيق؟",
-    "submitNewApp": "إرسال تطبيق جديد",
-    "status": {
-      "pending": "قيد الانتظار",
-      "under_review": "قيد المراجعة",
-      "info_requested": "مطلوب معلومات",
-      "approved": "مقبول",
-      "rejected": "مرفوض"
-    }
-  }
+  trackSubmission: {
+    title: "تتبع طلبك",
+    subtitle: "تحقق من حالة طلب تطبيقك",
+    byTrackingId: "برقم التتبع",
+    byEmail: "بالبريد الإلكتروني",
+    trackingIdPlaceholder: "أدخل رقم التتبع",
+    trackingIdHint: "رقم التتبع من إرسالك",
+    emailPlaceholder: "أدخل البريد الإلكتروني",
+    emailHint: "يعرض جميع الطلبات",
+    search: "بحث",
+    submittedOn: "تاريخ الإرسال",
+    reviewedOn: "تاريخ المراجعة",
+    viewAppListing: "عرض صفحة التطبيق",
+    foundSubmissions: "الطلبات الموجودة",
+    noSubmissions: "لم يتم العثور على طلبات",
+    wantToSubmit: "هل تريد إرسال تطبيق؟",
+    submitNewApp: "إرسال تطبيق جديد",
+    status: {
+      pending: "قيد الانتظار",
+      under_review: "قيد المراجعة",
+      info_requested: "مطلوب معلومات",
+      approved: "مقبول",
+      rejected: "مرفوض",
+    },
+  },
 };
 
 export class TranslateServerLoader implements TranslateLoader {
   getTranslation(lang: string): Observable<Record<string, unknown>> {
-    if (lang === 'ar') {
+    if (lang === "ar") {
       return of(AR_TRANSLATIONS);
     }
     return of(EN_TRANSLATIONS);

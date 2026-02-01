@@ -1,292 +1,369 @@
-<!-- Main container -->
-<div class="container main-content">
-  <!-- Categories section -->
-  <div class="categories-section">
-    <div class="search-section-wrapper">
-      <h1>{{ "appList.categories.main-title" | translate }}</h1>
-      <!-- Search section -->
-      <div class="search-section">
-        <!-- Search input with icon prefix -->
-        <nz-input-group [nzPrefix]="searchPrefix">
+<!-- Hero Section with Background -->
+<section class="hero-section">
+  <div class="hero-background">
+    <div class="hero-gradient"></div>
+    <div class="hero-pattern"></div>
+    <img
+      src="assets/images/star.svg"
+      alt=""
+      class="hero-star-decoration"
+      aria-hidden="true"
+    />
+  </div>
+
+  <div class="hero-content">
+    <!-- Hero Title -->
+    <h1 class="hero-title">{{ "appList.hero.title" | translate }}</h1>
+    <p class="hero-subtitle">{{ "appList.hero.subtitle" | translate }}</p>
+
+    <!-- Search Section -->
+    <div class="search-container">
+      <!-- Search Type Tabs -->
+      <div class="search-tabs">
+        <button
+          class="search-tab"
+          [class.active]="searchType === 'traditional'"
+          (click)="searchType = 'traditional'"
+        >
+          {{ "appList.search.traditional" | translate }}
+        </button>
+        <button
+          class="search-tab"
+          [class.active]="searchType === 'smart'"
+          (click)="searchType = 'smart'"
+        >
+          {{ "appList.search.smart" | translate }}
+        </button>
+      </div>
+
+      <!-- Search Input -->
+      <div class="search-input-wrapper">
+        <div
+          class="search-input-container"
+          [class.smart-mode]="searchType === 'smart'"
+        >
+          <span class="search-icon" [class.searching]="isSmartSearching">
+            @if (searchType === "smart") {
+              <img
+                src="assets/images/searchLogo.svg"
+                alt="Smart Search"
+                class="search-logo-img"
+                [class.spinning]="isSmartSearching"
+                width="20"
+                height="20"
+              />
+            } @else {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </svg>
+            }
+          </span>
           <input
             type="text"
-            nz-input
-            [placeholder]="'appList.search.placeholder' | translate"
+            class="search-input"
+            [placeholder]="
+              (searchType === 'smart'
+                ? 'appList.search.placeholder'
+                : 'appList.search.traditionalPlaceholder'
+              ) | translate
+            "
             [(ngModel)]="searchQuery"
-            (ngModelChange)="onSearch()"
+            (ngModelChange)="onTypingSearch()"
+            (keyup.enter)="onSearch()"
             aria-label="Search apps"
-            />
-        </nz-input-group>
-        <!-- Search icon template -->
-        <ng-template #searchPrefix>
-          <span nz-icon nzType="search" nzTheme="outline" [style.color]="isDarkMode ? '#000000' : 'inherit'"></span>
-        </ng-template>
+          />
+          <button class="search-button" (click)="onSearch()">
+            {{
+              (searchType === "smart"
+                ? "appList.search.sendButton"
+                : "appList.search.button"
+              ) | translate
+            }}
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Error Alert with Retry -->
-    @if (error) {
-      <div class="error-container" style="margin-bottom: 20px">
-        <nz-alert
-          [nzMessage]="errorMessage"
-          nzType="error"
-          nzShowIcon
-        ></nz-alert>
-        <ng-template #errorMessage>
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
-            <span>{{ error }}</span>
-            <button
-              nz-button
-              nzType="primary"
-              nzSize="small"
-              (click)="retryLoadData()"
-              [nzLoading]="isLoading"
+    <!-- Categories Filter Chips -->
+    <div class="categories-chips-wrapper">
+      <div
+        class="categories-chips"
+        (mousedown)="startDragging($event)"
+        (mousemove)="onDrag($event)"
+        (mouseup)="stopDragging()"
+        (mouseleave)="stopDragging()"
+      >
+        <!-- All Categories Chip -->
+        <div
+          class="category-chip"
+          [class.active]="selectedCategory === 'all'"
+          [routerLink]="['/', currentLang]"
+          [routerLinkActive]="'active'"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <span class="chip-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
             >
-              {{ currentLang === 'ar' ? 'إعادة المحاولة' : 'Retry' }}
-            </button>
-          </div>
-        </ng-template>
-      </div>
-    }
+              <path
+                fill="currentColor"
+                d="M3.75 3.75v4.5h4.5v-4.5zm-2.25 0A2.25 2.25 0 0 1 3.75 1.5h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5A2.25 2.25 0 0 1 1.5 8.25zm2.25 12v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25zm18.75-12h-4.5v4.5h4.5zm-4.5-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25v-4.5a2.25 2.25 0 0 1 2.25-2.25m0 14.25v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25z"
+              />
+            </svg>
+          </span>
+          <span class="chip-text">{{
+            "appList.categories.all" | translate
+          }}</span>
+          <span class="chip-arrow">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </span>
+        </div>
 
-    <!-- Loading Spinner -->
-    <nz-spin [nzSpinning]="isLoading" nzSize="large">
-      @if (isLoading && apps.length === 0) {
+        <!-- Dynamic Category Chips -->
+        @for (category of categories; track category.id) {
+          <div
+            class="category-chip"
+            [class.active]="selectedCategory === category.slug"
+            [routerLink]="['/', currentLang, category.slug]"
+            [routerLinkActive]="'active'"
+          >
+            <span
+              class="chip-icon"
+              [innerHTML]="category.icon || '' | safeHtml"
+            ></span>
+            <span class="chip-text">
+              {{ currentLang === "ar" ? category.name_ar : category.name_en }}
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Content -->
+<div class="main-content">
+  <!-- Error Alert -->
+  @if (error) {
+    <div class="error-container">
+      <nz-alert [nzMessage]="errorMessage" nzType="error" nzShowIcon></nz-alert>
+      <ng-template #errorMessage>
+        <div class="error-content">
+          <span>{{ error }}</span>
+          <button
+            nz-button
+            nzType="primary"
+            nzSize="small"
+            (click)="retryLoadData()"
+            [nzLoading]="isLoading"
+          >
+            {{ currentLang === "ar" ? "إعادة المحاولة" : "Retry" }}
+          </button>
+        </div>
+      </ng-template>
+    </div>
+  }
+
+  <!-- Loading State -->
+  @if (isLoading && filteredApps.length === 0) {
+    <div class="loading-container">
+      <nz-spin [nzSpinning]="true" nzSize="large">
         <div class="loading-placeholder">
           <p>{{ "loading.apps" | translate }}</p>
         </div>
-      }
-    </nz-spin>
+      </nz-spin>
+    </div>
+  }
 
-    <!-- Categories Section (only show after initial load or when we have data) -->
-    @if (initialLoadComplete || categories.length > 0) {
-      <div>
-        <div class="section-title">
-          <h2>{{ "appList.categories.title" | translate }}</h2>
-          <!-- <a href="#">View All</a> -->
-        </div>
-        <!-- Grid of category buttons -->
-        <div
-          class="categories-grid"
-          style="padding-right: 10px; padding-left: 10px"
-          (mousedown)="startDragging($event)"
-          (mousemove)="onDrag($event)"
-          (mouseup)="stopDragging()"
-          (mouseleave)="stopDragging()"
-          >
-          <!-- All Categories Button -->
-          <div
-            class="category-item"
-            role="button"
-            aria-label="Filter by All"
-            [routerLink]="['/', currentLang]"
-            [routerLinkActive]="'selected'"
-            [routerLinkActiveOptions]="{ exact: true }"
-            data-category="all"
-            >
-            <span class="category-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="24"
-                height="24"
-                >
-                <path
-                  fill="#A0533B"
-                  d="M3.75 3.75v4.5h4.5v-4.5zm-2.25 0A2.25 2.25 0 0 1 3.75 1.5h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5A2.25 2.25 0 0 1 1.5 8.25zm2.25 12v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25zm18.75-12h-4.5v4.5h4.5zm-4.5-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25v-4.5a2.25 2.25 0 0 1 2.25-2.25m0 14.25v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25z"
-                  />
-              </svg>
-            </span>
-            <span class="category-item--title">{{
-              "appList.categories.all" | translate
-            }}</span>
-          </div>
-          <!-- Dynamic Categories from API -->
-          @for (category of categories; track category) {
-            <div
-              class="category-item"
-              [routerLink]="['/', currentLang, category.slug]"
-              [routerLinkActive]="'selected'"
-              role="button"
-          [attr.aria-label]="
-            'Filter by ' +
-            (currentLang === 'ar' ? category.name_ar : category.name_en)
-          "
-              [attr.data-category]="category.slug"
-              >
-              <span
-                class="category-icon"
-                [innerHTML]="category.icon || getDefaultCategoryIcon() | safeHtml"
-              ></span>
-              <span class="category-item--title">{{
-                currentLang === "ar" ? category.name_ar : category.name_en
-              }}</span>
-            </div>
-          }
-        </div>
+  <!-- Search Results Header -->
+  @if (searchQuery.trim() && initialLoadComplete && !isLoading) {
+    <div class="search-results-header">
+      <h2 class="search-results-title">
+        {{ "appList.search.resultsFor" | translate }} "{{ searchQuery }}"
+      </h2>
+      <span class="search-results-count">
+        {{ filteredApps.length }}
+        {{ filteredApps.length === 1 ? ("appList.search.result" | translate) : ("appList.search.results" | translate) }}
+      </span>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (initialLoadComplete && !isLoading && filteredApps.length === 0) {
+    <div class="empty-state">
+      <div class="empty-state-content">
+        <img
+          src="assets/images/no-results.svg"
+          alt=""
+          class="empty-state-img"
+          aria-hidden="true"
+        />
+        <h3>{{ "empty.noApps.title" | translate }}</h3>
+        <p>{{ "empty.noApps.message" | translate }}</p>
       </div>
-    }
-  </div>
+    </div>
+  }
 
-  <!-- Apps grid section -->
-  <div class="apps-section">
-    <!-- Only show section title when we have apps to display -->
-    @if (initialLoadComplete && filteredApps.length > 0) {
-      <div class="section-title">
-        <h2>{{ "appList.apps.title" | translate }}</h2>
-      </div>
-    }
-
-    <!-- Loading State for Apps -->
-    @if (isLoading && filteredApps.length === 0) {
-      <div
-        class="loading-container"
+  <!-- Apps Grid -->
+  @if (filteredApps.length > 0) {
+    <div class="apps-grid">
+      @for (app of filteredApps; track app.id; let i = $index) {
+        <article
+          class="app-card"
+          [routerLink]="['/', currentLang, 'app', getAppUrlParam(app)]"
+          itemscope
+          itemtype="https://schema.org/SoftwareApplication"
         >
-        <nz-spin [nzSpinning]="true" nzSize="large">
-          <div class="loading-placeholder">
-            <p>{{ "loading.apps" | translate }}</p>
+          <!-- Cover Image -->
+          <div class="card-cover">
+            <app-optimized-image
+              [src]="
+                (currentLang === 'en' ? app.mainImage_en : app.mainImage_ar) ||
+                'https://itqan.dev/images/home/hero-card-mushaf.svg'
+              "
+              [alt]="app.Name_En + ' screenshot'"
+              cssClass="cover-image"
+              width="400"
+              height="240"
+              aspectRatio="5/3"
+              [loading]="getImageLoadingStrategy(i)"
+              [fetchpriority]="getImagePriority(i)"
+            ></app-optimized-image>
           </div>
-        </nz-spin>
-      </div>
-    }
 
-    <!-- Empty State (only show after initial load completes) -->
-    @if (initialLoadComplete && !isLoading && filteredApps.length === 0) {
-      <div class="empty-state">
-        <div class="empty-state-content">
-          <h3>{{ "empty.noApps.title" | translate }}</h3>
-          <p>{{ "empty.noApps.message" | translate }}</p>
-        </div>
-      </div>
-    }
-
-    <!-- Grid of app cards -->
-    @if (filteredApps.length > 0) {
-      <div class="app-grid">
-        <div nz-row [nzGutter]="[24, 24]" class="app-grid-row">
-          @for (app of filteredApps; track app; let i = $index) {
-            <div
-              nz-col
-              nzXs="24"
-              nzSm="12"
-              nzMd="8"
-              nzLg="6"
-              nzXl="6"
-              class="app-grid-col"
-              >
-              <!-- App card with cover image -->
-              <nz-card
-                [nzCover]="coverTemplate"
-                [routerLink]="['/', currentLang, 'app', getAppUrlParam(app)]"
-                [attr.aria-label]="'View details for ' + app.Name_En"
-                class="app-card"
-                itemscope
-                itemtype="https://schema.org/SoftwareApplication"
-                >
-                <ng-template #coverTemplate>
-                  <div class="app-card__cover">
-                    <!-- Use optimized images with smart loading strategy -->
-                    <app-optimized-image
+          <!-- Card Body -->
+          <div class="card-body">
+            <!-- App Info Row -->
+            <div class="app-info">
+              <div class="app-icon-wrapper">
+                <app-optimized-image
                   [src]="
-                    (currentLang === 'en'
-                      ? app.mainImage_en
-                      : app.mainImage_ar) || 'https://itqan.dev/images/home/hero-card-mushaf.svg'
+                    app.applicationIcon ||
+                    'https://itqan.dev/images/home/hero-card-mushaf.svg'
                   "
-                      [alt]="app.Name_En + ' screenshot'"
-                      cssClass="app-card__cover-image"
-                      width="300"
-                      height="220"
-                      aspectRatio="300/220"
-                      [loading]="getImageLoadingStrategy(i)"
-                      [fetchpriority]="getImagePriority(i)"
-                      >
-                    </app-optimized-image>
-                  </div>
-                </ng-template>
-                <div class="app-card__body">
-                  <div class="app-card__row">
-                    <div class="app-card__icon-wrap">
-                      <!-- Optimized app icon with fixed aspect ratio -->
-                      <app-optimized-image
-                        [src]="app.applicationIcon || 'https://itqan.dev/images/home/hero-card-mushaf.svg'"
-                        [alt]="app.Name_En + ' icon'"
-                        cssClass="app-card__icon"
-                        width="60"
-                        height="60"
-                        aspectRatio="1/1"
-                        loading="lazy"
-                        fetchpriority="low"
-                        >
-                      </app-optimized-image>
-                    </div>
-                    <div class="app-card__text">
-                      <div class="app-card__title">
-                        {{ currentLang === "en" ? app.Name_En : app.Name_Ar }}
-                      </div>
-                      <div class="app-card__desc">
-                        {{
-                        currentLang === "en"
-                        ? app.Short_Description_En
-                        : app.Short_Description_Ar
-                        }}
-                      </div>
-                    </div>
-                  </div>
-                  <meta
-                    itemprop="name"
-                    [content]="currentLang === 'en' ? app.Name_En : app.Name_Ar"
-                    />
-                  <meta
-                    itemprop="description"
-                [content]="
-                  currentLang === 'en'
-                    ? app.Short_Description_En
-                    : app.Short_Description_Ar
-                "
-                    />
-                  <meta
-                    itemprop="applicationCategory"
-                    content="Islamic Application"
-                    />
-                  <meta itemprop="operatingSystem" [content]="'Mobile App'" />
-                  <meta
-                    itemprop="aggregateRating"
-                    itemscope
-                    itemtype="https://schema.org/AggregateRating"
-                    />
-                  <meta itemprop="ratingValue" [content]="app.Apps_Avg_Rating" />
-                  <meta itemprop="ratingCount" content="100" />
-                  <!-- Rating display -->
-                  <div class="app-card__rating">
-                    <span
-                      class="app-card__rating-value"
-                      [ngClass]="getRatingClass(app.Apps_Avg_Rating)"
-                      >{{ app.Apps_Avg_Rating || 0 | number: "1.1-1" }}</span
-                      >
-                      <div
-                        class="app-card__stars"
-                        [ngClass]="getRatingClass(app.Apps_Avg_Rating)"
-                        >
-                        @for (
-                          star of getStarArray(app.Apps_Avg_Rating); track
-                          star; let i = $index) {
-                          <div
-                            class="star-container"
-                            >
-                            <div class="star-base">★</div>
-                            <div class="star-fill" [style.width.%]="star.fillPercent">
-                              ★
-                            </div>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  </div>
-                </nz-card>
+                  [alt]="app.Name_En + ' icon'"
+                  cssClass="app-icon"
+                  width="56"
+                  height="56"
+                  aspectRatio="1/1"
+                  loading="lazy"
+                  fetchpriority="low"
+                ></app-optimized-image>
               </div>
-            }
+              <div class="app-details">
+                <h3 class="app-name" itemprop="name">
+                  {{ currentLang === "en" ? app.Name_En : app.Name_Ar }}
+                </h3>
+                <p class="app-description" itemprop="description">
+                  {{
+                    currentLang === "en"
+                      ? app.Short_Description_En
+                      : app.Short_Description_Ar
+                  }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Category Tags -->
+            <div class="category-tags">
+              @for (cat of app.categories | slice: 0 : 3; track cat) {
+                <span class="category-tag">
+                  {{ "appList.categories." + cat | translate }}
+                </span>
+              }
+            </div>
+
+            <!-- Stats Row -->
+            <div class="stats-row">
+              <!-- Rating -->
+              <div class="stat-item">
+                <div>
+                  <span class="stat-icon"
+                    ><img src="assets/images/starr.svg" alt=""
+                  /></span>
+                  <span class="stat-value" style="margin: 3px">
+                    {{ app.Apps_Avg_Rating || 0 | number: "1.1-1" }}</span
+                  >
+                </div>
+                <span class="stat-label">{{
+                  currentLang === "ar" ? "التقييمات" : "Rating"
+                }}</span>
+              </div>
+
+              <!-- Downloads -->
+              <div class="stat-item">
+                <span class="stat-value"
+                  >12 {{ currentLang === "ar" ? "مليون" : "M" }}</span
+                >
+                <span class="stat-label">{{
+                  currentLang === "ar" ? "التنزيلات" : "Downloads"
+                }}</span>
+              </div>
+
+              <!-- Platform -->
+              <div class="stat-item">
+                <span class="stat-value">{{
+                  currentLang === "ar" ? "الجميع" : "All"
+                }}</span>
+                <span class="stat-label">{{
+                  currentLang === "ar" ? "المنصة" : "Platform"
+                }}</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="card-actions">
+              <button class="btn-primary" (click)="$event.stopPropagation()">
+                {{ currentLang === "ar" ? "تنزيل التطبيق" : "Download App" }}
+              </button>
+              <button class="btn-secondary" (click)="$event.stopPropagation()">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                  <polyline points="16 6 12 2 8 6" />
+                  <line x1="12" x2="12" y1="2" y2="15" />
+                </svg>
+                {{ currentLang === "ar" ? "مشاركة" : "Share" }}
+              </button>
+            </div>
           </div>
-        </div>
+
+          <!-- Schema.org Metadata -->
+          <meta itemprop="applicationCategory" content="Islamic Application" />
+          <meta itemprop="operatingSystem" content="Mobile App" />
+        </article>
       }
     </div>
-  </div>
+  }
+</div>
