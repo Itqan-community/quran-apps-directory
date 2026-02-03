@@ -99,3 +99,22 @@ jobs:
           echo "🔀 **Branch:** main" >> $GITHUB_STEP_SUMMARY
           echo "📦 **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
           echo "👤 **Triggered by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify Slack
+        if: success()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST "$SLACK_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"blocks\": [
+                {
+                  \"type\": \"section\",
+                  \"text\": {
+                    \"type\": \"mrkdwn\",
+                    \"text\": \":white_check_mark: *[PROD] Frontend Deployed*\n\n:link: <https://quran-apps.itqan.dev|View Site>\n:git: Branch: \`main\`\n:package: Commit: \`${GITHUB_SHA::7}\`\n:bust_in_silhouette: By: ${{ github.actor }}\"
+                  }
+                }
+              ]
+            }"
