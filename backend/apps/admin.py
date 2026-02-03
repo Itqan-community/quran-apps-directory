@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import App, AppCrawledData, AppScreenshot
 from .widgets import AdminImageWithPreview
+from metadata.admin import AppMetadataValueInline
 
 
 class AppScreenshotInline(admin.TabularInline):
@@ -68,7 +69,7 @@ class AppAdmin(admin.ModelAdmin):
         'embedding_status'
     ]
     filter_horizontal = ['categories']
-    inlines = [AppScreenshotInline]
+    inlines = [AppScreenshotInline, AppMetadataValueInline]
 
     fieldsets = [
         ('Basic Information', {

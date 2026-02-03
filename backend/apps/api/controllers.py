@@ -11,7 +11,10 @@ from django.db.models import Q
 
 from ..services.app_service_simple import AppService
 from ..utils.user_agent_parser import parse_user_agent, hash_ip_address, get_client_ip, get_country_from_request
-from .schemas import AppSchema, AppListSchema, AppCreateSchema, AppUpdateSchema, PaginatedAppListSchema, CategorySchema
+from .schemas import (
+    AppSchema, AppListSchema, AppCreateSchema, AppUpdateSchema,
+    PaginatedAppListSchema, CategorySchema, MetadataValuesResponseSchema
+)
 
 
 router = Router(tags=["Apps"])
@@ -22,21 +25,24 @@ def list_apps(request):
     """
     List all published Quranic applications.
 
-    Supports filtering by category, platform, featured status, and developer.
-    Supports search in English and Arabic.
-    Supports ordering by various fields.
+    Supports filtering by category, platform, featured status, developer, and dynamic filters.
+    All multi-select filters support comma-separated values (e.g., riwayah=hafs,warsh).
+    Filter logic: AND between different filter types, OR within same filter type.
 
     Query Parameters:
     - search: Search in app names and descriptions
     - developer_id: Filter by developer ID (most robust)
-    - category: Filter by category slug
-    - platform: Filter by platform (android, ios, web, cross_platform)
+    - category: Filter by category slug(s) - comma-separated for multi-select
+    - platform: Filter by platform(s) - comma-separated (android, ios, web, cross_platform)
     - featured: Filter by featured status (true/false)
+    - [dynamic filters]: Any active MetadataType name can be used (e.g., riwayah, mushaf_type, features)
     - ordering: Order by field(s) (default: sort_order,name_en)
     - page: Page number (default: 1)
     - page_size: Items per page (default: 100)
     """
-    # Extract query parameters manually from request
+    from metadata.models import MetadataType
+
+    # Extract standard query parameters
     search = request.GET.get('search', '').strip() or None
     developer_id = request.GET.get('developer_id', '').strip() or None
     category = request.GET.get('category', '').strip() or None
@@ -73,6 +79,17 @@ def list_apps(request):
     if featured is not None:
         filters['featured'] = featured
 
+    # Dynamically extract filter parameters based on active MetadataTypes
+    # This allows new metadata types added via admin to work without code changes
+    active_metadata_names = list(
+        MetadataType.objects.filter(is_active=True).values_list('name', flat=True)
+    )
+
+    for metadata_name in active_metadata_names:
+        metadata_value = request.GET.get(metadata_name, '').strip()
+        if metadata_value:
+            filters[metadata_name] = metadata_value
+
     result = app_service.get_apps(
         filters=filters,
         ordering=ordering or 'sort_order,name_en',
@@ -84,6 +101,75 @@ def list_apps(request):
 
 
 # More specific routes BEFORE the catch-all /{app_id} route
+@router.get("/metadata-values/", response=MetadataValuesResponseSchema)
+def get_metadata_values(request):
+    """
+    Get all available metadata values for building filter dropdowns.
+
+    Returns dynamically from database - new metadata types added via admin
+    appear here automatically without code changes.
+
+    Returns lists of available options for each metadata type with:
+    - value: The metadata value to use in API queries
+    - label_en: English display label
+    - label_ar: Arabic display label
+    - count: Number of published apps with this value
+    """
+    from apps.models import App
+    from metadata.models import MetadataType, MetadataOption
+    from django.db.models import Count, Q
+
+    # Get base queryset of published apps
+    published_apps = App.objects.filter(status='published')
+
+    # Platform options with counts (platform is still on App model, not in metadata)
+    platform_choices = [
+        ('android', 'Android', 'أندرويد'),
+        ('ios', 'iOS', 'آي أو إس'),
+        ('web', 'Web', 'ويب'),
+        ('cross_platform', 'Cross Platform', 'متعدد المنصات'),
+    ]
+    platforms = []
+    for value, label_en, label_ar in platform_choices:
+        count = published_apps.filter(platform=value).count()
+        if count > 0:
+            platforms.append({
+                'value': value,
+                'label_en': label_en,
+                'label_ar': label_ar,
+                'count': count
+            })
+
+    # Build response dynamically from MetadataType/MetadataOption tables
+    response = {'platforms': platforms}
+
+    # Get all active metadata types
+    metadata_types = MetadataType.objects.filter(is_active=True).order_by('sort_order')
+
+    for metadata_type in metadata_types:
+        options = []
+
+        # Get active options for this metadata type
+        metadata_options = metadata_type.options.filter(is_active=True).order_by('sort_order')
+
+        for option in metadata_options:
+            # Count apps that have this metadata option and are published
+            app_count = option.app_values.filter(app__status='published').count()
+
+            if app_count > 0:
+                options.append({
+                    'value': option.value,
+                    'label_en': option.label_en,
+                    'label_ar': option.label_ar,
+                    'count': app_count,
+                })
+
+        # Add to response using metadata type name as key
+        response[metadata_type.name] = options
+
+    return response
+
+
 @router.get("/featured/", response=PaginatedAppListSchema)
 def get_featured_apps(request):
     """

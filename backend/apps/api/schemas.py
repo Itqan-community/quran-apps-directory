@@ -60,6 +60,10 @@ class AppSchema(BaseModel):
     featured: bool
     platform: str
     status: str
+    # Multi-filter fields
+    riwayah: List[str] = Field(default_factory=list, description="Supported Quranic recitation styles")
+    mushaf_type: List[str] = Field(default_factory=list, alias="mushaf_type", description="Supported Mushaf types")
+    features: List[str] = Field(default_factory=list, description="App features")
     developer: DeveloperSchema
     categories: List[CategorySchema]
     created_at: str
@@ -87,6 +91,10 @@ class AppListSchema(BaseModel):
     featured: bool
     platform: str
     status: str
+    # Multi-filter fields
+    riwayah: List[str] = Field(default_factory=list, description="Supported Quranic recitation styles")
+    mushaf_type: List[str] = Field(default_factory=list, alias="mushaf_type", description="Supported Mushaf types")
+    features: List[str] = Field(default_factory=list, description="App features")
     developer: DeveloperSchema
     categories: List[str]  # Simplified for list view
     created_at: str
@@ -115,6 +123,10 @@ class AppCreateSchema(BaseModel):
     platform: str = "cross_platform"
     featured: bool = False
     sort_order: int = 0
+    # Multi-filter fields
+    riwayah: List[str] = Field(default_factory=list, description="Supported Quranic recitation styles")
+    mushaf_type: List[str] = Field(default_factory=list, alias="mushaf_type", description="Supported Mushaf types")
+    features: List[str] = Field(default_factory=list, description="App features")
     categories: List[str] = Field(default_factory=list)
     developer_id: int
 
@@ -141,6 +153,10 @@ class AppUpdateSchema(BaseModel):
     platform: Optional[str] = None
     featured: Optional[bool] = None
     sort_order: Optional[int] = None
+    # Multi-filter fields
+    riwayah: Optional[List[str]] = Field(None, description="Supported Quranic recitation styles")
+    mushaf_type: Optional[List[str]] = Field(None, alias="mushaf_type", description="Supported Mushaf types")
+    features: Optional[List[str]] = Field(None, description="App features")
     categories: Optional[List[str]] = None
     developer_id: Optional[int] = None
 
@@ -155,3 +171,26 @@ class PaginatedAppListSchema(BaseModel):
     next: Optional[str] = None
     previous: Optional[str] = None
     results: List[AppListSchema]
+
+
+# Metadata value schemas for filter dropdowns
+class MetadataValueSchema(BaseModel):
+    """Schema for a single metadata option."""
+    value: str
+    label_en: str = Field(..., alias="label_en")
+    label_ar: str = Field(..., alias="label_ar")
+    count: int = Field(0, description="Number of apps with this value")
+
+    class Config:
+        populate_by_name = True
+
+
+class MetadataValuesResponseSchema(BaseModel):
+    """Schema for all available metadata values."""
+    platforms: List[MetadataValueSchema] = Field(default_factory=list)
+    riwayah: List[MetadataValueSchema] = Field(default_factory=list)
+    mushaf_type: List[MetadataValueSchema] = Field(default_factory=list, alias="mushaf_type")
+    features: List[MetadataValueSchema] = Field(default_factory=list)
+
+    class Config:
+        populate_by_name = True

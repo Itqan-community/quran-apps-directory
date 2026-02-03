@@ -5,6 +5,7 @@ from django.utils.text import slugify
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.cache import cache
 from django.conf import settings
+from django.contrib.postgres.indexes import GinIndex
 from pgvector.django import VectorField
 from core.models import PublishedModel
 from core.storage import R2Storage
@@ -73,6 +74,48 @@ def screenshot_upload_path(instance, filename):
     # Always use .webp since we convert images
     slug = instance.app.slug or 'unknown'
     return f"app-images/{slug}/screenshots/{instance.language}_{instance.sort_order}.webp"
+
+
+class RiwayahType(models.TextChoices):
+    """Enum for Quranic recitation styles (Riwayat)."""
+    HAFS = 'hafs', 'Hafs'
+    WARSH = 'warsh', 'Warsh'
+    QALUN = 'qalun', 'Qalun'
+    SHUBAH = 'shubah', "Shu'bah"
+    ALDURI = 'alduri', 'Al-Duri'
+    ALSUSI = 'alsusi', 'Al-Susi'
+    HISHAM = 'hisham', 'Hisham'
+    IBN_DHAKWAN = 'ibn_dhakwan', 'Ibn Dhakwan'
+    KHALAF = 'khalaf', 'Khalaf'
+    KHALLAD = 'khallad', 'Khallad'
+    OTHER = 'other', 'Other'
+
+
+class MushafType(models.TextChoices):
+    """Enum for Mushaf types."""
+    MADANI = 'madani', 'Madani (Madinah)'
+    UTHMANI = 'uthmani', 'Uthmani'
+    INDO_PAK = 'indo_pak', 'Indo-Pakistani'
+    MOROCCAN = 'moroccan', 'Moroccan'
+    SIMPLE = 'simple', 'Simple (Imlaei)'
+    TAJWEED = 'tajweed', 'Tajweed Colored'
+    OTHER = 'other', 'Other'
+
+
+class AppFeature(models.TextChoices):
+    """Enum for app features that can be filtered."""
+    OFFLINE = 'offline', 'Offline Mode'
+    AUDIO = 'audio', 'Audio Recitation'
+    TRANSLATION = 'translation', 'Translation'
+    TAFSIR = 'tafsir', 'Tafsir'
+    BOOKMARKS = 'bookmarks', 'Bookmarks'
+    SEARCH = 'search', 'Search'
+    TAJWEED = 'tajweed', 'Tajweed'
+    DARK_MODE = 'dark_mode', 'Dark Mode'
+    MEMORIZATION = 'memorization', 'Memorization Tools'
+    PRAYER_TIMES = 'prayer_times', 'Prayer Times'
+    QIBLA = 'qibla', 'Qibla Direction'
+    NOTIFICATIONS = 'notifications', 'Notifications'
 
 
 class App(PublishedModel):
@@ -172,6 +215,23 @@ class App(PublishedModel):
 
     featured = models.BooleanField(default=False, db_index=True, help_text="Whether this app is featured")
 
+    # Multi-filter fields for advanced filtering
+    riwayah = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="List of supported Quranic riwayat (recitation styles). Valid values: hafs, warsh, qalun, shubah, alduri, alsusi, hisham, ibn_dhakwan, khalaf, khallad, other"
+    )
+    mushaf_type = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="List of supported Mushaf types. Valid values: madani, uthmani, indo_pak, moroccan, simple, tajweed, other"
+    )
+    features = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="List of app features. Valid values: offline, audio, translation, tafsir, bookmarks, search, tajweed, dark_mode, memorization, prayer_times, qibla, notifications"
+    )
+
     # Crawled content cache for AI embeddings
     crawled_content = models.TextField(
         blank=True,
@@ -200,6 +260,10 @@ class App(PublishedModel):
             models.Index(fields=['name_en']),
             models.Index(fields=['name_ar']),
             models.Index(fields=['status', 'featured']),
+            # GIN indexes for efficient JSONB array containment queries
+            GinIndex(fields=['riwayah'], name='apps_riwayah_gin'),
+            GinIndex(fields=['mushaf_type'], name='apps_mushaf_type_gin'),
+            GinIndex(fields=['features'], name='apps_features_gin'),
         ]
         verbose_name = 'Application'
         verbose_name_plural = 'Applications'

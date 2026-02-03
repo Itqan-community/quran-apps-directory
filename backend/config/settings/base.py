@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'categories',
     'developers',
     'submissions',
+    'metadata',  # Dynamic metadata system for multi-filter API support
 ]
 
 MIDDLEWARE = [
