@@ -42,6 +42,24 @@ class AppService:
         else:
             categories = [cat.slug for cat in app.categories.all()]
 
+        # Main images - use .url accessor (returns full URL from R2Storage)
+        main_image_en = app.main_image_en.url if app.main_image_en else ""
+        main_image_ar = app.main_image_ar.url if app.main_image_ar else ""
+
+        # Screenshots - prefer AppScreenshot model, fallback to legacy JSON during transition
+        screenshot_files_en = list(app.screenshot_files.filter(language='en').order_by('sort_order'))
+        screenshot_files_ar = list(app.screenshot_files.filter(language='ar').order_by('sort_order'))
+
+        if screenshot_files_en:
+            screenshots_en = [s.image.url for s in screenshot_files_en]
+        else:
+            screenshots_en = app.screenshots_en or []
+
+        if screenshot_files_ar:
+            screenshots_ar = [s.image.url for s in screenshot_files_ar]
+        else:
+            screenshots_ar = app.screenshots_ar or []
+
         return {
             "id": str(app.id),
             "name_en": app.name_en,
@@ -51,14 +69,14 @@ class AppService:
             "short_description_ar": app.short_description_ar,
             "description_en": app.description_en or "",
             "description_ar": app.description_ar or "",
-            "application_icon": app.application_icon or "",
-            "main_image_en": app.main_image_en or "",
-            "main_image_ar": app.main_image_ar or "",
+            "application_icon": app.application_icon.url if app.application_icon else "",
+            "main_image_en": main_image_en,
+            "main_image_ar": main_image_ar,
             "google_play_link": app.google_play_link or "",
             "app_store_link": app.app_store_link or "",
             "app_gallery_link": app.app_gallery_link or "",
-            "screenshots_en": app.screenshots_en or [],
-            "screenshots_ar": app.screenshots_ar or [],
+            "screenshots_en": screenshots_en,
+            "screenshots_ar": screenshots_ar,
             "avg_rating": float(app.avg_rating) if app.avg_rating else 0,
             "review_count": app.review_count or 0,
             "view_count": app.view_count or 0,

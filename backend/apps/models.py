@@ -7,6 +7,72 @@ from django.core.cache import cache
 from django.conf import settings
 from pgvector.django import VectorField
 from core.models import PublishedModel
+from core.storage import R2Storage
+from .validators import validate_icon_file, validate_image_file
+
+
+def app_icon_upload_path(instance, filename):
+    """
+    Generate upload path for app icons.
+
+    Args:
+        instance: App model instance
+        filename: Original filename
+
+    Returns:
+        Path like 'app-icons/app-slug/icon.webp'
+    """
+    # Always use .webp since we convert images
+    slug = instance.slug or 'unknown'
+    return f"app-icons/{slug}/icon.webp"
+
+
+def main_image_en_upload_path(instance, filename):
+    """
+    Generate upload path for English main images.
+
+    Args:
+        instance: App model instance
+        filename: Original filename
+
+    Returns:
+        Path like 'app-images/app-slug/main_en.webp'
+    """
+    # Always use .webp since we convert images
+    slug = instance.slug or 'unknown'
+    return f"app-images/{slug}/main_en.webp"
+
+
+def main_image_ar_upload_path(instance, filename):
+    """
+    Generate upload path for Arabic main images.
+
+    Args:
+        instance: App model instance
+        filename: Original filename
+
+    Returns:
+        Path like 'app-images/app-slug/main_ar.webp'
+    """
+    # Always use .webp since we convert images
+    slug = instance.slug or 'unknown'
+    return f"app-images/{slug}/main_ar.webp"
+
+
+def screenshot_upload_path(instance, filename):
+    """
+    Generate upload path for app screenshots.
+
+    Args:
+        instance: AppScreenshot model instance
+        filename: Original filename
+
+    Returns:
+        Path like 'app-images/app-slug/screenshots/en_0.webp'
+    """
+    # Always use .webp since we convert images
+    slug = instance.app.slug or 'unknown'
+    return f"app-images/{slug}/screenshots/{instance.language}_{instance.sort_order}.webp"
 
 
 class App(PublishedModel):
@@ -29,9 +95,32 @@ class App(PublishedModel):
     description_ar = models.TextField()
 
     # URLs and Links
-    application_icon = models.URLField(blank=True, null=True)
-    main_image_en = models.URLField(blank=True, null=True)
-    main_image_ar = models.URLField(blank=True, null=True)
+    application_icon = models.ImageField(
+        upload_to=app_icon_upload_path,
+        storage=R2Storage(),
+        validators=[validate_icon_file],
+        blank=False,
+        null=False,
+        help_text="App icon (PNG, JPG, or WebP, max 512KB, required)"
+    )
+    main_image_en = models.ImageField(
+        upload_to=main_image_en_upload_path,
+        storage=R2Storage(),
+        validators=[validate_image_file],
+        max_length=500,  # Full URLs can be long
+        blank=False,
+        null=False,
+        help_text="Main cover image - English (PNG, JPG, WebP, max 5MB, required)"
+    )
+    main_image_ar = models.ImageField(
+        upload_to=main_image_ar_upload_path,
+        storage=R2Storage(),
+        validators=[validate_image_file],
+        max_length=500,  # Full URLs can be long
+        blank=False,
+        null=False,
+        help_text="Main cover image - Arabic (PNG, JPG, WebP, max 5MB, required)"
+    )
     google_play_link = models.URLField(blank=True, null=True)
     app_store_link = models.URLField(blank=True, null=True)
     app_gallery_link = models.URLField(blank=True, null=True)
@@ -142,7 +231,7 @@ class App(PublishedModel):
         cache.delete(f'app_detail_{self.slug}')
 
     def save(self, *args, **kwargs):
-        """Override save to generate slug and invalidate cache."""
+        """Override save to generate slug, process images, and invalidate cache."""
         # Generate slug if not set
         if not self.slug:
             # Generate slug from English name
@@ -153,6 +242,9 @@ class App(PublishedModel):
             while App.objects.filter(slug=self.slug).exists():
                 self.slug = f"{base_slug}-{counter}"
                 counter += 1
+
+        # Process main images before saving (only for new uploads)
+        self._process_main_images()
 
         # Track if this is a new instance
         is_new = self._state.adding
@@ -176,6 +268,25 @@ class App(PublishedModel):
                 'apps_list_published',
                 'apps_list_featured',
             ])
+
+    def _process_main_images(self):
+        """Process main images (resize, compress, convert to WebP)."""
+        from core.utils.image_processing import process_main_image
+
+        for field_name in ('main_image_en', 'main_image_ar'):
+            field = getattr(self, field_name)
+            # Only process new uploads (has file attribute with read method)
+            if field and hasattr(field, 'file') and hasattr(field.file, 'read'):
+                try:
+                    processed = process_main_image(field)
+                    if processed:
+                        # Generate new filename with .webp extension
+                        original_name = field.name if field.name else 'image.webp'
+                        new_name = original_name.rsplit('.', 1)[0] + '.webp'
+                        field.save(new_name, processed, save=False)
+                except Exception:
+                    # If processing fails, save original
+                    pass
 
 
 class CrawlSource(models.TextChoices):
@@ -370,3 +481,64 @@ class AppViewEvent(models.Model):
 
     def __str__(self):
         return f"{self.app.name_en} - {self.viewed_at.strftime('%Y-%m-%d %H:%M')}"
+
+
+class AppScreenshot(models.Model):
+    """
+    Screenshot file for an app, supports both languages.
+
+    Replaces the screenshots_en and screenshots_ar JSONFields with
+    a proper model for file uploads. Stores full R2 URLs in the database.
+    Images are automatically compressed, resized, and converted to WebP.
+    """
+    app = models.ForeignKey(
+        'App',
+        on_delete=models.CASCADE,
+        related_name='screenshot_files',
+        db_index=True
+    )
+    language = models.CharField(
+        max_length=2,
+        choices=[('en', 'English'), ('ar', 'Arabic')],
+        default='en',
+        db_index=True
+    )
+    image = models.ImageField(
+        upload_to=screenshot_upload_path,
+        storage=R2Storage(),
+        validators=[validate_image_file],
+        max_length=500,  # Full URLs can be long
+        help_text="Screenshot image (PNG, JPG, WebP, max 5MB)"
+    )
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        db_table = 'app_screenshots'
+        ordering = ['language', 'sort_order']
+        indexes = [
+            models.Index(fields=['app', 'language']),
+            models.Index(fields=['app', 'language', 'sort_order']),
+        ]
+        verbose_name = 'App Screenshot'
+        verbose_name_plural = 'App Screenshots'
+
+    def __str__(self):
+        return f"{self.app.name_en} - {self.get_language_display()} #{self.sort_order}"
+
+    def save(self, *args, **kwargs):
+        """Process image before saving (resize, compress, convert to WebP)."""
+        # Only process new uploads (has file attribute with read method)
+        if self.image and hasattr(self.image, 'file') and hasattr(self.image.file, 'read'):
+            from core.utils.image_processing import process_screenshot
+            try:
+                processed = process_screenshot(self.image)
+                if processed:
+                    # Generate new filename with .webp extension
+                    original_name = self.image.name if self.image.name else 'screenshot.webp'
+                    new_name = original_name.rsplit('.', 1)[0] + '.webp'
+                    self.image.save(new_name, processed, save=False)
+            except Exception:
+                # If processing fails, save original
+                pass
+
+        super().save(*args, **kwargs)

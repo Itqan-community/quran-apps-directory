@@ -1,6 +1,29 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import App, AppCrawledData
+from .models import App, AppCrawledData, AppScreenshot
+from .widgets import AdminImageWithPreview
+
+
+class AppScreenshotInline(admin.TabularInline):
+    """
+    Inline admin for managing app screenshots.
+    """
+    model = AppScreenshot
+    extra = 1
+    fields = ['language', 'image', 'sort_order', 'preview']
+    readonly_fields = ['preview']
+    ordering = ['language', 'sort_order']
+
+    def preview(self, obj):
+        """Display screenshot preview."""
+        if obj.image:
+            url = obj.image.url if hasattr(obj.image, 'url') else str(obj.image)
+            return format_html(
+                '<img src="{}" style="max-height: 80px; border-radius: 4px;" />',
+                url
+            )
+        return '-'
+    preview.short_description = 'Preview'
 
 
 @admin.register(App)
@@ -40,8 +63,12 @@ class AppAdmin(admin.ModelAdmin):
         'developer__name_ar',
     ]
     prepopulated_fields = {'slug': ('name_en',)}
-    readonly_fields = ['id', 'created_at', 'updated_at', 'icon_preview_large', 'embedding_status']
+    readonly_fields = [
+        'id', 'created_at', 'updated_at',
+        'embedding_status'
+    ]
     filter_horizontal = ['categories']
+    inlines = [AppScreenshotInline]
 
     fieldsets = [
         ('Basic Information', {
@@ -64,12 +91,18 @@ class AppAdmin(admin.ModelAdmin):
         ('Media', {
             'fields': [
                 'application_icon',
-                'icon_preview_large',
                 'main_image_en',
                 'main_image_ar',
+            ],
+            'description': 'Screenshots are managed via the inline section below.'
+        }),
+        ('Legacy Screenshots (JSON)', {
+            'fields': [
                 'screenshots_en',
                 'screenshots_ar',
-            ]
+            ],
+            'classes': ['collapse'],
+            'description': 'Legacy JSON fields - use the Screenshots inline above for new uploads.'
         }),
         ('Store Links', {
             'fields': [
@@ -106,25 +139,24 @@ class AppAdmin(admin.ModelAdmin):
 
     ordering = ['sort_order', 'name_en']
 
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        """Use custom widget for image fields to show inline preview."""
+        if db_field.name == 'application_icon':
+            kwargs['widget'] = AdminImageWithPreview(preview_height=50)
+        elif db_field.name in ('main_image_en', 'main_image_ar'):
+            kwargs['widget'] = AdminImageWithPreview(preview_height=80)
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
     def icon_preview(self, obj):
         """Display small icon preview in list view."""
         if obj.application_icon:
+            icon_url = obj.application_icon.url if hasattr(obj.application_icon, 'url') else str(obj.application_icon)
             return format_html(
-                '<img src="{}" style="width: 40px; height: 40px; border-radius: 8px;" />',
-                obj.application_icon
+                '<img src="{}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;" />',
+                icon_url
             )
         return '-'
     icon_preview.short_description = 'Icon'
-
-    def icon_preview_large(self, obj):
-        """Display large icon preview in detail view."""
-        if obj.application_icon:
-            return format_html(
-                '<img src="{}" style="width: 100px; height: 100px; border-radius: 12px;" />',
-                obj.application_icon
-            )
-        return '-'
-    icon_preview_large.short_description = 'Icon Preview'
 
     def embedding_status(self, obj):
         """Display embedding status with dimensions."""

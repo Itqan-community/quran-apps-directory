@@ -1,0 +1,20 @@
+{% load i18n %}
+{% if widget.value %}
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+    <img src="{{ widget.value.url }}"
+         style="max-height: {{ widget.preview_height }}px; border-radius: 4px; border: 1px solid #ddd;"
+         alt="Current image" />
+    <div style="display: flex; align-items: center; gap: 8px;">
+        <a href="{{ widget.value.url }}" target="_blank" style="word-break: break-all;">
+            {{ widget.value.name|truncatechars:40 }}
+        </a>
+        {% if widget.is_initial %}
+        <label style="display: inline-flex; align-items: center; gap: 4px; color: #666; font-size: 12px;">
+            <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}">
+            {% trans "Clear" %}
+        </label>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+<input type="file" name="{{ widget.name }}"{% if widget.required %} required{% endif %}{% include "django/forms/widgets/attrs.html" %}>

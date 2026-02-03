@@ -310,14 +310,40 @@
         </h2>
 
         <nz-form-item>
-          <nz-form-label nzRequired>{{ 'submitApp.fields.iconUrl' | translate }}</nz-form-label>
+          <nz-form-label nzRequired>{{ 'submitApp.iconUpload' | translate }}</nz-form-label>
           <nz-form-control>
-            <input nz-input
-              [(ngModel)]="formData.app_icon_url"
-              name="app_icon_url"
-              [placeholder]="'submitApp.placeholders.iconUrl' | translate" />
+            <div class="icon-upload-container">
+              <nz-upload
+                nzType="drag"
+                [nzCustomRequest]="customIconUpload"
+                [nzBeforeUpload]="beforeIconUpload"
+                [nzFileList]="iconFileList"
+                [nzRemove]="onIconRemove"
+                nzListType="picture-card"
+                [nzAccept]="'.png,.jpg,.jpeg,.webp'"
+                [nzLimit]="1"
+                [nzDisabled]="iconUploading"
+                class="icon-uploader">
+                @if (iconFileList.length === 0) {
+                  <div class="upload-drag-content">
+                    @if (iconUploading) {
+                      <span nz-icon nzType="loading" class="upload-icon"></span>
+                    } @else {
+                      <span nz-icon nzType="cloud-upload" class="upload-icon"></span>
+                    }
+                    <p class="upload-text">{{ 'submitApp.iconUploadButton' | translate }}</p>
+                    <p class="upload-hint">{{ 'submitApp.iconUploadHint' | translate }}</p>
+                  </div>
+                }
+              </nz-upload>
+              @if (iconUploadError) {
+                <div class="upload-error">{{ iconUploadError }}</div>
+              }
+              @if (!formData.app_icon_url && !iconUploading) {
+                <div class="field-hint upload-required-hint">{{ 'submitApp.iconRequired' | translate }}</div>
+              }
+            </div>
           </nz-form-control>
-          <div class="field-hint">{{ 'submitApp.hints.iconUrl' | translate }}</div>
         </nz-form-item>
 
         <nz-form-item>
