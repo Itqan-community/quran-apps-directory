@@ -66,7 +66,7 @@ jobs:
                   \"type\": \"section\",
                   \"text\": {
                     \"type\": \"mrkdwn\",
-                    \"text\": \":white_check_mark: *[PROD] Backend Deployed*\n\n:link: <https://api.quran-apps.itqan.dev|View Site>\n:git: Branch: \`main\`\n:package: Commit: \`${GITHUB_SHA::7}\`\n:bust_in_silhouette: By: ${{ github.actor }}\"
+                    \"text\": \":white_check_mark: *[PROD] Backend Deployed*\n\n:link: <https://qad-backend-api-production.up.railway.app/admin/|View Admin>\n:seedling: Branch: \`main\`\n:package: Commit: \`${GITHUB_SHA::7}\`\n:memo: ${{ github.event.head_commit.message }}\n:bust_in_silhouette: By: ${{ github.actor }}\n\"
                   }
                 }
               ]
