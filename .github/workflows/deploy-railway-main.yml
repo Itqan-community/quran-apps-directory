@@ -58,6 +58,10 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          if [ -z "$COMMIT_MSG" ]; then
+            COMMIT_MSG=$(git log -1 --pretty=%s)
+          fi
           curl -X POST "$SLACK_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
             -d "{
@@ -66,7 +70,7 @@ jobs:
                   \"type\": \"section\",
                   \"text\": {
                     \"type\": \"mrkdwn\",
-                    \"text\": \":white_check_mark: *[PROD] Backend Deployed*\n\n:link: <https://qad-backend-api-production.up.railway.app/admin/|View Admin>\n:seedling: Branch: \`main\`\n:package: Commit: \`${GITHUB_SHA::7}\`\n:memo: ${{ github.event.head_commit.message }}\n:bust_in_silhouette: By: ${{ github.actor }}\n\"
+                    \"text\": \":white_check_mark: *[PROD] Backend Deployed*\n\n:link: <https://qad-backend-api-production.up.railway.app/admin/|View Admin>\n:seedling: Branch: \`main\`\n:package: Commit: \`${GITHUB_SHA::7}\`\n:memo: $COMMIT_MSG\n:bust_in_silhouette: By: ${{ github.actor }}\n\"
                   }
                 }
               ]
