@@ -1,6 +1,11 @@
 <!-- Hero Section with Background -->
 <section class="hero-section">
   <div class="hero-background">
+    <!-- Decorative blurred ellipses -->
+    <div class="hero-ellipse hero-ellipse-teal-inner"></div>
+    <div class="hero-ellipse hero-ellipse-teal-small"></div>
+    <div class="hero-ellipse hero-ellipse-orange-inner"></div>
+    <div class="hero-ellipse hero-ellipse-orange-small"></div>
     <div class="hero-gradient"></div>
     <div class="hero-pattern"></div>
     <img
@@ -207,7 +212,11 @@
       </h2>
       <span class="search-results-count">
         {{ filteredApps.length }}
-        {{ filteredApps.length === 1 ? ("appList.search.result" | translate) : ("appList.search.results" | translate) }}
+        {{
+          filteredApps.length === 1
+            ? ("appList.search.result" | translate)
+            : ("appList.search.results" | translate)
+        }}
       </span>
     </div>
   }
@@ -293,6 +302,24 @@
               @for (cat of app.categories | slice: 0 : 3; track cat) {
                 <span class="category-tag">
                   {{ "appList.categories." + cat | translate }}
+                </span>
+              }
+              @if (app.categories.length > 3) {
+                <span
+                  class="category-tag category-more"
+                  (click)="$event.stopPropagation()"
+                >
+                  +{{ app.categories.length - 3 }}
+                  <span class="category-tooltip">
+                    @for (
+                      cat of app.categories | slice: 3;
+                      track cat
+                    ) {
+                      <span class="tooltip-tag">{{
+                        "appList.categories." + cat | translate
+                      }}</span>
+                    }
+                  </span>
                 </span>
               }
             </div>

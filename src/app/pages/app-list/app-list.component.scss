@@ -30,21 +30,136 @@
   margin: 10px;
   border-radius: 22px;
   z-index: 0;
+  background-color: rgba(228, 70, 37, 0.07);
+  overflow: hidden;
 
-  background:
-    radial-gradient(
-      ellipse 70% 70% at 12% 60%,
-      var(--hero-mint-soft) 0%,
-      rgba(18, 188, 172, 0.15) 45%,
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 60% 60% at 85% 15%,
-      rgba(250, 175, 65, 0.3) 0%,
-      rgba(250, 175, 65, 0.15) 40%,
-      transparent 75%
-    ),
-    linear-gradient(135deg, #ffffff 0%, #f5eedb 100%);
+  // Teal ellipse group (left side) - from Figma
+  &::before {
+    content: "";
+    position: absolute;
+    width: 990px;
+    height: 990px;
+    left: -700px;
+    top: 150px;
+    background: #12bcac;
+    opacity: 0.3;
+    filter: blur(165px);
+    transform: rotate(30deg);
+  }
+
+  // Yellow/cream ellipse group (right side) - lighter
+  &::after {
+    content: "";
+    position: absolute;
+    width: 990px;
+    height: 990px;
+    left: 847px;
+    top: -700px;
+    background: #dfc98f;
+    filter: blur(165px);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: rotate(-135deg);
+  }
+
+  @media (max-width: 768px) {
+    margin: 10px;
+    border-radius: 16px;
+
+    &::before {
+      width: 600px;
+      height: 600px;
+      left: -400px;
+      top: 100px;
+      filter: blur(100px);
+      opacity: 0.25;
+    }
+
+    &::after {
+      width: 600px;
+      height: 600px;
+      left: auto;
+      right: -300px;
+      top: -400px;
+      filter: blur(100px);
+      opacity: 0.6;
+    }
+  }
+}
+
+// Decorative ellipses for hero background (hidden - using blurred pseudo-elements only)
+.hero-ellipse {
+  display: none;
+}
+
+// Teal inner ellipse (medium)
+.hero-ellipse-teal-inner {
+  width: 584px;
+  height: 583px;
+  left: -448px;
+  top: 456px;
+  background: #15a295;
+  opacity: 0.4;
+  filter: blur(0px);
+
+  @media (max-width: 768px) {
+    width: 350px;
+    height: 350px;
+    left: -250px;
+    top: 300px;
+  }
+}
+
+// Teal small ellipse
+.hero-ellipse-teal-small {
+  width: 302px;
+  height: 301px;
+  left: -255px;
+  top: 649px;
+  background: #186861;
+  filter: blur(0px);
+
+  @media (max-width: 768px) {
+    width: 180px;
+    height: 180px;
+    left: -150px;
+    top: 420px;
+  }
+}
+
+// Orange inner ellipse (medium)
+.hero-ellipse-orange-inner {
+  width: 584px;
+  height: 583px;
+  right: -350px;
+  top: -439px;
+  background: #faaf41;
+  opacity: 0.4;
+  filter: blur(0px);
+
+  @media (max-width: 768px) {
+    width: 350px;
+    height: 350px;
+    right: -200px;
+    top: -250px;
+  }
+}
+
+// Orange small ellipse
+.hero-ellipse-orange-small {
+  width: 302px;
+  height: 301px;
+  right: -150px;
+  top: -239px;
+  background: #faaf41;
+  filter: blur(0px);
+
+  @media (max-width: 768px) {
+    width: 180px;
+    height: 180px;
+    right: -80px;
+    top: -130px;
+  }
 }
 
 .hero-star-decoration {
@@ -707,7 +822,7 @@
 .app-card {
   background: #fff;
   border-radius: 10px;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid rgba(0, 0, 0, 0.06);
   transition: all 0.25s ease;
   cursor: pointer;
@@ -728,6 +843,7 @@
   position: relative;
   aspect-ratio: 5 / 3;
   overflow: hidden;
+  border-radius: 10px 10px 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -884,16 +1000,109 @@
   font-size: 12px;
   color: #666;
   font-weight: 400;
+  white-space: nowrap;
+
+  &.category-more {
+    background: #e8e8e8;
+    color: #888;
+    font-weight: 500;
+    position: relative;
+    cursor: pointer;
+
+    &:hover .category-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  }
 
   :host-context(.dark-theme) & {
     background: #2a2a2a;
     color: #aaa;
+
+    &.category-more {
+      background: #333;
+      color: #bbb;
+    }
   }
 
   @media (max-width: 640px) {
     padding: 3px 6px;
     font-size: 10px;
     border-radius: 4px;
+  }
+}
+
+.category-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 140px;
+  max-width: 260px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 10;
+  pointer-events: none;
+
+  // Arrow
+  &::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #fff;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.08);
+  }
+
+  :host-context(.dark-theme) & {
+    background: #2a2a2a;
+    border-color: #444;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+
+    &::after {
+      border-top-color: #2a2a2a;
+    }
+
+    &::before {
+      border-top-color: #444;
+    }
+  }
+}
+
+.tooltip-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  font-size: 11px;
+  color: #666;
+  font-weight: 400;
+  white-space: nowrap;
+
+  :host-context(.dark-theme) & {
+    background: #333;
+    color: #aaa;
   }
 }
 

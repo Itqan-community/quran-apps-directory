@@ -87,13 +87,22 @@
     "description": "Description",
     "developer": "Developer",
     "downloadLinks": "Download Links",
+    "downloadApp": "Download App",
+    "share": "Share",
     "appStore": "App Store",
     "playStore": "Google Play",
     "huaweiStore": "Huawei AppGallery",
     "relevantApps": "Similar Apps",
     "screenshots": "Screenshots",
     "readMore": "Read More",
-    "readLess": "Read Less"
+    "readLess": "Read Less",
+    "stats": {
+      "rating": "Rating",
+      "downloads": "Downloads",
+      "downloadCount": "12M+",
+      "platform": "Platform",
+      "allPlatforms": "All"
+    }
   },
   "requestForm": {
     "title": "Request App Addition",
