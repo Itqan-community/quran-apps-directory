@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إتقان - تصفية نتائج البحث</title>
     <style>
         body { 
             font-family: 'Segoe UI', sans-serif; 
@@ -23,9 +24,11 @@
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1); 
             position: fixed; 
             bottom: 0; 
-            left: 0;
-            right: 0;
+            /* إصلاح: إلغاء left:0 و right:0 واستبدالهم بالتوسيط الذكي */
+            left: 50%;
+            transform: translateX(-50%);
             padding: 20px; 
+            z-index: 1000;
         }
 
         .header { 
@@ -71,6 +74,11 @@
             background-color: #f9f9f9; 
             font-size: 14px; 
             outline: none; 
+            /* تحسين شكل السهم في المتصفحات */
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 10px center;
         }
 
         .apply-btn { 
@@ -85,11 +93,15 @@
             cursor: pointer; 
             margin-top: 10px; 
         }
+
+        .apply-btn:active {
+            background-color: #1b5e20;
+        }
     </style>
 </head>
 <body>
 
-    <div class="filter-sheet" role="dialog" aria-labelledby="filterTitle">
+    <div class="filter-sheet" role="dialog" aria-modal="true" aria-labelledby="filterTitle">
         <div class="header">
             <h3 id="filterTitle">تصفية نتائج البحث</h3>
             <button class="clear-btn" type="button">مسح الكل</button>
