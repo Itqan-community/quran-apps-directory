@@ -1,5 +1,5 @@
 import logging
-from typing import List, Any, Optional
+from typing import List, Any, Optional, Dict, Tuple
 from decimal import Decimal
 from django.db.models import QuerySet
 from django.utils import timezone
@@ -132,7 +132,57 @@ class AISearchService:
         if external_content:
             sections.append(f"[EXTERNAL] {external_content}")
 
+        # 9. Dynamic Metadata (loop through all active MetadataTypes)
+        metadata_values = self._get_app_metadata_values(app)
+
+        for metadata_type_name, values in metadata_values.items():
+            if values:
+                labels = self._get_metadata_labels(values, metadata_type_name)
+                # Convert snake_case to TITLE CASE for tag: riwayah -> RIWAYAH
+                tag_name = metadata_type_name.upper().replace('_', ' ')
+                sections.append(f"[{tag_name}] {', '.join(labels)}")
+
         return "\n".join(sections)
+
+    def _get_app_metadata_values(self, app: Any) -> Dict[str, List[str]]:
+        """
+        Get metadata values from AppMetadataValue table.
+        Returns dict like: {'riwayah': ['hafs', 'warsh'], 'features': ['offline']}
+        """
+        from metadata.models import AppMetadataValue
+
+        result = {}
+        for mv in AppMetadataValue.objects.filter(app=app).select_related(
+            'metadata_option', 'metadata_option__metadata_type'
+        ):
+            name = mv.metadata_option.metadata_type.name
+            result.setdefault(name, []).append(mv.metadata_option.value)
+        return result
+
+    def _get_metadata_labels(self, values: List[str], metadata_type: str) -> List[str]:
+        """
+        Convert metadata values to bilingual labels for better embedding quality.
+        Returns labels like: ["Offline (بدون إنترنت)", "Audio (صوت)"]
+        """
+        from metadata.models import MetadataOption
+
+        labels = []
+        options = MetadataOption.objects.filter(
+            metadata_type__name=metadata_type,
+            value__in=values
+        ).select_related('metadata_type')
+
+        for opt in options:
+            labels.append(f"{opt.label_en} ({opt.label_ar})")
+
+        return labels if labels else values
+
+    def _get_active_metadata_names(self) -> List[str]:
+        """Get list of active metadata type names from database."""
+        from metadata.models import MetadataType
+        return list(
+            MetadataType.objects.filter(is_active=True).values_list('name', flat=True)
+        )
 
     def _format_rating_context(self, app: Any) -> str:
         """Format rating and review count into semantic context."""
@@ -280,3 +330,234 @@ class AISearchService:
                 final_results.append(app)
 
         return final_results
+
+    # ====================
+    # Phase 2: Hybrid Search API
+    # ====================
+
+    def hybrid_search(
+        self,
+        query: str,
+        filters: Dict[str, List[str]] = None,
+        limit: int = 50,
+        rerank_top_k: int = 20,
+        include_facets: bool = True,
+        apply_boost: bool = True
+    ) -> Dict[str, Any]:
+        """
+        Hybrid semantic search combining vector similarity with metadata filters.
+
+        Args:
+            query: Search query string
+            filters: Dict of metadata filters {'features': ['offline'], 'riwayah': ['hafs']}
+            limit: Maximum results to return
+            rerank_top_k: Number of top results to rerank with LLM
+            include_facets: Whether to calculate facet counts
+            apply_boost: Whether to apply metadata-based ranking boost
+
+        Returns:
+            Dict with 'results' (list of apps) and 'facets' (filter counts)
+        """
+        from apps.models import App
+
+        embedding = self.get_embedding(query)
+        if not embedding:
+            return {'results': [], 'facets': {}}
+
+        # Start with published apps
+        queryset = App.objects.filter(status='published')
+
+        # Apply metadata filters (pre-filtering before vector search)
+        if filters:
+            # Get all active metadata type names from DB (dynamic)
+            active_metadata_names = self._get_active_metadata_names()
+
+            for metadata_name, values in filters.items():
+                if values and metadata_name in active_metadata_names:
+                    queryset = queryset.filter(
+                        metadata_values__metadata_option__metadata_type__name=metadata_name,
+                        metadata_values__metadata_option__value__in=values
+                    ).distinct()
+
+                elif metadata_name == 'platform' and values:
+                    queryset = queryset.filter(platform__in=values)
+
+                elif metadata_name == 'category' and values:
+                    queryset = queryset.filter(categories__slug__in=values).distinct()
+
+        # Vector search on filtered queryset
+        candidates = queryset.annotate(
+            distance=CosineDistance('embedding', embedding)
+        ).order_by('distance')[:limit]
+
+        candidate_list = list(candidates)
+
+        # Apply metadata boosting (Phase 3)
+        if apply_boost and candidate_list:
+            for app in candidate_list:
+                boost, match_reasons = self._calculate_metadata_boost(app, query)
+                # Store boost info as runtime attributes
+                app._metadata_boost = boost
+                app._match_reasons = match_reasons
+                # Calculate combined score: (1 - distance) * boost
+                app._combined_score = (1 - getattr(app, 'distance', 0)) * boost
+
+            # Re-sort by combined score (descending)
+            candidate_list.sort(key=lambda x: getattr(x, '_combined_score', 0), reverse=True)
+
+        # LLM Reranking on top candidates
+        if candidate_list and self.provider and rerank_top_k > 0:
+            docs_to_rank = []
+            for app in candidate_list[:rerank_top_k]:
+                docs_to_rank.append({
+                    'id': app.id,
+                    'name_en': app.name_en,
+                    'description_en': app.description_en,
+                    '_obj': app
+                })
+
+            reranked_docs = self.provider.rerank(query, docs_to_rank)
+
+            final_results = []
+            seen_ids = set()
+
+            for doc in reranked_docs:
+                app = doc.get('_obj')
+                if app:
+                    app.ai_reasoning = doc.get('ai_reasoning')
+                    final_results.append(app)
+                    seen_ids.add(app.id)
+
+            # Append non-reranked candidates
+            for app in candidate_list:
+                if app.id not in seen_ids:
+                    final_results.append(app)
+
+            candidate_list = final_results
+
+        # Calculate facets if requested
+        facets = {}
+        if include_facets:
+            facets = self._calculate_facets(queryset)
+
+        return {
+            'results': candidate_list,
+            'facets': facets
+        }
+
+    def _calculate_facets(self, queryset) -> Dict[str, List[Dict]]:
+        """
+        Calculate facet counts for metadata filters.
+
+        Returns counts of apps per metadata option within the current queryset.
+        """
+        from metadata.models import MetadataType, MetadataOption, AppMetadataValue
+        from django.db.models import Count
+
+        facets = {}
+
+        # Get app IDs in current queryset for efficient filtering
+        app_ids = list(queryset.values_list('id', flat=True)[:500])
+
+        # Calculate counts for each active metadata type
+        for mt in MetadataType.objects.filter(is_active=True):
+            counts = AppMetadataValue.objects.filter(
+                app_id__in=app_ids,
+                metadata_option__metadata_type=mt,
+                metadata_option__is_active=True
+            ).values(
+                'metadata_option__value',
+                'metadata_option__label_en',
+                'metadata_option__label_ar'
+            ).annotate(count=Count('app_id', distinct=True)).order_by('-count')
+
+            facets[mt.name] = [
+                {
+                    'value': item['metadata_option__value'],
+                    'label_en': item['metadata_option__label_en'],
+                    'label_ar': item['metadata_option__label_ar'],
+                    'count': item['count']
+                }
+                for item in counts
+            ]
+
+        # Platform facet
+        platform_counts = queryset.values('platform').annotate(
+            count=Count('id')
+        ).order_by('-count')
+
+        platform_labels = {
+            'android': ('Android', 'أندرويد'),
+            'ios': ('iOS', 'آي أو إس'),
+            'cross_platform': ('Cross Platform', 'متعدد المنصات'),
+            'web': ('Web', 'ويب'),
+        }
+
+        facets['platform'] = [
+            {
+                'value': item['platform'],
+                'label_en': platform_labels.get(item['platform'], (item['platform'], item['platform']))[0],
+                'label_ar': platform_labels.get(item['platform'], (item['platform'], item['platform']))[1],
+                'count': item['count']
+            }
+            for item in platform_counts if item['platform']
+        ]
+
+        return facets
+
+    # ====================
+    # Phase 3: Ranking Boosting (Dynamic)
+    # ====================
+
+    def _calculate_metadata_boost(self, app: Any, query: str) -> Tuple[float, List[Dict]]:
+        """
+        Calculate ranking boost based on metadata matching query keywords.
+        Keywords are derived dynamically from MetadataOption labels (EN + AR).
+
+        Returns:
+            Tuple of (boost_multiplier, match_reasons)
+            - boost_multiplier: 1.0 (no boost) to 2.0 (max boost)
+            - match_reasons: List of {'type': str, 'value': str, 'label_en': str, 'label_ar': str}
+        """
+        from metadata.models import MetadataOption
+
+        boost = 1.0
+        match_reasons = []
+        query_lower = query.lower()
+
+        # Get app's metadata values
+        metadata_values = self._get_app_metadata_values(app)
+
+        # Loop through all metadata types the app has
+        for metadata_type_name, values in metadata_values.items():
+            for option_value in values:
+                # Get option from DB to access labels
+                opt = MetadataOption.objects.filter(
+                    metadata_type__name=metadata_type_name,
+                    value=option_value
+                ).select_related('metadata_type').first()
+
+                if not opt:
+                    continue
+
+                # Build keyword list from: value, label_en, label_ar
+                keywords = [
+                    option_value.lower(),
+                    opt.label_en.lower(),
+                    opt.label_ar,  # Keep Arabic as-is
+                ]
+                # Add words from label_en (e.g., "Offline Mode" -> ["offline", "mode"])
+                keywords.extend(opt.label_en.lower().split())
+
+                # Check if any keyword appears in query
+                if any(kw in query_lower for kw in keywords):
+                    boost += 0.15  # Standard boost per match
+                    match_reasons.append({
+                        'type': metadata_type_name,
+                        'value': option_value,
+                        'label_en': opt.label_en,
+                        'label_ar': opt.label_ar
+                    })
+
+        # Cap boost at 2.0
+        return min(boost, 2.0), match_reasons
