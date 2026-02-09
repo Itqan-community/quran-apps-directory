@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إتقان - واجهة نتائج البحث</title>
+    <title>إتقان - تصفية نتائج البحث</title>
     <style>
-        /* تنسيق عام بسيط ومريح للعين للقراءة الطويلة */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: #fcfcfc; 
@@ -14,13 +13,28 @@
             justify-content: center; 
             align-items: center; 
             min-height: 100vh;
-            min-height: 100dvh; /* أفضل دعم للموبايل */
+            min-height: 100dvh; 
         }
 
         .search-empty-state {
             text-align: center;
             padding: 30px;
-            max-width: 350px; /* مقاس مناسب لشاشات الموبايل */
+            max-width: 350px; 
+        }
+
+        /* إصلاح رقم 2: تعديل تنسيق الـ filter-sheet (إذا كنت ستضيفها لاحقاً) */
+        /* هذا التعديل يضمن التوسط في الشاشات الكبيرة */
+        .filter-sheet {
+            background: white;
+            width: 100%;
+            max-width: 360px;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
         }
 
         .icon-wrapper {
@@ -76,24 +90,37 @@
     </div>
 
     <script>
-        // عرض كلمة البحث إن وُجدت في الرابط ?q=
         const params = new URLSearchParams(window.location.search);
         const query = params.get('q');
 
         if (query) {
-            document.getElementById('description').innerHTML =
-                `لم نعثر على نتائج لـ "<strong>${query}</strong>".<br>
-                جرّب كلمات أكثر عمومية أو أزل بعض الفلاتر.`;
+            // إصلاح رقم 1: الحماية من ثغرة XSS
+            // بدلاً من innerHTML، نقوم ببناء العناصر يدوياً لضمان عدم تشغيل أي كود خبيث
+            const descriptionElem = document.getElementById('description');
+            descriptionElem.textContent = ''; // مسح النص القديم
+
+            descriptionElem.appendChild(document.createTextNode('لم نعثر على نتائج لـ "'));
+            
+            const strong = document.createElement('strong');
+            strong.textContent = query; // هنا يتم عرض النص كـ "نص فقط" فلا يُنفذ أي كود
+            descriptionElem.appendChild(strong);
+            
+            descriptionElem.appendChild(document.createTextNode('".'));
+            descriptionElem.appendChild(document.createElement('br'));
+            descriptionElem.appendChild(document.createTextNode('جرّب كلمات أكثر عمومية أو أزل بعض الفلاتر.'));
         }
 
-        // الرجوع للخلف إن وُجد تاريخ تنقل
+        // إصلاح رقم 3: تحسين عمل زر الرجوع مع وجود Fallback
         document.querySelector('.action-button')
             .addEventListener('click', function() {
-                if (history.length > 1) {
+                // إذا كان هناك مصدر للزيارة (Referrer) نرجع للخلف، وإلا نذهب لصفحة البحث
+                if (document.referrer) {
                     history.back();
+                } else {
+                    window.location.href = '/search'; // تأكد من تغيير هذا المسار لمسار صفحة البحث عندك
                 }
             });
     </script>
 
 </body>
-</html>>
+</html>
