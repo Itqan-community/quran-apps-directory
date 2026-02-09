@@ -11,7 +11,7 @@ class GeminiSearchProvider(AISearchProvider):
     Requires google-generativeai package.
     """
     
-    def __init__(self, api_key: str, model: str = "models/text-embedding-004", rerank_model: str = "gemini-2.5-pro"):
+    def __init__(self, api_key: str, model: str = "models/gemini-embedding-001", rerank_model: str = "gemini-2.5-pro"):
         self.api_key = api_key
         self.model = model
         self.rerank_model_name = rerank_model
@@ -39,7 +39,8 @@ class GeminiSearchProvider(AISearchProvider):
             result = self.genai.embed_content(
                 model=self.model,
                 content=text,
-                task_type="retrieval_document"
+                task_type="retrieval_document",
+                output_dimensionality=768
             )
             return result['embedding']
         except Exception as e:
