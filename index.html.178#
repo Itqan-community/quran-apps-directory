@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إتقان - تصفية نتائج البحث</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: #f0f2f5; 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+
+        .filter-sheet { 
+            background: white; 
+            width: 100%; 
+            max-width: 360px; 
+            border-radius: 20px 20px 0 0; 
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1); 
+            position: fixed; 
+            bottom: 0; 
+            /* إصلاح: إلغاء left:0 و right:0 واستبدالهم بالتوسيط الذكي */
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 20px; 
+            z-index: 1000;
+        }
+
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+            border-bottom: 1px solid #eee; 
+            padding-bottom: 10px; 
+        }
+
+        .header h3 { 
+            margin: 0; 
+            color: #2e7d32; 
+            font-size: 18px; 
+        }
+
+        .clear-btn { 
+            color: #d32f2f; 
+            font-size: 14px; 
+            cursor: pointer; 
+            border: none; 
+            background: none; 
+        }
+
+        .filter-group { 
+            margin-bottom: 15px; 
+        }
+
+        .filter-label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: bold; 
+            color: #444; 
+            font-size: 14px; 
+        }
+
+        select { 
+            width: 100%; 
+            padding: 10px; 
+            border-radius: 8px; 
+            border: 1px solid #ddd; 
+            background-color: #f9f9f9; 
+            font-size: 14px; 
+            outline: none; 
+            /* تحسين شكل السهم في المتصفحات */
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 10px center;
+        }
+
+        .apply-btn { 
+            width: 100%; 
+            background-color: #2e7d32; 
+            color: white; 
+            padding: 12px; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: 10px; 
+        }
+
+        .apply-btn:active {
+            background-color: #1b5e20;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="filter-sheet" role="dialog" aria-modal="true" aria-labelledby="filterTitle">
+        <div class="header">
+            <h3 id="filterTitle">تصفية نتائج البحث</h3>
+            <button class="clear-btn" type="button">مسح الكل</button>
+        </div>
+
+        <div class="filter-group">
+            <label for="surah" class="filter-label">نطاق البحث (سورة)</label>
+            <select id="surah">
+                <option>كل السور</option>
+                <option>البقرة</option>
+                <option>آل عمران</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="juz" class="filter-label">تحديد الجزء</label>
+            <select id="juz">
+                <option>كل الأجزاء</option>
+                <option>الجزء الأول</option>
+                <option>الجزء الثلاثون</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="scope" class="filter-label">البحث في</label>
+            <select id="scope">
+                <option>النص القرآني فقط</option>
+                <option>التفسير الميسر</option>
+                <option>أسباب النزول</option>
+            </select>
+        </div>
+
+        <button class="apply-btn" type="button">تأكيد</button>
+    </div>
+
+</body>
+</html>
