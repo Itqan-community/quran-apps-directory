@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إتقان - لم يتم العثور على نتائج مطابقة</title>
+    <title>إتقان - لم نجد نتائج مطابقة</title>
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -105,7 +105,7 @@
                 } else {
                     // التعديل 2: تحديث المسار لمسار لغة صحيح (مثلاً /ar/) لتجنب الـ Redirects المتكررة
                     // تأكد أن هذا المسار مطابق لما هو معرف في Angular Routes
-                    window.location.href = '/ar/search'; 
+                    window.location.href = '/ar'; 
                 }
             });
     </script>
