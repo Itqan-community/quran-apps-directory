@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إتقان - واجهة نتائج البحث</title>
+    <style>
+        /* تنسيق عام بسيط ومريح للعين للقراءة الطويلة */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #fcfcfc; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh;
+            min-height: 100dvh; /* أفضل دعم للموبايل */
+        }
+
+        .search-empty-state {
+            text-align: center;
+            padding: 30px;
+            max-width: 350px; /* مقاس مناسب لشاشات الموبايل */
+        }
+
+        .icon-wrapper {
+            font-size: 70px;
+            color: #d1d1d1;
+            margin-bottom: 15px;
+        }
+
+        .title {
+            color: #2c3e50;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .description {
+            color: #7f8c8d;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .action-button {
+            background-color: #2e7d32; 
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .action-button:focus {
+            outline: 2px solid #1b5e20;
+            outline-offset: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search-empty-state" role="status" aria-live="polite">
+        <div class="icon-wrapper" aria-hidden="true">🔍</div>
+        <div class="title">لم نجد نتائج مطابقة</div>
+        <p class="description" id="description">
+            تأكد من كتابة الكلمات بشكل صحيح، أو حاول البحث بكلمات عامة أكثر للحصول على نتائج أفضل.
+        </p>
+        
+        <button class="action-button" type="button">
+            العودة للبحث
+        </button>
+    </div>
+
+    <script>
+        // عرض كلمة البحث إن وُجدت في الرابط ?q=
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get('q');
+
+        if (query) {
+            document.getElementById('description').innerHTML =
+                `لم نعثر على نتائج لـ "<strong>${query}</strong>".<br>
+                جرّب كلمات أكثر عمومية أو أزل بعض الفلاتر.`;
+        }
+
+        // الرجوع للخلف إن وُجد تاريخ تنقل
+        document.querySelector('.action-button')
+            .addEventListener('click', function() {
+                if (history.length > 1) {
+                    history.back();
+                }
+            });
+    </script>
+
+</body>
+</html>>
