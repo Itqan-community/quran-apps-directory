@@ -400,7 +400,8 @@ class AISearchService:
                 app._metadata_boost = boost
                 app._match_reasons = match_reasons
                 # Calculate combined score: (1 - distance) * boost
-                app._combined_score = (1 - getattr(app, 'distance', 0)) * boost
+                distance = getattr(app, 'distance', 0) or 0
+                app._combined_score = (1 - distance) * boost
 
             # Re-sort by combined score (descending)
             candidate_list.sort(key=lambda x: getattr(x, '_combined_score', 0), reverse=True)
