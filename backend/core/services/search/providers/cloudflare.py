@@ -36,6 +36,9 @@ class CloudflareSearchProvider(AISearchProvider):
         """
         Perform AI-powered search using Cloudflare AI Search REST API.
         """
+        # CF API enforces max_num_results <= 50
+        max_results = min(max_results, 50)
+
         if not all([self.account_id, self.rag_name, self.token]):
             logger.warning("Cloudflare AI Search not configured properly")
             return []
@@ -98,6 +101,9 @@ class CloudflareSearchProvider(AISearchProvider):
         filenames (apps/{id}.json) and return them with scores.
         """
         import re
+
+        # CF API enforces max_num_results <= 50
+        max_results = min(max_results, 50)
 
         if not all([self.account_id, self.rag_name, self.token]):
             logger.warning("Cloudflare AI Search not configured properly")
