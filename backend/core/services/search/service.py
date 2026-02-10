@@ -332,6 +332,73 @@ class AISearchService:
         return final_results
 
     # ====================
+    # Query Augmentation (Soft Filters)
+    # ====================
+
+    def _augment_query_with_filters(self, query: str, filters: Dict[str, List[str]]) -> str:
+        """
+        Augment query with filter context for soft semantic filtering.
+
+        Instead of hard ORM pre-filters, converts filters into bilingual labels
+        appended to the query. This lets vector similarity naturally rank matching
+        apps higher without excluding non-matches.
+
+        Example:
+            query="quran", filters={"riwayah": ["warsh"], "features": ["offline"]}
+            -> "quran [Filter: Warsh (ورش) riwayah] [Filter: Offline Mode (بدون إنترنت) features]"
+        """
+        from metadata.models import MetadataOption
+
+        if not filters:
+            return query
+
+        augmented = query
+
+        # Platform labels (not in MetadataOption table)
+        platform_labels = {
+            'android': ('Android', 'أندرويد'),
+            'ios': ('iOS', 'آي أو إس'),
+            'cross_platform': ('Cross Platform', 'متعدد المنصات'),
+            'web': ('Web', 'ويب'),
+        }
+
+        for filter_type, values in filters.items():
+            if not values:
+                continue
+
+            if filter_type == 'platform':
+                for val in values:
+                    label_en, label_ar = platform_labels.get(val, (val, val))
+                    augmented += f" [Filter: {label_en} ({label_ar}) platform]"
+
+            elif filter_type == 'category':
+                from categories.models import Category
+                for val in values:
+                    cat = Category.objects.filter(slug=val).first()
+                    if cat:
+                        augmented += f" [Filter: {cat.name_en} ({cat.name_ar}) category]"
+                    else:
+                        augmented += f" [Filter: {val} category]"
+
+            else:
+                # Dynamic metadata types - lookup bilingual labels
+                options = MetadataOption.objects.filter(
+                    metadata_type__name=filter_type,
+                    value__in=values
+                ).select_related('metadata_type')
+
+                for opt in options:
+                    augmented += f" [Filter: {opt.label_en} ({opt.label_ar}) {filter_type}]"
+
+                # Handle values not found in DB (pass through raw)
+                found_values = {opt.value for opt in options}
+                for val in values:
+                    if val not in found_values:
+                        augmented += f" [Filter: {val} {filter_type}]"
+
+        return augmented
+
+    # ====================
     # Phase 2: Hybrid Search API
     # ====================
 
@@ -360,39 +427,24 @@ class AISearchService:
         """
         from apps.models import App
 
-        embedding = self.get_embedding(query)
+        # Soft filters: augment query with filter context instead of hard pre-filtering
+        augmented_query = self._augment_query_with_filters(query, filters) if filters else query
+
+        embedding = self.get_embedding(augmented_query)
         if not embedding:
             return {'results': [], 'facets': {}}
 
-        # Start with published apps
+        # Search ALL published apps - no pre-filtering
         queryset = App.objects.filter(status='published')
 
-        # Apply metadata filters (pre-filtering before vector search)
-        if filters:
-            # Get all active metadata type names from DB (dynamic)
-            active_metadata_names = self._get_active_metadata_names()
-
-            for metadata_name, values in filters.items():
-                if values and metadata_name in active_metadata_names:
-                    queryset = queryset.filter(
-                        metadata_values__metadata_option__metadata_type__name=metadata_name,
-                        metadata_values__metadata_option__value__in=values
-                    ).distinct()
-
-                elif metadata_name == 'platform' and values:
-                    queryset = queryset.filter(platform__in=values)
-
-                elif metadata_name == 'category' and values:
-                    queryset = queryset.filter(categories__slug__in=values).distinct()
-
-        # Vector search on filtered queryset
+        # Vector search on full published queryset
         candidates = queryset.annotate(
             distance=CosineDistance('embedding', embedding)
         ).order_by('distance')[:limit]
 
         candidate_list = list(candidates)
 
-        # Apply metadata boosting (Phase 3)
+        # Apply metadata boosting using the original query (not augmented)
         if apply_boost and candidate_list:
             for app in candidate_list:
                 boost, match_reasons = self._calculate_metadata_boost(app, query)
@@ -410,14 +462,29 @@ class AISearchService:
         if candidate_list and self.provider and rerank_top_k > 0:
             docs_to_rank = []
             for app in candidate_list[:rerank_top_k]:
-                docs_to_rank.append({
+                doc = {
                     'id': app.id,
                     'name_en': app.name_en,
                     'description_en': app.description_en,
                     '_obj': app
-                })
+                }
+                # Include filter context so reranker can prioritize filtered attributes
+                if filters:
+                    app_metadata = self._get_app_metadata_values(app)
+                    filter_matches = {}
+                    for f_type, f_values in filters.items():
+                        if f_type == 'platform':
+                            filter_matches[f_type] = [app.platform]
+                        elif f_type == 'category':
+                            filter_matches[f_type] = list(
+                                app.categories.values_list('slug', flat=True)
+                            )
+                        elif f_type in app_metadata:
+                            filter_matches[f_type] = app_metadata[f_type]
+                    doc['filter_context'] = filter_matches
+                docs_to_rank.append(doc)
 
-            reranked_docs = self.provider.rerank(query, docs_to_rank)
+            reranked_docs = self.provider.rerank(augmented_query, docs_to_rank)
 
             final_results = []
             seen_ids = set()

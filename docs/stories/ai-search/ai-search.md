@@ -54,9 +54,17 @@ This approach combines the speed of vector search with the deep reasoning capabi
 *   **Workflow (`search_apps`):**
     1.  **Query Expansion (Optional):** Use LLM to clarify vague queries (e.g., "kids" -> "educational, hifz, alphabet, stories").
     2.  **Vector Search:** Query `pgvector` for top 50 candidates.
-    3.  **Reranking:** Send the Query + Top 50 Metadata to Gemini Pro.
+    3.  **Reranking:** Send the Query + Top 50 Metadata to Gemini Flash.
         *   *Prompt:* "Rank these apps for the user query '{q}'. Return top 20 JSON."
     4.  **Response:** Return the re-ordered list to the API.
+
+*   **Workflow (`hybrid_search`):**
+    1.  **Query Augmentation:** If filters are provided, augment the query with bilingual filter context (e.g., `[Filter: Warsh (ورش) riwayah]`). Filter values are resolved to bilingual labels via `MetadataOption` lookup.
+    2.  **Vector Search:** Query `pgvector` for top candidates from **all published apps** (no hard pre-filtering).
+    3.  **Metadata Boosting:** Calculate boost scores based on query-metadata keyword matches.
+    4.  **LLM Reranking:** Rerank top candidates with filter context passed to the reranker.
+    5.  **Facets:** Calculate facet counts from the full published app set.
+    6.  **Response:** Return results with match_reasons, relevance_score, and facets.
 
 ## 4. Implementation Plan (Task List)
 
