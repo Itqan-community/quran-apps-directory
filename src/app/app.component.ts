@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { isPlatformBrowser } from "@angular/common";
+import { AfterViewInit, Component, Inject, OnInit, OnDestroy, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser, CommonModule } from "@angular/common";
 import { RouterOutlet, RouterLink, ActivatedRoute, Router, ActivatedRouteSnapshot, NavigationEnd } from "@angular/router";
+import { FormsModule } from "@angular/forms";
 import { NzLayoutModule } from "ng-zorro-antd/layout";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzSpaceModule } from "ng-zorro-antd/space";
@@ -15,7 +16,11 @@ import { PerformanceService } from "./services/performance.service";
 import { DeferredAnalyticsService } from "./services/deferred-analytics.service";
 import { Http2OptimizationService } from "./services/http2-optimization.service";
 import { AppImagePreloaderService } from "./services/app-image-preloader.service";
-import { filter } from "rxjs";
+import { NavbarScrollService, NavbarSearchState } from "./services/navbar-scroll.service";
+import { Category } from "./services/api.service";
+import { filter, Subject, takeUntil } from "rxjs";
+import { LucideAngularModule, Menu, X, Globe, Home, Info, Mail, Users, PlusCircle, ExternalLink, ChevronRight, Search } from 'lucide-angular';
+import { SafeHtmlPipe } from "./pipes/safe-html.pipe";
 
 // Icons globally registered in main.ts
 
@@ -25,21 +30,33 @@ import { filter } from "rxjs";
   styleUrls: ["./app.component.scss"],
   standalone: true,
   imports: [
+    CommonModule,
     RouterOutlet,
     RouterLink,
+    FormsModule,
     NzLayoutModule,
     NzButtonModule,
     NzSpaceModule,
     NzDividerModule,
     TranslateModule,
     NzIconModule,
-    ThemeToggleComponent,
+    // ThemeToggleComponent,
+    LucideAngularModule,
+    SafeHtmlPipe,
   ],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public isRtl: boolean;
   public isMobileMenuVisible = false;
   public currentLang: "en" | "ar" = "en";
+
+  // Navbar compact mode with inline search
+  public isNavbarCompact = false;
+  public navbarSearchQuery = '';
+  public navbarSearchType: 'traditional' | 'smart' = 'traditional';
+  public navbarCategories: Category[] = [];
+  public navbarSelectedCategory = 'all';
+  private destroy$ = new Subject<void>();
 
   constructor(
     @Inject(PLATFORM_ID) private readonly platformId: Object,
@@ -53,7 +70,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     private performanceService: PerformanceService,
     private deferredAnalytics: DeferredAnalyticsService,
     private http2Optimization: Http2OptimizationService,
-    private appImagePreloader: AppImagePreloaderService
+    private appImagePreloader: AppImagePreloaderService,
+    private navbarScrollService: NavbarScrollService
   ) {
     // Icons are globally registered in main.ts
     // Translations are initialized via APP_INITIALIZER in main.ts (ensures they load before render)
@@ -120,6 +138,28 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     // Start preloading app images in background (non-blocking)
     this.appImagePreloader.startPreloadingInBackground();
+
+    // Subscribe to navbar compact mode changes (desktop only)
+    this.navbarScrollService.compactMode$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isCompact => {
+        this.isNavbarCompact = isCompact;
+      });
+
+    // Subscribe to search state changes for navbar
+    this.navbarScrollService.searchState$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(state => {
+        this.navbarSearchQuery = state.searchQuery;
+        this.navbarSearchType = state.searchType;
+        this.navbarCategories = state.categories;
+        this.navbarSelectedCategory = state.selectedCategory;
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   ngAfterViewInit() {
@@ -165,6 +205,47 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   toggleMobileMenu() {
     this.isMobileMenuVisible = !this.isMobileMenuVisible;
+  }
+
+  onNavbarSearchInput() {
+    this.navbarScrollService.updateSearchState({ searchQuery: this.navbarSearchQuery });
+  }
+
+  onNavbarSearch() {
+    // Navigate to home with search query
+    this.router.navigate(['/', this.currentLang], {
+      queryParams: { search: this.navbarSearchQuery }
+    });
+  }
+
+  onNavbarCategoryClick(categorySlug: string) {
+    this.navbarSelectedCategory = categorySlug;
+    this.navbarScrollService.updateSearchState({ selectedCategory: categorySlug });
+
+    // Save current scroll position before navigation
+    const scrollY = isPlatformBrowser(this.platformId) ? window.scrollY : 0;
+
+    // Navigate to category
+    const route = categorySlug === 'all'
+      ? ['/', this.currentLang]
+      : ['/', this.currentLang, categorySlug];
+
+    this.router.navigate(route).then(() => {
+      // Restore scroll position after navigation using multiple attempts
+      // to ensure it works after Angular's change detection completes
+      if (isPlatformBrowser(this.platformId)) {
+        // First attempt immediately
+        window.scrollTo(0, scrollY);
+        // Second attempt after microtask
+        Promise.resolve().then(() => window.scrollTo(0, scrollY));
+        // Third attempt after next frame
+        requestAnimationFrame(() => {
+          window.scrollTo(0, scrollY);
+          // Fourth attempt after Angular settles
+          setTimeout(() => window.scrollTo(0, scrollY), 50);
+        });
+      }
+    });
   }
 
   private updateMetaTags() {

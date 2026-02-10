@@ -39,6 +39,7 @@ import {
   FileTextOutline,
   SendOutline
 } from '@ant-design/icons-angular/icons';
+import { LucideAngularModule, Menu, X, Globe, Home, Info, Mail, Users, PlusCircle, ExternalLink, ChevronRight, Search } from 'lucide-angular';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -53,17 +54,17 @@ export function initializeTranslations(translate: TranslateService, platformId: 
   return async () => {
     // Skip initialization during SSR/prerender - it will be handled by components
     if (!isPlatformBrowser(platformId)) {
-      translate.setDefaultLang('en');
+      translate.setDefaultLang('ar');
       return;
     }
 
-    let initialLang = 'en';
+    let initialLang = 'ar';
     const urlPath = window.location.pathname;
     const pathSegments = urlPath.split('/').filter(segment => segment);
     const urlLang = pathSegments[0];
 
     const browserLang = navigator.language;
-    const browserDefault = browserLang.startsWith('ar') ? 'ar' : 'en';
+    const browserDefault = browserLang.startsWith('ar') ? 'ar' : 'ar';
     initialLang = (urlLang === 'ar' || urlLang === 'en') ? urlLang : browserDefault;
 
     translate.setDefaultLang(initialLang);
@@ -143,6 +144,7 @@ export const appConfig: ApplicationConfig = {
         LinkOutline, AppstoreOutline, CodeOutline, PictureOutline, FileTextOutline,
         SendOutline
       ]),
+      LucideAngularModule.pick({ Menu, X, Globe, Home, Info, Mail, Users, PlusCircle, ExternalLink, ChevronRight, Search }),
       TranslateModule.forRoot({
         loader: {
           provide: TranslateLoader,

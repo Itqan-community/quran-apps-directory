@@ -25,27 +25,44 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet"></noscript>
     
+    <!-- Expo Arabic Font - Primary font for the application -->
+    <style>
+      @font-face {
+        font-family: 'Expo Arabic';
+        src: url('/assets/fonts/ExpoArabic-Book.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Expo Arabic';
+        src: url('/assets/fonts/ExpoArabic-Medium.woff2') format('woff2');
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Expo Arabic';
+        src: url('/assets/fonts/ExpoArabic-Bold.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+    </style>
+
     <!-- Font fallback with perfect metrics matching to prevent CLS -->
     <style>
       @font-face {
-        font-family: 'Rubik Fallback';
-        src: local('Arial'), local('Helvetica');
+        font-family: 'Expo Arabic Fallback';
+        src: local('Arial'), local('Helvetica'), local('Tahoma');
         font-weight: 400;
         font-display: swap;
-        ascent-override: 92%;
-        descent-override: 24%;
-        line-gap-override: 0%;
-        size-adjust: 107%;
       }
       @font-face {
-        font-family: 'Rubik Fallback';
-        src: local('Arial Bold'), local('Helvetica Bold');
+        font-family: 'Expo Arabic Fallback';
+        src: local('Arial Bold'), local('Helvetica Bold'), local('Tahoma Bold');
         font-weight: 700;
         font-display: swap;
-        ascent-override: 92%;
-        descent-override: 24%;
-        line-gap-override: 0%;
-        size-adjust: 107%;
       }
     </style>
     
@@ -59,15 +76,12 @@
     <!-- Critical CSS for above-the-fold content -->
     <style>
       /* Critical font fallback to prevent layout shift */
-      body { 
-        font-family: 'Rubik Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; 
+      body {
+        font-family: 'Expo Arabic', 'Expo Arabic Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
         margin: 0;
         padding: 0;
         line-height: 1.6;
         background-color: #ffffff;
-      }
-      .font-loaded body { 
-        font-family: 'Rubik', 'Rubik Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; 
       }
       
       /* Critical layout styles - prevent CLS */

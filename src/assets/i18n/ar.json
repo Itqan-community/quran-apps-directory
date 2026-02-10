@@ -41,11 +41,23 @@
     "mushaf_fonts": "خطوط المصحف العثمانية"
   },
   "appList": {
+    "hero": {
+      "title": "نورٌ بين يديـــــك..",
+      "subtitle": "اختــــــــــــــــــــر رفيقـــــــــــــــــك في رحــــــــــــــــلة القــــــــــــــــــــرآن"
+    },
     "search": {
-      "placeholder": "البحث في التطبيقات..."
+      "placeholder": "اكتب البحث مثل: رواية حفص، مصحف ..",
+      "traditionalPlaceholder": "البحث في التطبيقات...",
+      "traditional": "البحث التقليدي",
+      "smart": "البحث الذكي",
+      "button": "ابحث الآن",
+      "sendButton": "إرسال",
+      "resultsFor": "نتائج البحث عن",
+      "result": "نتيجة",
+      "results": "نتيجة"
     },
     "categories": {
-      "all":"الكل",
+      "all": "التصنيف",
       "main-title": "دليل التطبيقات القرآنية",
       "title": "التصنيفات",
       "mushaf": "مصحف",
@@ -75,13 +87,22 @@
     "developer": "المطور",
     "description": "الوصف",
     "downloadLinks": "روابط التحميل",
+    "downloadApp": "تنزيل التطبيق",
+    "share": "مشاركة",
     "appStore": "متجر آبل",
     "playStore": "متجر جوجل بلاي",
     "huaweiStore": "متجر هواوي",
-    "relevantApps": "تطبيقات ذات صلة",
-    "screenshots": "لقطات الشاشة",
+    "relevantApps": "تطبيقات مشابهة",
+    "screenshots": "صور من التطبيق",
     "readMore": "اقرأ المزيد",
-    "readLess": "قلّص"
+    "readLess": "قلّص",
+    "stats": {
+      "rating": "التقييمات",
+      "downloads": "التنزيلات",
+      "downloadCount": "12 مليون",
+      "platform": "المنصة",
+      "allPlatforms": "الجميع"
+    }
   },
   "requestForm": {
     "title": "طلب إضافة تطبيق",

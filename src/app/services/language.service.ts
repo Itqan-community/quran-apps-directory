@@ -9,7 +9,7 @@ import { filter } from 'rxjs';
 })
 export class LanguageService {
   private supportedLanguages = ['en', 'ar'];
-  private defaultLanguage = 'en';
+  private defaultLanguage = 'ar';
 
   constructor(
     @Inject(PLATFORM_ID) private readonly platformId: Object,
@@ -19,7 +19,7 @@ export class LanguageService {
   ) {
     // Translations are initialized via APP_INITIALIZER in main.ts
     // Just get the current language and set up URL change listener
-    this.defaultLanguage = this.translate.currentLang || this.translate.getDefaultLang() || 'en';
+    this.defaultLanguage = this.translate.currentLang || this.translate.getDefaultLang() || 'ar';
     this.setLanguageFromUrl();
   }
 

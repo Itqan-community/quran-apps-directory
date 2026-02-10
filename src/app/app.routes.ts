@@ -67,5 +67,5 @@ export const routes: Routes = [
     data: { title: 'Home' },
     loadComponent: () => import('./pages/app-list/app-list.component').then(m => m.AppListComponent)
   },
-  { path: '**', redirectTo: '/en', pathMatch: 'full'}
+  { path: '**', redirectTo: '/ar', pathMatch: 'full'}
 ];
