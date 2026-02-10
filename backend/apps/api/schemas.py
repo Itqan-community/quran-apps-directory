@@ -263,6 +263,7 @@ class HybridSearchResponseSchema(BaseModel):
     previous: Optional[str] = None
     results: List[HybridAppListSchema]
     facets: Dict[str, List[FacetValueSchema]] = Field(default_factory=dict, description="Filter facet counts")
+    error: Optional[str] = Field(None, description="Error message if search provider failed")
 
     class Config:
         populate_by_name = True

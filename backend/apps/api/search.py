@@ -196,6 +196,7 @@ def hybrid_search(
 
         all_results = search_result.get('results', [])
         facets_raw = search_result.get('facets', {})
+        error = search_result.get('error', None)
 
         # Paginate
         total = len(all_results)
@@ -233,7 +234,8 @@ def hybrid_search(
             "count": total,
             "next": f"?q={q}&page={page + 1}" if end < total else None,
             "previous": f"?q={q}&page={page - 1}" if page > 1 else None,
-            "facets": facets
+            "facets": facets,
+            "error": error
         }
 
     except Exception as e:
