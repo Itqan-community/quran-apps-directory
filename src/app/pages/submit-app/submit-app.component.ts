@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Subject, takeUntil, forkJoin, of, Observable, from, concat } from 'rxjs';
+import { Subject, takeUntil, of, Observable, from, Subscription } from 'rxjs';
 import { catchError, map, tap, toArray, mergeMap } from 'rxjs/operators';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -11,7 +11,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzUploadModule, NzUploadFile, NzUploadChangeParam } from 'ng-zorro-antd/upload';
+import { NzUploadModule, NzUploadFile, NzUploadXHRArgs } from 'ng-zorro-antd/upload';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService, NzModalModule } from 'ng-zorro-antd/modal';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -21,6 +21,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzProgressModule } from 'ng-zorro-antd/progress';
 
 import { SubmissionService, SubmissionRequest, Category } from '../../services/submission.service';
 
@@ -57,8 +58,6 @@ interface FormData {
 
   // Media
   app_icon_url: string;
-  icon_input_mode: 'file' | 'url';
-  icon_url_input: string;
   main_image_en: string;
   main_image_ar: string;
   screenshots_en: string[];
@@ -91,8 +90,9 @@ interface FormData {
     NzCardModule,
     NzDividerModule,
     NzGridModule,
-    NzToolTipModule
-],
+    NzToolTipModule,
+    NzProgressModule
+  ],
   templateUrl: './submit-app.component.html',
   styleUrls: ['./submit-app.component.scss']
 })
@@ -121,8 +121,6 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
     developer_website: '',
     developer_email: '',
     app_icon_url: '',
-    icon_input_mode: 'url',
-    icon_url_input: '',
     main_image_en: '',
     main_image_ar: '',
     screenshots_en: [],
@@ -141,7 +139,16 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
   totalUploads = 0;
   completedUploads = 0;
   currentLang: 'en' | 'ar' = 'en';
+
+  // Icon upload state
   iconFileList: NzUploadFile[] = [];
+  iconUploading = false;
+  iconUploadError: string | null = null;
+  private iconUploadSubscription: Subscription | null = null;
+
+  // Icon validation constants
+  readonly MAX_ICON_SIZE = 512 * 1024; // 512 KB
+  readonly ALLOWED_ICON_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 
   constructor(
     private submissionService: SubmissionService,
@@ -183,6 +190,9 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    if (this.iconUploadSubscription) {
+      this.iconUploadSubscription.unsubscribe();
+    }
   }
 
   private loadCategories(): void {
@@ -233,20 +243,83 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
     this.formData.screenshots_ar = this.parseScreenshots(this.formData.screenshots_ar_input);
   }
 
-  onIconFileChange(info: NzUploadChangeParam): void {
-    if (info.file.status === 'done') {
-      this.formData.app_icon_url = info.file.response?.url || '';
-      this.message.success('Icon uploaded successfully');
-    } else if (info.file.status === 'error') {
-      this.message.error('Icon upload failed');
-    }
-  }
+  /**
+   * Client-side validation before icon upload
+   */
+  beforeIconUpload = (file: NzUploadFile): boolean => {
+    this.iconUploadError = null;
 
-  useIconUrl(): void {
-    if (this.formData.icon_url_input) {
-      this.formData.app_icon_url = this.formData.icon_url_input;
+    // Check file type
+    const isAllowedType = this.ALLOWED_ICON_TYPES.includes(file.type || '');
+    if (!isAllowedType) {
+      const errorMsg = this.translate.instant('submitApp.iconTypeError');
+      this.iconUploadError = errorMsg;
+      this.message.error(errorMsg);
+      return false;
     }
-  }
+
+    // Check file size
+    const isWithinSize = (file.size || 0) <= this.MAX_ICON_SIZE;
+    if (!isWithinSize) {
+      const errorMsg = this.translate.instant('submitApp.iconSizeError');
+      this.iconUploadError = errorMsg;
+      this.message.error(errorMsg);
+      return false;
+    }
+
+    return true;
+  };
+
+  /**
+   * Custom upload handler for icon file
+   */
+  customIconUpload = (item: NzUploadXHRArgs): Subscription => {
+    this.iconUploading = true;
+    this.iconUploadError = null;
+
+    const file = item.file as unknown as File;
+
+    this.iconUploadSubscription = this.submissionService.uploadMedia(file, 'icon')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.iconUploading = false;
+          this.formData.app_icon_url = response.url;
+          this.iconFileList = [{
+            uid: '-1',
+            name: file.name,
+            status: 'done',
+            url: response.url,
+            thumbUrl: response.url
+          }];
+          this.message.success(this.translate.instant('submitApp.iconUploadSuccess'));
+          if (item.onSuccess) {
+            item.onSuccess(response, item.file, null);
+          }
+        },
+        error: (error) => {
+          this.iconUploading = false;
+          const errorMsg = this.translate.instant('submitApp.iconUploadError');
+          this.iconUploadError = errorMsg;
+          this.message.error(errorMsg);
+          if (item.onError) {
+            item.onError(error, item.file);
+          }
+        }
+      });
+
+    return this.iconUploadSubscription;
+  };
+
+  /**
+   * Handle icon removal
+   */
+  onIconRemove = (): boolean => {
+    this.formData.app_icon_url = '';
+    this.iconFileList = [];
+    this.iconUploadError = null;
+    return true;
+  };
 
   isFormValid(): boolean {
     // Required fields

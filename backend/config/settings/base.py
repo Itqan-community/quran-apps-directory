@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'categories',
     'developers',
     'submissions',
+    'metadata',  # Dynamic metadata system for multi-filter API support
 ]
 
 MIDDLEWARE = [
@@ -362,7 +363,7 @@ SITE_URL = config('SITE_URL', default='https://quran-apps.itqan.dev')
 # AI Search Configuration
 AI_SEARCH_PROVIDER = config('AI_SEARCH_PROVIDER', default='gemini')
 AI_API_KEY = config('AI_API_KEY', default='')
-AI_EMBEDDING_MODEL = config('AI_EMBEDDING_MODEL', default='models/text-embedding-004')
+AI_EMBEDDING_MODEL = config('AI_EMBEDDING_MODEL', default='models/gemini-embedding-001')
 AI_RERANK_MODEL = config('AI_RERANK_MODEL', default='gemini-2.5-pro')
 
 # Admin API Configuration

@@ -7,6 +7,7 @@ import logging
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from apps.models import App
+from metadata.models import AppMetadataValue
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +59,10 @@ class Command(BaseCommand):
         )
 
         # Get apps to sync
-        apps_qs = App.objects.filter(status='published').select_related('developer').prefetch_related('categories')
+        apps_qs = App.objects.filter(status='published').select_related('developer').prefetch_related(
+            'categories',
+            'metadata_values__metadata_option__metadata_type'
+        )
 
         if app_id:
             apps_qs = apps_qs.filter(id=app_id)
@@ -117,7 +121,10 @@ class Command(BaseCommand):
         categories = list(app.categories.values_list('name_en', flat=True))
         categories_ar = list(app.categories.values_list('name_ar', flat=True))
 
-        return {
+        # Gather metadata from AppMetadataValue
+        metadata = self._build_metadata(app)
+
+        doc = {
             'id': app.id,
             'slug': app.slug,
             'name_en': app.name_en,
@@ -133,17 +140,40 @@ class Command(BaseCommand):
             'platform': app.platform,
             'avg_rating': float(app.avg_rating),
             'featured': app.featured,
-            'application_icon': app.application_icon or '',
+            'application_icon': str(app.application_icon) if app.application_icon else '',
             'google_play_link': app.google_play_link or '',
             'app_store_link': app.app_store_link or '',
             'app_gallery_link': app.app_gallery_link or '',
             'crawled_content': app.crawled_content or '',
-            # Combined searchable text for better relevance
-            'searchable_text': self._build_searchable_text(app, categories, categories_ar),
         }
 
-    def _build_searchable_text(self, app: App, categories_en: list, categories_ar: list) -> str:
-        """Build combined text for search indexing."""
+        # Add each metadata type as a top-level key
+        for meta_type, values in metadata.items():
+            doc[meta_type] = values
+
+        # Combined searchable text with metadata for better relevance
+        doc['searchable_text'] = self._build_searchable_text(app, categories, categories_ar, metadata)
+
+        return doc
+
+    def _build_metadata(self, app: App) -> dict:
+        """
+        Build metadata dict from AppMetadataValue records.
+        Returns: {'riwayah': [{'value': 'warsh', 'label_en': 'Warsh', 'label_ar': 'ورش'}], ...}
+        """
+        metadata = {}
+        for mv in app.metadata_values.all():
+            opt = mv.metadata_option
+            type_name = opt.metadata_type.name
+            metadata.setdefault(type_name, []).append({
+                'value': opt.value,
+                'label_en': opt.label_en,
+                'label_ar': opt.label_ar,
+            })
+        return metadata
+
+    def _build_searchable_text(self, app: App, categories_en: list, categories_ar: list, metadata: dict = None) -> str:
+        """Build combined text for search indexing, including metadata."""
         parts = [
             app.name_en,
             app.name_ar,
@@ -159,5 +189,12 @@ class Command(BaseCommand):
 
         if app.crawled_content:
             parts.append(app.crawled_content)
+
+        # Append metadata as tagged text so CF embeddings capture it
+        if metadata:
+            for meta_type, values in metadata.items():
+                tag = meta_type.upper().replace('_', ' ')
+                labels = [f"{v['label_en']} ({v['label_ar']})" for v in values]
+                parts.append(f"[{tag}] {', '.join(labels)}")
 
         return ' '.join(filter(None, parts))
