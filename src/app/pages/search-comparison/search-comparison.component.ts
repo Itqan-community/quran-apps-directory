@@ -166,13 +166,13 @@ export class SearchComparisonComponent implements OnInit, OnDestroy {
 
     const pgSearch$ = this.apiService.searchHybrid(trimmed, false, filters).pipe(
       catchError(() => {
-        this.pgError = 'pgvector request failed';
+        this.pgError = 'Gemini Flash + pgvector request failed';
         return of({ results: [] });
       })
     );
     const cfSearch$ = this.apiService.searchHybrid(trimmed, true, filters).pipe(
       catchError(() => {
-        this.cfError = 'CF AutoRAG request failed';
+        this.cfError = 'CF AI Search request failed';
         return of({ results: [] });
       })
     );

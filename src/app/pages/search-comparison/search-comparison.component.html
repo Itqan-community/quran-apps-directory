@@ -1,6 +1,6 @@
 <div class="search-comparison-container">
   <h1 class="page-title">Search Comparison Tool</h1>
-  <p class="page-subtitle">Compare pgvector vs CF AutoRAG hybrid search results side-by-side</p>
+  <p class="page-subtitle">Compare Gemini Flash + pgvector vs CF AI Search hybrid search results side-by-side</p>
 
   <!-- Search Input -->
   <div class="search-bar">
@@ -48,7 +48,7 @@
       <!-- pgvector Column -->
       <div nz-col [nzSpan]="12">
         <div class="column-header pgvector-header">
-          <h2>pgvector</h2>
+          <h2>Gemini Flash + pgvector</h2>
           <div class="column-meta">
             <nz-tag nzColor="blue">{{ pgResults.length }} results</nz-tag>
             <nz-tag>{{ pgTime }}ms</nz-tag>
@@ -89,10 +89,10 @@
         <nz-empty *ngIf="pgResults.length === 0 && !pgError" nzNotFoundContent="No results"></nz-empty>
       </div>
 
-      <!-- CF AutoRAG Column -->
+      <!-- CF AI Search Column -->
       <div nz-col [nzSpan]="12">
         <div class="column-header cf-header">
-          <h2>CF AutoRAG</h2>
+          <h2>CF AI Search <a href="https://developers.cloudflare.com/ai-search/" target="_blank" rel="noopener noreferrer" style="font-size: 12px; font-weight: normal;">docs</a></h2>
           <div class="column-meta">
             <nz-tag nzColor="green">{{ cfResults.length }} results</nz-tag>
             <nz-tag>{{ cfTime }}ms</nz-tag>
