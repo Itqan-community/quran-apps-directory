@@ -140,7 +140,7 @@ class Command(BaseCommand):
             'platform': app.platform,
             'avg_rating': float(app.avg_rating),
             'featured': app.featured,
-            'application_icon': app.application_icon or '',
+            'application_icon': str(app.application_icon) if app.application_icon else '',
             'google_play_link': app.google_play_link or '',
             'app_store_link': app.app_store_link or '',
             'app_gallery_link': app.app_gallery_link or '',
