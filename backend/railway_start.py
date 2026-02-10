@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
 Railway startup script that bypasses auto-detection
+
+Force redeploy: 2026-02-03
 """
 import os
 import subprocess

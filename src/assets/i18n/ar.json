@@ -255,6 +255,14 @@
       "mainImage": "الصورة المميزة المعروضة على بطاقات التطبيقات. يُفضل: 600×400 PNG أو JPG",
       "screenshots": "أدخل رابطاً واحداً في كل سطر. يُفضل حتى 5 لقطات."
     },
+    "iconUpload": "أيقونة التطبيق",
+    "iconUploadHint": "صيغة PNG أو JPG أو WebP. الحد الأقصى 512 كيلوبايت.",
+    "iconUploadButton": "انقر أو اسحب لرفع الأيقونة",
+    "iconRequired": "أيقونة التطبيق مطلوبة",
+    "iconSizeError": "يجب أن يكون حجم الأيقونة أقل من 512 كيلوبايت",
+    "iconTypeError": "الصيغ المسموحة فقط: PNG و JPG و WebP",
+    "iconUploadSuccess": "تم رفع الأيقونة بنجاح",
+    "iconUploadError": "فشل في رفع الأيقونة",
     "screenshotsDetected": "لقطة شاشة مكتشفة",
     "submitButton": "إرسال التطبيق",
     "success": {
