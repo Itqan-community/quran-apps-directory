@@ -45,6 +45,56 @@ The response remains a paginated list of apps, but each app object now includes 
 *   If `ai_reasoning` is missing, do not show the badge.
 *   This feature is an enhancement, not a dependency. The app works fine without it.
 
+## Hybrid Search Endpoint
+
+`GET /api/search/hybrid/?q={query}&features=offline&riwayah=hafs`
+
+The hybrid search endpoint supports **soft metadata filters** that boost matching apps without excluding others.
+
+### Filter Parameters
+
+| Parameter | Example | Description |
+|-----------|---------|-------------|
+| `features` | `offline,audio` | Comma-separated feature filters |
+| `riwayah` | `hafs,warsh` | Comma-separated riwayah filters |
+| `mushaf_type` | `madani,uthmani` | Comma-separated mushaf type filters |
+| `platform` | `android,ios` | Comma-separated platform filters |
+| `category` | `mushaf,tafsir` | Comma-separated category slugs |
+| `include_facets` | `true` | Include facet counts (default: true) |
+| `use_cf` | `false` | Use CF AI Search instead of pgvector (default: false) |
+
+### How Soft Filters Work
+
+Filters are converted to bilingual semantic context and appended to the query before embedding generation. This means:
+- All published apps are still returned in results
+- Apps matching the filters naturally rank higher via vector similarity
+- No apps are excluded - users see the full picture with relevant apps at the top
+
+### Response Format
+
+```json
+{
+  "results": [
+    {
+      "id": 1,
+      "name_en": "Quran Warsh",
+      "ai_reasoning": "Highly relevant for warsh recitation...",
+      "match_reasons": [
+        {"type": "riwayah", "value": "warsh", "label_en": "Warsh", "label_ar": "ورش"}
+      ],
+      "relevance_score": 0.95
+    }
+  ],
+  "count": 30,
+  "facets": {
+    "riwayah": [{"value": "hafs", "label_en": "Hafs", "label_ar": "حفص", "count": 15}],
+    "features": [{"value": "offline", "label_en": "Offline Mode", "label_ar": "بدون إنترنت", "count": 10}]
+  },
+  "next": null,
+  "previous": null
+}
+```
+
 ## Example Mockup
 
 > **[Icon] Noorani Qaida**  ✨ *AI Top Pick*

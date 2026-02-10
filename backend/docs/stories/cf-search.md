@@ -219,12 +219,27 @@ python manage.py sync_to_r2 --app-id 123
 |---------|-------------------|--------------|
 | Hosting | Self-managed | Managed |
 | Embeddings | Gemini text-embedding-004 | CF default model |
-| Reranking | Gemini 2.5 Pro | Built-in |
+| Reranking | Gemini 2.5 Flash | Built-in |
 | Query Rewriting | No | Yes |
+| Filtering | Soft (query augmentation) | Soft (query augmentation) |
 | Auto-indexing | No (manual) | Yes |
 | Cost | API calls only | Free (beta) |
 | Latency | ~500ms | ~300ms (expected) |
 | Control | High | Low |
+
+### Soft Filters (Query Augmentation)
+
+Both search paths use **soft filters** instead of hard ORM pre-filters. When a user applies filters (e.g., `riwayah=warsh`, `features=offline`), the filter values are converted into bilingual semantic context appended to the query before embedding:
+
+```
+quran [Filter: Warsh (ورش) riwayah] [Filter: Offline Mode (بدون إنترنت) features]
+```
+
+This approach:
+- **Does not exclude** non-matching apps from results
+- **Ranks matching apps higher** via vector similarity
+- Leverages the bilingual metadata already embedded in app vectors
+- Works with metadata filters (riwayah, features, mushaf_type), platform, and category
 
 ## Future Enhancements
 

@@ -72,8 +72,24 @@ curl "http://localhost:8000/api/search?q=apps%20for%20memorization"
 
 ### How it Works
 
-1.  **Ingestion**: The `reindex_embeddings` command combines the App's name, category, and description. It also **crawls the App Store/Google Play link** to get the full app description from the store page.
+1.  **Ingestion**: The `reindex_embeddings` command combines the App's name, category, and description. It also **crawls the App Store/Google Play link** to get the full app description from the store page. Dynamic metadata (riwayah, features, mushaf_type) is included as bilingual labels.
 2.  **Embedding**: It sends this rich text to the configured AI Provider to generate a vector.
 3.  **Storage**: The vector is stored in the `App.embedding` field in PostgreSQL.
 4.  **Search**: When a user queries `/api/search`, their query is converted to a vector.
 5.  **Comparison**: The database calculates the Cosine Distance between the query vector and all app vectors, returning the closest matches.
+
+### Hybrid Search with Soft Filters
+
+The `/api/search/hybrid/` endpoint supports metadata filters (features, riwayah, mushaf_type, platform, category) using **soft filtering via query augmentation**.
+
+Instead of hard ORM pre-filters that exclude apps, filters are converted to bilingual semantic context appended to the query:
+
+```
+quran [Filter: Warsh (ورش) riwayah] [Filter: Offline Mode (بدون إنترنت) features]
+```
+
+This means:
+- **All published apps** are still searched - no exclusion
+- Apps matching the filters rank higher via vector similarity
+- Combined with metadata boosting and LLM reranking for best results
+- A separate non-AI endpoint can be built later for strict/exact filtering

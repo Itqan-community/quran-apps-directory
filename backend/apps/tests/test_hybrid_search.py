@@ -251,8 +251,8 @@ class HybridSearchServiceTest(HybridSearchTestMixin, TestCase):
         self.assertEqual(result['results'], [])
         self.assertEqual(result['facets'], {})
 
-    def test_hybrid_search_with_riwayah_prefilter(self):
-        """Filtering by riwayah=hafs returns only apps with hafs assigned."""
+    def test_hybrid_search_with_riwayah_filter_returns_all_published(self):
+        """Soft filter: riwayah=hafs still returns all published apps (no exclusion)."""
         result = self.service.hybrid_search(
             query='quran',
             filters={'riwayah': ['hafs']},
@@ -260,13 +260,14 @@ class HybridSearchServiceTest(HybridSearchTestMixin, TestCase):
         )
 
         app_ids = [app.id for app in result['results']]
+        # All published apps should be present (soft filter - no exclusion)
         self.assertIn(self.app1.id, app_ids)
+        self.assertIn(self.app2.id, app_ids)
         self.assertIn(self.app3.id, app_ids)
-        self.assertNotIn(self.app2.id, app_ids)
-        self.assertNotIn(self.app4.id, app_ids)
+        self.assertIn(self.app4.id, app_ids)
 
-    def test_hybrid_search_with_features_prefilter(self):
-        """Filtering by features=offline returns only apps with offline."""
+    def test_hybrid_search_with_features_filter_returns_all_published(self):
+        """Soft filter: features=offline still returns all published apps."""
         result = self.service.hybrid_search(
             query='quran',
             filters={'features': ['offline']},
@@ -274,13 +275,14 @@ class HybridSearchServiceTest(HybridSearchTestMixin, TestCase):
         )
 
         app_ids = [app.id for app in result['results']]
+        # All published apps present - soft filters don't exclude
         self.assertIn(self.app1.id, app_ids)
         self.assertIn(self.app2.id, app_ids)
-        self.assertNotIn(self.app3.id, app_ids)  # no offline
-        self.assertNotIn(self.app4.id, app_ids)
+        self.assertIn(self.app3.id, app_ids)
+        self.assertIn(self.app4.id, app_ids)
 
-    def test_hybrid_search_combined_filters_and_logic(self):
-        """riwayah=hafs AND features=audio returns intersection."""
+    def test_hybrid_search_combined_filters_returns_all_published(self):
+        """Soft filter: combined filters still return all published apps."""
         result = self.service.hybrid_search(
             query='quran',
             filters={'riwayah': ['hafs'], 'features': ['audio']},
@@ -288,26 +290,28 @@ class HybridSearchServiceTest(HybridSearchTestMixin, TestCase):
         )
 
         app_ids = [app.id for app in result['results']]
-        # App1 has hafs+audio, App3 has hafs+audio
+        # All published apps present - soft filters don't exclude
         self.assertIn(self.app1.id, app_ids)
+        self.assertIn(self.app2.id, app_ids)
         self.assertIn(self.app3.id, app_ids)
-        # App2 has warsh (no hafs), App4 has nothing
-        self.assertNotIn(self.app2.id, app_ids)
-        self.assertNotIn(self.app4.id, app_ids)
+        self.assertIn(self.app4.id, app_ids)
 
-    def test_hybrid_search_platform_filter(self):
-        """platform=android filters correctly."""
+    def test_hybrid_search_platform_filter_returns_all_published(self):
+        """Soft filter: platform=android returns all published (no hard filter)."""
         result = self.service.hybrid_search(
             query='quran',
             filters={'platform': ['android']},
             include_facets=False,
         )
 
-        for app in result['results']:
-            self.assertEqual(app.platform, 'android')
+        app_ids = [app.id for app in result['results']]
+        # All published apps present
+        self.assertGreater(len(app_ids), 0)
+        self.assertIn(self.app1.id, app_ids)
+        self.assertIn(self.app2.id, app_ids)
 
-    def test_hybrid_search_category_filter(self):
-        """category=mushaf filters correctly."""
+    def test_hybrid_search_category_filter_returns_all_published(self):
+        """Soft filter: category=mushaf returns all published (no exclusion)."""
         result = self.service.hybrid_search(
             query='quran',
             filters={'category': ['mushaf']},
@@ -315,10 +319,11 @@ class HybridSearchServiceTest(HybridSearchTestMixin, TestCase):
         )
 
         app_ids = [app.id for app in result['results']]
+        # All published apps present including tafsir-only
         self.assertIn(self.app1.id, app_ids)
         self.assertIn(self.app2.id, app_ids)
         self.assertIn(self.app3.id, app_ids)
-        self.assertNotIn(self.app4.id, app_ids)  # tafsir only
+        self.assertIn(self.app4.id, app_ids)
 
     def test_hybrid_search_no_filters_returns_all_published(self):
         """No filters returns all published apps."""
@@ -344,15 +349,41 @@ class HybridSearchServiceTest(HybridSearchTestMixin, TestCase):
         app_ids = [app.id for app in result['results']]
         self.assertNotIn(self.app_draft.id, app_ids)
 
-    def test_hybrid_search_nonexistent_filter_returns_empty(self):
-        """Invalid filter value returns 0 results."""
+    def test_hybrid_search_nonexistent_filter_still_returns_results(self):
+        """Soft filter: unknown filter value still returns all published apps."""
         result = self.service.hybrid_search(
             query='quran',
             filters={'riwayah': ['qalun']},
             include_facets=False,
         )
 
-        self.assertEqual(len(result['results']), 0)
+        # Soft filters don't exclude - all published apps still returned
+        self.assertGreater(len(result['results']), 0)
+
+    def test_hybrid_search_augments_query_with_filters(self):
+        """Verify that filters cause query augmentation (embedding called with augmented text)."""
+        self.service.hybrid_search(
+            query='quran',
+            filters={'riwayah': ['hafs']},
+            include_facets=False,
+        )
+
+        # The embedding should have been called with augmented query
+        call_args = self.mock_provider.get_embedding.call_args[0][0]
+        self.assertIn('[Filter:', call_args)
+        self.assertIn('Hafs', call_args)
+        self.assertIn('riwayah', call_args)
+
+    def test_hybrid_search_no_augmentation_without_filters(self):
+        """Without filters, query is passed as-is to embedding."""
+        self.service.hybrid_search(
+            query='quran',
+            filters=None,
+            include_facets=False,
+        )
+
+        call_args = self.mock_provider.get_embedding.call_args[0][0]
+        self.assertEqual(call_args, 'quran')
 
 
 # =============================================================================
@@ -752,3 +783,90 @@ class PrepareAppTextMetadataTest(HybridSearchTestMixin, TestCase):
         # App3 has dark_mode metadata - Arabic label comes from migration seed
         self.assertIn('Dark Mode', text)
         self.assertIn(self.opt_dark_mode.label_ar, text)
+
+
+# =============================================================================
+# Class 6: QueryAugmentationTest
+# =============================================================================
+
+class QueryAugmentationTest(HybridSearchTestMixin, TestCase):
+    """Tests _augment_query_with_filters() method."""
+
+    def setUp(self):
+        self.create_test_data()
+
+        with patch('core.services.search.service.AISearchFactory.get_provider'):
+            from core.services.search import AISearchService
+            self.service = AISearchService()
+
+    def test_augment_with_no_filters_returns_original(self):
+        """No filters returns original query unchanged."""
+        result = self.service._augment_query_with_filters('quran', None)
+        self.assertEqual(result, 'quran')
+
+    def test_augment_with_empty_filters_returns_original(self):
+        """Empty filters dict returns original query unchanged."""
+        result = self.service._augment_query_with_filters('quran', {})
+        self.assertEqual(result, 'quran')
+
+    def test_augment_with_riwayah_filter(self):
+        """Riwayah filter appends bilingual label."""
+        result = self.service._augment_query_with_filters(
+            'quran', {'riwayah': ['hafs']}
+        )
+        self.assertIn('quran', result)
+        self.assertIn('[Filter:', result)
+        self.assertIn('Hafs', result)
+        self.assertIn('حفص', result)
+        self.assertIn('riwayah', result)
+
+    def test_augment_with_features_filter(self):
+        """Features filter appends bilingual label."""
+        result = self.service._augment_query_with_filters(
+            'quran', {'features': ['offline']}
+        )
+        self.assertIn('[Filter:', result)
+        self.assertIn('features', result)
+        # Label comes from DB - check the key parts are present
+        self.assertIn('Offline', result)
+
+    def test_augment_with_platform_filter(self):
+        """Platform filter uses hardcoded bilingual labels."""
+        result = self.service._augment_query_with_filters(
+            'quran', {'platform': ['android']}
+        )
+        self.assertIn('Android', result)
+        self.assertIn('أندرويد', result)
+        self.assertIn('platform', result)
+
+    def test_augment_with_category_filter(self):
+        """Category filter uses DB category names."""
+        result = self.service._augment_query_with_filters(
+            'quran', {'category': ['mushaf']}
+        )
+        self.assertIn('Mushaf', result)
+        self.assertIn('مصحف', result)
+        self.assertIn('category', result)
+
+    def test_augment_with_multiple_filters(self):
+        """Multiple filter types all appended."""
+        result = self.service._augment_query_with_filters(
+            'quran', {'riwayah': ['warsh'], 'features': ['offline']}
+        )
+        self.assertIn('Warsh', result)
+        self.assertIn('Offline Mode', result)
+
+    def test_augment_with_unknown_value_passes_through(self):
+        """Unknown filter value is passed through raw."""
+        result = self.service._augment_query_with_filters(
+            'quran', {'riwayah': ['nonexistent_riwayah_xyz']}
+        )
+        self.assertIn('nonexistent_riwayah_xyz', result)
+        self.assertIn('[Filter:', result)
+
+    def test_augment_preserves_original_query(self):
+        """Original query text is preserved at the start."""
+        result = self.service._augment_query_with_filters(
+            'best quran app', {'riwayah': ['hafs']}
+        )
+        self.assertTrue(result.startswith('best quran app'))
