@@ -174,18 +174,15 @@ nz-divider::before {
 
 .app-hero-section {
   position: relative;
-  padding: 110px 55px 50px;
-  overflow: hidden;
-  min-height: 280px;
+  padding: 110px 55px 40px;
+  min-height: auto;
   width: 100%;
   @media (max-width: 768px) {
-    padding: 120px 16px 30px;
-    min-height: 240px;
+    padding: 120px 16px 40px;
   }
 
   @media (max-width: 480px) {
-    padding: 100px 12px 24px;
-    min-height: 200px;
+    padding: 100px 30px 40px;
   }
 }
 
@@ -194,46 +191,23 @@ nz-divider::before {
   z-index: 1;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 32px;
+  align-items: flex-start;
+  gap: 24px;
   width: 100%;
   margin: 0 auto;
   background-color: white;
-  padding: 24px 24px 40px;
+  padding: 24px 24px 32px;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
     gap: 20px;
-    padding: 20px 16px;
+    padding: 20px 16px 24px;
   }
 
   @media (max-width: 480px) {
-    padding: 16px 12px;
     gap: 16px;
-  }
-}
-
-.hero-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  flex: 1;
-}
-
-.app-info {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 16px;
-  flex-direction: row;
-  @media (max-width: 480px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    padding: 16px 14px 20px;
   }
 }
 
@@ -243,18 +217,26 @@ nz-divider::before {
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   object-fit: cover;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 110px;
+    height: 110px;
+  }
 
   @media (max-width: 480px) {
-    width: 64px;
-    height: 64px;
-    border-radius: 12px;
+    width: 90px;
+    height: 90px;
+    border-radius: 14px;
   }
 }
 
-.app-title-section {
+.hero-details-col {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 10px;
 }
 
 .app-hero-title {
@@ -285,6 +267,16 @@ nz-divider::before {
   }
 }
 
+.hero-actions-stats-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px 0 0;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
 .hero-actions {
   display: flex;
   gap: 12px;
@@ -307,8 +299,8 @@ nz-divider::before {
     }
 
     @media (max-width: 480px) {
-      padding: 10px 20px;
-      font-size: 14px;
+      padding: 0px 25px;
+      font-size: 10px;
     }
   }
 
@@ -336,8 +328,8 @@ nz-divider::before {
     }
 
     @media (max-width: 480px) {
-      padding: 10px 16px;
-      font-size: 14px;
+      padding: 6px;
+      font-size: 10px;
     }
   }
 }
@@ -355,7 +347,7 @@ nz-divider::before {
   }
 
   @media (max-width: 480px) {
-    padding: 12px 16px;
+    padding: 12px;
     gap: 12px;
   }
 }
@@ -455,18 +447,17 @@ html[dir="rtl"] .app-hero-section {
   gap: 8px;
 
   .nav-btn {
-    width: 40px;
-    height: 40px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
-    border: 1px solid var(--border-color, #e8e8e8);
+    border: none;
     background: white;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    color: var(--text-color, #272424);
-
+    color: #cac3c3;
     &:hover {
       background: var(--surface-color, #f8f8f8);
       border-color: var(--primary-color, #7c4332);
@@ -474,7 +465,7 @@ html[dir="rtl"] .app-hero-section {
     }
 
     svg {
-      width: 10px;
+      width: 14px;
       height: auto;
     }
   }
@@ -501,8 +492,10 @@ html[dir="rtl"] .app-hero-section {
 // Hero background with decorative ellipses (matching app-list page)
 .hero-background {
   position: absolute;
-  inset: 0;
-  margin: 10px;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
   border-radius: 22px;
   z-index: 0;
   background-color: rgba(228, 70, 37, 0.07);
@@ -540,7 +533,10 @@ html[dir="rtl"] .app-hero-section {
   }
 
   @media (max-width: 768px) {
-    margin: 10px;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
     border-radius: 16px;
 
     &::before {
@@ -581,7 +577,7 @@ html[dir="rtl"] .app-hero-section {
   @media screen and (max-width: 768px) {
     margin-bottom: 50px;
     padding-top: 80px;
-    min-height: 350px;
+    height: 350px;
   }
 }
 
@@ -656,7 +652,7 @@ html[dir="rtl"] .hero-background {
   padding-top: 24px;
   background-color: var(--bg-color, #fff);
   position: relative;
-  z-index: 99;
+  z-index: 1;
   h2 {
     font-size: 20px;
     color: var(--text-color, #272424);
@@ -664,24 +660,25 @@ html[dir="rtl"] .hero-background {
   p {
     font-size: 17px;
     color: var(--text-secondary, #72788e);
-    text-align: justify;
+    text-align: start;
+    line-height: 1.7;
   }
   // responsive
   @media screen and (max-width: 768px) {
-    padding-top: 30px; // Increased padding to ensure more spacing on mobile
-    &::before {
-      content: "";
-      width: 100%;
-      height: 40px;
-      display: block;
-      background: var(--bg-color, rgb(255, 255, 255));
-      background: linear-gradient(
-        180deg,
-        transparent 0%,
-        var(--bg-color, rgb(255, 255, 255)) 39%
-      );
-      position: absolute;
-      top: -40px;
+    padding-top: 30px;
+    h2 {
+      font-size: 18px;
+    }
+    p {
+      font-size: 15px;
+    }
+  }
+  @media screen and (max-width: 480px) {
+    h2 {
+      font-size: 16px;
+    }
+    p {
+      font-size: 14px;
     }
   }
 }
@@ -695,6 +692,7 @@ html[dir="rtl"] .hero-background {
   @media screen and (max-width: 992px) {
     flex-direction: column;
     gap: 20px;
+    align-items: stretch;
   }
 }
 
@@ -725,6 +723,10 @@ html[dir="rtl"] .hero-background {
   font-weight: 600;
   margin: 0 0 12px;
   color: var(--text-color, #272424);
+
+  @media screen and (max-width: 480px) {
+    font-size: 14px;
+  }
 }
 
 .details-side .download-links {
@@ -734,13 +736,40 @@ html[dir="rtl"] .hero-background {
   gap: 12px;
   @media screen and (max-width: 768px) {
     flex-direction: row;
-    width: 20px;
+    flex-wrap: nowrap;
+    width: 100%;
+
+    a {
+      flex: 1;
+      min-width: 0;
+      width: auto;
+
+      svg {
+        width: 100% !important;
+        height: auto !important;
+      }
+    }
   }
 }
 
 .details-side .dev-container {
   margin: 0;
   padding: 10px 6px;
+  align-items: flex-start;
+
+  .dev-data {
+    text-align: start;
+
+    @media screen and (max-width: 480px) {
+      h2 {
+        font-size: 16px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+    }
+  }
 }
 
 .screenshots-section {
@@ -754,16 +783,15 @@ html[dir="rtl"] .hero-background {
 // RTL-specific content section adjustments
 [dir="rtl"] .content-section,
 html[dir="rtl"] .content-section {
-  padding-top: 40px; // Extra padding for RTL layout on all screen sizes
+  padding-top: 40px;
 
   p {
-    text-align: justify;
+    text-align: start;
     direction: rtl;
   }
 
-  // Additional spacing for RTL layout on mobile
   @media screen and (max-width: 768px) {
-    padding-top: 50px; // Increased from 40px to 50px for RTL mobile layout
+    padding-top: 40px;
   }
 }
 
@@ -829,15 +857,31 @@ html[dir="rtl"] .content-section {
   flex-wrap: wrap;
 
   a {
-    height: 49px; // Set consistent height for all download buttons
-    width: 163px; // Set consistent width to match the widest button
+    height: 49px;
+    width: 163px;
     display: flex;
     align-items: center;
-    justify-content: center; // Center the SVG within the fixed width
+    justify-content: center;
 
     svg {
-      height: 49px !important; // Set to max height
-      width: 163px !important; // Set to max width - force all icons to same dimensions
+      height: 49px !important;
+      width: 163px !important;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    flex-wrap: nowrap;
+    gap: 8px;
+
+    a {
+      flex: 1;
+      min-width: 0;
+      width: auto;
+
+      svg {
+        width: 100% !important;
+        height: auto !important;
+      }
     }
   }
 }
@@ -1169,17 +1213,7 @@ html[dir="rtl"] .content-section {
 
   .download-links {
     margin: 16px 0;
-    gap: 12px;
-
-    a {
-      width: 163px; // Maintain consistent width on mobile
-      height: 49px; // Maintain consistent height on mobile
-
-      svg {
-        height: 49px !important; // Set to max height on mobile
-        width: 163px !important; // Set to max width on mobile - force all icons to same dimensions
-      }
-    }
+    gap: 6px;
   }
 
   nz-tag {
@@ -1355,6 +1389,10 @@ html[dir="rtl"] .content-section {
   font-size: 15px;
   display: inline-block;
   transition: color 0.3s;
+
+  @media screen and (max-width: 480px) {
+    font-size: 13px;
+  }
 }
 
 .read-more-button:hover {
@@ -1549,7 +1587,9 @@ html[dir="rtl"] .content-section {
   }
 
   @media (max-width: 640px) {
-    font-size: 11px;
+    p {
+      font-size: 11px;
+    }
     -webkit-line-clamp: 1;
     line-height: 1.3;
   }

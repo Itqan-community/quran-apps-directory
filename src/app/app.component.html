@@ -95,7 +95,7 @@
 
       <!-- Inline Search Input -->
       <div style="display: flex; align-items: center; gap: 10px">
-        <div class="compact-logo" [routerLink]="['/', currentLang]">
+        <div class="compact-logo" [routerLink]="['/', currentLang]" [class.searching]="isNavbarSearching">
           <img
             src="assets/images/searchLogo.svg"
             alt="Quran Apps"
@@ -129,7 +129,6 @@
             [(ngModel)]="navbarSearchQuery"
             (ngModelChange)="onNavbarSearchInput()"
             (keyup.enter)="onNavbarSearch()"
-            style="min-width: 300px"
           />
         </div>
       </div>

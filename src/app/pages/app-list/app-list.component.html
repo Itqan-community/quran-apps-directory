@@ -205,7 +205,9 @@
   }
 
   <!-- Search Results Header -->
-  @if (searchQuery.trim() && initialLoadComplete && !isLoading) {
+  @if (
+    searchExecuted && searchQuery.trim() && !isSmartSearching && !isLoading
+  ) {
     <div class="search-results-header">
       <h2 class="search-results-title">
         {{ "appList.search.resultsFor" | translate }} "{{ searchQuery }}"
@@ -311,10 +313,7 @@
                 >
                   +{{ app.categories.length - 3 }}
                   <span class="category-tooltip">
-                    @for (
-                      cat of app.categories | slice: 3;
-                      track cat
-                    ) {
+                    @for (cat of app.categories | slice: 3; track cat) {
                       <span class="tooltip-tag">{{
                         "appList.categories." + cat | translate
                       }}</span>
