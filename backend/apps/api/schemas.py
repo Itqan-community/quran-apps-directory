@@ -4,7 +4,7 @@ Ninja API schemas for Quranic Applications
 Following ITQAN community standards using Django Ninja framework.
 """
 
-from typing import List, Optional
+from typing import List, Optional, Dict
 from ninja import ModelSchema
 from pydantic import BaseModel, Field
 
@@ -191,6 +191,78 @@ class MetadataValuesResponseSchema(BaseModel):
     riwayah: List[MetadataValueSchema] = Field(default_factory=list)
     mushaf_type: List[MetadataValueSchema] = Field(default_factory=list, alias="mushaf_type")
     features: List[MetadataValueSchema] = Field(default_factory=list)
+
+    class Config:
+        populate_by_name = True
+
+
+# ====================
+# Smart Search Schemas (1.7)
+# ====================
+
+class MatchReasonSchema(BaseModel):
+    """Schema for explaining why an app matched the search query."""
+    type: str = Field(..., description="Match type: 'feature', 'riwayah', 'mushaf_type'")
+    value: str = Field(..., description="The metadata value that matched")
+    label_en: str = Field(..., alias="label_en", description="English label")
+    label_ar: str = Field(..., alias="label_ar", description="Arabic label")
+
+    class Config:
+        populate_by_name = True
+
+
+class FacetValueSchema(BaseModel):
+    """Schema for a facet value with count."""
+    value: str
+    label_en: str = Field(..., alias="label_en")
+    label_ar: str = Field(..., alias="label_ar")
+    count: int
+
+    class Config:
+        populate_by_name = True
+
+
+class HybridAppListSchema(BaseModel):
+    """Schema for app in hybrid search results with match info."""
+    id: str
+    name_en: str = Field(..., alias="name_en")
+    name_ar: str = Field(..., alias="name_ar")
+    slug: str
+    short_description_en: str = Field(..., alias="short_description_en")
+    short_description_ar: str = Field(..., alias="short_description_ar")
+    application_icon: str
+    main_image_en: str = Field(..., alias="main_image_en")
+    main_image_ar: str = Field(..., alias="main_image_ar")
+    avg_rating: float
+    review_count: int
+    view_count: int
+    sort_order: int
+    featured: bool
+    platform: str
+    status: str
+    # Metadata
+    riwayah: List[str] = Field(default_factory=list)
+    mushaf_type: List[str] = Field(default_factory=list, alias="mushaf_type")
+    features: List[str] = Field(default_factory=list)
+    developer: DeveloperSchema
+    categories: List[str]
+    created_at: str
+    # Search-specific fields
+    ai_reasoning: Optional[str] = Field(None, description="AI explanation for search relevance")
+    match_reasons: List[MatchReasonSchema] = Field(default_factory=list, description="Why this app matched")
+    relevance_score: Optional[float] = Field(None, description="Combined relevance score (0-1)")
+
+    class Config:
+        populate_by_name = True
+
+
+class HybridSearchResponseSchema(BaseModel):
+    """Schema for hybrid search response with facets."""
+    count: int
+    next: Optional[str] = None
+    previous: Optional[str] = None
+    results: List[HybridAppListSchema]
+    facets: Dict[str, List[FacetValueSchema]] = Field(default_factory=dict, description="Filter facet counts")
 
     class Config:
         populate_by_name = True

@@ -40,7 +40,7 @@ class AISearchFactory:
         elif provider_type == 'gemini':
             cls._provider_instance = GeminiSearchProvider(
                 api_key=api_key,
-                model=getattr(settings, 'AI_EMBEDDING_MODEL', 'models/text-embedding-004'),
+                model=getattr(settings, 'AI_EMBEDDING_MODEL', 'models/gemini-embedding-001'),
                 rerank_model=getattr(settings, 'AI_RERANK_MODEL', 'gemini-2.5-flash')
             )
 

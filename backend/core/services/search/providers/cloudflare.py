@@ -36,6 +36,9 @@ class CloudflareSearchProvider(AISearchProvider):
         """
         Perform AI-powered search using Cloudflare AI Search REST API.
         """
+        # CF API enforces max_num_results <= 50
+        max_results = min(max_results, 50)
+
         if not all([self.account_id, self.rag_name, self.token]):
             logger.warning("Cloudflare AI Search not configured properly")
             return []
@@ -99,6 +102,9 @@ class CloudflareSearchProvider(AISearchProvider):
         """
         import re
 
+        # CF API enforces max_num_results <= 50
+        max_results = min(max_results, 50)
+
         if not all([self.account_id, self.rag_name, self.token]):
             logger.warning("Cloudflare AI Search not configured properly")
             return []
@@ -158,6 +164,32 @@ class CloudflareSearchProvider(AISearchProvider):
         except Exception as e:
             logger.error(f"CF AI Search unexpected error: {e}", exc_info=True)
             return []
+
+    def search_hybrid(self, query: str, filters: Dict[str, List[str]] = None, max_results: int = 20) -> List[Dict[str, Any]]:
+        """
+        Hybrid search using query augmentation with filter terms.
+
+        Appends filter values to the query so CF embeddings naturally
+        boost matching apps (soft filtering via semantic similarity).
+
+        Args:
+            query: User search query
+            filters: Dict of metadata filters e.g. {'riwayah': ['warsh'], 'features': ['offline']}
+            max_results: Max results to return
+
+        Returns:
+            List of dicts with app id and cf_score
+        """
+        augmented_query = query
+        if filters:
+            filter_terms = []
+            for values in filters.values():
+                filter_terms.extend(values)
+            if filter_terms:
+                augmented_query = f"{query} {' '.join(filter_terms)}"
+
+        logger.info(f"CF hybrid search: original='{query}', augmented='{augmented_query}'")
+        return self.search_apps(augmented_query, max_results=max_results)
 
     def rerank(self, query: str, documents: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
