@@ -476,7 +476,11 @@ class AISearchService:
             return {'results': [], 'facets': {}}
 
         # 1. Search via CF with augmented query
-        cf_results = cf_provider.search_hybrid(query, filters=filters, max_results=limit)
+        try:
+            cf_results = cf_provider.search_hybrid(query, filters=filters, max_results=limit)
+        except Exception as e:
+            logger.error(f"CF hybrid search failed: {e}")
+            return {'results': [], 'facets': {}, 'error': str(e)}
 
         if not cf_results:
             return {'results': [], 'facets': {}}

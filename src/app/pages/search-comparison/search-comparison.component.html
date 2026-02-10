@@ -23,19 +23,71 @@
   <div class="filters-row">
     <div class="filter-item">
       <label>Features</label>
-      <input nz-input placeholder="e.g. offline,audio" [(ngModel)]="filterFeatures" nzSize="small" />
+      <nz-select
+        [(ngModel)]="filterFeatures"
+        nzMode="multiple"
+        nzPlaceHolder="Select features"
+        nzShowSearch
+        nzAllowClear
+        nzSize="small"
+      >
+        <nz-option
+          *ngFor="let opt of featureOptions"
+          [nzValue]="opt.value"
+          [nzLabel]="(currentLang === 'ar' ? opt.label_ar : opt.label_en) + (opt.count ? ' (' + opt.count + ')' : '')"
+        ></nz-option>
+      </nz-select>
     </div>
     <div class="filter-item">
       <label>Riwayah</label>
-      <input nz-input placeholder="e.g. warsh" [(ngModel)]="filterRiwayah" nzSize="small" />
+      <nz-select
+        [(ngModel)]="filterRiwayah"
+        nzMode="multiple"
+        nzPlaceHolder="Select riwayah"
+        nzShowSearch
+        nzAllowClear
+        nzSize="small"
+      >
+        <nz-option
+          *ngFor="let opt of riwayahOptions"
+          [nzValue]="opt.value"
+          [nzLabel]="(currentLang === 'ar' ? opt.label_ar : opt.label_en) + (opt.count ? ' (' + opt.count + ')' : '')"
+        ></nz-option>
+      </nz-select>
     </div>
     <div class="filter-item">
       <label>Platform</label>
-      <input nz-input placeholder="e.g. android" [(ngModel)]="filterPlatform" nzSize="small" />
+      <nz-select
+        [(ngModel)]="filterPlatform"
+        nzMode="multiple"
+        nzPlaceHolder="Select platform"
+        nzShowSearch
+        nzAllowClear
+        nzSize="small"
+      >
+        <nz-option
+          *ngFor="let opt of platformOptions"
+          [nzValue]="opt.value"
+          [nzLabel]="(currentLang === 'ar' ? opt.label_ar : opt.label_en) + (opt.count ? ' (' + opt.count + ')' : '')"
+        ></nz-option>
+      </nz-select>
     </div>
     <div class="filter-item">
       <label>Category</label>
-      <input nz-input placeholder="e.g. mushaf" [(ngModel)]="filterCategory" nzSize="small" />
+      <nz-select
+        [(ngModel)]="filterCategory"
+        nzMode="multiple"
+        nzPlaceHolder="Select category"
+        nzShowSearch
+        nzAllowClear
+        nzSize="small"
+      >
+        <nz-option
+          *ngFor="let opt of categoryOptions"
+          [nzValue]="opt.value"
+          [nzLabel]="currentLang === 'ar' ? opt.label_ar : opt.label_en"
+        ></nz-option>
+      </nz-select>
     </div>
   </div>
 
@@ -43,7 +95,7 @@
   <nz-spin *ngIf="loading" nzSimple class="loading-spinner"></nz-spin>
 
   <!-- Results Columns -->
-  <div *ngIf="!loading && (pgResults.length > 0 || cfResults.length > 0)" class="results-section">
+  <div *ngIf="!loading && (pgResults.length > 0 || cfResults.length > 0 || pgError || cfError)" class="results-section">
     <div nz-row [nzGutter]="24">
       <!-- pgvector Column -->
       <div nz-col [nzSpan]="12">

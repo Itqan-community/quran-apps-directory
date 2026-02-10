@@ -19,8 +19,16 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzRateModule } from 'ng-zorro-antd/rate';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
-import { ApiService } from '../../services/api.service';
+import { ApiService, Category } from '../../services/api.service';
+
+interface FilterOption {
+  value: string;
+  label_en: string;
+  label_ar: string;
+  count: number;
+}
 
 interface SearchFilters {
   features?: string;
@@ -93,6 +101,7 @@ const MAX_HISTORY = 30;
     NzToolTipModule,
     NzModalModule,
     NzRateModule,
+    NzSelectModule,
   ],
   templateUrl: './search-comparison.component.html',
   styleUrls: ['./search-comparison.component.scss']
@@ -101,10 +110,16 @@ export class SearchComparisonComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   query = '';
-  filterFeatures = '';
-  filterRiwayah = '';
-  filterPlatform = '';
-  filterCategory = '';
+  filterFeatures: string[] = [];
+  filterRiwayah: string[] = [];
+  filterPlatform: string[] = [];
+  filterCategory: string[] = [];
+
+  // Dropdown options
+  featureOptions: FilterOption[] = [];
+  riwayahOptions: FilterOption[] = [];
+  platformOptions: FilterOption[] = [];
+  categoryOptions: FilterOption[] = [];
 
   loading = false;
   pgResults: SearchResult[] = [];
@@ -138,6 +153,28 @@ export class SearchComparisonComponent implements OnInit, OnDestroy {
       });
 
     this.loadHistory();
+    this.loadFilterOptions();
+  }
+
+  private loadFilterOptions(): void {
+    this.apiService.getMetadataValues()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: any) => {
+        this.featureOptions = data.features || [];
+        this.riwayahOptions = data.riwayah || [];
+        this.platformOptions = data.platforms || [];
+      });
+
+    this.apiService.getCategories()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((categories: Category[]) => {
+        this.categoryOptions = categories.map(cat => ({
+          value: cat.slug,
+          label_en: cat.name_en,
+          label_ar: cat.name_ar,
+          count: 0
+        }));
+      });
   }
 
   ngOnDestroy(): void {
@@ -156,10 +193,10 @@ export class SearchComparisonComponent implements OnInit, OnDestroy {
     this.cfError = '';
 
     const filters: SearchFilters = {};
-    if (this.filterFeatures.trim()) filters.features = this.filterFeatures.trim();
-    if (this.filterRiwayah.trim()) filters.riwayah = this.filterRiwayah.trim();
-    if (this.filterPlatform.trim()) filters.platform = this.filterPlatform.trim();
-    if (this.filterCategory.trim()) filters.category = this.filterCategory.trim();
+    if (this.filterFeatures.length) filters.features = this.filterFeatures.join(',');
+    if (this.filterRiwayah.length) filters.riwayah = this.filterRiwayah.join(',');
+    if (this.filterPlatform.length) filters.platform = this.filterPlatform.join(',');
+    if (this.filterCategory.length) filters.category = this.filterCategory.join(',');
 
     const pgStart = performance.now();
     const cfStart = performance.now();
@@ -186,6 +223,10 @@ export class SearchComparisonComponent implements OnInit, OnDestroy {
 
           this.pgResults = pg?.results || [];
           this.cfResults = cf?.results || [];
+
+          // Surface API-level errors (e.g. CF quota exceeded)
+          if ((pg as any)?.error) this.pgError = (pg as any).error;
+          if ((cf as any)?.error) this.cfError = (cf as any).error;
 
           this.saveHistory(trimmed, filters);
           this.loading = false;
@@ -255,10 +296,10 @@ export class SearchComparisonComponent implements OnInit, OnDestroy {
 
   restoreFromHistory(item: HistoryItem): void {
     this.query = item.query;
-    this.filterFeatures = item.filters.features || '';
-    this.filterRiwayah = item.filters.riwayah || '';
-    this.filterPlatform = item.filters.platform || '';
-    this.filterCategory = item.filters.category || '';
+    this.filterFeatures = item.filters.features ? item.filters.features.split(',') : [];
+    this.filterRiwayah = item.filters.riwayah ? item.filters.riwayah.split(',') : [];
+    this.filterPlatform = item.filters.platform ? item.filters.platform.split(',') : [];
+    this.filterCategory = item.filters.category ? item.filters.category.split(',') : [];
     this.pgResults = item.pgResults || [];
     this.cfResults = item.cfResults || [];
     this.pgTime = item.pgTime;

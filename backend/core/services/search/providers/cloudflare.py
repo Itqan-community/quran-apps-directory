@@ -63,13 +63,15 @@ class CloudflareSearchProvider(AISearchProvider):
 
             if response.status_code != 200:
                 logger.error(f"CF AI Search error: {response.status_code} - {response.text}")
-                return []
+                raise Exception(f"CF AI Search HTTP {response.status_code}: {response.text[:200]}")
 
             data = response.json()
 
             if not data.get("success"):
-                logger.error(f"CF AI Search failed: {data.get('errors', [])}")
-                return []
+                errors = data.get('errors', [])
+                error_msg = errors[0].get('message', 'Unknown error') if errors else 'Unknown error'
+                logger.error(f"CF AI Search failed: {errors}")
+                raise Exception(f"CF AI Search error: {error_msg}")
 
             results = []
             for item in data.get("result", {}).get("data", []):
@@ -129,13 +131,15 @@ class CloudflareSearchProvider(AISearchProvider):
 
             if response.status_code != 200:
                 logger.error(f"CF AI Search error: {response.status_code} - {response.text}")
-                return []
+                raise Exception(f"CF AI Search HTTP {response.status_code}: {response.text[:200]}")
 
             data = response.json()
 
             if not data.get("success"):
-                logger.error(f"CF AI Search failed: {data.get('errors', [])}")
-                return []
+                errors = data.get('errors', [])
+                error_msg = errors[0].get('message', 'Unknown error') if errors else 'Unknown error'
+                logger.error(f"CF AI Search failed: {errors}")
+                raise Exception(f"CF AI Search error: {error_msg}")
 
             apps = []
             seen_ids = set()  # Dedupe apps (CF may return multiple chunks per app)

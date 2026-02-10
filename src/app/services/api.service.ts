@@ -313,6 +313,15 @@ export class ApiService {
   }
 
   /**
+   * Get metadata values (features, riwayah, mushaf_type, platform) with counts
+   */
+  getMetadataValues(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/apps/metadata-values/`).pipe(
+      catchError(() => of({}))
+    );
+  }
+
+  /**
    * Search using hybrid search endpoint (pgvector or CF AutoRAG)
    */
   searchHybrid(query: string, useCF: boolean, filters?: {
