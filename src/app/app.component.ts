@@ -59,6 +59,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public navbarSearchType: 'traditional' | 'smart' = 'traditional';
   public navbarCategories: Category[] = [];
   public navbarSelectedCategory = 'all';
+  public isNavbarSearching = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -160,6 +161,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         this.navbarSearchType = state.searchType;
         this.navbarCategories = state.categories;
         this.navbarSelectedCategory = state.selectedCategory;
+        this.isNavbarSearching = state.isSearching;
       });
   }
 
@@ -218,9 +220,12 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onNavbarSearch() {
-    // Navigate to home with search query
+    if (!this.navbarSearchQuery.trim()) return;
+    this.isNavbarSearching = true;
+    this.navbarScrollService.updateSearchState({ isSearching: true });
+    // Navigate to home with smart search query
     this.router.navigate(['/', this.currentLang], {
-      queryParams: { search: this.navbarSearchQuery }
+      queryParams: { smart_search: this.navbarSearchQuery.trim() }
     });
   }
 

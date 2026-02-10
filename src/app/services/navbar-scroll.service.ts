@@ -10,6 +10,7 @@ export interface NavbarSearchState {
   categories: Category[];
   selectedCategory: string;
   currentLang: 'en' | 'ar';
+  isSearching: boolean;
 }
 
 @Injectable({
@@ -23,7 +24,8 @@ export class NavbarScrollService {
     searchType: 'traditional',
     categories: [],
     selectedCategory: 'all',
-    currentLang: 'ar'
+    currentLang: 'ar',
+    isSearching: false
   });
 
   compactMode$: Observable<boolean> = this.compactModeSubject.asObservable();
