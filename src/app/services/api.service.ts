@@ -313,6 +313,31 @@ export class ApiService {
   }
 
   /**
+   * Search using hybrid search endpoint (pgvector or CF AutoRAG)
+   */
+  searchHybrid(query: string, useCF: boolean, filters?: {
+    features?: string;
+    riwayah?: string;
+    mushaf_type?: string;
+    platform?: string;
+    category?: string;
+  }): Observable<any> {
+    let params = new HttpParams()
+      .set('q', query)
+      .set('use_cf', useCF.toString())
+      .set('include_facets', 'false')
+      .set('page_size', '10');
+
+    if (filters) {
+      Object.entries(filters).forEach(([key, val]) => {
+        if (val) params = params.set(key, val);
+      });
+    }
+
+    return this.http.get(`${this.apiUrl}/search/hybrid/`, { params });
+  }
+
+  /**
    * Refresh categories from server
    */
   refreshCategories(): void {

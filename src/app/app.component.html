@@ -1,6 +1,6 @@
 <nz-layout class="app-layout" [dir]="isRtl ? 'rtl' : 'ltr'">
   <!-- Modern Header -->
-  <nz-header class="modern-header" [class.compact-mode]="isNavbarCompact">
+  <nz-header *ngIf="!hideChrome" class="modern-header" [class.compact-mode]="isNavbarCompact">
     <!-- Normal Header Container -->
     <div class="header-container" [class.hidden]="isNavbarCompact">
       <!-- Logo Section with Settings Icon -->
@@ -284,7 +284,7 @@
   <nz-content>
     <router-outlet></router-outlet>
   </nz-content>
-  <nz-footer class="main-footer">
+  <nz-footer *ngIf="!hideChrome" class="main-footer">
     <div class="footer-content">
       <div class="footer-section">
         <h4>{{ "footer.itqan_projects" | translate }}</h4>

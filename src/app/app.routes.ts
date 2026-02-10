@@ -50,6 +50,11 @@ export const routes: Routes = [
     data: { title: 'Track Submission' },
     loadComponent: () => import('./pages/track-submission/track-submission.component').then(m => m.TrackSubmissionComponent)
   },
+  {
+    path: ':lang/search-comparison',
+    data: { title: 'Search Comparison', hideChrome: true },
+    loadComponent: () => import('./pages/search-comparison/search-comparison.component').then(m => m.SearchComparisonComponent)
+  },
 
   // Generic category route (must come AFTER all specific routes)
   {

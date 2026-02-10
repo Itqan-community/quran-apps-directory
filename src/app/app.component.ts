@@ -50,6 +50,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public isMobileMenuVisible = false;
   public currentLang: "en" | "ar" = "en";
 
+  // Hide header/footer for internal tool pages
+  public hideChrome = false;
+
   // Navbar compact mode with inline search
   public isNavbarCompact = false;
   public navbarSearchQuery = '';
@@ -121,8 +124,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
-    // Also listen for route changes to update language
+    // Also listen for route changes to update language and chrome visibility
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
+      // Check if current route wants to hide header/footer
+      this.hideChrome = !!this.route.snapshot.firstChild?.data?.['hideChrome'];
+
       const lang = this.route.snapshot.firstChild?.paramMap.get('lang') || this.translate.getDefaultLang();
       if (lang !== this.currentLang) {
         // Wait for translations to load before updating state
