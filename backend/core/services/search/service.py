@@ -446,6 +446,82 @@ class AISearchService:
             'facets': facets
         }
 
+    def hybrid_search_cf(
+        self,
+        query: str,
+        filters: Dict[str, List[str]] = None,
+        limit: int = 50,
+        include_facets: bool = True,
+        apply_boost: bool = True
+    ) -> Dict[str, Any]:
+        """
+        Hybrid search using Cloudflare AutoRAG with query augmentation.
+
+        Flow:
+        1. Augment query with filter terms
+        2. Call CF provider for semantic search
+        3. Fetch full app objects from DB
+        4. Apply metadata boosting (reuse existing logic)
+        5. Calculate facets (reuse existing logic)
+
+        Returns:
+            Dict with 'results' (list of apps) and 'facets' (filter counts)
+        """
+        from apps.models import App
+        from .factory import AISearchFactory
+
+        cf_provider = AISearchFactory.get_cloudflare_provider()
+        if not cf_provider:
+            logger.warning("Cloudflare provider not configured for hybrid search")
+            return {'results': [], 'facets': {}}
+
+        # 1. Search via CF with augmented query
+        cf_results = cf_provider.search_hybrid(query, filters=filters, max_results=limit)
+
+        if not cf_results:
+            return {'results': [], 'facets': {}}
+
+        # 2. Fetch full app objects preserving CF score order
+        app_ids = [r['id'] for r in cf_results]
+        cf_scores = {r['id']: r['cf_score'] for r in cf_results}
+
+        apps_by_id = {
+            app.id: app
+            for app in App.objects.filter(
+                id__in=app_ids, status='published'
+            ).select_related('developer').prefetch_related('categories')
+        }
+
+        # Preserve CF ranking order
+        candidate_list = []
+        for app_id in app_ids:
+            app = apps_by_id.get(app_id)
+            if app:
+                app._cf_score = cf_scores.get(app_id, 0)
+                candidate_list.append(app)
+
+        # 3. Apply metadata boosting
+        if apply_boost and candidate_list:
+            for app in candidate_list:
+                boost, match_reasons = self._calculate_metadata_boost(app, query)
+                app._metadata_boost = boost
+                app._match_reasons = match_reasons
+                # Combined score: CF score * metadata boost
+                app._combined_score = app._cf_score * boost
+
+            candidate_list.sort(key=lambda x: getattr(x, '_combined_score', 0), reverse=True)
+
+        # 4. Calculate facets from published apps (not just CF results)
+        facets = {}
+        if include_facets:
+            base_queryset = App.objects.filter(status='published')
+            facets = self._calculate_facets(base_queryset)
+
+        return {
+            'results': candidate_list,
+            'facets': facets
+        }
+
     def _calculate_facets(self, queryset) -> Dict[str, List[Dict]]:
         """
         Calculate facet counts for metadata filters.

@@ -126,6 +126,7 @@ def hybrid_search(
     platform: str = None,
     category: str = None,
     include_facets: bool = True,
+    use_cf: bool = False,
 ):
     """
     Hybrid semantic search combining AI embeddings with metadata filters.
@@ -147,6 +148,7 @@ def hybrid_search(
         platform: Comma-separated platform filters (e.g., "android,ios")
         category: Comma-separated category slugs
         include_facets: Whether to include facet counts (default: True)
+        use_cf: Use Cloudflare AutoRAG instead of pgvector (default: False)
 
     Returns:
         Paginated results with match_reasons and facets
@@ -173,15 +175,24 @@ def hybrid_search(
         filters['category'] = parse_csv(category)
 
     try:
-        # Perform hybrid search
-        search_result = search_service.hybrid_search(
-            query=q,
-            filters=filters if filters else None,
-            limit=100,  # Get more candidates for pagination
-            rerank_top_k=20,
-            include_facets=include_facets,
-            apply_boost=True
-        )
+        # Route to CF or pgvector based on use_cf flag
+        if use_cf:
+            search_result = search_service.hybrid_search_cf(
+                query=q,
+                filters=filters if filters else None,
+                limit=100,
+                include_facets=include_facets,
+                apply_boost=True
+            )
+        else:
+            search_result = search_service.hybrid_search(
+                query=q,
+                filters=filters if filters else None,
+                limit=100,
+                rerank_top_k=20,
+                include_facets=include_facets,
+                apply_boost=True
+            )
 
         all_results = search_result.get('results', [])
         facets_raw = search_result.get('facets', {})
