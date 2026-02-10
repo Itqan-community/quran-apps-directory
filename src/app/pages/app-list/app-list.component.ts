@@ -15,7 +15,7 @@ import type { QuranApp } from "../../services/app.service";
 import { ApiService, Category } from "../../services/api.service";
 import { Title, Meta } from "@angular/platform-browser";
 import { combineLatest, of, Subject } from "rxjs";
-import { catchError, finalize, takeUntil, switchMap, debounceTime } from "rxjs/operators";
+import { catchError, filter, finalize, takeUntil, switchMap, debounceTime } from "rxjs/operators";
 import { SeoService } from "../../services/seo.service";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
@@ -51,6 +51,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   searchQuery: string = "";
   searchType: 'traditional' | 'smart' = 'traditional';
   isSmartSearching = false;
+  searchExecuted = false;
   categories: Category[] = [];
   // Start with false - no spinner on initial load
   isLoading = false;
@@ -142,6 +143,21 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Load categories and apps from API
     this.loadData();
+
+    // Handle smart_search query param from navbar search
+    this.route.queryParamMap
+      .pipe(
+        filter(params => params.has('smart_search')),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(params => {
+        const query = params.get('smart_search') || '';
+        if (query.trim()) {
+          this.searchQuery = query;
+          this.searchType = 'smart';
+          this.onSearch();
+        }
+      });
 
     // Subscribe to route changes for category filtering
     // Use debounceTime to prevent race conditions from rapid clicks
@@ -259,7 +275,9 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     const searchContainer = document.querySelector('.search-container');
     if (searchContainer) {
       const rect = searchContainer.getBoundingClientRect();
-      this.searchSectionTop = rect.top + window.scrollY;
+      // Use the bottom of the search container so compact mode only triggers
+      // after the entire search section has scrolled out of view
+      this.searchSectionTop = rect.bottom + window.scrollY;
     }
   }
 
@@ -344,24 +362,28 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     // If query is empty, just respect current category filter
     if (!query) {
       this.isSmartSearching = false;
+      this.searchExecuted = false;
       this.applyCategoryAndSearchFilters();
       return;
     }
 
     if (this.searchType === 'smart') {
-      // Smart search: show loading animation on icon
       this.isSmartSearching = true;
-      // TODO: Replace with actual smart search API call
-      // For now, simulate with local filtering + delay
-      setTimeout(() => {
-        this.applyCategoryAndSearchFilters();
-        this.isSmartSearching = false;
-        this.cdr.detectChanges();
-      }, 1500);
+      this.searchExecuted = false;
+      this.apiService.smartSearch(query)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(apps => {
+          this.filteredApps = apps.map(app => this.apiService.formatAppForDisplay(app));
+          this.isSmartSearching = false;
+          this.searchExecuted = true;
+          this.navbarScrollService.updateSearchState({ isSearching: false });
+          this.cdr.detectChanges();
+        });
       return;
     }
 
     // Local, tolerant search on already-loaded apps (avoids strict backend matching)
+    this.searchExecuted = true;
     this.applyCategoryAndSearchFilters();
   }
 
