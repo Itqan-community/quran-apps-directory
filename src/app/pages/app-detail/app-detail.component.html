@@ -32,11 +32,17 @@
           </div>
           <aside class="details-side">
             <div class="side-block">
-              <div class="shimmer-line shimmer-heading" style="width: 40%"></div>
+              <div
+                class="shimmer-line shimmer-heading"
+                style="width: 40%"
+              ></div>
               <div class="shimmer-line" style="width: 60%"></div>
             </div>
             <div class="side-block">
-              <div class="shimmer-line shimmer-heading" style="width: 50%"></div>
+              <div
+                class="shimmer-line shimmer-heading"
+                style="width: 50%"
+              ></div>
               <div class="shimmer-download-row">
                 <div class="shimmer-download-btn"></div>
                 <div class="shimmer-download-btn"></div>
@@ -200,7 +206,7 @@
                 </div>
               </div>
             </div>
-            <div class="side-block">
+            <div class="side-block" id="downloads">
               <h3 class="side-title">
                 {{ "appDetail.downloadLinks" | translate }}
               </h3>
@@ -920,7 +926,7 @@
                 <div class="related-card-actions">
                   <button
                     class="related-btn-primary"
-                    (click)="$event.stopPropagation()"
+                    (click)="navigateToAppDownloads(relatedApp.id, $event)"
                   >
                     {{
                       currentLang === "ar" ? "تنزيل التطبيق" : "Download App"
@@ -928,38 +934,7 @@
                   </button>
                   <button
                     class="related-btn-secondary"
-                    (click)="$event.stopPropagation()"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                      <polyline points="16 6 12 2 8 6" />
-                      <line x1="12" x2="12" y1="2" y2="15" />
-                    </svg>
-                    {{ currentLang === "ar" ? "مشاركة" : "Share" }}
-                  </button>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="related-card-actions">
-                  <button
-                    class="related-btn-primary"
-                    (click)="$event.stopPropagation()"
-                  >
-                    {{
-                      currentLang === "ar" ? "تنزيل التطبيق" : "Download App"
-                    }}
-                  </button>
-                  <button
-                    class="related-btn-secondary"
-                    (click)="$event.stopPropagation()"
+                    (click)="shareRelatedApp(relatedApp.id, $event)"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

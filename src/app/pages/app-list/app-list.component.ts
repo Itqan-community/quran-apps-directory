@@ -11,7 +11,7 @@ import {
   AfterViewInit,
 } from "@angular/core";
 import { CommonModule, isPlatformBrowser, SlicePipe } from "@angular/common";
-import { RouterModule, ActivatedRoute } from "@angular/router";
+import { RouterModule, ActivatedRoute, Router } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { NzGridModule } from "ng-zorro-antd/grid";
 import { NzCardModule } from "ng-zorro-antd/card";
@@ -97,6 +97,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     private apiService: ApiService,
     private translateService: TranslateService,
     private route: ActivatedRoute,
+    private router: Router,
     private seoService: SeoService,
     private titleService: Title,
     private metaService: Meta,
@@ -791,5 +792,55 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Return format: "slug_appId" (e.g., "wahy_abc-123-uuid")
     return `${slug}_${app.id}`;
+  }
+
+  /**
+   * Navigate to app detail page and scroll to downloads section
+   */
+  navigateToDownloads(app: QuranApp, event: Event): void {
+    event.stopPropagation();
+    const appUrlParam = this.getAppUrlParam(app);
+    this.router.navigate(['/', this.currentLang, 'app', appUrlParam], {
+      fragment: 'downloads'
+    });
+  }
+
+  /**
+   * Share app link using Web Share API or clipboard fallback
+   */
+  async shareApp(app: QuranApp, event: Event): Promise<void> {
+    event.stopPropagation();
+
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const appName = this.currentLang === "ar" ? app.Name_Ar : app.Name_En;
+    const appDescription = this.currentLang === "ar"
+      ? app.Short_Description_Ar
+      : app.Short_Description_En;
+
+    const appUrlParam = this.getAppUrlParam(app);
+    const shareUrl = `${window.location.origin}/${this.currentLang}/app/${appUrlParam}`;
+
+    const shareData = {
+      title: appName,
+      text: appDescription || appName,
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback: copy to clipboard
+        await navigator.clipboard.writeText(shareUrl);
+        alert(this.currentLang === "ar"
+          ? "تم نسخ الرابط إلى الحافظة"
+          : "Link copied to clipboard");
+      }
+    } catch (error) {
+      if ((error as Error).name !== 'AbortError') {
+        console.error("Share failed:", error);
+      }
+    }
   }
 }

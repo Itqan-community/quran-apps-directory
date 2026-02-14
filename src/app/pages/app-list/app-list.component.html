@@ -375,10 +375,10 @@
 
             <!-- Action Buttons -->
             <div class="card-actions">
-              <button class="btn-primary" (click)="$event.stopPropagation()">
+              <button class="btn-primary" (click)="navigateToDownloads(app, $event)">
                 {{ currentLang === "ar" ? "تنزيل التطبيق" : "Download App" }}
               </button>
-              <button class="btn-secondary" (click)="$event.stopPropagation()">
+              <button class="btn-secondary" (click)="shareApp(app, $event)">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"

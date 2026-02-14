@@ -118,15 +118,18 @@
 }
 
 .category-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 6px 12px;
   background-color: var(--surface-color, #f8f8f8);
   border-radius: 20px;
   transition: all 0.3s;
-  border: 1px solid var(--border-color, #e8e8e8);
+  // border: 1px solid var(--border-color, #e8e8e8);
   cursor: pointer;
 
   &:hover {
-    background: var(--hover-bg, #ede0c04b);
+    // background: var(--hover-bg, #ede0c04b);
     border-color: var(--primary-color, #d0c5a3);
   }
 
@@ -140,6 +143,28 @@
   font-weight: 500;
   font-size: 14px;
   color: var(--text-color, #272424);
+}
+
+.badge-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+
+  ::ng-deep svg {
+    width: 14px;
+    height: 14px;
+    fill: #000 !important;
+  }
+
+  ::ng-deep svg path,
+  ::ng-deep svg circle,
+  ::ng-deep svg rect,
+  ::ng-deep svg polygon {
+    fill: #000 !important;
+  }
 }
 
 /* Mobile adjustments */
@@ -156,13 +181,18 @@
   .badge-name {
     font-size: 12px;
   }
+
+  .badge-icon {
+    width: 12px;
+    height: 12px;
+
+    ::ng-deep svg {
+      width: 12px;
+      height: 12px;
+    }
+  }
 }
 
-/* RTL Support */
-[dir="rtl"] .badge-icon {
-  margin-inline-start: 8px;
-  margin-inline-end: 0;
-}
 nz-divider::after,
 nz-divider::before {
   border-color: #ceced1 !important;
@@ -1794,7 +1824,7 @@ html[dir="rtl"] .content-section {
 
   @media (max-width: 640px) {
     gap: 6px;
-    margin-top: 4px;
+    margin: 12px 0px;
   }
 }
 
