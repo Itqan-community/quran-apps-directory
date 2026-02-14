@@ -398,9 +398,10 @@ export class ApiService {
       formattedCategories = (app.categories as any[]).reduce((acc: string[], cat: any) => {
         if (typeof cat === 'string') {
           acc.push(cat.toLowerCase());
-        } else if (cat && typeof cat === 'object' && cat.name_en) {
-          const name = (cat.name_en as string).toLowerCase();
-          if (name) acc.push(name);
+        } else if (cat && typeof cat === 'object') {
+          // Use slug for filtering (matches route params), fallback to name_en
+          const slug = (cat.slug || cat.name_en || '') as string;
+          if (slug) acc.push(slug.toLowerCase());
         }
         return acc;
       }, []);

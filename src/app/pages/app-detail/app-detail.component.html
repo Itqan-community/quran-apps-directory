@@ -1,3 +1,54 @@
+<!-- Shimmer Loading State -->
+@if (!app && loading) {
+  <div>
+    <!-- Hero Shimmer -->
+    <section class="app-hero-section">
+      <div class="hero-background"></div>
+      <div class="hero-container shimmer-card">
+        <div class="shimmer-icon-lg"></div>
+        <div class="shimmer-details-col">
+          <div class="shimmer-line shimmer-title-lg"></div>
+          <div class="shimmer-line shimmer-subtitle-lg"></div>
+          <div class="shimmer-actions-row">
+            <div class="shimmer-btn"></div>
+            <div class="shimmer-btn shimmer-btn-sm"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Content Shimmer -->
+    <div class="content-section">
+      <div class="container">
+        <div class="details-grid">
+          <div class="details-main">
+            <div class="shimmer-line shimmer-heading"></div>
+            <div class="shimmer-paragraph">
+              <div class="shimmer-line" style="width: 100%"></div>
+              <div class="shimmer-line" style="width: 95%"></div>
+              <div class="shimmer-line" style="width: 88%"></div>
+              <div class="shimmer-line" style="width: 70%"></div>
+            </div>
+          </div>
+          <aside class="details-side">
+            <div class="side-block">
+              <div class="shimmer-line shimmer-heading" style="width: 40%"></div>
+              <div class="shimmer-line" style="width: 60%"></div>
+            </div>
+            <div class="side-block">
+              <div class="shimmer-line shimmer-heading" style="width: 50%"></div>
+              <div class="shimmer-download-row">
+                <div class="shimmer-download-btn"></div>
+                <div class="shimmer-download-btn"></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
 <!-- Main container with app details -->
 @if (app) {
   <div>

@@ -34,6 +34,7 @@ import { register } from "swiper/element/bundle";
 import { Nl2brPipe } from "../../pipes/nl2br.pipe";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SeoService } from "../../services/seo.service";
+import { environment } from "../../../environments/environment";
 // register Swiper custom elements
 register();
 
@@ -167,22 +168,17 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
   }
 
   private loadAppData(appParam: string) {
-    // Parse the app parameter: format is "appSlug_appId"
-    // Extract app ID from URL parameter
+    // Parse the app parameter: format is "slug_id" (e.g., "wahy_46")
     const lastUnderscoreIndex = appParam.lastIndexOf("_");
     let appId: string = appParam;
 
     if (lastUnderscoreIndex !== -1) {
       const potentialId = appParam.substring(lastUnderscoreIndex + 1);
-      // Check if the part after underscore is a valid ID (numeric or string)
-      if (potentialId && potentialId.length > 0) {
+      if (potentialId.length > 0) {
         appId = potentialId;
-        const appSlug = appParam.substring(0, lastUnderscoreIndex);
-        console.log("✅ Parsed app ID from URL:", appId, "Slug:", appSlug);
       }
     }
 
-    console.log("🔍 Loading app data for ID:", appId);
     this.appService.getAppById(appId).subscribe(
       (app) => {
         if (app) {
@@ -235,7 +231,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
             this.loading,
           );
         } else {
-          console.error("❌ DEBUG: No app data returned for ID:", appId);
+          console.error("❌ DEBUG: No app data returned for:", appParam);
         }
       },
       (error) => {
@@ -245,7 +241,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
   }
 
   // Add a method to handle navigation to a related app
-  navigateToApp(appId: string) {
+  navigateToApp(lookupId: string) {
     // Clear current app data before navigation to prevent stale data display
     this.app = undefined;
     this.loading = true;
@@ -253,7 +249,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
 
     // Find the app in relevantApps to get its slug
-    const targetApp = this.relevantApps.find((app) => app.id === appId);
+    const targetApp = this.relevantApps.find((app) => app.id === lookupId);
 
     let slug = targetApp?.slug || "";
 
@@ -279,10 +275,10 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       }
     }
 
-    slug = slug || appId;
+    slug = slug || lookupId;
 
-    // Format: "slug_appId" (e.g., "wahy_1")
-    const urlParam = `${slug}_${appId}`;
+    // Format: "slug_lookupId" (e.g., "wahy_1")
+    const urlParam = `${slug}_${lookupId}`;
     this.router.navigate([`/${this.currentLang}/app/${urlParam}`]).then(() => {
       if (isPlatformBrowser(this.platformId)) {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -401,7 +397,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
 
   getCategoryIcon(category: string): SafeHtml {
     const foundCategory = this.categoriesSet.find(
-      (cat) => cat.name === category,
+      (cat) => cat.name.toLowerCase() === category.toLowerCase(),
     );
     return this.sanitizer.bypassSecurityTrustHtml(foundCategory?.icon || "");
   }
@@ -475,11 +471,10 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       property: "og:description",
       content: appDescription || "",
     });
+    const ogImageUrl = `${environment.apiUrl}/apps/${this.app.slug}/og-image/?lang=${this.currentLang}`;
     this.metaService.updateTag({
       property: "og:image",
-      content:
-        this.app.applicationIcon ||
-        "https://itqan.dev/images/home/hero-card-mushaf.svg",
+      content: ogImageUrl,
     });
     this.metaService.updateTag({
       property: "og:url",
@@ -499,9 +494,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     });
     this.metaService.updateTag({
       property: "twitter:image",
-      content:
-        this.app.applicationIcon ||
-        "https://itqan.dev/images/home/hero-card-mushaf.svg",
+      content: ogImageUrl,
     });
 
     // Add app-specific keywords
