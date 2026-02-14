@@ -611,6 +611,8 @@ nz-footer.main-footer {
 
   @media (max-width: 768px) {
     margin: 60px 16px 0 16px !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 3rem !important;
     border-radius: 24px;
   }
 
@@ -712,6 +714,10 @@ nz-footer.main-footer {
 }
 :host ::ng-deep .ant-layout-content {
   min-height: 10vh !important;
+
+  @media (max-width: 768px) {
+    margin-bottom: 40px !important;
+  }
 }
 
 // Ensure nz-layout contains footer margin properly
@@ -721,6 +727,10 @@ nz-footer.main-footer {
   min-height: 10vh;
   overflow: auto; // Prevents margin collapse
   padding-bottom: 20px; // Space after footer
+
+  @media (max-width: 768px) {
+    padding-bottom: 30px; // Extra space on mobile
+  }
 }
 
 // Light theme specific adjustments for modern header

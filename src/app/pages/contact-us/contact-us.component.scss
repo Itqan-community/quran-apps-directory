@@ -334,6 +334,7 @@ $spacing-xl: 48px;
 // ============================================
 @media (max-width: 768px) {
   .hero-section {
+    margin-top: 50px;
     padding: 80px $spacing-sm $spacing-md;
   }
 

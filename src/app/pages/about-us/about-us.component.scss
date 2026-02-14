@@ -202,6 +202,10 @@ $spacing-xxl: 64px;
   .logo-container {
     margin-bottom: $spacing-lg;
 
+    @media screen and (max-width: 768px) {
+      margin-top: 80px;
+    }
+
     .logo {
       max-width: 280px;
       height: auto;
