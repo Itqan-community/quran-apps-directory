@@ -627,152 +627,279 @@ $spacing-xxl: 64px;
 
 // Mobile breakpoint (<768px)
 @media (max-width: 768px) {
+  // Hero: compact with tighter spacing
   .hero-section {
-    min-height: 400px;
-    padding: 100px $spacing-sm $spacing-lg;
+    min-height: auto;
+    padding: 80px $spacing-sm $spacing-md;
   }
 
-  // T062: Mobile breakpoint for page-level backgrounds
+  // Background ellipses: subtle on mobile
   .page-background-left {
     &::before {
-      width: 600px;
-      height: 600px;
-      left: -400px;
-      top: 100px;
-      filter: blur(100px);
-    }
-
-    &::after {
       width: 400px;
       height: 400px;
-      left: -280px;
-      top: 300px;
-    }
-
-    .ellipse-small {
-      width: 200px;
-      height: 200px;
-      left: -150px;
-      top: 450px;
-    }
-  }
-
-  .page-background-right {
-    &::before {
-      width: 500px;
-      height: 500px;
-      right: -350px;
-      top: -100px;
-      filter: blur(100px);
+      left: -300px;
+      top: 50px;
+      filter: blur(120px);
     }
 
     &::after {
       width: 300px;
       height: 300px;
-      right: -200px;
-      top: 50px;
-      filter: blur(50px);
+      left: -220px;
+      top: 200px;
+      filter: blur(80px);
     }
 
-    // Hide smallest gold ellipse on mobile to reduce clutter
     .ellipse-small {
       display: none;
     }
   }
 
+  .page-background-right {
+    &::before {
+      width: 400px;
+      height: 400px;
+      right: -300px;
+      top: -80px;
+      filter: blur(120px);
+    }
+
+    &::after {
+      width: 250px;
+      height: 250px;
+      right: -180px;
+      top: 40px;
+      filter: blur(60px);
+    }
+
+    .ellipse-small {
+      display: none;
+    }
+  }
+
+  // Hero content: compact typography
   .hero-content {
-    .logo-container .logo {
-      max-width: 200px;
+    padding: 0 $spacing-xs;
+
+    .logo-container {
+      margin-bottom: $spacing-md;
+
+      .logo {
+        max-width: 180px;
+      }
     }
 
     h1 {
-      font-size: 1.75rem;
+      font-size: 1.5rem;
+      margin-bottom: $spacing-xs;
     }
 
     .subtitle {
-      font-size: 1.1rem;
+      font-size: 0.95rem;
+      margin-bottom: $spacing-sm;
     }
 
     .intro {
-      font-size: 1rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
     }
   }
 
+  // Content container: tighter padding
   .content-container {
-    padding: 0 $spacing-sm $spacing-xl;
+    padding: 0 $spacing-sm $spacing-lg;
   }
 
+  // Mission & Vision: compact cards
   .card-section {
-    padding: $spacing-md;
-    margin-bottom: $spacing-md;
-  }
+    padding: $spacing-sm $spacing-md;
+    margin-bottom: $spacing-sm;
+    border-radius: 12px;
 
-  // T022: What We Do - 1 column
-  .features-grid {
-    grid-template-columns: 1fr;
-  }
-
-  // T023: Why Choose Us - 1 column
-  .benefits-grid {
-    grid-template-columns: 1fr;
-  }
-
-  // T024: Categories - 2 columns
-  .categories-pills {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: $spacing-xs;
-  }
-
-  .category-pill {
-    justify-content: center;
-    padding: $spacing-sm;
-  }
-
-  // T025: Values - 1 column
-  .values-grid {
-    grid-template-columns: 1fr;
-  }
-
-  // T026: Projects - 2 columns
-  .projects-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .project-card {
-    padding: $spacing-md $spacing-sm;
-
-    .project-logo {
-      width: 48px;
-      height: 48px;
+    h2 {
+      font-size: 1.2rem;
+      margin-bottom: $spacing-sm;
     }
 
-    span {
-      font-size: 0.85rem;
+    p {
+      font-size: 0.9rem;
+      line-height: 1.7;
     }
   }
 
-  // Section headings
+  // Section spacing reduced
+  .what-we-do-section,
+  .why-section,
+  .categories-section,
+  .values-section,
+  .projects-section {
+    margin-bottom: $spacing-lg;
+  }
+
+  // Section headings: unified smaller size
   .what-we-do-section h2,
   .why-section h2,
   .categories-section h2,
   .values-section h2,
   .projects-section h2,
   .acknowledgments-section h2 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    margin-bottom: $spacing-md;
   }
-}
 
-// T028: Touch target sizes (minimum 44px)
-@media (max-width: 768px) {
-  .category-pill,
-  .project-card {
-    min-height: 44px;
+  // What We Do: 2-column compact grid
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-xs;
+  }
+
+  .feature-card {
+    padding: $spacing-sm;
+    border-radius: 10px;
+
+    h3 {
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+  }
+
+  // Why Choose Us: 2-column compact grid
+  .benefits-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-xs;
   }
 
   .benefit-item {
-    min-height: 44px;
     padding: $spacing-sm;
+    border-radius: 10px;
+    gap: $spacing-xs;
+    min-height: 44px;
+
+    .check-icon {
+      font-size: 1rem;
+    }
+
+    span:last-child {
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+  }
+
+  // Categories: flex-wrap into 2 rows
+  .categories-pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $spacing-xs;
+  }
+
+  .category-pill {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border-radius: 10px;
+    min-height: 36px;
+
+    img {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  // Values: 2-column compact grid
+  .values-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-xs;
+  }
+
+  .value-card {
+    padding: $spacing-sm;
+    border-radius: 10px;
+
+    span {
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+  }
+
+  // Projects: 2-column compact grid
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-xs;
+  }
+
+  .project-card {
+    padding: $spacing-sm;
+    border-radius: 10px;
+    gap: $spacing-xs;
+    min-height: 44px;
+
+    .project-logo {
+      width: 40px;
+      height: 40px;
+    }
+
+    span {
+      font-size: 0.8rem;
+      line-height: 1.3;
+    }
+  }
+
+  // Acknowledgments: compact
+  .acknowledgments-section {
+    padding: $spacing-sm $spacing-md;
+
+    p {
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+  }
+}
+
+// Small phone breakpoint (<400px)
+@media (max-width: 400px) {
+  .hero-section {
+    padding: 70px $spacing-xs $spacing-sm;
+  }
+
+  .hero-content {
+    .logo-container .logo {
+      max-width: 150px;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+    }
+
+    .intro {
+      font-size: 0.85rem;
+    }
+  }
+
+  // Keep 2-column grids on small screens with tighter spacing
+  .features-grid,
+  .benefits-grid,
+  .values-grid,
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .feature-card,
+  .benefit-item,
+  .value-card,
+  .project-card {
+    padding: $spacing-xs;
+  }
+
+  // Categories: smaller pills on very small screens
+  .category-pill {
+    padding: 4px 8px;
+    font-size: 0.75rem;
   }
 }
 
@@ -833,31 +960,35 @@ $spacing-xxl: 64px;
     text-align: right;
   }
 
-  // T065: RTL with mobile breakpoints for page-level backgrounds
+  // RTL with mobile breakpoints for page-level backgrounds
   @media (max-width: 768px) {
     .page-background-left {
       &::before {
-        right: -400px;
+        right: -300px;
       }
 
       &::after {
-        right: -280px;
+        right: -220px;
       }
 
       .ellipse-small {
-        right: -150px;
+        display: none;
       }
     }
 
     .page-background-right {
       &::before {
         right: auto;
-        left: -350px;
+        left: -300px;
       }
 
       &::after {
         right: auto;
-        left: -200px;
+        left: -180px;
+      }
+
+      .ellipse-small {
+        display: none;
       }
     }
   }

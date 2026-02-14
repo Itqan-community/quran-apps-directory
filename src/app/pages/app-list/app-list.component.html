@@ -193,14 +193,26 @@
     </div>
   }
 
-  <!-- Loading State -->
-  @if (isLoading && filteredApps.length === 0) {
-    <div class="loading-container">
-      <nz-spin [nzSpinning]="true" nzSize="large">
-        <div class="loading-placeholder">
-          <p>{{ "loading.apps" | translate }}</p>
+  <!-- Shimmer Loading State -->
+  @if ((isLoading || isSmartSearching) && filteredApps.length === 0) {
+    <div class="apps-grid">
+      @for (item of [1, 2, 3, 4, 5, 6]; track item) {
+        <div class="app-card shimmer-card">
+          <div class="card-cover shimmer-cover">
+            <div class="shimmer-block"></div>
+          </div>
+          <div class="card-body">
+            <div class="app-info">
+              <div class="shimmer-icon"></div>
+              <div class="shimmer-text-group">
+                <div class="shimmer-line shimmer-title"></div>
+                <div class="shimmer-line shimmer-desc"></div>
+              </div>
+            </div>
+            <div class="shimmer-line shimmer-meta"></div>
+          </div>
         </div>
-      </nz-spin>
+      }
     </div>
   }
 

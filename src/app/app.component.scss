@@ -84,7 +84,7 @@
         // RTL support for beta badge
         :host-context([dir="rtl"]) & .beta-badge {
           right: auto;
-          left: 140px;
+          left: 130px;
           @media screen and (max-width: 768px) {
             left: 50px;
           }
@@ -992,8 +992,12 @@ nz-footer.main-footer {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .compact-search-container {

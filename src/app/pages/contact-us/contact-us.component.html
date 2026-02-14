@@ -1,24 +1,77 @@
-<div class="contact-us-container">
-  <h1>{{ "contactUs.title" | translate }}</h1>
-  <div class="content">
-    <div class="contact-info">
-      <p>{{ "contactUs.message" | translate }}</p>
-      
-      <div class="contact-details">
-        <div class="contact-item">
-          <h3>{{ "contactUs.email" | translate }}</h3>
-          <a href="mailto:connect@itqan.dev" target="_blank">connect&#64;itqan.dev</a>
-        </div>
-        <div class="contact-item">
-          <h3>{{ "contactUs.app-request" | translate }}</h3>
-          <a href="https://forms.gle/62DMnc3YdttVMAby7" target="_blank">{{ "contactUs.app-request-form" | translate }}</a>
-        </div>
-        <div class="contact-item">
-          <h3>{{ "contactUs.appRequests" | translate }}</h3>
-          <a href="https://itqan.dev" target="_blank">www.itqan.dev</a>
-        </div>
-      </div>
-    </div>
-
+<div class="contact-us-page">
+  <!-- Page-level backgrounds (same as about-us) -->
+  <div class="page-background-left">
+    <span class="ellipse-small"></span>
   </div>
-</div> 
+  <div class="page-background-right">
+    <span class="ellipse-small"></span>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1>{{ "contactUs.title" | translate }}</h1>
+      <p class="description">{{ "contactUs.message" | translate }}</p>
+    </div>
+  </section>
+
+  <!-- Contact Cards -->
+  <div class="cards-container">
+    <div class="contact-cards">
+      <a
+        href="https://itqan.dev"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="contact-card"
+      >
+        <span class="card-arrow">&#x203a;</span>
+        <div class="card-content">
+          <h3>www.itqan.dev</h3>
+          <p>{{ "contactUs.appRequests" | translate }}</p>
+        </div>
+        <span class="card-icon">
+          <img
+            src="assets/images/mail-02.svg"
+            alt=""
+            onerror="this.outerHTML = '&#9993;'"
+          />
+        </span>
+      </a>
+
+      <a
+        href="https://forms.gle/62DMnc3YdttVMAby7"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="contact-card"
+      >
+        <span class="card-arrow">&#x203a;</span>
+        <div class="card-content">
+          <h3>{{ "contactUs.app-request-form" | translate }}</h3>
+          <p>{{ "contactUs.app-request" | translate }}</p>
+        </div>
+        <span class="card-icon">
+          <img
+            src="assets/images/mail-02.svg"
+            alt=""
+            onerror="this.outerHTML = '&#9993;'"
+          />
+        </span>
+      </a>
+
+      <a href="mailto:connect@itqan.dev" class="contact-card">
+        <span class="card-arrow">&#x203a;</span>
+        <div class="card-content">
+          <h3>connect&#64;itqan.dev</h3>
+          <p>{{ "contactUs.email" | translate }}</p>
+        </div>
+        <span class="card-icon">
+          <img
+            src="assets/images/mail-02.svg"
+            alt=""
+            onerror="this.outerHTML = '&#9993;'"
+          />
+        </span>
+      </a>
+    </div>
+  </div>
+</div>
