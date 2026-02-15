@@ -103,6 +103,17 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
+    // Cache-busting: add ?r= param rounded to 10s to bypass CF edge cache on deploy
+    if (isPlatformBrowser(this.platformId)) {
+      const url = new URL(window.location.href);
+      if (!url.searchParams.has('r')) {
+        const ts = Math.floor(Date.now() / 10000);
+        url.searchParams.set('r', ts.toString());
+        window.location.replace(url.toString());
+        return; // Stop init - page will reload
+      }
+    }
+
     console.log('🚀 AppComponent ngOnInit - listening to router events');
 
     // Subscribe to router events
