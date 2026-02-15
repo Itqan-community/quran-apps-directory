@@ -18,47 +18,31 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=()
 
-# MIME types for static assets - CRITICAL for SPA routing
-# Only match actual built files with hashes (e.g., main-ABCD1234.js)
-# Do NOT use catch-all patterns like /*.js as they conflict with SPA routing
-
+# Hashed static assets - long-term immutable caching
+# NOTE: Do NOT set Content-Type here. Cloudflare Pages sets correct MIME types
+# for real static files. Overriding Content-Type causes SPA fallback HTML
+# to be mislabeled as JS/CSS when old hashed files no longer exist.
 /main-*.js
-  Content-Type: application/javascript; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
 
 /polyfills-*.js
-  Content-Type: application/javascript; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
 
 /chunk-*.js
-  Content-Type: application/javascript; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
 
 /styles-*.css
-  Content-Type: text/css; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
 
-/*.json
-  Content-Type: application/json; charset=utf-8
-
-/*.svg
-  Content-Type: image/svg+xml
-
+# Service worker files - must not be cached
 /ngsw-worker.js
-  Content-Type: application/javascript; charset=utf-8
   Cache-Control: no-cache, must-revalidate
 
 /sw.js
-  Content-Type: application/javascript; charset=utf-8
   Cache-Control: no-cache, must-revalidate
 
 /worker-basic.min.js
-  Content-Type: application/javascript; charset=utf-8
   Cache-Control: no-cache, must-revalidate
 
 /ngsw.json
-  Content-Type: application/json; charset=utf-8
   Cache-Control: no-cache, must-revalidate
-
-/assets/*
-  # Assets folder files inherit their natural MIME types from Cloudflare
