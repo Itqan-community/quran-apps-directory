@@ -65,18 +65,6 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist/browser --project-name=staging-quran-apps-directory-frontend --branch=staging
 
-      - name: Wait for deployment propagation
-        run: sleep 30
-
-      - name: Purge Cloudflare cache
-        run: |
-          echo "Purging Cloudflare cache to prevent stale content..."
-          curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
-            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            --data '{"purge_everything":true}' \
-            --silent --show-error --fail || echo "Cache purge failed but continuing..."
-
       - name: Health check deployment
         run: |
           echo "Running health check on deployed site..."

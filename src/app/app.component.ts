@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit, OnDestroy, PLATFORM_ID } from "@angular/core";
+import { AfterViewInit, Component, inject, Inject, OnInit, OnDestroy, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser, CommonModule } from "@angular/common";
 import { RouterOutlet, RouterLink, ActivatedRoute, Router, ActivatedRouteSnapshot, NavigationEnd } from "@angular/router";
 import { FormsModule } from "@angular/forms";
@@ -21,6 +21,7 @@ import { Category } from "./services/api.service";
 import { filter, Subject, takeUntil } from "rxjs";
 import { LucideAngularModule, Menu, X, Globe, Home, Info, Mail, Users, PlusCircle, ExternalLink, ChevronRight, Search } from 'lucide-angular';
 import { SafeHtmlPipe } from "./pipes/safe-html.pipe";
+import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 
 // Icons globally registered in main.ts
 
@@ -60,6 +61,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public navbarCategories: Category[] = [];
   public navbarSelectedCategory = 'all';
   private destroy$ = new Subject<void>();
+  private swUpdate = inject(SwUpdate);
 
   constructor(
     @Inject(PLATFORM_ID) private readonly platformId: Object,
@@ -141,6 +143,18 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         });
       }
     });
+
+    // Auto-reload when a new app version is deployed
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.versionUpdates
+        .pipe(
+          filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'),
+          takeUntil(this.destroy$)
+        )
+        .subscribe(() => {
+          document.location.reload();
+        });
+    }
 
     // Start preloading app images in background (non-blocking)
     this.appImagePreloader.startPreloadingInBackground();
