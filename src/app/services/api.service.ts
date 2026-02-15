@@ -51,7 +51,8 @@ export interface App {
   features: string[];
   created_at: string;
   updated_at: string;
-  ai_reasoning?: string; // Present in smart search results
+  ai_reasoning?: string;
+  relevance_score?: number;
 }
 
 export interface AppListResponse {
@@ -430,7 +431,9 @@ export class ApiService {
       Developer_Logo: app.developer?.logo || null,
       categories: formattedCategories,
       slug: app.slug,
-      status: app.status
+      status: app.status,
+      ai_reasoning: (app as any).ai_reasoning || undefined,
+      relevance_score: (app as any).relevance_score ?? undefined
     };
   }
 }

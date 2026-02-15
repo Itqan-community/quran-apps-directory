@@ -90,6 +90,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   private destroy$ = new Subject<void>();
   // Cache for star arrays to prevent NG0100 errors from creating new references on each change detection
   private starArrayCache = new Map<number, { fillPercent: number }[]>();
+  activeAiInfoId: string | null = null;
 
   // Scroll-based navbar compact mode
   private isNavbarCompact = false;
@@ -272,6 +273,11 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     if (isPlatformBrowser(this.platformId)) {
       this.navbarScrollService.setCompactMode(false);
     }
+  }
+
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.activeAiInfoId = null;
   }
 
   @HostListener("window:scroll")
@@ -732,6 +738,11 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       script.setAttribute("data-type", "breadcrumb");
       document.head.appendChild(script);
     }
+  }
+
+  toggleAiInfo(appId: string, event: Event): void {
+    event.stopPropagation();
+    this.activeAiInfoId = this.activeAiInfoId === appId ? null : appId;
   }
 
   getRatingClass(rating: number): string {
