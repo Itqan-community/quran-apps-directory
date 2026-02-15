@@ -311,16 +311,12 @@ class AISearchService:
 
         return ""
 
-    def search_apps(self, query: str, limit: int = 50, rerank_top_k: int = 20) -> List[Any]:
+    def search_apps(self, query: str, limit: int = 50) -> List[Any]:
         """
-        Perform semantic search on Apps with optional Reranking.
-
-        Flow:
-        1. Vector Search (Retrieval) -> Get top 'limit' candidates (fast).
-        2. LLM Reranking (Reasoning) -> Sort top 'rerank_top_k' candidates by strict relevance (slower).
+        Perform semantic search on Apps using pgvector cosine similarity.
 
         Returns:
-            List of App objects (possibly reordered).
+            List of App objects ordered by vector similarity.
         """
         from apps.models import App
 
@@ -328,50 +324,11 @@ class AISearchService:
         if not embedding:
             return []
 
-        # 1. Retrieval: Semantic Search using Cosine Distance
         candidates = App.objects.annotate(
             distance=CosineDistance('embedding', embedding)
         ).order_by('distance')[:limit]
 
-        # Convert queryset to list
-        candidate_list = list(candidates)
-
-        if not candidate_list or not self.provider:
-            return candidate_list
-
-        # 2. Reasoning: LLM Reranking
-        # We assume the first 'rerank_top_k' are worth checking deeply.
-        # We pass minimal context to the LLM to save tokens.
-        docs_to_rank = []
-        for app in candidate_list[:rerank_top_k]:
-            docs_to_rank.append({
-                'id': app.id,
-                'name_en': app.name_en,
-                'description_en': app.description_en,
-                # Store the original obj reference to retrieve later
-                '_obj': app
-            })
-
-        reranked_docs = self.provider.rerank(query, docs_to_rank)
-
-        # Reconstruct the list of App objects based on reranked order
-        final_results = []
-        seen_ids = set()
-
-        for doc in reranked_docs:
-            app = doc.get('_obj')
-            if app:
-                # Attach AI reasoning if available (not persisted to DB, just runtime)
-                app.ai_reasoning = doc.get('ai_reasoning')
-                final_results.append(app)
-                seen_ids.add(app.id)
-
-        # Append any candidates that weren't reranked (the long tail)
-        for app in candidate_list:
-            if app.id not in seen_ids:
-                final_results.append(app)
-
-        return final_results
+        return list(candidates)
 
     # ====================
     # Query Augmentation (Soft Filters)
@@ -449,7 +406,6 @@ class AISearchService:
         query: str,
         filters: Dict[str, List[str]] = None,
         limit: int = 50,
-        rerank_top_k: int = 20,
         include_facets: bool = True,
         apply_boost: bool = True
     ) -> Dict[str, Any]:
@@ -460,7 +416,6 @@ class AISearchService:
             query: Search query string
             filters: Dict of metadata filters {'features': ['offline'], 'riwayah': ['hafs']}
             limit: Maximum results to return
-            rerank_top_k: Number of top results to rerank with LLM
             include_facets: Whether to calculate facet counts
             apply_boost: Whether to apply metadata-based ranking boost
 
@@ -499,16 +454,6 @@ class AISearchService:
                 type_name = mv.metadata_option.metadata_type.name
                 app_meta.setdefault(type_name, []).append(mv.metadata_option)
 
-        # Prefetch categories for all candidates in bulk
-        cat_map = {}
-        if app_ids and filters:
-            from apps.models import App as AppModel
-            through_qs = AppModel.categories.through.objects.filter(
-                app_id__in=app_ids
-            ).values_list('app_id', 'category__slug')
-            for aid, slug in through_qs:
-                cat_map.setdefault(aid, []).append(slug)
-
         # Apply metadata boosting using the original query (not augmented)
         if apply_boost and candidate_list:
             for app in candidate_list:
@@ -524,51 +469,6 @@ class AISearchService:
 
             # Re-sort by combined score (descending)
             candidate_list.sort(key=lambda x: getattr(x, '_combined_score', 0), reverse=True)
-
-        # LLM Reranking on top candidates
-        if candidate_list and self.provider and rerank_top_k > 0:
-            docs_to_rank = []
-            for app in candidate_list[:rerank_top_k]:
-                doc = {
-                    'id': app.id,
-                    'name_en': app.name_en,
-                    'description_en': app.description_en,
-                    '_obj': app
-                }
-                # Include filter context from prefetched data
-                if filters:
-                    app_metadata = metadata_by_app.get(app.id, {})
-                    filter_matches = {}
-                    for f_type, f_values in filters.items():
-                        if f_type == 'platform':
-                            filter_matches[f_type] = [app.platform]
-                        elif f_type == 'category':
-                            filter_matches[f_type] = cat_map.get(app.id, [])
-                        elif f_type in app_metadata:
-                            filter_matches[f_type] = [
-                                opt.value for opt in app_metadata[f_type]
-                            ]
-                    doc['filter_context'] = filter_matches
-                docs_to_rank.append(doc)
-
-            reranked_docs = self.provider.rerank(augmented_query, docs_to_rank)
-
-            final_results = []
-            seen_ids = set()
-
-            for doc in reranked_docs:
-                app = doc.get('_obj')
-                if app:
-                    app.ai_reasoning = doc.get('ai_reasoning')
-                    final_results.append(app)
-                    seen_ids.add(app.id)
-
-            # Append non-reranked candidates
-            for app in candidate_list:
-                if app.id not in seen_ids:
-                    final_results.append(app)
-
-            candidate_list = final_results
 
         # Calculate facets if requested
         facets = {}
