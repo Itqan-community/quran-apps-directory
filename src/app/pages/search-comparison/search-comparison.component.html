@@ -1,6 +1,6 @@
 <div class="search-comparison-container">
-  <h1 class="page-title">Search Comparison Tool</h1>
-  <p class="page-subtitle">Compare Gemini Flash + pgvector vs CF AI Search hybrid search results side-by-side</p>
+  <h1 class="page-title">Smart Search Tool</h1>
+  <p class="page-subtitle">Search apps using Gemini Flash + pgvector hybrid semantic search</p>
 
   <!-- Search Input -->
   <div class="search-bar">
@@ -94,97 +94,48 @@
   <!-- Loading -->
   <nz-spin *ngIf="loading" nzSimple class="loading-spinner"></nz-spin>
 
-  <!-- Results Columns -->
-  <div *ngIf="!loading && (pgResults.length > 0 || cfResults.length > 0 || pgError || cfError)" class="results-section">
-    <div nz-row [nzGutter]="24">
-      <!-- pgvector Column -->
-      <div nz-col [nzSpan]="12">
-        <div class="column-header pgvector-header">
-          <h2>Gemini Flash + pgvector</h2>
-          <div class="column-meta">
-            <nz-tag nzColor="blue">{{ pgResults.length }} results</nz-tag>
-            <nz-tag>{{ pgTime }}ms</nz-tag>
-          </div>
-        </div>
-
-        <nz-alert *ngIf="pgError" nzType="error" [nzMessage]="pgError" nzShowIcon></nz-alert>
-
-        <div *ngFor="let result of pgResults" class="result-card">
-          <nz-card nzSize="small" nzBordered>
-            <div class="result-header">
-              <img
-                *ngIf="result.application_icon"
-                [src]="result.application_icon"
-                class="app-icon clickable"
-                alt="icon"
-                (click)="openAppModal(result)"
-                nz-tooltip
-                nzTooltipTitle="View app details"
-              />
-              <div class="result-info">
-                <span class="app-name clickable" (click)="openAppModal(result)">{{ getAppName(result) }}</span>
-                <span class="relevance-score" [style.color]="getScoreColor(result.relevance_score)">
-                  Score: {{ result.relevance_score | number:'1.2-2' }}
-                </span>
-              </div>
-            </div>
-            <p *ngIf="result.ai_reasoning" class="ai-reasoning">{{ result.ai_reasoning }}</p>
-            <p *ngIf="!result.ai_reasoning" class="short-description">{{ getShortDescription(result) }}</p>
-            <div *ngIf="result.match_reasons?.length" class="match-reasons">
-              <nz-tag *ngFor="let reason of result.match_reasons" nzColor="default">
-                {{ getMatchReasonLabel(reason) }}
-              </nz-tag>
-            </div>
-          </nz-card>
-        </div>
-
-        <nz-empty *ngIf="pgResults.length === 0 && !pgError" nzNotFoundContent="No results"></nz-empty>
-      </div>
-
-      <!-- CF AI Search Column -->
-      <div nz-col [nzSpan]="12">
-        <div class="column-header cf-header">
-          <h2>CF AI Search <a href="https://developers.cloudflare.com/ai-search/" target="_blank" rel="noopener noreferrer" style="font-size: 12px; font-weight: normal;">docs</a></h2>
-          <div class="column-meta">
-            <nz-tag nzColor="green">{{ cfResults.length }} results</nz-tag>
-            <nz-tag>{{ cfTime }}ms</nz-tag>
-          </div>
-        </div>
-
-        <nz-alert *ngIf="cfError" nzType="error" [nzMessage]="cfError" nzShowIcon></nz-alert>
-
-        <div *ngFor="let result of cfResults" class="result-card">
-          <nz-card nzSize="small" nzBordered>
-            <div class="result-header">
-              <img
-                *ngIf="result.application_icon"
-                [src]="result.application_icon"
-                class="app-icon clickable"
-                alt="icon"
-                (click)="openAppModal(result)"
-                nz-tooltip
-                nzTooltipTitle="View app details"
-              />
-              <div class="result-info">
-                <span class="app-name clickable" (click)="openAppModal(result)">{{ getAppName(result) }}</span>
-                <span class="relevance-score" [style.color]="getScoreColor(result.relevance_score)">
-                  Score: {{ result.relevance_score | number:'1.2-2' }}
-                </span>
-              </div>
-            </div>
-            <p *ngIf="result.ai_reasoning" class="ai-reasoning">{{ result.ai_reasoning }}</p>
-            <p *ngIf="!result.ai_reasoning" class="short-description">{{ getShortDescription(result) }}</p>
-            <div *ngIf="result.match_reasons?.length" class="match-reasons">
-              <nz-tag *ngFor="let reason of result.match_reasons" nzColor="default">
-                {{ getMatchReasonLabel(reason) }}
-              </nz-tag>
-            </div>
-          </nz-card>
-        </div>
-
-        <nz-empty *ngIf="cfResults.length === 0 && !cfError" nzNotFoundContent="No results"></nz-empty>
+  <!-- Results -->
+  <div *ngIf="!loading && (pgResults.length > 0 || pgError)" class="results-section">
+    <div class="column-header pgvector-header">
+      <h2>Results</h2>
+      <div class="column-meta">
+        <nz-tag nzColor="blue">{{ pgResults.length }} results</nz-tag>
+        <nz-tag>{{ pgTime }}ms</nz-tag>
       </div>
     </div>
+
+    <nz-alert *ngIf="pgError" nzType="error" [nzMessage]="pgError" nzShowIcon></nz-alert>
+
+    <div *ngFor="let result of pgResults" class="result-card">
+      <nz-card nzSize="small" nzBordered>
+        <div class="result-header">
+          <img
+            *ngIf="result.application_icon"
+            [src]="result.application_icon"
+            class="app-icon clickable"
+            alt="icon"
+            (click)="openAppModal(result)"
+            nz-tooltip
+            nzTooltipTitle="View app details"
+          />
+          <div class="result-info">
+            <span class="app-name clickable" (click)="openAppModal(result)">{{ getAppName(result) }}</span>
+            <span class="relevance-score" [style.color]="getScoreColor(result.relevance_score)">
+              Score: {{ result.relevance_score | number:'1.2-2' }}
+            </span>
+          </div>
+        </div>
+        <p *ngIf="result.ai_reasoning" class="ai-reasoning">{{ result.ai_reasoning }}</p>
+        <p *ngIf="!result.ai_reasoning" class="short-description">{{ getShortDescription(result) }}</p>
+        <div *ngIf="result.match_reasons?.length" class="match-reasons">
+          <nz-tag *ngFor="let reason of result.match_reasons" nzColor="default">
+            {{ getMatchReasonLabel(reason) }}
+          </nz-tag>
+        </div>
+      </nz-card>
+    </div>
+
+    <nz-empty *ngIf="pgResults.length === 0 && !pgError" nzNotFoundContent="No results"></nz-empty>
   </div>
 
   <!-- Search History -->
@@ -214,8 +165,8 @@
           <nz-tag *ngIf="item.filters.category" nzColor="cyan">category:{{ item.filters.category }}</nz-tag>
         </span>
         <span class="history-meta">
-          pg:{{ item.pgCount }} / cf:{{ item.cfCount }} -
-          {{ item.pgTime }}ms / {{ item.cfTime }}ms -
+          {{ item.pgCount }} results -
+          {{ item.pgTime }}ms -
           {{ item.timestamp | date:'shortTime' }}
         </span>
       </div>
