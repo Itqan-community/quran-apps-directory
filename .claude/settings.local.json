@@ -9,7 +9,10 @@
       "Bash(copy:*)",
       "Bash(powershell -Command:*)",
       "Bash(powershell:*)",
-      "WebFetch(domain:qad-backend-api-production.up.railway.app)"
+      "WebFetch(domain:qad-backend-api-production.up.railway.app)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
