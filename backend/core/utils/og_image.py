@@ -186,7 +186,12 @@ def generate_og_image(app_data: dict, lang: str = "ar") -> bytes:
     name = app_data.get(f"name_{lang}", app_data.get("name_en", ""))
     description = app_data.get(f"short_description_{lang}", app_data.get("short_description_en", ""))
     icon_url = app_data.get("application_icon", "")
-    main_image_url = app_data.get(f"main_image_{lang}", app_data.get("main_image_en", ""))
+    screenshots = app_data.get(f"screenshots_{lang}", app_data.get("screenshots_ar", []))
+
+    # Fallback to main_image if no screenshots
+    if not screenshots:
+        main_image_url = app_data.get(f"main_image_{lang}", app_data.get("main_image_en", ""))
+        screenshots = [main_image_url] if main_image_url else []
 
     # Create base image with white background (RGBA for better compositing)
     img = Image.new("RGBA", (OG_WIDTH, OG_HEIGHT), BG_COLOR + (255,))
@@ -200,112 +205,112 @@ def generate_og_image(app_data: dict, lang: str = "ar") -> bytes:
     draw = ImageDraw.Draw(img)
 
     # Load fonts
-    font_name = _get_font(44, "bold")
-    font_desc = _get_font(22, "regular")
-    font_brand = _get_font(18, "regular")
-    font_brand_bold = _get_font(20, "bold")
+    font_name = _get_font(42, "bold")
+    font_desc = _get_font(20, "regular")
+    font_brand = _get_font(16, "regular")
+    font_brand_bold = _get_font(18, "bold")
 
     # New Layout:
-    # - Left side (60%): App name, description, branding
-    # - Right side (40%): Screenshot + App icon
+    # - Left side (55%): 2-3 overlapping phone mockups with screenshots
+    # - Right side (45%): App icon, name, description, branding
 
-    left_area_width = int(OG_WIDTH * 0.58)
+    left_area_width = int(OG_WIDTH * 0.55)
     right_area_start = left_area_width
 
-    # ---- LEFT SIDE: Text Content ----
-    text_x = PADDING + 60
-    current_y = 120
+    # ---- LEFT SIDE: Overlapping Phone Mockups with Screenshots ----
+    phone_width = 200
+    phone_height = 420
+    phone_y = (OG_HEIGHT - phone_height) // 2
+    phone_overlap = 80  # How much phones overlap
 
-    # App Name
-    name_lines = textwrap.wrap(name, width=25 if is_rtl else 28)
-    for line in name_lines[:2]:  # Max 2 lines
-        bbox = draw.textbbox((0, 0), line, font=font_name)
-        text_h = bbox[3] - bbox[1]
-        if is_rtl:
-            text_w = bbox[2] - bbox[0]
-            draw.text((text_x, current_y), line, font=font_name, fill=TEXT_DARK, anchor="ra" if is_rtl else "la")
-        else:
-            draw.text((text_x, current_y), line, font=font_name, fill=TEXT_DARK)
-        current_y += text_h + 12
+    # Fetch up to 3 screenshots
+    screenshot_images = []
+    for i, screenshot_url in enumerate(screenshots[:3]):
+        if not screenshot_url:
+            continue
+        screenshot_img = _fetch_image(screenshot_url)
+        if screenshot_img:
+            screenshot_images.append(screenshot_img)
 
-    current_y += 10
+    # Display overlapping phones (2-3 screenshots)
+    num_phones = min(len(screenshot_images), 3)
+    if num_phones > 0:
+        total_width = phone_width + (num_phones - 1) * (phone_width - phone_overlap)
+        start_x = PADDING + (left_area_width - total_width) // 2
 
-    # Short Description
-    desc_lines = textwrap.wrap(description, width=40 if is_rtl else 45)
-    for line in desc_lines[:3]:  # Max 3 lines
-        bbox = draw.textbbox((0, 0), line, font=font_desc)
-        text_h = bbox[3] - bbox[1]
-        draw.text((text_x, current_y), line, font=font_desc, fill=TEXT_GRAY)
-        current_y += text_h + 8
+        for i, screenshot_img in enumerate(screenshot_images):
+            phone_x = start_x + i * (phone_width - phone_overlap)
 
-    # ---- RIGHT SIDE: Screenshot + Icon ----
-    # Position for screenshot (phone mockup)
-    screenshot_x = right_area_start + 60
-    screenshot_y = 80
-    screenshot_max_width = 320
-    screenshot_max_height = 460
+            # Resize screenshot to fit phone
+            screenshot_img = screenshot_img.resize((phone_width, phone_height), Image.Resampling.LANCZOS)
+            screenshot_img = _round_corners(screenshot_img, 20)
 
-    main_img = _fetch_image(main_image_url)
-    if main_img:
-        # Resize to fit phone screen proportions
-        img_ratio = main_img.width / main_img.height
-        if img_ratio > (screenshot_max_width / screenshot_max_height):
-            target_w = screenshot_max_width
-            target_h = int(target_w / img_ratio)
-        else:
-            target_h = screenshot_max_height
-            target_w = int(target_h * img_ratio)
+            # Add shadow
+            shadow = Image.new("RGBA", (phone_width + 16, phone_height + 16), (0, 0, 0, 0))
+            shadow_draw = ImageDraw.Draw(shadow)
+            shadow_draw.rounded_rectangle(
+                [(0, 0), (phone_width + 16, phone_height + 16)],
+                radius=20,
+                fill=(0, 0, 0, 60)
+            )
+            shadow = shadow.filter(ImageFilter.GaussianBlur(radius=14))
 
-        main_img = main_img.resize((target_w, target_h), Image.Resampling.LANCZOS)
-        main_img = _round_corners(main_img, 24)
+            # Paste shadow and phone
+            img.paste(shadow, (phone_x - 8, phone_y - 8), shadow)
+            img.paste(screenshot_img, (phone_x, phone_y), screenshot_img)
 
-        # Add shadow
-        shadow = Image.new("RGBA", (target_w + 16, target_h + 16), (0, 0, 0, 0))
-        shadow_draw = ImageDraw.Draw(shadow)
-        shadow_draw.rounded_rectangle(
-            [(0, 0), (target_w + 16, target_h + 16)],
-            radius=24,
-            fill=(0, 0, 0, 40)
-        )
-        shadow = shadow.filter(ImageFilter.GaussianBlur(radius=12))
+    # ---- RIGHT SIDE: App Icon, Name, Description ----
+    content_x = right_area_start + 50
+    current_y = 100
 
-        # Paste shadow and screenshot
-        img.paste(shadow, (screenshot_x - 8, screenshot_y - 8), shadow)
-        img.paste(main_img, (screenshot_x, screenshot_y), main_img)
-
-    # App Icon (top-right corner of screenshot area)
+    # App Icon
     icon_img = _fetch_image(icon_url)
     if icon_img:
-        icon_size = 100
+        icon_size = 90
         icon_img = icon_img.resize((icon_size, icon_size), Image.Resampling.LANCZOS)
-        icon_img = _round_corners(icon_img, 22)
-
-        # Position icon at top-right with shadow
-        icon_x = OG_WIDTH - icon_size - 60
-        icon_y = 60
+        icon_img = _round_corners(icon_img, 18)
 
         # Icon shadow
-        icon_shadow = Image.new("RGBA", (icon_size + 12, icon_size + 12), (0, 0, 0, 0))
+        icon_shadow = Image.new("RGBA", (icon_size + 10, icon_size + 10), (0, 0, 0, 0))
         icon_shadow_draw = ImageDraw.Draw(icon_shadow)
         icon_shadow_draw.rounded_rectangle(
-            [(0, 0), (icon_size + 12, icon_size + 12)],
-            radius=22,
-            fill=(0, 0, 0, 50)
+            [(0, 0), (icon_size + 10, icon_size + 10)],
+            radius=18,
+            fill=(0, 0, 0, 40)
         )
         icon_shadow = icon_shadow.filter(ImageFilter.GaussianBlur(radius=8))
 
-        img.paste(icon_shadow, (icon_x - 6, icon_y - 6), icon_shadow)
-        img.paste(icon_img, (icon_x, icon_y), icon_img)
+        img.paste(icon_shadow, (content_x - 5, current_y - 5), icon_shadow)
+        img.paste(icon_img, (content_x, current_y), icon_img)
+        current_y += icon_size + 24
+
+    # App Name
+    name_lines = textwrap.wrap(name, width=22 if is_rtl else 25)
+    for line in name_lines[:2]:  # Max 2 lines
+        bbox = draw.textbbox((0, 0), line, font=font_name)
+        text_h = bbox[3] - bbox[1]
+        draw.text((content_x, current_y), line, font=font_name, fill=TEXT_DARK)
+        current_y += text_h + 10
+
+    current_y += 8
+
+    # Short Description
+    desc_lines = textwrap.wrap(description, width=30 if is_rtl else 35)
+    for line in desc_lines[:3]:  # Max 3 lines
+        bbox = draw.textbbox((0, 0), line, font=font_desc)
+        text_h = bbox[3] - bbox[1]
+        draw.text((content_x, current_y), line, font=font_desc, fill=TEXT_GRAY)
+        current_y += text_h + 6
 
     # ---- BOTTOM: Branding ----
-    branding_y = OG_HEIGHT - 90
+    branding_y = OG_HEIGHT - 80
     brand_text = "دليل التطبيقات القرآنية" if is_rtl else "Quran Apps Directory"
     bbox = draw.textbbox((0, 0), brand_text, font=font_brand_bold)
-    draw.text((PADDING + 60, branding_y), brand_text, font=font_brand_bold, fill=ACCENT_TEAL)
+    draw.text((content_x, branding_y), brand_text, font=font_brand_bold, fill=ACCENT_TEAL)
 
-    branding_y += bbox[3] - bbox[1] + 8
+    branding_y += bbox[3] - bbox[1] + 6
     sub_brand = "itqan.dev"
-    draw.text((PADDING + 60, branding_y), sub_brand, font=font_brand, fill=TEXT_GRAY)
+    draw.text((content_x, branding_y), sub_brand, font=font_brand, fill=TEXT_GRAY)
 
     # ---- Convert to PNG bytes ----
     final = img.convert("RGB")
