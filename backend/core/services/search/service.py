@@ -1,3 +1,4 @@
+import hashlib
 import logging
 from typing import List, Any, Optional, Dict, Tuple
 from decimal import Decimal
@@ -30,6 +31,47 @@ class AISearchService:
         if not self.provider:
             return []
         return self.provider.get_embedding(text)
+
+    def get_embedding_cached(self, text: str) -> List[float]:
+        """
+        Get embedding with PostgreSQL caching.
+        Returns cached embedding if available, otherwise generates and caches it.
+        Also cleans up entries older than 7 days on cache miss.
+        """
+        from core.models import SearchEmbeddingCache
+
+        query_hash = hashlib.sha256(text.encode('utf-8')).hexdigest()
+
+        # Check cache
+        cached = SearchEmbeddingCache.objects.filter(query_hash=query_hash).first()
+        if cached:
+            logger.debug(f"Embedding cache hit for: {text[:50]}")
+            return list(cached.embedding)
+
+        # Cache miss - generate embedding
+        embedding = self.get_embedding(text)
+        if not embedding:
+            return []
+
+        # Store in cache
+        try:
+            SearchEmbeddingCache.objects.create(
+                query_hash=query_hash,
+                query_text=text,
+                embedding=embedding
+            )
+        except Exception as e:
+            # Race condition or DB error - non-fatal
+            logger.warning(f"Failed to cache embedding: {e}")
+
+        # Opportunistic cleanup: delete entries older than 7 days
+        try:
+            cutoff = timezone.now() - timedelta(days=7)
+            SearchEmbeddingCache.objects.filter(created_at__lt=cutoff).delete()
+        except Exception:
+            pass
+
+        return embedding
 
     def prepare_app_text(
         self,
@@ -430,7 +472,7 @@ class AISearchService:
         # Soft filters: augment query with filter context instead of hard pre-filtering
         augmented_query = self._augment_query_with_filters(query, filters) if filters else query
 
-        embedding = self.get_embedding(augmented_query)
+        embedding = self.get_embedding_cached(augmented_query)
         if not embedding:
             return {'results': [], 'facets': {}}
 
@@ -444,10 +486,35 @@ class AISearchService:
 
         candidate_list = list(candidates)
 
+        # Prefetch all metadata for candidates in bulk (eliminates N+1 queries)
+        app_ids = [app.id for app in candidate_list] if candidate_list else []
+        metadata_by_app = {}
+        if app_ids:
+            from metadata.models import AppMetadataValue
+            all_metadata = AppMetadataValue.objects.filter(
+                app_id__in=app_ids
+            ).select_related('metadata_option', 'metadata_option__metadata_type')
+            for mv in all_metadata:
+                app_meta = metadata_by_app.setdefault(mv.app_id, {})
+                type_name = mv.metadata_option.metadata_type.name
+                app_meta.setdefault(type_name, []).append(mv.metadata_option)
+
+        # Prefetch categories for all candidates in bulk
+        cat_map = {}
+        if app_ids and filters:
+            from apps.models import App as AppModel
+            through_qs = AppModel.categories.through.objects.filter(
+                app_id__in=app_ids
+            ).values_list('app_id', 'category__slug')
+            for aid, slug in through_qs:
+                cat_map.setdefault(aid, []).append(slug)
+
         # Apply metadata boosting using the original query (not augmented)
         if apply_boost and candidate_list:
             for app in candidate_list:
-                boost, match_reasons = self._calculate_metadata_boost(app, query)
+                boost, match_reasons = self._calculate_metadata_boost(
+                    app, query, prefetched_metadata=metadata_by_app.get(app.id, {})
+                )
                 # Store boost info as runtime attributes
                 app._metadata_boost = boost
                 app._match_reasons = match_reasons
@@ -468,19 +535,19 @@ class AISearchService:
                     'description_en': app.description_en,
                     '_obj': app
                 }
-                # Include filter context so reranker can prioritize filtered attributes
+                # Include filter context from prefetched data
                 if filters:
-                    app_metadata = self._get_app_metadata_values(app)
+                    app_metadata = metadata_by_app.get(app.id, {})
                     filter_matches = {}
                     for f_type, f_values in filters.items():
                         if f_type == 'platform':
                             filter_matches[f_type] = [app.platform]
                         elif f_type == 'category':
-                            filter_matches[f_type] = list(
-                                app.categories.values_list('slug', flat=True)
-                            )
+                            filter_matches[f_type] = cat_map.get(app.id, [])
                         elif f_type in app_metadata:
-                            filter_matches[f_type] = app_metadata[f_type]
+                            filter_matches[f_type] = [
+                                opt.value for opt in app_metadata[f_type]
+                            ]
                     doc['filter_context'] = filter_matches
                 docs_to_rank.append(doc)
 
@@ -571,10 +638,23 @@ class AISearchService:
                 app._cf_score = cf_scores.get(app_id, 0)
                 candidate_list.append(app)
 
-        # 3. Apply metadata boosting
+        # 3. Apply metadata boosting (bulk prefetch to avoid N+1)
+        cf_app_ids = [app.id for app in candidate_list]
+        cf_metadata_by_app = {}
+        if cf_app_ids:
+            from metadata.models import AppMetadataValue as AMV
+            for mv in AMV.objects.filter(
+                app_id__in=cf_app_ids
+            ).select_related('metadata_option', 'metadata_option__metadata_type'):
+                app_meta = cf_metadata_by_app.setdefault(mv.app_id, {})
+                type_name = mv.metadata_option.metadata_type.name
+                app_meta.setdefault(type_name, []).append(mv.metadata_option)
+
         if apply_boost and candidate_list:
             for app in candidate_list:
-                boost, match_reasons = self._calculate_metadata_boost(app, query)
+                boost, match_reasons = self._calculate_metadata_boost(
+                    app, query, prefetched_metadata=cf_metadata_by_app.get(app.id, {})
+                )
                 app._metadata_boost = boost
                 app._match_reasons = match_reasons
                 # Combined score: CF score * metadata boost
@@ -657,55 +737,75 @@ class AISearchService:
     # Phase 3: Ranking Boosting (Dynamic)
     # ====================
 
-    def _calculate_metadata_boost(self, app: Any, query: str) -> Tuple[float, List[Dict]]:
+    def _calculate_metadata_boost(
+        self, app: Any, query: str,
+        prefetched_metadata: Optional[Dict[str, list]] = None
+    ) -> Tuple[float, List[Dict]]:
         """
         Calculate ranking boost based on metadata matching query keywords.
         Keywords are derived dynamically from MetadataOption labels (EN + AR).
+
+        Args:
+            app: The App instance
+            query: Search query string
+            prefetched_metadata: Pre-fetched dict of {type_name: [MetadataOption objects]}
+                If None, falls back to per-app DB query (legacy path).
 
         Returns:
             Tuple of (boost_multiplier, match_reasons)
             - boost_multiplier: 1.0 (no boost) to 2.0 (max boost)
             - match_reasons: List of {'type': str, 'value': str, 'label_en': str, 'label_ar': str}
         """
-        from metadata.models import MetadataOption
-
         boost = 1.0
         match_reasons = []
         query_lower = query.lower()
 
-        # Get app's metadata values
-        metadata_values = self._get_app_metadata_values(app)
+        # Use prefetched metadata if available, otherwise fall back to DB query
+        if prefetched_metadata is not None:
+            # prefetched_metadata: {type_name: [MetadataOption objects]}
+            for metadata_type_name, options in prefetched_metadata.items():
+                for opt in options:
+                    keywords = [
+                        opt.value.lower(),
+                        opt.label_en.lower(),
+                        opt.label_ar,
+                    ]
+                    keywords.extend(opt.label_en.lower().split())
 
-        # Loop through all metadata types the app has
-        for metadata_type_name, values in metadata_values.items():
-            for option_value in values:
-                # Get option from DB to access labels
-                opt = MetadataOption.objects.filter(
-                    metadata_type__name=metadata_type_name,
-                    value=option_value
-                ).select_related('metadata_type').first()
-
-                if not opt:
-                    continue
-
-                # Build keyword list from: value, label_en, label_ar
-                keywords = [
-                    option_value.lower(),
-                    opt.label_en.lower(),
-                    opt.label_ar,  # Keep Arabic as-is
-                ]
-                # Add words from label_en (e.g., "Offline Mode" -> ["offline", "mode"])
-                keywords.extend(opt.label_en.lower().split())
-
-                # Check if any keyword appears in query
-                if any(kw in query_lower for kw in keywords):
-                    boost += 0.15  # Standard boost per match
-                    match_reasons.append({
-                        'type': metadata_type_name,
-                        'value': option_value,
-                        'label_en': opt.label_en,
-                        'label_ar': opt.label_ar
-                    })
+                    if any(kw in query_lower for kw in keywords):
+                        boost += 0.15
+                        match_reasons.append({
+                            'type': metadata_type_name,
+                            'value': opt.value,
+                            'label_en': opt.label_en,
+                            'label_ar': opt.label_ar
+                        })
+        else:
+            # Legacy fallback - per-app DB query
+            from metadata.models import MetadataOption
+            metadata_values = self._get_app_metadata_values(app)
+            for metadata_type_name, values in metadata_values.items():
+                for option_value in values:
+                    opt = MetadataOption.objects.filter(
+                        metadata_type__name=metadata_type_name,
+                        value=option_value
+                    ).select_related('metadata_type').first()
+                    if not opt:
+                        continue
+                    keywords = [
+                        option_value.lower(),
+                        opt.label_en.lower(),
+                        opt.label_ar,
+                    ]
+                    keywords.extend(opt.label_en.lower().split())
+                    if any(kw in query_lower for kw in keywords):
+                        boost += 0.15
+                        match_reasons.append({
+                            'type': metadata_type_name,
+                            'value': option_value,
+                            'label_en': opt.label_en,
+                            'label_ar': opt.label_ar
+                        })
 
         # Cap boost at 2.0
         return min(boost, 2.0), match_reasons
