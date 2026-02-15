@@ -14,79 +14,16 @@ router = Router(tags=["Search"])
 
 
 @router.get("/", response=PaginatedAppListSchema)
-def search_apps(request, q: str, page: int = 1, page_size: int = 20, use_cf: bool = False):
+def search_apps(request, q: str, page: int = 1, page_size: int = 20):
     """
-    Semantic search for apps using AI Embeddings + LLM Reranking.
+    Semantic search for apps using Gemini Flash + pgvector embeddings with LLM reranking.
 
     Args:
         q: Search query
         page: Page number (default: 1)
         page_size: Results per page (default: 20)
-        use_cf: Use Cloudflare AI Search instead of pgvector (default: False)
     """
     app_service = AppService()
-
-    if use_cf:
-        # Use Cloudflare AI Search (managed RAG)
-        import logging
-        logger = logging.getLogger(__name__)
-
-        cf_provider = AISearchFactory.get_cloudflare_provider()
-        if not cf_provider:
-            return {
-                "results": [],
-                "count": 0,
-                "next": None,
-                "previous": None,
-                "error": "Cloudflare AI Search not configured"
-            }
-
-        try:
-            # Search via CF AI Search
-            cf_results = cf_provider.search_apps(q, max_results=50)
-            logger.info(f"CF Search returned {len(cf_results)} results for query: {q}")
-
-            total = len(cf_results)
-            start = (page - 1) * page_size
-            end = start + page_size
-            page_items = cf_results[start:end]
-
-            # Fetch full app objects from DB for consistent response format
-            items_data = []
-            for cf_app in page_items:
-                app_id = cf_app.get('id')
-                cf_score = cf_app.get('cf_score', 0)
-                try:
-                    app = App.objects.select_related('developer').prefetch_related('categories').get(id=app_id)
-                    app_dict = app_service._app_to_dict(app)
-                    app_dict['cf_score'] = cf_score
-                    app_dict['ai_reasoning'] = f"CF AI Search score: {cf_score:.4f}"
-                    items_data.append(app_dict)
-                except App.DoesNotExist:
-                    logger.warning(f"App {app_id} not found in DB")
-                    # Skip apps not found in database
-                    continue
-                except Exception as e:
-                    logger.error(f"Error fetching app {app_id}: {e}")
-                    continue
-
-            return {
-                "results": items_data,
-                "count": total,
-                "next": None,
-                "previous": None,
-            }
-        except Exception as e:
-            logger.exception(f"CF Search error: {e}")
-            return {
-                "results": [],
-                "count": 0,
-                "next": None,
-                "previous": None,
-                "error": str(e)
-            }
-
-    # Default: Use pgvector + Gemini (existing implementation)
     search_service = AISearchService()
 
     # Perform semantic search (Retrieve + Rerank)
@@ -126,14 +63,13 @@ def hybrid_search(
     platform: str = None,
     category: str = None,
     include_facets: bool = True,
-    use_cf: bool = False,
 ):
     """
-    Hybrid semantic search combining AI embeddings with metadata filters.
+    Hybrid semantic search combining Gemini Flash + pgvector embeddings with metadata filters.
 
     This endpoint provides:
     1. Semantic search using vector embeddings
-    2. Pre-filtering by metadata (features, riwayah, mushaf_type, platform, category)
+    2. Soft-filter boosting by metadata (features, riwayah, mushaf_type, platform, category)
     3. Ranking boost for query-metadata matches
     4. LLM reranking for top results
     5. Faceted counts for filter UI
@@ -148,7 +84,6 @@ def hybrid_search(
         platform: Comma-separated platform filters (e.g., "android,ios")
         category: Comma-separated category slugs
         include_facets: Whether to include facet counts (default: True)
-        use_cf: Use Cloudflare AutoRAG instead of pgvector (default: False)
 
     Returns:
         Paginated results with match_reasons and facets
@@ -175,24 +110,14 @@ def hybrid_search(
         filters['category'] = parse_csv(category)
 
     try:
-        # Route to CF or pgvector based on use_cf flag
-        if use_cf:
-            search_result = search_service.hybrid_search_cf(
-                query=q,
-                filters=filters if filters else None,
-                limit=100,
-                include_facets=include_facets,
-                apply_boost=True
-            )
-        else:
-            search_result = search_service.hybrid_search(
-                query=q,
-                filters=filters if filters else None,
-                limit=100,
-                rerank_top_k=20,
-                include_facets=include_facets,
-                apply_boost=True
-            )
+        search_result = search_service.hybrid_search(
+            query=q,
+            filters=filters if filters else None,
+            limit=100,
+            rerank_top_k=20,
+            include_facets=include_facets,
+            apply_boost=True
+        )
 
         all_results = search_result.get('results', [])
         facets_raw = search_result.get('facets', {})

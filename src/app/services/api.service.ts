@@ -349,9 +349,9 @@ export class ApiService {
   }
 
   /**
-   * Search using hybrid search endpoint (pgvector or CF AutoRAG)
+   * Search using hybrid search endpoint (Gemini Flash + pgvector)
    */
-  searchHybrid(query: string, useCF: boolean, filters?: {
+  searchHybrid(query: string, filters?: {
     features?: string;
     riwayah?: string;
     mushaf_type?: string;
@@ -360,7 +360,6 @@ export class ApiService {
   }): Observable<any> {
     let params = new HttpParams()
       .set('q', query)
-      .set('use_cf', useCF.toString())
       .set('include_facets', 'false')
       .set('page_size', '10');
 

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { Subject, forkJoin, takeUntil, catchError, of } from 'rxjs';
+import { Subject, takeUntil, catchError, of } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -69,11 +69,8 @@ interface HistoryItem {
   filters: SearchFilters;
   timestamp: string;
   pgCount: number;
-  cfCount: number;
   pgTime: number;
-  cfTime: number;
   pgResults: SearchResult[];
-  cfResults: SearchResult[];
 }
 
 const HISTORY_KEY = 'search_comparison_history';
@@ -123,11 +120,8 @@ export class SearchComparisonComponent implements OnInit, OnDestroy {
 
   loading = false;
   pgResults: SearchResult[] = [];
-  cfResults: SearchResult[] = [];
   pgTime = 0;
-  cfTime = 0;
   pgError = '';
-  cfError = '';
 
   history: HistoryItem[] = [];
   currentLang: 'ar' | 'en' = 'en';
@@ -188,9 +182,7 @@ export class SearchComparisonComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.pgResults = [];
-    this.cfResults = [];
     this.pgError = '';
-    this.cfError = '';
 
     const filters: SearchFilters = {};
     if (this.filterFeatures.length) filters.features = this.filterFeatures.join(',');
@@ -199,44 +191,28 @@ export class SearchComparisonComponent implements OnInit, OnDestroy {
     if (this.filterCategory.length) filters.category = this.filterCategory.join(',');
 
     const pgStart = performance.now();
-    const cfStart = performance.now();
 
-    const pgSearch$ = this.apiService.searchHybrid(trimmed, false, filters).pipe(
+    this.apiService.searchHybrid(trimmed, filters).pipe(
       catchError(() => {
-        this.pgError = 'Gemini Flash + pgvector request failed';
+        this.pgError = 'Search request failed';
         return of({ results: [] });
-      })
-    );
-    const cfSearch$ = this.apiService.searchHybrid(trimmed, true, filters).pipe(
-      catchError(() => {
-        this.cfError = 'CF AI Search request failed';
-        return of({ results: [] });
-      })
-    );
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (result) => {
+        this.pgTime = Math.round(performance.now() - pgStart);
+        this.pgResults = result?.results || [];
 
-    forkJoin({ pg: pgSearch$, cf: cfSearch$ })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: ({ pg, cf }) => {
-          this.pgTime = Math.round(performance.now() - pgStart);
-          this.cfTime = Math.round(performance.now() - cfStart);
+        if ((result as any)?.error) this.pgError = (result as any).error;
 
-          this.pgResults = pg?.results || [];
-          this.cfResults = cf?.results || [];
-
-          // Surface API-level errors (e.g. CF quota exceeded)
-          if ((pg as any)?.error) this.pgError = (pg as any).error;
-          if ((cf as any)?.error) this.cfError = (cf as any).error;
-
-          this.saveHistory(trimmed, filters);
-          this.loading = false;
-        },
-        error: () => {
-          this.pgError = this.pgError || 'Request failed';
-          this.cfError = this.cfError || 'Request failed';
-          this.loading = false;
-        }
-      });
+        this.saveHistory(trimmed, filters);
+        this.loading = false;
+      },
+      error: () => {
+        this.pgError = this.pgError || 'Request failed';
+        this.loading = false;
+      }
+    });
   }
 
   openAppModal(result: SearchResult): void {
@@ -301,11 +277,8 @@ export class SearchComparisonComponent implements OnInit, OnDestroy {
     this.filterPlatform = item.filters.platform ? item.filters.platform.split(',') : [];
     this.filterCategory = item.filters.category ? item.filters.category.split(',') : [];
     this.pgResults = item.pgResults || [];
-    this.cfResults = item.cfResults || [];
     this.pgTime = item.pgTime;
-    this.cfTime = item.cfTime;
     this.pgError = '';
-    this.cfError = '';
   }
 
   clearHistory(): void {
@@ -362,11 +335,8 @@ export class SearchComparisonComponent implements OnInit, OnDestroy {
       filters,
       timestamp: new Date().toISOString(),
       pgCount: this.pgResults.length,
-      cfCount: this.cfResults.length,
       pgTime: this.pgTime,
-      cfTime: this.cfTime,
       pgResults: this.pgResults,
-      cfResults: this.cfResults,
     };
 
     // Remove duplicate queries
