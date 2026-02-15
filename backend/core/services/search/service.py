@@ -313,10 +313,11 @@ class AISearchService:
 
     def search_apps(self, query: str, limit: int = 50) -> List[Any]:
         """
-        Perform semantic search on Apps using pgvector cosine similarity.
+        Perform semantic search on Apps using pgvector cosine similarity
+        with keyword and quality scoring.
 
         Returns:
-            List of App objects ordered by vector similarity.
+            List of App objects ordered by combined score.
         """
         from apps.models import App
 
@@ -324,11 +325,29 @@ class AISearchService:
         if not embedding:
             return []
 
-        candidates = App.objects.annotate(
+        candidates = App.objects.select_related('developer').prefetch_related(
+            'categories'
+        ).annotate(
             distance=CosineDistance('embedding', embedding)
         ).order_by('distance')[:limit]
 
-        return list(candidates)
+        candidate_list = list(candidates)
+
+        # Apply multi-signal scoring
+        for app in candidate_list:
+            distance = getattr(app, 'distance', 0) or 0
+            vector_similarity = 1 - distance
+            keyword_score = self._calculate_keyword_score(app, query)
+            quality_boost = self._calculate_quality_boost(app)
+
+            app._combined_score = (
+                (vector_similarity * 0.5)
+                + (keyword_score * 0.3)
+                + (quality_boost * 0.2)
+            )
+
+        candidate_list.sort(key=lambda x: getattr(x, '_combined_score', 0), reverse=True)
+        return candidate_list
 
     # ====================
     # Query Augmentation (Soft Filters)
@@ -435,7 +454,8 @@ class AISearchService:
         queryset = App.objects.filter(status='published')
 
         # Vector search on full published queryset
-        candidates = queryset.annotate(
+        # Prefetch categories for keyword scoring
+        candidates = queryset.select_related('developer').prefetch_related('categories').annotate(
             distance=CosineDistance('embedding', embedding)
         ).order_by('distance')[:limit]
 
@@ -454,7 +474,7 @@ class AISearchService:
                 type_name = mv.metadata_option.metadata_type.name
                 app_meta.setdefault(type_name, []).append(mv.metadata_option)
 
-        # Apply metadata boosting using the original query (not augmented)
+        # Apply multi-signal ranking using the original query (not augmented)
         if apply_boost and candidate_list:
             for app in candidate_list:
                 boost, match_reasons = self._calculate_metadata_boost(
@@ -463,9 +483,22 @@ class AISearchService:
                 # Store boost info as runtime attributes
                 app._metadata_boost = boost
                 app._match_reasons = match_reasons
-                # Calculate combined score: (1 - distance) * boost
+
+                # Multi-signal scoring
                 distance = getattr(app, 'distance', 0) or 0
-                app._combined_score = (1 - distance) * boost
+                vector_similarity = 1 - distance
+                keyword_score = self._calculate_keyword_score(app, query)
+                metadata_boost_normalized = min(boost - 1.0, 1.0)
+                quality_boost = self._calculate_quality_boost(app)
+
+                app._keyword_score = keyword_score
+                app._quality_boost = quality_boost
+                app._combined_score = (
+                    (vector_similarity * 0.5)
+                    + (keyword_score * 0.3)
+                    + (metadata_boost_normalized * 0.1)
+                    + (quality_boost * 0.1)
+                )
 
             # Re-sort by combined score (descending)
             candidate_list.sort(key=lambda x: getattr(x, '_combined_score', 0), reverse=True)
@@ -636,6 +669,52 @@ class AISearchService:
     # ====================
     # Phase 3: Ranking Boosting (Dynamic)
     # ====================
+
+    def _calculate_keyword_score(self, app: Any, query: str) -> float:
+        """Score 0.0-1.0 based on keyword presence in app fields."""
+        query_lower = query.lower()
+        query_words = [w for w in query_lower.split() if len(w) > 2]
+        if not query_words:
+            return 0.0
+
+        score = 0.0
+        # Exact name match (strongest signal)
+        name = (app.name_en or '').lower()
+        name_ar = (app.name_ar or '')
+        if query_lower in name or query_lower in name_ar:
+            score += 0.5
+        else:
+            # Partial word matches in name
+            name_hits = sum(1 for w in query_words if w in name or w in name_ar)
+            score += 0.3 * (name_hits / len(query_words))
+
+        # Short description matches
+        desc = (app.short_description_en or '').lower()
+        desc_ar = (app.short_description_ar or '')
+        desc_hits = sum(1 for w in query_words if w in desc or w in desc_ar)
+        score += 0.2 * (desc_hits / len(query_words))
+
+        # Category name matches
+        for cat in app.categories.all():
+            cat_name = (cat.name_en or '').lower()
+            if any(w in cat_name for w in query_words):
+                score += 0.15
+                break
+
+        return min(score, 1.0)
+
+    def _calculate_quality_boost(self, app: Any) -> float:
+        """Score 0.0-0.3 based on app quality signals."""
+        boost = 0.0
+        if getattr(app, 'featured', False):
+            boost += 0.1
+        if app.avg_rating and app.avg_rating >= Decimal('4.5'):
+            boost += 0.1
+        elif app.avg_rating and app.avg_rating >= Decimal('4.0'):
+            boost += 0.05
+        if getattr(app, 'review_count', 0) and app.review_count >= 100:
+            boost += 0.05
+        return boost
 
     def _calculate_metadata_boost(
         self, app: Any, query: str,
