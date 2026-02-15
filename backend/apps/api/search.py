@@ -16,7 +16,7 @@ router = Router(tags=["Search"])
 @router.get("/", response=PaginatedAppListSchema)
 def search_apps(request, q: str, page: int = 1, page_size: int = 20):
     """
-    Semantic search for apps using Gemini Flash + pgvector embeddings with LLM reranking.
+    Semantic search for apps using Gemini Flash + pgvector embeddings.
 
     Args:
         q: Search query
@@ -26,9 +26,7 @@ def search_apps(request, q: str, page: int = 1, page_size: int = 20):
     app_service = AppService()
     search_service = AISearchService()
 
-    # Perform semantic search (Retrieve + Rerank)
-    # We fetch more candidates (limit=50) to allow the Reranker (top 20) to filter best results
-    all_results = search_service.search_apps(q, limit=50, rerank_top_k=20)
+    all_results = search_service.search_apps(q, limit=50)
 
     total = len(all_results)
     start = (page - 1) * page_size
@@ -71,8 +69,7 @@ def hybrid_search(
     1. Semantic search using vector embeddings
     2. Soft-filter boosting by metadata (features, riwayah, mushaf_type, platform, category)
     3. Ranking boost for query-metadata matches
-    4. LLM reranking for top results
-    5. Faceted counts for filter UI
+    4. Faceted counts for filter UI
 
     Args:
         q: Search query (required)
@@ -114,7 +111,6 @@ def hybrid_search(
             query=q,
             filters=filters if filters else None,
             limit=100,
-            rerank_top_k=20,
             include_facets=include_facets,
             apply_boost=True
         )
