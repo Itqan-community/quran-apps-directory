@@ -99,7 +99,7 @@ def _draw_light_background(img: Image.Image):
     """Draw a clean white/light background with subtle gradient."""
     draw = ImageDraw.Draw(img)
     # Simple white background (already set in Image.new, but ensure it's clean)
-    draw.rectangle([(0, 0), (OG_WIDTH, OG_HEIGHT)], fill=(*BG_COLOR, 255))
+    draw.rectangle([(0, 0), (OG_WIDTH, OG_HEIGHT)], fill=BG_COLOR + (255,))
 
 
 def _round_corners(img: Image.Image, radius: int) -> Image.Image:
@@ -120,13 +120,13 @@ def _add_decorative_elements(img: Image.Image):
     # Subtle teal accent shape (top-right)
     draw.ellipse(
         [OG_WIDTH - 300, -150, OG_WIDTH + 50, 200],
-        fill=(*ACCENT_TEAL, 12),  # Very subtle
+        fill=ACCENT_TEAL + (12,),  # Very subtle
     )
 
     # Light gray background accent (bottom-left)
     draw.rectangle(
         [0, OG_HEIGHT - 100, 300, OG_HEIGHT],
-        fill=BG_LIGHT,
+        fill=BG_LIGHT + (255,),
     )
 
     img.paste(Image.alpha_composite(Image.new("RGBA", img.size, (0, 0, 0, 0)), overlay), (0, 0), overlay)
@@ -189,7 +189,7 @@ def generate_og_image(app_data: dict, lang: str = "ar") -> bytes:
     main_image_url = app_data.get(f"main_image_{lang}", app_data.get("main_image_en", ""))
 
     # Create base image with white background (RGBA for better compositing)
-    img = Image.new("RGBA", (OG_WIDTH, OG_HEIGHT), (*BG_COLOR, 255))
+    img = Image.new("RGBA", (OG_WIDTH, OG_HEIGHT), BG_COLOR + (255,))
 
     # Draw light background
     _draw_light_background(img)
