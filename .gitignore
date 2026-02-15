@@ -9,3 +9,10 @@ backend/config/logs/staging.log
 docs/review/
 .DS_Store
 dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
