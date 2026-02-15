@@ -345,7 +345,8 @@ export class ApiService {
       });
     }
 
-    return this.http.get(`${this.apiUrl}/search/hybrid/`, { params });
+    const headers = { 'X-Request-Timeout': '30000' };
+    return this.http.get(`${this.apiUrl}/search/hybrid/`, { params, headers });
   }
 
   /**

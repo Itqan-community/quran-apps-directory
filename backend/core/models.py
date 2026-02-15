@@ -1,4 +1,19 @@
 from django.db import models
+from pgvector.django import VectorField
+
+
+class SearchEmbeddingCache(models.Model):
+    """Cache for search query embeddings to avoid repeated Gemini API calls."""
+    query_hash = models.CharField(max_length=64, unique=True, db_index=True)
+    query_text = models.TextField()
+    embedding = VectorField(dimensions=768)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'core_search_embedding_cache'
+
+    def __str__(self):
+        return f"EmbeddingCache: {self.query_text[:50]}"
 
 
 class BaseModel(models.Model):
