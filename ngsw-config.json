@@ -16,28 +16,29 @@
       }
     },
     {
+      "name": "critical-resources",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/i18n/*.json"
+        ]
+      }
+    },
+    {
       "name": "assets",
       "installMode": "lazy",
       "updateMode": "prefetch",
       "resources": {
         "files": [
           "/assets/**",
+          "!/assets/i18n/**",
           "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
         ]
       }
     }
   ],
   "dataGroups": [
-    {
-      "name": "translations-cache",
-      "urls": ["/assets/i18n/*.json"],
-      "cacheConfig": {
-        "maxSize": 10,
-        "maxAge": "1d",
-        "timeout": "10s",
-        "strategy": "freshness"
-      }
-    },
     {
       "name": "optimized-images",
       "urls": [
