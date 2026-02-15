@@ -357,11 +357,12 @@ export class ApiService {
     mushaf_type?: string;
     platform?: string;
     category?: string;
-  }): Observable<any> {
+  }, page: number = 1, pageSize: number = 20): Observable<any> {
     let params = new HttpParams()
       .set('q', query)
       .set('include_facets', 'false')
-      .set('page_size', '10');
+      .set('page_size', pageSize.toString())
+      .set('page', page.toString());
 
     if (filters) {
       Object.entries(filters).forEach(([key, val]) => {

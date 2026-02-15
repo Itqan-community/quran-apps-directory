@@ -54,7 +54,8 @@
       "sendButton": "إرسال",
       "resultsFor": "نتائج البحث عن",
       "result": "نتيجة",
-      "results": "نتيجة"
+      "results": "نتيجة",
+      "loadMore": "تحميل المزيد"
     },
     "categories": {
       "all": "التصنيف",

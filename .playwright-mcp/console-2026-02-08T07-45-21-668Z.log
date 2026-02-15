@@ -1,0 +1,38 @@
+[     816ms] [WARNING] Ignoring inability to install OPFS sqlite3_vfs: Cannot install OPFS: Missing SharedArrayBuffer and/or Atomics. The server must emit the COOP/COEP response headers to enable those. See https://sqlite.org/wasm/doc/trunk/persistence.md#coop-coep @ https://www.notion.so/_assets/wasm-sqlite-worker-5cdd36e5fdcb4355.js:0
+[    2155ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://www.notion.so/api/v3/recordPageExit:0
+[    2158ms] [ERROR] HttpRequestError: Received HTTP 401
+    at https://www.notion.so/_assets/ClientFramework-371a8bc464d60c01.js:1:66262
+    at async g (https://www.notion.so/_assets/ClientFramework-371a8bc464d60c01.js:1:65851)
+    at async Module.de (https://www.notion.so/_assets/13369-eccc81cd742db4bc.js:183:316674) @ https://www.notion.so/_assets/13369-eccc81cd742db4bc.js:182
+[    2300ms] [ERROR] Failed to load resource: the server responded with a status of 499 () @ https://snap.licdn.com/li.lms-analytics/insight.min.js:0
+[    2300ms] [ERROR] Refused to execute script from 'https://snap.licdn.com/li.lms-analytics/insight.min.js' because its MIME type ('image/png') is not executable. @ https://aif.notion.so/aif-production.html:0
+[    2328ms] [ERROR] Failed to load resource: the server responded with a status of 499 (Request has been forbidden by antivirus) @ https://wcs.naver.net/wcslog.js:0
+[    2328ms] [ERROR] Refused to execute script from 'https://wcs.naver.net/wcslog.js' because its MIME type ('image/png') is not executable. @ https://aif.notion.so/aif-production.html:0
+[    2330ms] [ERROR] Access to fetch at 'https://api.ipify.org/?format=json' from origin 'https://aif.notion.so' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://aif.notion.so/aif-production.html:0
+[    2330ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://api.ipify.org/?format=json:0
+[    2332ms] [ERROR] Error resolving ip TypeError: Failed to fetch
+    at resolveIp (https://cdn.metadata.io/site-insights.js:139:5)
+    at Object.init (https://cdn.metadata.io/site-insights.js:249:18)
+    at a.onload (<anonymous>:1:162) @ https://cdn.metadata.io/site-insights.js:144
+[    2359ms] [WARNING] Amplitude Logger [Warn]: Event not tracked, no destination plugins on the instance @ https://www.notion.so/_assets/51706-5b63f2c0f63a454b.js:0
+[    2376ms] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment @ https://www.notion.so/_assets/51706-5b63f2c0f63a454b.js:0
+[    2377ms] [ERROR] Not signed in with the identity provider. @ https://www.notion.so/2e57056925c880f1b489c3e927b07f1b:0
+[    2387ms] [ERROR] Access to fetch at 'https://o324374.ingest.sentry.io/api/5741876/envelope/?sentry_key=704fe3b1898d4ccda1d05fe1ee79a1f7&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.117.0' from origin 'https://www.notion.so' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://www.notion.so/2e57056925c880f1b489c3e927b07f1b:0
+[    2388ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://o324374.ingest.sentry.io/api/5741876/envelope/?sentry_key=704fe3b1898d4ccda1d05fe1ee79a1f7&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.117.0:0
+[    2403ms] [ERROR] [GSI_LOGGER]: FedCM get() rejects with NetworkError: Error retrieving a token. @ https://www.notion.so/_assets/51706-5b63f2c0f63a454b.js:0
+[    2428ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://www.notion.so/api/v3/recordPageExit:0
+[    2433ms] [ERROR] HttpRequestError: Received HTTP 401
+    at https://www.notion.so/_assets/ClientFramework-371a8bc464d60c01.js:1:66262
+    at async g (https://www.notion.so/_assets/ClientFramework-371a8bc464d60c01.js:1:65851)
+    at async Module.de (https://www.notion.so/_assets/13369-eccc81cd742db4bc.js:183:316674) @ https://www.notion.so/_assets/51706-5b63f2c0f63a454b.js:0
+[    4242ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://www.notion.so/api/v3/getBillingData:0
+[    4244ms] [ERROR] HttpRequestError: Received HTTP 401
+    at https://www.notion.so/_assets/ClientFramework-371a8bc464d60c01.js:1:66262
+    at async g (https://www.notion.so/_assets/ClientFramework-371a8bc464d60c01.js:1:65851)
+    at async Object.de [as callApi] (https://www.notion.so/_assets/13369-eccc81cd742db4bc.js:183:316674)
+    at async Object.ae [as callCellCompatibleApi] (https://www.notion.so/_assets/13369-eccc81cd742db4bc.js:183:315333)
+    at async getValue (https://www.notion.so/_assets/13369-eccc81cd742db4bc.js:189:228188)
+    at async s (https://www.notion.so/_assets/ClientFramework-371a8bc464d60c01.js:1:13865)
+    at async https://www.notion.so/_assets/13369-eccc81cd742db4bc.js:189:227976
+    at async i.fetchFn (https://www.notion.so/_assets/13369-eccc81cd742db4bc.js:183:236729)
+    at async i.fetch (https://www.notion.so/_assets/ClientFramework-371a8bc464d60c01.js:1:12163) @ https://www.notion.so/_assets/51706-5b63f2c0f63a454b.js:0
