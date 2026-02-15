@@ -45,9 +45,7 @@ import { LucideAngularModule, Menu, X, Globe, Home, Info, Mail, Users, PlusCircl
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
-  const cacheVersion = environment.version || '1.0.0';
-  const suffix = `.json?v=${cacheVersion}`;
-  return new TranslateHttpLoader(http, './assets/i18n/', suffix);
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 // Factory to initialize translations before app renders

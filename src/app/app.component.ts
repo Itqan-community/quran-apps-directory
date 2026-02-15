@@ -153,7 +153,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
           takeUntil(this.destroy$)
         )
         .subscribe(() => {
-          document.location.reload();
+          setTimeout(() => document.location.reload(), 100);
         });
     }
 
