@@ -6,7 +6,9 @@
   "empty": {
     "noApps": {
       "title": "No applications found",
-      "message": "Try adjusting your search criteria or browse all categories."
+      "message": "Try adjusting your search criteria or browse all categories.",
+      "trySmartSearch": "Try Smart Search",
+      "smartSearchHint": "Smart Search uses AI to find apps by meaning, not just keywords."
     }
   },
   "common": {

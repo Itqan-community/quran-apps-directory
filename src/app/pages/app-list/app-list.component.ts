@@ -631,6 +631,11 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  switchToSmartSearch(): void {
+    this.searchType = 'smart';
+    this.onSearch();
+  }
+
   toggleAiInfo(appId: string, event: Event): void {
     event.stopPropagation();
     this.activeAiInfoId = this.activeAiInfoId === appId ? null : appId;
