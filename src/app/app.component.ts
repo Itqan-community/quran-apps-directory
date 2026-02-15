@@ -60,6 +60,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public navbarSearchType: 'traditional' | 'smart' = 'traditional';
   public navbarCategories: Category[] = [];
   public navbarSelectedCategory = 'all';
+  public isNavbarSearching = false;
   private destroy$ = new Subject<void>();
   private swUpdate = inject(SwUpdate);
 
@@ -174,6 +175,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         this.navbarSearchType = state.searchType;
         this.navbarCategories = state.categories;
         this.navbarSelectedCategory = state.selectedCategory;
+        this.isNavbarSearching = state.isSearching;
       });
   }
 
@@ -207,20 +209,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   toggleLanguage() {
     const newLang = this.isRtl ? "en" : "ar";
-
-    // Build the new URL with the new language
-    const currentUrl = this.router.url;
-    const urlPath = currentUrl.split('?')[0];
-    const pathSegments = urlPath.split('/').filter(segment => segment);
-    const remainingPath = pathSegments.slice(1).join('/');
-    const targetUrl = remainingPath ? `/${newLang}/${remainingPath}` : `/${newLang}`;
-
-    // Navigate to new URL and reload the page to ensure translations load correctly
-    if (isPlatformBrowser(this.platformId)) {
-      window.location.href = targetUrl;
-    } else {
-      this.router.navigateByUrl(targetUrl);
-    }
+    this.languageService.changeLanguage(newLang);
+    this.currentLang = newLang as "en" | "ar";
+    this.isRtl = newLang === "ar";
   }
 
   toggleMobileMenu() {
@@ -232,9 +223,12 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onNavbarSearch() {
-    // Navigate to home with search query
+    if (!this.navbarSearchQuery.trim()) return;
+    this.isNavbarSearching = true;
+    this.navbarScrollService.updateSearchState({ isSearching: true });
+    // Navigate to home with smart search query
     this.router.navigate(['/', this.currentLang], {
-      queryParams: { search: this.navbarSearchQuery }
+      queryParams: { smart_search: this.navbarSearchQuery.trim() }
     });
   }
 

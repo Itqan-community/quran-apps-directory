@@ -1,6 +1,17 @@
-import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject, ChangeDetectorRef, HostListener, ElementRef, ViewChild, AfterViewInit } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  PLATFORM_ID,
+  Inject,
+  ChangeDetectorRef,
+  HostListener,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+} from "@angular/core";
 import { CommonModule, isPlatformBrowser, SlicePipe } from "@angular/common";
-import { RouterModule, ActivatedRoute } from "@angular/router";
+import { RouterModule, ActivatedRoute, Router } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { NzGridModule } from "ng-zorro-antd/grid";
 import { NzCardModule } from "ng-zorro-antd/card";
@@ -15,7 +26,14 @@ import type { QuranApp } from "../../services/app.service";
 import { ApiService, Category } from "../../services/api.service";
 import { Title, Meta } from "@angular/platform-browser";
 import { combineLatest, of, Subject } from "rxjs";
-import { catchError, finalize, takeUntil, switchMap, debounceTime } from "rxjs/operators";
+import {
+  catchError,
+  filter,
+  finalize,
+  takeUntil,
+  switchMap,
+  debounceTime,
+} from "rxjs/operators";
 import { SeoService } from "../../services/seo.service";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
@@ -44,20 +62,20 @@ import { NavbarScrollService } from "../../services/navbar-scroll.service";
   styleUrls: ["./app-list.component.scss"],
 })
 export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('searchSection') searchSectionRef!: ElementRef<HTMLElement>;
+  @ViewChild("searchSection") searchSectionRef!: ElementRef<HTMLElement>;
 
   apps: QuranApp[] = [];
   filteredApps: QuranApp[] = [];
   searchQuery: string = "";
-  searchType: 'traditional' | 'smart' = 'traditional';
+  searchType: "traditional" | "smart" = "traditional";
   isSmartSearching = false;
+  searchExecuted = false;
   smartSearchPage = 1;
   smartSearchTotal = 0;
   smartSearchHasMore = false;
   private isSmartSearchActive = false;
   categories: Category[] = [];
-  // Start with false - no spinner on initial load
-  isLoading = false;
+  isLoading = true;
   // Track if initial data load has completed (to avoid showing "no apps" before data arrives)
   initialLoadComplete = false;
   error: string | null = null;
@@ -66,8 +84,8 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   scrollLeft = 0;
   sortAscending = true;
   private categoriesContainer: HTMLElement | null = null;
-  currentLang: "en" | "ar" = 'en'; // Initialize with browser language
-  selectedCategory: string = 'all';
+  currentLang: "en" | "ar" = "en"; // Initialize with browser language
+  selectedCategory: string = "all";
   isDarkMode = false;
   private destroy$ = new Subject<void>();
   // Cache for star arrays to prevent NG0100 errors from creating new references on each change detection
@@ -84,18 +102,19 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     private apiService: ApiService,
     private translateService: TranslateService,
     private route: ActivatedRoute,
+    private router: Router,
     private seoService: SeoService,
     private titleService: Title,
     private metaService: Meta,
     private cdr: ChangeDetectorRef,
-    private navbarScrollService: NavbarScrollService
+    private navbarScrollService: NavbarScrollService,
   ) {
     // Get initial language from URL if in browser
     if (isPlatformBrowser(this.platformId)) {
       const urlPath = window.location.pathname;
-      const pathSegments = urlPath.split('/').filter(segment => segment);
+      const pathSegments = urlPath.split("/").filter((segment) => segment);
       const urlLang = pathSegments[0];
-      if (urlLang === 'ar' || urlLang === 'en') {
+      if (urlLang === "ar" || urlLang === "en") {
         this.currentLang = urlLang;
         // Ensure TranslateService uses the correct language
         if (this.translateService.currentLang !== urlLang) {
@@ -104,7 +123,10 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     } else {
       // SSR fallback
-      const lang = this.translateService.currentLang || this.translateService.getDefaultLang() || 'ar';
+      const lang =
+        this.translateService.currentLang ||
+        this.translateService.getDefaultLang() ||
+        "ar";
       this.currentLang = lang as "en" | "ar";
     }
 
@@ -118,11 +140,9 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Only subscribe to error$ - loading is managed locally for retry actions only
     // No loading$ subscription = no spinner on initial page load
-    this.apiService.error$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(error => {
-        this.error = error;
-      });
+    this.apiService.error$.pipe(takeUntil(this.destroy$)).subscribe((error) => {
+      this.error = error;
+    });
   }
 
   ngOnInit() {
@@ -137,7 +157,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
       observer.observe(document.documentElement, {
         attributes: true,
-        attributeFilter: ['class'],
+        attributeFilter: ["class"],
       });
 
       this.destroy$.subscribe(() => {
@@ -148,16 +168,31 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     // Load categories and apps from API
     this.loadData();
 
+    // Handle smart_search query param from navbar search
+    this.route.queryParamMap
+      .pipe(
+        filter((params) => params.has("smart_search")),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((params) => {
+        const query = params.get("smart_search") || "";
+        if (query.trim()) {
+          this.searchQuery = query;
+          this.searchType = "smart";
+          this.onSearch();
+        }
+      });
+
     // Subscribe to route changes for category filtering
     // Use debounceTime to prevent race conditions from rapid clicks
     this.route.paramMap
       .pipe(
         debounceTime(50),
-        switchMap(params => {
-          const lang = params.get('lang');
-          const category = params.get('category');
+        switchMap((params) => {
+          const lang = params.get("lang");
+          const category = params.get("category");
 
-          if (lang && (lang === 'ar' || lang === 'en')) {
+          if (lang && (lang === "ar" || lang === "en")) {
             this.currentLang = lang as "en" | "ar";
             // Ensure TranslateService uses the correct language
             if (this.translateService.currentLang !== lang) {
@@ -166,27 +201,31 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
           }
 
           // Set the selected category
-          this.selectedCategory = category ? category.toLowerCase() : 'all';
+          this.selectedCategory = category ? category.toLowerCase() : "all";
 
           // Wait for apps to be loaded before filtering
           return this.apiService.apps$.pipe(
-            switchMap(() => {
-              // Now that apps are loaded, apply the filter
-              if (this.selectedCategory === 'all') {
+            filter((apps) => apps.length > 0),
+            switchMap((apiApps) => {
+              // Update apps from the observable directly to avoid race condition
+              this.apps = apiApps.map((app) =>
+                this.apiService.formatAppForDisplay(app),
+              );
+              if (this.selectedCategory === "all") {
                 this.filteredApps = this.apps;
               } else {
                 this.filterByCategory(this.selectedCategory);
               }
               return of(params);
-            })
+            }),
           );
         }),
-        takeUntil(this.destroy$)
+        takeUntil(this.destroy$),
       )
       .subscribe(() => {
         // Scroll to top of page when route changes (browser only)
         if (isPlatformBrowser(this.platformId)) {
-          window.scrollTo({ top: 0, behavior: 'auto' });
+          window.scrollTo({ top: 0, behavior: "auto" });
 
           // Scroll selected category into view (horizontally within categories section)
           setTimeout(() => this.scrollSelectedCategoryIntoView(), 100);
@@ -199,10 +238,12 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     // Subscribe to apps from API service for reactive updates
     this.apiService.apps$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(apiApps => {
-        this.apps = apiApps.map(app => this.apiService.formatAppForDisplay(app));
+      .subscribe((apiApps) => {
+        this.apps = apiApps.map((app) =>
+          this.apiService.formatAppForDisplay(app),
+        );
         // If no category is selected, update filtered apps
-        if (this.selectedCategory === 'all' && !this.searchQuery.trim()) {
+        if (this.selectedCategory === "all" && !this.searchQuery.trim()) {
           this.filteredApps = this.apps;
         }
       });
@@ -210,7 +251,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     // Subscribe to categories from API service
     this.apiService.categories$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(apiCategories => {
+      .subscribe((apiCategories) => {
         this.categories = apiCategories;
       });
   }
@@ -239,9 +280,12 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.activeAiInfoId = null;
   }
 
-  @HostListener('window:scroll')
+  @HostListener("window:scroll")
   onWindowScroll(): void {
-    if (!isPlatformBrowser(this.platformId) || !this.navbarScrollService.isDesktopMode()) {
+    if (
+      !isPlatformBrowser(this.platformId) ||
+      !this.navbarScrollService.isDesktopMode()
+    ) {
       return;
     }
 
@@ -258,7 +302,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  @HostListener('window:resize')
+  @HostListener("window:resize")
   onWindowResize(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.calculateSearchSectionPosition();
@@ -266,10 +310,12 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private calculateSearchSectionPosition(): void {
-    const searchContainer = document.querySelector('.search-container');
+    const searchContainer = document.querySelector(".search-container");
     if (searchContainer) {
       const rect = searchContainer.getBoundingClientRect();
-      this.searchSectionTop = rect.top + window.scrollY;
+      // Use the bottom of the search container so compact mode only triggers
+      // after the entire search section has scrolled out of view
+      this.searchSectionTop = rect.bottom + window.scrollY;
     }
   }
 
@@ -279,13 +325,14 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       searchType: this.searchType,
       categories: this.categories.slice(0, 5), // First 5 categories
       selectedCategory: this.selectedCategory,
-      currentLang: this.currentLang
+      currentLang: this.currentLang,
     });
   }
 
   private updateDarkModeState() {
     if (isPlatformBrowser(this.platformId)) {
-      this.isDarkMode = document.documentElement.classList.contains('dark-theme');
+      this.isDarkMode =
+        document.documentElement.classList.contains("dark-theme");
     }
   }
 
@@ -293,17 +340,17 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     // Load both categories and apps concurrently using combineLatest for better control
     combineLatest([
       this.apiService.getCategories().pipe(
-        catchError(error => {
-          console.error('Failed to load categories:', error);
+        catchError((error) => {
+          console.error("Failed to load categories:", error);
           return of([]);
-        })
+        }),
       ),
       this.apiService.getApps().pipe(
-        catchError(error => {
-          console.error('Failed to load apps:', error);
+        catchError((error) => {
+          console.error("Failed to load apps:", error);
           return of({ count: 0, next: null, previous: null, results: [] });
-        })
-      )
+        }),
+      ),
     ])
       .pipe(
         finalize(() => {
@@ -311,7 +358,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
           this.isLoading = false;
           this.initialLoadComplete = true;
         }),
-        takeUntil(this.destroy$)
+        takeUntil(this.destroy$),
       )
       .subscribe(([categories, appsResponse]) => {
         // Categories are already handled by the service and subject
@@ -320,7 +367,11 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
         if (!categories || categories.length === 0) {
           this.categories = [];
         }
-        if (!appsResponse || !appsResponse.results || appsResponse.results.length === 0) {
+        if (
+          !appsResponse ||
+          !appsResponse.results ||
+          appsResponse.results.length === 0
+        ) {
           this.apps = [];
           this.filteredApps = [];
         }
@@ -328,24 +379,28 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
         // Show error message if both categories and apps failed to load
         // This helps users understand why the page appears blank
         const hasNoCategories = !categories || categories.length === 0;
-        const hasNoApps = !appsResponse?.results || appsResponse.results.length === 0;
+        const hasNoApps =
+          !appsResponse?.results || appsResponse.results.length === 0;
         if (hasNoCategories && hasNoApps && !this.error) {
-          this.error = this.currentLang === 'ar'
-            ? 'تعذر تحميل المحتوى. يرجى التحقق من اتصالك بالإنترنت وإعادة تحميل الصفحة.'
-            : 'Unable to load content. Please check your connection and refresh the page.';
+          this.error =
+            this.currentLang === "ar"
+              ? "تعذر تحميل المحتوى. يرجى التحقق من اتصالك بالإنترنت وإعادة تحميل الصفحة."
+              : "Unable to load content. Please check your connection and refresh the page.";
         }
       });
   }
 
   /** Fires on every keystroke — only does local filtering (no smart search animation) */
   onTypingSearch() {
-    if (this.searchType === 'traditional') {
+    if (this.searchType === "traditional") {
       this.isSmartSearchActive = false;
       this.smartSearchHasMore = false;
       this.applyCategoryAndSearchFilters();
     }
     // Sync search query with navbar
-    this.navbarScrollService.updateSearchState({ searchQuery: this.searchQuery });
+    this.navbarScrollService.updateSearchState({
+      searchQuery: this.searchQuery,
+    });
     // For smart search, do nothing on typing — wait for button click / Enter
   }
 
@@ -356,18 +411,21 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     // If query is empty, just respect current category filter
     if (!query) {
       this.isSmartSearching = false;
+      this.searchExecuted = false;
       this.isSmartSearchActive = false;
       this.smartSearchHasMore = false;
       this.applyCategoryAndSearchFilters();
       return;
     }
 
-    if (this.searchType === 'smart') {
+    if (this.searchType === "smart") {
       this.isSmartSearching = true;
+      this.searchExecuted = false;
       this.isSmartSearchActive = true;
       this.smartSearchPage = 1;
+      this.filteredApps = [];
       const filters: any = {};
-      if (this.selectedCategory !== 'all') {
+      if (this.selectedCategory !== "all") {
         filters.category = this.selectedCategory;
       }
       this.apiService.searchHybrid(query, filters, 1, 20)
@@ -375,12 +433,14 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
         .subscribe({
           next: (response) => {
             const results = (response.results || []).map((app: any) =>
-              this.apiService.formatAppForDisplay(app)
+              this.apiService.formatAppForDisplay(app),
             );
             this.filteredApps = results;
             this.smartSearchTotal = response.count || 0;
             this.smartSearchHasMore = !!response.next;
             this.isSmartSearching = false;
+            this.searchExecuted = true;
+            this.navbarScrollService.updateSearchState({ isSearching: false });
             this.cdr.detectChanges();
           },
           error: () => {
@@ -392,6 +452,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     // Local, tolerant search on already-loaded apps (avoids strict backend matching)
+    this.searchExecuted = true;
     this.applyCategoryAndSearchFilters();
   }
 
@@ -446,11 +507,14 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     const query = this.searchQuery.trim();
     const hasQuery = !!query;
 
-    this.filteredApps = this.apps.filter(app => {
+    this.filteredApps = this.apps.filter((app) => {
       // Category filter
-      const inCategory = this.selectedCategory === 'all'
-        ? true
-        : (app.categories || []).map(c => c.toLowerCase()).includes(this.selectedCategory);
+      const inCategory =
+        this.selectedCategory === "all"
+          ? true
+          : (app.categories || [])
+              .map((c) => c.toLowerCase())
+              .includes(this.selectedCategory);
 
       if (!inCategory) return false;
 
@@ -464,20 +528,20 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
    * (e.g. "القران" vs "القرآن") and case-insensitive in English.
    */
   private normalizeText(text: string): string {
-    if (!text) return '';
+    if (!text) return "";
 
     let normalized = text.toLowerCase();
 
     // Normalize common Arabic variants
     normalized = normalized
       // Different forms of alif with hamza/mand
-      .replace(/[أإآ]/g, 'ا')
+      .replace(/[أإآ]/g, "ا")
       // taa marbuta to ha
-      .replace(/ة/g, 'ه')
+      .replace(/ة/g, "ه")
       // yaa/aleph maqsura
-      .replace(/ى/g, 'ي')
+      .replace(/ى/g, "ي")
       // remove common Arabic diacritics
-      .replace(/[\u064B-\u0652]/g, '');
+      .replace(/[\u064B-\u0652]/g, "");
 
     return normalized;
   }
@@ -487,21 +551,23 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!query) return true;
 
     const searchNorm = this.normalizeText(query);
-    const nameEn = this.normalizeText(app.Name_En || '');
-    const nameAr = this.normalizeText(app.Name_Ar || '');
-    const descEn = this.normalizeText(app.Short_Description_En || '');
-    const descAr = this.normalizeText(app.Short_Description_Ar || '');
+    const nameEn = this.normalizeText(app.Name_En || "");
+    const nameAr = this.normalizeText(app.Name_Ar || "");
+    const descEn = this.normalizeText(app.Short_Description_En || "");
+    const descAr = this.normalizeText(app.Short_Description_Ar || "");
 
-    return nameEn.includes(searchNorm) ||
-           nameAr.includes(searchNorm) ||
-           descEn.includes(searchNorm) ||
-           descAr.includes(searchNorm);
+    return (
+      nameEn.includes(searchNorm) ||
+      nameAr.includes(searchNorm) ||
+      descEn.includes(searchNorm) ||
+      descAr.includes(searchNorm)
+    );
   }
 
   startDragging(e: MouseEvent) {
     this.isDragging = true;
     this.categoriesContainer = (e.target as HTMLElement).closest(
-      ".categories-grid"
+      ".categories-grid",
     ) as HTMLElement;
     if (this.categoriesContainer) {
       this.startX = e.pageX - this.categoriesContainer.scrollLeft;
@@ -523,68 +589,106 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private updateSeoData() {
     const categoryMap = {
-      'ar': {
-        'mushaf': 'تطبيقات المصحف',
-        'tafsir': 'تطبيقات التفسير',
-        'translations': 'تطبيقات الترجمة',
-        'audio': 'التلاوات الصوتية',
-        'recite': 'تطبيقات التسميع',
-        'kids': 'تطبيقات الأطفال',
-        'riwayat': 'الروايات القرآنية',
-        'tajweed': 'تطبيقات التجويد',
-        'all': 'جميع تطبيقات القرآن الكريم'
+      ar: {
+        mushaf: "تطبيقات المصحف",
+        tafsir: "تطبيقات التفسير",
+        translations: "تطبيقات الترجمة",
+        audio: "التلاوات الصوتية",
+        recite: "تطبيقات التسميع",
+        kids: "تطبيقات الأطفال",
+        riwayat: "الروايات القرآنية",
+        tajweed: "تطبيقات التجويد",
+        all: "جميع تطبيقات القرآن الكريم",
       },
-      'en': {
-        'mushaf': 'Mushaf Apps',
-        'tafsir': 'Tafsir Apps',
-        'translations': 'Translation Apps',
-        'audio': 'Audio Recitations',
-        'recite': 'Recitation Apps',
-        'kids': 'Kids Apps',
-        'riwayat': 'Quran Narrations',
-        'tajweed': 'Tajweed Apps',
-        'all': 'All Quran Applications'
-      }
+      en: {
+        mushaf: "Mushaf Apps",
+        tafsir: "Tafsir Apps",
+        translations: "Translation Apps",
+        audio: "Audio Recitations",
+        recite: "Recitation Apps",
+        kids: "Kids Apps",
+        riwayat: "Quran Narrations",
+        tajweed: "Tajweed Apps",
+        all: "All Quran Applications",
+      },
     };
 
-    const categoryName = categoryMap[this.currentLang][this.selectedCategory as keyof typeof categoryMap[typeof this.currentLang]] || 
-                         (this.currentLang === 'ar' ? 'تطبيقات القرآن الكريم' : 'Quran Applications');
+    const categoryName =
+      categoryMap[this.currentLang][
+        this
+          .selectedCategory as keyof (typeof categoryMap)[typeof this.currentLang]
+      ] ||
+      (this.currentLang === "ar"
+        ? "تطبيقات القرآن الكريم"
+        : "Quran Applications");
 
     // Update page title and meta tags
-    if (this.selectedCategory === 'all') {
-      if (this.currentLang === 'ar') {
-        this.titleService.setTitle('دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم');
-        this.metaService.updateTag({ name: 'description', content: 'استكشف أكثر من 100 تطبيق قرآني مجاني ومدفوع للمصحف والتفسير والتلاوة والتحفيظ. الدليل الشامل لتطبيقات القرآن الكريم من مجتمع إتقان' });
+    if (this.selectedCategory === "all") {
+      if (this.currentLang === "ar") {
+        this.titleService.setTitle(
+          "دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم",
+        );
+        this.metaService.updateTag({
+          name: "description",
+          content:
+            "استكشف أكثر من 100 تطبيق قرآني مجاني ومدفوع للمصحف والتفسير والتلاوة والتحفيظ. الدليل الشامل لتطبيقات القرآن الكريم من مجتمع إتقان",
+        });
       } else {
-        this.titleService.setTitle('Comprehensive Quranic Directory - Best Quran Apps Collection');
-        this.metaService.updateTag({ name: 'description', content: 'Explore 100+ free and premium Quran apps for reading, memorization, tafsir, and recitation. The most comprehensive directory of Islamic mobile applications.' });
+        this.titleService.setTitle(
+          "Comprehensive Quranic Directory - Best Quran Apps Collection",
+        );
+        this.metaService.updateTag({
+          name: "description",
+          content:
+            "Explore 100+ free and premium Quran apps for reading, memorization, tafsir, and recitation. The most comprehensive directory of Islamic mobile applications.",
+        });
       }
     } else {
-      if (this.currentLang === 'ar') {
+      if (this.currentLang === "ar") {
         this.titleService.setTitle(`${categoryName} - دليل التطبيقات القرآنية`);
-        this.metaService.updateTag({ name: 'description', content: `أفضل ${categoryName} للقرآن الكريم - تطبيقات مجانية ومدفوعة مختارة بعناية من مجتمع إتقان لتقنيات القرآن` });
+        this.metaService.updateTag({
+          name: "description",
+          content: `أفضل ${categoryName} للقرآن الكريم - تطبيقات مجانية ومدفوعة مختارة بعناية من مجتمع إتقان لتقنيات القرآن`,
+        });
       } else {
-        this.titleService.setTitle(`${categoryName} - Comprehensive Quranic Directory`);
-        this.metaService.updateTag({ name: 'description', content: `Best ${categoryName} for Holy Quran - Carefully curated free and premium Islamic mobile applications by ITQAN Community.` });
+        this.titleService.setTitle(
+          `${categoryName} - Comprehensive Quranic Directory`,
+        );
+        this.metaService.updateTag({
+          name: "description",
+          content: `Best ${categoryName} for Holy Quran - Carefully curated free and premium Islamic mobile applications by ITQAN Community.`,
+        });
       }
     }
 
     // Add structured data for rich snippets
-    const websiteData = this.seoService.generateWebsiteStructuredData(this.currentLang);
-    const itemListData = this.seoService.generateItemListStructuredData(
-      this.filteredApps, 
-      this.selectedCategory === 'all' ? null : this.selectedCategory, 
-      this.currentLang
+    const websiteData = this.seoService.generateWebsiteStructuredData(
+      this.currentLang,
     );
-    const organizationData = this.seoService.generateOrganizationStructuredData(this.currentLang);
-    
+    const itemListData = this.seoService.generateItemListStructuredData(
+      this.filteredApps,
+      this.selectedCategory === "all" ? null : this.selectedCategory,
+      this.currentLang,
+    );
+    const organizationData = this.seoService.generateOrganizationStructuredData(
+      this.currentLang,
+    );
+
     // Add FAQ data for the homepage
-    const faqData = this.selectedCategory === 'all' ? 
-      this.seoService.generateFAQStructuredData(this.currentLang) : null;
-    
+    const faqData =
+      this.selectedCategory === "all"
+        ? this.seoService.generateFAQStructuredData(this.currentLang)
+        : null;
+
     // Add CollectionPage data for category pages
-    const collectionData = this.selectedCategory !== 'all' ? 
-      this.seoService.generateCollectionPageStructuredData(this.selectedCategory, this.filteredApps, this.currentLang) : null;
+    const collectionData =
+      this.selectedCategory !== "all"
+        ? this.seoService.generateCollectionPageStructuredData(
+            this.selectedCategory,
+            this.filteredApps,
+            this.currentLang,
+          )
+        : null;
 
     // Combine structured data
     const combinedData = [
@@ -592,7 +696,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       itemListData,
       organizationData,
       ...(faqData ? [faqData] : []),
-      ...(collectionData ? [collectionData] : [])
+      ...(collectionData ? [collectionData] : []),
     ];
 
     this.seoService.addStructuredData(combinedData);
@@ -600,33 +704,38 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     // Add breadcrumb structured data
     const breadcrumbs = [
       {
-        name: this.currentLang === 'ar' ? 'الرئيسية' : 'Home',
-        url: `https://quran-apps.itqan.dev/${this.currentLang}`
-      }
+        name: this.currentLang === "ar" ? "الرئيسية" : "Home",
+        url: `https://quran-apps.itqan.dev/${this.currentLang}`,
+      },
     ];
-    
-    if (this.selectedCategory !== 'all') {
+
+    if (this.selectedCategory !== "all") {
       breadcrumbs.push({
         name: categoryName,
-        url: `https://quran-apps.itqan.dev/${this.currentLang}/${this.selectedCategory}`
+        url: `https://quran-apps.itqan.dev/${this.currentLang}/${this.selectedCategory}`,
       });
     }
 
-    const breadcrumbData = this.seoService.generateBreadcrumbStructuredData(breadcrumbs, this.currentLang);
-    
+    const breadcrumbData = this.seoService.generateBreadcrumbStructuredData(
+      breadcrumbs,
+      this.currentLang,
+    );
+
     // Add breadcrumb data separately to avoid conflicts (browser only)
     if (isPlatformBrowser(this.platformId)) {
-      const script = document.createElement('script');
-      script.type = 'application/ld+json';
+      const script = document.createElement("script");
+      script.type = "application/ld+json";
       script.textContent = JSON.stringify(breadcrumbData);
 
       // Remove existing breadcrumb script
-      const existingBreadcrumb = document.querySelector('script[type="application/ld+json"][data-type="breadcrumb"]');
+      const existingBreadcrumb = document.querySelector(
+        'script[type="application/ld+json"][data-type="breadcrumb"]',
+      );
       if (existingBreadcrumb) {
         existingBreadcrumb.remove();
       }
 
-      script.setAttribute('data-type', 'breadcrumb');
+      script.setAttribute("data-type", "breadcrumb");
       document.head.appendChild(script);
     }
   }
@@ -642,17 +751,20 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getRatingClass(rating: number): string {
-    if (!rating || rating === 0) return 'poor';
-    if (rating >= 4.5) return 'excellent';
-    if (rating >= 4.0) return 'very-good';
-    if (rating >= 3.5) return 'good';
-    if (rating >= 2.5) return 'fair';
-    return 'poor';
+    if (!rating || rating === 0) return "poor";
+    if (rating >= 4.5) return "excellent";
+    if (rating >= 4.0) return "very-good";
+    if (rating >= 3.5) return "good";
+    if (rating >= 2.5) return "fair";
+    return "poor";
   }
 
   getStarArray(rating: number | undefined | null): { fillPercent: number }[] {
     // Ensure rating is a valid number to prevent NG0100 errors
-    const safeRating = typeof rating === 'number' && !isNaN(rating) ? Math.round(rating * 10) / 10 : 0;
+    const safeRating =
+      typeof rating === "number" && !isNaN(rating)
+        ? Math.round(rating * 10) / 10
+        : 0;
 
     // Return cached array if available to prevent NG0100 errors
     if (this.starArrayCache.has(safeRating)) {
@@ -688,28 +800,28 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
    * Aggressive loading strategy for LCP optimization
    * Load first 4 images eagerly with high priority for immediate above-the-fold content
    */
-  getImageLoadingStrategy(index: number): 'eager' | 'lazy' {
+  getImageLoadingStrategy(index: number): "eager" | "lazy" {
     // More aggressive eager loading for better LCP
     // First 4 images (top row on desktop) load eagerly
-    return index < 4 ? 'eager' : 'lazy';
+    return index < 4 ? "eager" : "lazy";
   }
 
   /**
    * Aggressive priority strategy for LCP improvement
    */
-  getImagePriority(index: number): 'high' | 'low' | 'auto' {
+  getImagePriority(index: number): "high" | "low" | "auto" {
     // First image gets highest priority for LCP
     // Next 2 images get high priority for above-the-fold
-    if (index === 0) return 'high'; // LCP candidate
-    if (index < 3) return 'high';   // Above-the-fold
-    return 'low';
+    if (index === 0) return "high"; // LCP candidate
+    if (index < 3) return "high"; // Above-the-fold
+    return "low";
   }
 
   /**
    * Get appropriate aspect ratio for different image types
    */
-  getImageAspectRatio(imageType: 'cover' | 'icon'): string {
-    return imageType === 'cover' ? '16/9' : '1/1';
+  getImageAspectRatio(imageType: "cover" | "icon"): string {
+    return imageType === "cover" ? "16/9" : "1/1";
   }
 
   /**
@@ -728,14 +840,14 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!isPlatformBrowser(this.platformId)) return;
 
     // Find the selected category element
-    const selectedElement = document.querySelector('.category-item.selected');
+    const selectedElement = document.querySelector(".category-item.selected");
 
     if (selectedElement) {
       // Scroll into view with smooth behavior
       selectedElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center'
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
       });
     }
   }
@@ -744,26 +856,61 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
    * Get the URL parameter for an app (slug_id format without numeric prefix)
    */
   getAppUrlParam(app: QuranApp): string {
-    let slug = app.slug || '';
+    const slug = app.slug || app.Name_En.toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
 
-    // Normalize the slug: convert spaces to hyphens
-    slug = slug.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    // Return format: "slug_appId" (e.g., "wahy_abc-123-uuid")
+    return `${slug}_${app.id}`;
+  }
 
-    // Extract just the name part of the slug if it includes a numeric prefix (like "1-wahy" -> "wahy")
-    if (slug && slug.includes('-')) {
-      const parts = slug.split('-');
-      // If first part is numeric, remove it
-      if (/^\d+$/.test(parts[0])) {
-        slug = parts.slice(1).join('-');
+  /**
+   * Navigate to app detail page and scroll to downloads section
+   */
+  navigateToDownloads(app: QuranApp, event: Event): void {
+    event.stopPropagation();
+    const appUrlParam = this.getAppUrlParam(app);
+    this.router.navigate(['/', this.currentLang, 'app', appUrlParam], {
+      fragment: 'downloads'
+    });
+  }
+
+  /**
+   * Share app link using Web Share API or clipboard fallback
+   */
+  async shareApp(app: QuranApp, event: Event): Promise<void> {
+    event.stopPropagation();
+
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const appName = this.currentLang === "ar" ? app.Name_Ar : app.Name_En;
+    const appDescription = this.currentLang === "ar"
+      ? app.Short_Description_Ar
+      : app.Short_Description_En;
+
+    const appUrlParam = this.getAppUrlParam(app);
+    const shareUrl = `${window.location.origin}/${this.currentLang}/app/${appUrlParam}`;
+
+    const shareData = {
+      title: appName,
+      text: appDescription || appName,
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback: copy to clipboard
+        await navigator.clipboard.writeText(shareUrl);
+        alert(this.currentLang === "ar"
+          ? "تم نسخ الرابط إلى الحافظة"
+          : "Link copied to clipboard");
+      }
+    } catch (error) {
+      if ((error as Error).name !== 'AbortError') {
+        console.error("Share failed:", error);
       }
     }
-
-    // If no slug after normalization, generate from app name
-    if (!slug) {
-      slug = app.Name_En.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    }
-
-    // Return format: "slug_appId" (e.g., "wahy_1")
-    return `${slug}_${app.id}`;
   }
 }

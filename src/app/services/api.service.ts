@@ -46,6 +46,9 @@ export interface App {
     name_ar: string;
     slug: string;
   }[];
+  riwayah: string[];
+  mushaf_type: string[];
+  features: string[];
   created_at: string;
   updated_at: string;
   ai_reasoning?: string;
@@ -273,7 +276,7 @@ export class ApiService {
   }
 
   /**
-   * Search applications
+   * Search applications (basic text search)
    */
   searchApps(query: string, filters?: {
     category?: string;
@@ -290,6 +293,29 @@ export class ApiService {
 
     return this.getApps(params).pipe(
       map(response => response.results)
+    );
+  }
+
+  /**
+   * AI-powered smart search using Cloudflare Workers AI
+   * Returns apps ranked by semantic relevance with AI reasoning
+   */
+  smartSearch(query: string): Observable<App[]> {
+    this.setLoading(true);
+    this.setError(null);
+
+    const params = new HttpParams()
+      .set('use_cf', 'true')
+      .set('q', query);
+
+    return this.http.get<AppListResponse>(`${this.apiUrl}/search/`, { params }).pipe(
+      map(response => response.results),
+      tap(() => this.setLoading(false)),
+      catchError(error => {
+        this.setError('Smart search failed. Please try again.');
+        this.setLoading(false);
+        return of([]);
+      })
     );
   }
 
@@ -373,9 +399,10 @@ export class ApiService {
       formattedCategories = (app.categories as any[]).reduce((acc: string[], cat: any) => {
         if (typeof cat === 'string') {
           acc.push(cat.toLowerCase());
-        } else if (cat && typeof cat === 'object' && cat.name_en) {
-          const name = (cat.name_en as string).toLowerCase();
-          if (name) acc.push(name);
+        } else if (cat && typeof cat === 'object') {
+          // Use slug for filtering (matches route params), fallback to name_en
+          const slug = (cat.slug || cat.name_en || '') as string;
+          if (slug) acc.push(slug.toLowerCase());
         }
         return acc;
       }, []);

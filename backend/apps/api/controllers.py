@@ -8,6 +8,7 @@ from typing import List, Optional
 from ninja import Router, ModelSchema, Schema
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.http import HttpResponse
 
 from ..services.app_service_simple import AppService
 from ..utils.user_agent_parser import parse_user_agent, hash_ip_address, get_client_ip, get_country_from_request
@@ -235,6 +236,57 @@ def get_apps_by_platform(request):
     )
 
     return result
+
+
+@router.get("/{app_id}/og-image/", auth=None, url_name="app_og_image")
+def get_app_og_image(request, app_id: str):
+    """
+    Generate an Open Graph share card image for an app.
+
+    Returns a 1200x630 PNG image with the app icon, name, description,
+    and main image composed into a branded share card.
+
+    Query Parameters:
+    - lang: Language for text content ("ar" or "en", default: "ar")
+    """
+    from apps.models import App
+    from core.utils.og_image import generate_og_image
+
+    lang = request.GET.get("lang", "ar").strip()
+    if lang not in ("ar", "en"):
+        lang = "ar"
+
+    # Find app by slug or UUID
+    app_obj = None
+    try:
+        app_obj = App.objects.filter(status="published").get(id=app_id)
+    except Exception:
+        try:
+            app_obj = App.objects.filter(status="published").get(slug=app_id)
+        except Exception:
+            pass
+
+    if not app_obj:
+        return HttpResponse("App not found", status=404, content_type="text/plain")
+
+    # Build app_data dict for the generator
+    app_data = {
+        "name_en": app_obj.name_en,
+        "name_ar": app_obj.name_ar,
+        "short_description_en": app_obj.short_description_en,
+        "short_description_ar": app_obj.short_description_ar,
+        "application_icon": app_obj.application_icon.url if app_obj.application_icon else "",
+        "main_image_en": app_obj.main_image_en.url if app_obj.main_image_en else "",
+        "main_image_ar": app_obj.main_image_ar.url if app_obj.main_image_ar else "",
+        "slug": app_obj.slug,
+        "updated_at": str(app_obj.updated_at),
+    }
+
+    image_bytes = generate_og_image(app_data, lang=lang)
+
+    response = HttpResponse(image_bytes, content_type="image/png")
+    response["Cache-Control"] = "public, max-age=86400"  # Cache for 24 hours
+    return response
 
 
 # Catch-all route for getting individual app by ID or slug

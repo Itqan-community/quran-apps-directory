@@ -34,6 +34,7 @@ import { register } from "swiper/element/bundle";
 import { Nl2brPipe } from "../../pipes/nl2br.pipe";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SeoService } from "../../services/seo.service";
+import { environment } from "../../../environments/environment";
 // register Swiper custom elements
 register();
 
@@ -157,32 +158,40 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       // Load app data when ID changes (or on initial load)
       if (newId) {
         this.loading = true;
-        // Scroll to top of page when loading new app detail
+        // Scroll to top of page when loading new app detail (unless fragment is present)
         if (isPlatformBrowser(this.platformId)) {
-          window.scrollTo({ top: 0, behavior: "auto" });
+          const fragment = this.route.snapshot.fragment;
+          if (!fragment) {
+            window.scrollTo({ top: 0, behavior: "auto" });
+          }
         }
         this.loadAppData(newId);
+      }
+    });
+
+    // Handle fragment navigation (e.g., #downloads)
+    this.route.fragment.subscribe((fragment) => {
+      if (fragment === "downloads" && isPlatformBrowser(this.platformId)) {
+        // Wait for app data to load and DOM to render
+        setTimeout(() => {
+          this.scrollToDownloads();
+        }, 500);
       }
     });
   }
 
   private loadAppData(appParam: string) {
-    // Parse the app parameter: format is "appSlug_appId"
-    // Extract app ID from URL parameter
+    // Parse the app parameter: format is "slug_id" (e.g., "wahy_46")
     const lastUnderscoreIndex = appParam.lastIndexOf("_");
     let appId: string = appParam;
 
     if (lastUnderscoreIndex !== -1) {
       const potentialId = appParam.substring(lastUnderscoreIndex + 1);
-      // Check if the part after underscore is a valid ID (numeric or string)
-      if (potentialId && potentialId.length > 0) {
+      if (potentialId.length > 0) {
         appId = potentialId;
-        const appSlug = appParam.substring(0, lastUnderscoreIndex);
-        console.log("✅ Parsed app ID from URL:", appId, "Slug:", appSlug);
       }
     }
 
-    console.log("🔍 Loading app data for ID:", appId);
     this.appService.getAppById(appId).subscribe(
       (app) => {
         if (app) {
@@ -203,7 +212,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
 
           this.app = app;
           this.cdr.detectChanges(); // Trigger immediate change detection
-
+          console.log(app.categories);
           if (app.categories.length > 0) {
             this.appService
               .getAppsByCategory(app.categories[0])
@@ -235,7 +244,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
             this.loading,
           );
         } else {
-          console.error("❌ DEBUG: No app data returned for ID:", appId);
+          console.error("❌ DEBUG: No app data returned for:", appParam);
         }
       },
       (error) => {
@@ -245,7 +254,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
   }
 
   // Add a method to handle navigation to a related app
-  navigateToApp(appId: string) {
+  navigateToApp(lookupId: string) {
     // Clear current app data before navigation to prevent stale data display
     this.app = undefined;
     this.loading = true;
@@ -253,7 +262,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
 
     // Find the app in relevantApps to get its slug
-    const targetApp = this.relevantApps.find((app) => app.id === appId);
+    const targetApp = this.relevantApps.find((app) => app.id === lookupId);
 
     let slug = targetApp?.slug || "";
 
@@ -279,16 +288,138 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       }
     }
 
-    slug = slug || appId;
+    slug = slug || lookupId;
 
-    // Format: "slug_appId" (e.g., "wahy_1")
-    const urlParam = `${slug}_${appId}`;
+    // Format: "slug_lookupId" (e.g., "wahy_1")
+    const urlParam = `${slug}_${lookupId}`;
     this.router.navigate([`/${this.currentLang}/app/${urlParam}`]).then(() => {
       if (isPlatformBrowser(this.platformId)) {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
       this.isExpanded = false;
     });
+  }
+
+  /**
+   * Navigate to related app's detail page and scroll to downloads section
+   */
+  navigateToAppDownloads(lookupId: string, event: Event) {
+    event.stopPropagation();
+
+    // Find the app in relevantApps to get its slug BEFORE clearing
+    const targetApp = this.relevantApps.find((app) => app.id === lookupId);
+
+    // Clear current app data before navigation to prevent stale data display
+    this.app = undefined;
+    this.loading = true;
+    this.relevantApps = [];
+    this.cdr.detectChanges();
+
+    let slug = targetApp?.slug || "";
+
+    // Normalize the slug: convert spaces to hyphens
+    slug = slug
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
+
+    // If no slug after normalization, generate from app name
+    if (!slug && targetApp) {
+      slug = targetApp.Name_En.toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
+    }
+
+    // Extract just the name part of the slug if it includes a numeric prefix
+    if (slug && slug.includes("-")) {
+      const parts = slug.split("-");
+      if (/^\d+$/.test(parts[0])) {
+        slug = parts.slice(1).join("-");
+      }
+    }
+
+    slug = slug || lookupId;
+
+    // Format: "slug_lookupId" (e.g., "wahy_1")
+    const urlParam = `${slug}_${lookupId}`;
+    this.router
+      .navigate([`/${this.currentLang}/app/${urlParam}`], {
+        fragment: "downloads",
+      })
+      .then(() => {
+        this.isExpanded = false;
+      });
+  }
+
+  /**
+   * Share related app link using Web Share API or clipboard fallback
+   */
+  async shareRelatedApp(lookupId: string, event: Event): Promise<void> {
+    event.stopPropagation();
+
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    // Find the app in relevantApps
+    const targetApp = this.relevantApps.find((app) => app.id === lookupId);
+    if (!targetApp) return;
+
+    const appName =
+      this.currentLang === "ar" ? targetApp.Name_Ar : targetApp.Name_En;
+    const appDescription =
+      this.currentLang === "ar"
+        ? targetApp.Short_Description_Ar
+        : targetApp.Short_Description_En;
+
+    let slug = targetApp.slug || "";
+
+    // Normalize the slug
+    slug = slug
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
+
+    if (!slug) {
+      slug = targetApp.Name_En.toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
+    }
+
+    // Extract just the name part of the slug if it includes a numeric prefix
+    if (slug && slug.includes("-")) {
+      const parts = slug.split("-");
+      if (/^\d+$/.test(parts[0])) {
+        slug = parts.slice(1).join("-");
+      }
+    }
+
+    slug = slug || lookupId;
+
+    const urlParam = `${slug}_${lookupId}`;
+    const shareUrl = `${window.location.origin}/${this.currentLang}/app/${urlParam}`;
+
+    const shareData = {
+      title: appName,
+      text: appDescription || appName,
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback: copy to clipboard
+        await navigator.clipboard.writeText(shareUrl);
+        alert(
+          this.currentLang === "ar"
+            ? "تم نسخ الرابط إلى الحافظة"
+            : "Link copied to clipboard",
+        );
+      }
+    } catch (error) {
+      if ((error as Error).name !== "AbortError") {
+        console.error("Share failed:", error);
+      }
+    }
   }
 
   /**
@@ -401,7 +532,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
 
   getCategoryIcon(category: string): SafeHtml {
     const foundCategory = this.categoriesSet.find(
-      (cat) => cat.name === category,
+      (cat) => cat.name.toLowerCase() === category.toLowerCase(),
     );
     return this.sanitizer.bypassSecurityTrustHtml(foundCategory?.icon || "");
   }
@@ -475,11 +606,10 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       property: "og:description",
       content: appDescription || "",
     });
+    const ogImageUrl = `${environment.apiUrl}/apps/${this.app.slug}/og-image/?lang=${this.currentLang}`;
     this.metaService.updateTag({
       property: "og:image",
-      content:
-        this.app.applicationIcon ||
-        "https://itqan.dev/images/home/hero-card-mushaf.svg",
+      content: ogImageUrl,
     });
     this.metaService.updateTag({
       property: "og:url",
@@ -499,9 +629,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     });
     this.metaService.updateTag({
       property: "twitter:image",
-      content:
-        this.app.applicationIcon ||
-        "https://itqan.dev/images/home/hero-card-mushaf.svg",
+      content: ogImageUrl,
     });
 
     // Add app-specific keywords
@@ -624,7 +752,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
   // Scroll to download links section
   scrollToDownloads() {
     if (!isPlatformBrowser(this.platformId)) return;
-    const downloadsSection = this.document.querySelector(".download-links");
+    const downloadsSection = this.document.querySelector("#downloads");
     if (downloadsSection) {
       const header = this.document.querySelector(".modern-header");
       const headerHeight = header ? header.getBoundingClientRect().height : 80;
@@ -669,16 +797,16 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
   scrollRelatedLeft() {
     const el = this.relatedCarousel?.nativeElement;
     if (el) {
-      const scrollAmount = this.currentLang === 'ar' ? 320 : -320;
-      el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      const scrollAmount = this.currentLang === "ar" ? 320 : -320;
+      el.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   }
 
   scrollRelatedRight() {
     const el = this.relatedCarousel?.nativeElement;
     if (el) {
-      const scrollAmount = this.currentLang === 'ar' ? -320 : 320;
-      el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      const scrollAmount = this.currentLang === "ar" ? -320 : 320;
+      el.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   }
 

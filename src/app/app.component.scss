@@ -84,7 +84,7 @@
         // RTL support for beta badge
         :host-context([dir="rtl"]) & .beta-badge {
           right: auto;
-          left: 140px;
+          left: 130px;
           @media screen and (max-width: 768px) {
             left: 50px;
           }
@@ -611,6 +611,8 @@ nz-footer.main-footer {
 
   @media (max-width: 768px) {
     margin: 60px 16px 0 16px !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 3rem !important;
     border-radius: 24px;
   }
 
@@ -695,7 +697,7 @@ nz-footer.main-footer {
       align-items: center;
       gap: 0.5rem;
       transition: color 0.3s ease;
-      letter-spacing: -10px !important;
+      letter-spacing: normal;
     }
   }
 
@@ -712,6 +714,10 @@ nz-footer.main-footer {
 }
 :host ::ng-deep .ant-layout-content {
   min-height: 10vh !important;
+
+  @media (max-width: 768px) {
+    margin-bottom: 40px !important;
+  }
 }
 
 // Ensure nz-layout contains footer margin properly
@@ -721,6 +727,10 @@ nz-footer.main-footer {
   min-height: 10vh;
   overflow: auto; // Prevents margin collapse
   padding-bottom: 20px; // Space after footer
+
+  @media (max-width: 768px) {
+    padding-bottom: 30px; // Extra space on mobile
+  }
 }
 
 // Light theme specific adjustments for modern header
@@ -943,11 +953,12 @@ nz-footer.main-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: 12px;
     padding: 10px 12px 10px 20px !important;
     height: auto;
     min-height: 60px;
     margin: 0 40px;
+    overflow: hidden;
     background: var(--bg-color, #fff);
     border-radius: 16px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
@@ -981,13 +992,27 @@ nz-footer.main-footer {
     height: 30px;
   }
 
+  &.searching img {
+    animation: spin 1s linear infinite;
+  }
+
   .dark-theme & {
     background: #2a2a2a;
   }
 }
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .compact-search-container {
   flex: 1;
+  min-width: 120px;
   max-width: 300px;
   position: relative;
   display: flex;
@@ -1057,7 +1082,8 @@ nz-footer.main-footer {
   display: flex;
   gap: 8px;
   align-items: center;
-  flex-shrink: 0;
+  flex: 1;
+  min-width: 0;
   overflow-x: auto;
   max-width: 600px;
   padding: 4px 8px;
@@ -1134,11 +1160,11 @@ nz-footer.main-footer {
 
 .compact-search-btn {
   flex-shrink: 0;
-  padding: 10px 30px;
+  padding: 10px 20px;
   background: var(--Primary, #061c1a);
   color: #fff !important;
   border: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1146,6 +1172,7 @@ nz-footer.main-footer {
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
   border-radius: 50px !important;
 
   &:hover {

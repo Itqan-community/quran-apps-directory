@@ -696,17 +696,85 @@
   flex-wrap: wrap;
 }
 
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 300px;
+// ============================================
+// SHIMMER SKELETON LOADING
+// ============================================
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
 }
 
-.loading-placeholder {
-  text-align: center;
-  padding: 40px;
-  color: #666;
+.shimmer-card {
+  pointer-events: none;
+}
+
+.shimmer-block,
+.shimmer-icon,
+.shimmer-line {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 37%, #f0f0f0 63%);
+  background-size: 800px 100%;
+  animation: shimmer 1.5s infinite ease-in-out;
+  border-radius: 6px;
+
+  :host-context(.dark-theme) & {
+    background: linear-gradient(90deg, #2a2a2a 25%, #333 37%, #2a2a2a 63%);
+    background-size: 800px 100%;
+  }
+}
+
+.shimmer-cover {
+  background: none !important;
+
+  .shimmer-block {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+
+    @media (max-width: 640px) {
+      border-radius: 8px;
+    }
+  }
+}
+
+.shimmer-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  flex-shrink: 0;
+
+  @media (max-width: 640px) {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+}
+
+.shimmer-text-group {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shimmer-title {
+  width: 70%;
+  height: 16px;
+}
+
+.shimmer-desc {
+  width: 90%;
+  height: 12px;
+}
+
+.shimmer-meta {
+  width: 40%;
+  height: 12px;
+  margin-top: 4px;
 }
 
 .empty-state {

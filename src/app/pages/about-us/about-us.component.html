@@ -1,22 +1,40 @@
-<div class="about-us-container">
-  <div class="hero-section">
-    <div class="logo-container">
-      <img src="assets/images/logo-with-text.svg" alt="Comprehensive Quranic Directory" class="logo">
-    </div>
-    <h1>{{ "aboutUs.title" | translate }}</h1>
-    <p class="subtitle">{{ "aboutUs.subtitle" | translate }}</p>
-    <p class="intro">{{ "aboutUs.intro" | translate }}</p>
+<div class="about-us-page">
+  <!-- Page-level backgrounds (span entire page, fixed position) -->
+  <div class="page-background-left">
+    <!-- Teal ellipses (left): large + medium via ::before/::after, small via span -->
+    <span class="ellipse-small"></span>
+  </div>
+  <div class="page-background-right">
+    <!-- Gold ellipses (right): large + medium via ::before/::after, small via span -->
+    <span class="ellipse-small"></span>
   </div>
 
-  <div class="content">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="logo-container">
+        <img
+          src="assets/images/logo-with-text.svg"
+          alt="Comprehensive Quranic Directory"
+          class="logo"
+        />
+      </div>
+      <h1>{{ "aboutUs.title" | translate }}</h1>
+      <p class="subtitle">{{ "aboutUs.subtitle" | translate }}</p>
+      <p class="intro">{{ "aboutUs.intro" | translate }}</p>
+    </div>
+  </section>
+
+  <!-- Content Sections -->
+  <div class="content-container">
     <!-- Mission Section -->
-    <section class="mission-section">
+    <section class="mission-section card-section">
       <h2>{{ "aboutUs.mission" | translate }}</h2>
       <p>{{ "aboutUs.missionDescription" | translate }}</p>
     </section>
 
     <!-- Vision Section -->
-    <section class="vision-section">
+    <section class="vision-section card-section">
       <h2>{{ "aboutUs.vision" | translate }}</h2>
       <p>{{ "aboutUs.visionDescription" | translate }}</p>
     </section>
@@ -49,49 +67,75 @@
     <!-- Why Choose Us Section -->
     <section class="why-section">
       <h2>{{ "aboutUs.why" | translate }}</h2>
-      <ul class="benefits-list">
-        <li>
+      <div class="benefits-grid">
+        <div class="benefit-item">
           <span class="check-icon">✓</span>
-          {{ "aboutUs.whyList.largest" | translate }}
-        </li>
-        <li>
+          <span>{{ "aboutUs.whyList.largest" | translate }}</span>
+        </div>
+        <div class="benefit-item">
           <span class="check-icon">✓</span>
-          {{ "aboutUs.whyList.verified" | translate }}
-        </li>
-        <li>
+          <span>{{ "aboutUs.whyList.verified" | translate }}</span>
+        </div>
+        <div class="benefit-item">
           <span class="check-icon">✓</span>
-          {{ "aboutUs.whyList.expert" | translate }}
-        </li>
-        <li>
+          <span>{{ "aboutUs.whyList.expert" | translate }}</span>
+        </div>
+        <div class="benefit-item">
           <span class="check-icon">✓</span>
-          {{ "aboutUs.whyList.updated" | translate }}
-        </li>
-        <li>
+          <span>{{ "aboutUs.whyList.updated" | translate }}</span>
+        </div>
+        <div class="benefit-item">
           <span class="check-icon">✓</span>
-          {{ "aboutUs.whyList.free" | translate }}
-        </li>
-        <li>
+          <span>{{ "aboutUs.whyList.free" | translate }}</span>
+        </div>
+        <div class="benefit-item">
           <span class="check-icon">✓</span>
-          {{ "aboutUs.whyList.opensource" | translate }}
-        </li>
-      </ul>
+          <span>{{ "aboutUs.whyList.opensource" | translate }}</span>
+        </div>
+      </div>
     </section>
 
     <!-- Categories Section -->
     <section class="categories-section">
       <h2>{{ "aboutUs.categories" | translate }}</h2>
-      <p>{{ "aboutUs.categoriesDescription" | translate }}</p>
-      <div class="categories-grid">
-        <div class="category-item">{{ "appList.categories.mushaf" | translate }}</div>
-        <div class="category-item">{{ "appList.categories.tafsir" | translate }}</div>
-        <div class="category-item">{{ "appList.categories.translations" | translate }}</div>
-        <div class="category-item">{{ "appList.categories.audio" | translate }}</div>
-        <div class="category-item">{{ "appList.categories.recite" | translate }}</div>
-        <div class="category-item">{{ "appList.categories.memorize" | translate }}</div>
-        <div class="category-item">{{ "appList.categories.tajweed" | translate }}</div>
-        <div class="category-item">{{ "appList.categories.kids" | translate }}</div>
-        <div class="category-item">{{ "appList.categories.riwayat" | translate }}</div>
-        <div class="category-item">{{ "appList.categories.accessibility" | translate }}</div>
+      <div class="categories-pills">
+        <div class="category-pill">
+          <img src="assets/images/quran-02.svg" alt="" />
+          <span>{{ "appList.categories.mushaf" | translate }}</span>
+        </div>
+        <div class="category-pill">
+          <img src="assets/images/salah.svg" alt="" />
+
+          <span>{{ "appList.categories.memorize" | translate }}</span>
+        </div>
+        <div class="category-pill">
+          <img src="assets/images/Elements.svg" alt="" />
+          <span>{{ "appList.categories.tajweed" | translate }}</span>
+        </div>
+        <div class="category-pill">
+          <img src="assets/images/baby-01.svg" alt="" />
+          <span>{{ "appList.categories.kids" | translate }}</span>
+        </div>
+        <div class="category-pill">
+          <img src="assets/images/ramadhan-02.svg" alt="" />
+          <span>{{ "appList.categories.riwayat" | translate }}</span>
+        </div>
+        <div class="category-pill">
+          <img src="assets/images/disability-02.svg" alt="" />
+          <span>{{ "appList.categories.accessibility" | translate }}</span>
+        </div>
+        <div class="category-pill">
+          <img src="assets/images/reminder.svg" alt="" />
+          <span>{{ "appList.categories.tafsir" | translate }}</span>
+        </div>
+        <div class="category-pill">
+          <img src="assets/images/translate.svg" alt="" />
+          <span>{{ "appList.categories.translations" | translate }}</span>
+        </div>
+        <div class="category-pill">
+          <img src="assets/images/mic-01.svg" alt="" />
+          <span>{{ "appList.categories.audio" | translate }}</span>
+        </div>
       </div>
     </section>
 
@@ -100,58 +144,91 @@
       <h2>{{ "aboutUs.values" | translate }}</h2>
       <div class="values-grid">
         <div class="value-card">
-          <h4>{{ "aboutUs.values_list.accuracyAndAuthenticity" | translate }}</h4>
+          <span>{{
+            "aboutUs.values_list.accuracyAndAuthenticity" | translate
+          }}</span>
         </div>
         <div class="value-card">
-          <h4>{{ "aboutUs.values_list.userCentricDesignAndAccessibility" | translate }}</h4>
+          <span>{{
+            "aboutUs.values_list.userCentricDesignAndAccessibility" | translate
+          }}</span>
         </div>
         <div class="value-card">
-          <h4>{{ "aboutUs.values_list.continuousImprovementAndInnovation" | translate }}</h4>
+          <span>{{
+            "aboutUs.values_list.continuousImprovementAndInnovation" | translate
+          }}</span>
         </div>
         <div class="value-card">
-          <h4>{{ "aboutUs.values_list.communityEngagementAndSupport" | translate }}</h4>
+          <span>{{
+            "aboutUs.values_list.communityEngagementAndSupport" | translate
+          }}</span>
         </div>
         <div class="value-card">
-          <h4>{{ "aboutUs.values_list.transparency" | translate }}</h4>
+          <span>{{ "aboutUs.values_list.transparency" | translate }}</span>
         </div>
         <div class="value-card">
-          <h4>{{ "aboutUs.values_list.innovation" | translate }}</h4>
+          <span>{{ "aboutUs.values_list.innovation" | translate }}</span>
         </div>
       </div>
     </section>
 
-    <!-- Related Projects Section -->
-    <section class="related-projects">
+    <!-- ITQAN Projects Section -->
+    <section class="projects-section">
       <h2>{{ "footer.itqan_projects" | translate }}</h2>
-      <p>
-        {{ currentLang === 'ar' ? 'دليل التطبيقات القرآنية هو جزء من مجموعة مشاريع إتقان الهادفة لخدمة القرآن الكريم عبر التقنية. تشمل مشاريعنا الأخرى:' : 'The Quran Apps Directory is part of ITQAN\'s suite of projects aimed at serving the Holy Quran through technology. Our other projects include:' }}
-      </p>
-      <ul class="projects-list">
-        <li>
-          <a [href]="'https://itqan.dev/' + currentLang" target="_blank" rel="noopener noreferrer">
-            {{ "footer.main_site" | translate }}
-            <nz-icon nzType="export" nzTheme="outline"></nz-icon>
-          </a>
-        </li>
-        <li>
-          <a href="https://itqan.dev/projects" target="_blank" rel="noopener noreferrer">
-            {{ "footer.content_management" | translate }}
-            <nz-icon nzType="export" nzTheme="outline"></nz-icon>
-          </a>
-        </li>
-        <li>
-          <a href="https://itqan.dev/resources" target="_blank" rel="noopener noreferrer">
-            {{ "footer.resources" | translate }}
-            <nz-icon nzType="export" nzTheme="outline"></nz-icon>
-          </a>
-        </li>
-        <li>
-          <a href="https://itqan.dev/resources/fonts" target="_blank" rel="noopener noreferrer">
-            {{ "footer.mushaf_fonts" | translate }}
-            <nz-icon nzType="export" nzTheme="outline"></nz-icon>
-          </a>
-        </li>
-      </ul>
+      <div class="projects-grid">
+        <a
+          [href]="'https://itqan.dev/' + currentLang"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="project-card"
+        >
+          <img
+            src="assets/images/itqan-logo.svg"
+            alt="ITQAN"
+            class="project-logo"
+          />
+          <span>{{ "footer.main_site" | translate }}</span>
+        </a>
+        <a
+          href="https://itqan.dev/projects"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="project-card"
+        >
+          <img
+            src="assets/images/itqan-logo.svg"
+            alt="ITQAN"
+            class="project-logo"
+          />
+          <span>{{ "footer.content_management" | translate }}</span>
+        </a>
+        <a
+          href="https://itqan.dev/resources"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="project-card"
+        >
+          <img
+            src="assets/images/itqan-logo.svg"
+            alt="ITQAN"
+            class="project-logo"
+          />
+          <span>{{ "footer.resources" | translate }}</span>
+        </a>
+        <a
+          href="https://itqan.dev/resources/fonts"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="project-card"
+        >
+          <img
+            src="assets/images/itqan-logo.svg"
+            alt="ITQAN"
+            class="project-logo"
+          />
+          <span>{{ "footer.mushaf_fonts" | translate }}</span>
+        </a>
+      </div>
     </section>
 
     <!-- Acknowledgments Section -->
@@ -160,4 +237,4 @@
       <p>{{ "aboutUs.acknowledgementsText" | translate }}</p>
     </section>
   </div>
-</div> 
+</div>
