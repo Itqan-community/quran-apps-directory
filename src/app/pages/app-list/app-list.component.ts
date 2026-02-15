@@ -51,6 +51,10 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   searchQuery: string = "";
   searchType: 'traditional' | 'smart' = 'traditional';
   isSmartSearching = false;
+  smartSearchPage = 1;
+  smartSearchTotal = 0;
+  smartSearchHasMore = false;
+  private isSmartSearchActive = false;
   categories: Category[] = [];
   // Start with false - no spinner on initial load
   isLoading = false;
@@ -330,6 +334,8 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   /** Fires on every keystroke — only does local filtering (no smart search animation) */
   onTypingSearch() {
     if (this.searchType === 'traditional') {
+      this.isSmartSearchActive = false;
+      this.smartSearchHasMore = false;
       this.applyCategoryAndSearchFilters();
     }
     // Sync search query with navbar
@@ -344,20 +350,38 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     // If query is empty, just respect current category filter
     if (!query) {
       this.isSmartSearching = false;
+      this.isSmartSearchActive = false;
+      this.smartSearchHasMore = false;
       this.applyCategoryAndSearchFilters();
       return;
     }
 
     if (this.searchType === 'smart') {
-      // Smart search: show loading animation on icon
       this.isSmartSearching = true;
-      // TODO: Replace with actual smart search API call
-      // For now, simulate with local filtering + delay
-      setTimeout(() => {
-        this.applyCategoryAndSearchFilters();
-        this.isSmartSearching = false;
-        this.cdr.detectChanges();
-      }, 1500);
+      this.isSmartSearchActive = true;
+      this.smartSearchPage = 1;
+      const filters: any = {};
+      if (this.selectedCategory !== 'all') {
+        filters.category = this.selectedCategory;
+      }
+      this.apiService.searchHybrid(query, filters, 1, 20)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (response) => {
+            const results = (response.results || []).map((app: any) =>
+              this.apiService.formatAppForDisplay(app)
+            );
+            this.filteredApps = results;
+            this.smartSearchTotal = response.count || 0;
+            this.smartSearchHasMore = !!response.next;
+            this.isSmartSearching = false;
+            this.cdr.detectChanges();
+          },
+          error: () => {
+            this.isSmartSearching = false;
+            this.cdr.detectChanges();
+          }
+        });
       return;
     }
 
@@ -365,9 +389,41 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.applyCategoryAndSearchFilters();
   }
 
+  loadMoreSmartResults(): void {
+    if (!this.smartSearchHasMore || this.isSmartSearching) return;
+    this.isSmartSearching = true;
+    this.smartSearchPage++;
+    const filters: any = {};
+    if (this.selectedCategory !== 'all') {
+      filters.category = this.selectedCategory;
+    }
+    this.apiService.searchHybrid(this.searchQuery.trim(), filters, this.smartSearchPage, 20)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          const results = (response.results || []).map((app: any) =>
+            this.apiService.formatAppForDisplay(app)
+          );
+          this.filteredApps = [...this.filteredApps, ...results];
+          this.smartSearchHasMore = !!response.next;
+          this.isSmartSearching = false;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.smartSearchPage--;
+          this.isSmartSearching = false;
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
   filterByCategory(category: string) {
     this.selectedCategory = category.toLowerCase();
-    this.applyCategoryAndSearchFilters();
+    if (this.isSmartSearchActive && this.searchQuery.trim()) {
+      this.onSearch();
+    } else {
+      this.applyCategoryAndSearchFilters();
+    }
   }
 
   retryLoadData() {

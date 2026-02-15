@@ -54,7 +54,8 @@
       "sendButton": "Send",
       "resultsFor": "Search results for",
       "result": "result",
-      "results": "results"
+      "results": "results",
+      "loadMore": "Load More Results"
     },
     "categories": {
       "all": "Category",

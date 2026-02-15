@@ -392,5 +392,19 @@
         </article>
       }
     </div>
+
+    <!-- Load More Button for Smart Search -->
+    @if (smartSearchHasMore && !isSmartSearching) {
+      <div class="load-more-container" style="text-align: center; margin: 24px 0;">
+        <button nz-button nzType="default" nzSize="large" (click)="loadMoreSmartResults()">
+          {{ "appList.search.loadMore" | translate }}
+        </button>
+      </div>
+    }
+    @if (isSmartSearching && filteredApps.length > 0) {
+      <div style="text-align: center; margin: 24px 0;">
+        <nz-spin nzSimple></nz-spin>
+      </div>
+    }
   }
 </div>
