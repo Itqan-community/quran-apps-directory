@@ -27,13 +27,14 @@ ICON_SIZE = 88
 ICON_RADIUS = 20
 LOGO_HEIGHT = 32
 
-# Colors
-BG_GRADIENT_START = (18, 188, 172)    # #12bcac (teal)
-BG_GRADIENT_END = (13, 61, 56)        # #0d3d38 (dark teal)
-ACCENT_COLOR = (250, 175, 65)          # #faaf41 (gold)
-TEXT_WHITE = (255, 255, 255)
-TEXT_LIGHT = (220, 240, 238)
-OVERLAY_DARK = (10, 40, 36, 160)
+# Colors - Updated for white/light design
+BG_COLOR = (255, 255, 255)             # #ffffff (white)
+BG_LIGHT = (248, 249, 250)             # #f8f9fa (very light gray)
+ACCENT_TEAL = (18, 188, 172)           # #12bcac (teal accent)
+ACCENT_GOLD = (250, 175, 65)           # #faaf41 (gold)
+TEXT_DARK = (26, 26, 26)               # #1a1a1a (dark text)
+TEXT_GRAY = (102, 102, 102)            # #666666 (gray text)
+BORDER_COLOR = (230, 230, 230)         # #e6e6e6 (light border)
 
 # Font cache directory
 FONTS_DIR = Path(__file__).parent.parent / "assets" / "fonts"
@@ -94,28 +95,11 @@ def _fetch_image(url: str, timeout: int = 15) -> Image.Image | None:
         return None
 
 
-def _draw_gradient(img: Image.Image):
-    """Draw a diagonal gradient background."""
+def _draw_light_background(img: Image.Image):
+    """Draw a clean white/light background with subtle gradient."""
     draw = ImageDraw.Draw(img)
-    for y in range(OG_HEIGHT):
-        # Diagonal gradient: mix based on x + y position
-        for x in range(OG_WIDTH):
-            ratio = (x / OG_WIDTH * 0.4 + y / OG_HEIGHT * 0.6)
-            r = int(BG_GRADIENT_START[0] + (BG_GRADIENT_END[0] - BG_GRADIENT_START[0]) * ratio)
-            g = int(BG_GRADIENT_START[1] + (BG_GRADIENT_END[1] - BG_GRADIENT_START[1]) * ratio)
-            b = int(BG_GRADIENT_START[2] + (BG_GRADIENT_END[2] - BG_GRADIENT_START[2]) * ratio)
-            draw.point((x, y), fill=(r, g, b))
-
-
-def _draw_gradient_fast(img: Image.Image):
-    """Draw a gradient background using row-based fills (much faster)."""
-    draw = ImageDraw.Draw(img)
-    for y in range(OG_HEIGHT):
-        ratio = y / OG_HEIGHT
-        r = int(BG_GRADIENT_START[0] + (BG_GRADIENT_END[0] - BG_GRADIENT_START[0]) * ratio)
-        g = int(BG_GRADIENT_START[1] + (BG_GRADIENT_END[1] - BG_GRADIENT_START[1]) * ratio)
-        b = int(BG_GRADIENT_START[2] + (BG_GRADIENT_END[2] - BG_GRADIENT_START[2]) * ratio)
-        draw.line([(0, y), (OG_WIDTH, y)], fill=(r, g, b))
+    # Simple white background (already set in Image.new, but ensure it's clean)
+    draw.rectangle([(0, 0), (OG_WIDTH, OG_HEIGHT)], fill=(*BG_COLOR, 255))
 
 
 def _round_corners(img: Image.Image, radius: int) -> Image.Image:
@@ -128,27 +112,21 @@ def _round_corners(img: Image.Image, radius: int) -> Image.Image:
     return result
 
 
-def _add_decorative_circles(img: Image.Image):
-    """Add subtle decorative circles to the background."""
+def _add_decorative_elements(img: Image.Image):
+    """Add subtle decorative elements to the background."""
     overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
 
-    # Large teal circle (top-left)
+    # Subtle teal accent shape (top-right)
     draw.ellipse(
-        [-200, -200, 300, 300],
-        fill=(18, 188, 172, 25),
+        [OG_WIDTH - 300, -150, OG_WIDTH + 50, 200],
+        fill=(*ACCENT_TEAL, 12),  # Very subtle
     )
 
-    # Gold circle (bottom-right)
-    draw.ellipse(
-        [OG_WIDTH - 250, OG_HEIGHT - 200, OG_WIDTH + 100, OG_HEIGHT + 100],
-        fill=(250, 175, 65, 30),
-    )
-
-    # Small accent circle
-    draw.ellipse(
-        [OG_WIDTH - 400, -100, OG_WIDTH - 200, 100],
-        fill=(250, 175, 65, 15),
+    # Light gray background accent (bottom-left)
+    draw.rectangle(
+        [0, OG_HEIGHT - 100, 300, OG_HEIGHT],
+        fill=BG_LIGHT,
     )
 
     img.paste(Image.alpha_composite(Image.new("RGBA", img.size, (0, 0, 0, 0)), overlay), (0, 0), overlay)
@@ -210,134 +188,124 @@ def generate_og_image(app_data: dict, lang: str = "ar") -> bytes:
     icon_url = app_data.get("application_icon", "")
     main_image_url = app_data.get(f"main_image_{lang}", app_data.get("main_image_en", ""))
 
-    # Create base image
-    img = Image.new("RGBA", (OG_WIDTH, OG_HEIGHT), (0, 0, 0, 255))
+    # Create base image with white background (RGBA for better compositing)
+    img = Image.new("RGBA", (OG_WIDTH, OG_HEIGHT), (*BG_COLOR, 255))
 
-    # Draw gradient background
-    _draw_gradient_fast(img)
+    # Draw light background
+    _draw_light_background(img)
 
-    # Add decorative circles
-    _add_decorative_circles(img)
+    # Add subtle decorative elements
+    _add_decorative_elements(img)
 
-    # Layout: main image on left (or right for RTL), text on the other side
-    # Split: ~55% image, ~45% text
-    image_width = int(OG_WIDTH * 0.50)
-    text_area_width = OG_WIDTH - image_width
-
-    # ---- Main Image Section ----
-    main_img = _fetch_image(main_image_url)
-    if main_img:
-        # Scale main image to fill the image area
-        img_ratio = main_img.width / main_img.height
-        target_h = OG_HEIGHT - 80  # Some padding
-        target_w = int(target_h * img_ratio)
-
-        if target_w > image_width - 40:
-            target_w = image_width - 40
-            target_h = int(target_w / img_ratio)
-
-        main_img = main_img.resize((target_w, target_h), Image.Resampling.LANCZOS)
-        main_img = _round_corners(main_img, 16)
-
-        # Add subtle shadow
-        shadow = Image.new("RGBA", (target_w + 20, target_h + 20), (0, 0, 0, 0))
-        shadow_inner = Image.new("RGBA", (target_w, target_h), (0, 0, 0, 60))
-        shadow.paste(shadow_inner, (10, 10))
-        shadow = shadow.filter(ImageFilter.GaussianBlur(radius=10))
-
-        # Position main image
-        if is_rtl:
-            # Image on the left for RTL (text on right)
-            img_x = PADDING
-        else:
-            # Image on the left for LTR
-            img_x = PADDING
-
-        img_y = (OG_HEIGHT - target_h) // 2
-
-        # Paste shadow then image
-        img.paste(shadow, (img_x - 10, img_y - 5), shadow)
-        img.paste(main_img, (img_x, img_y), main_img)
-
-    # ---- Text Section ----
     draw = ImageDraw.Draw(img)
 
     # Load fonts
-    font_name = _get_font(38, "bold")
-    font_desc = _get_font(20, "regular")
-    font_brand = _get_font(16, "regular")
-    font_brand_bold = _get_font(18, "bold")
+    font_name = _get_font(44, "bold")
+    font_desc = _get_font(22, "regular")
+    font_brand = _get_font(18, "regular")
+    font_brand_bold = _get_font(20, "bold")
 
-    # Text area position
-    if is_rtl:
-        text_x_start = image_width + PADDING
-        text_x_end = OG_WIDTH - PADDING
-    else:
-        text_x_start = image_width + PADDING
-        text_x_end = OG_WIDTH - PADDING
+    # New Layout:
+    # - Left side (60%): App name, description, branding
+    # - Right side (40%): Screenshot + App icon
 
-    text_max_width = text_x_end - text_x_start
-    text_center_x = text_x_start + text_max_width // 2
+    left_area_width = int(OG_WIDTH * 0.58)
+    right_area_start = left_area_width
 
-    # ---- App Icon ----
-    current_y = PADDING + 40
-    icon_img = _fetch_image(icon_url)
-    if icon_img:
-        icon_img = icon_img.resize((ICON_SIZE, ICON_SIZE), Image.Resampling.LANCZOS)
-        icon_img = _round_corners(icon_img, ICON_RADIUS)
+    # ---- LEFT SIDE: Text Content ----
+    text_x = PADDING + 60
+    current_y = 120
 
-        # Center icon in text area
-        icon_x = text_center_x - ICON_SIZE // 2
-        img.paste(icon_img, (icon_x, current_y), icon_img)
-        current_y += ICON_SIZE + 24
-    else:
-        current_y += 24
-
-    # ---- App Name ----
-    # Wrap name if too long
-    name_lines = textwrap.wrap(name, width=20)
+    # App Name
+    name_lines = textwrap.wrap(name, width=25 if is_rtl else 28)
     for line in name_lines[:2]:  # Max 2 lines
         bbox = draw.textbbox((0, 0), line, font=font_name)
-        text_w = bbox[2] - bbox[0]
-        text_x = text_center_x - text_w // 2
-        draw.text((text_x, current_y), line, font=font_name, fill=TEXT_WHITE)
-        current_y += bbox[3] - bbox[1] + 8
+        text_h = bbox[3] - bbox[1]
+        if is_rtl:
+            text_w = bbox[2] - bbox[0]
+            draw.text((text_x, current_y), line, font=font_name, fill=TEXT_DARK, anchor="ra" if is_rtl else "la")
+        else:
+            draw.text((text_x, current_y), line, font=font_name, fill=TEXT_DARK)
+        current_y += text_h + 12
 
-    current_y += 12
+    current_y += 10
 
-    # ---- Short Description ----
-    desc_lines = textwrap.wrap(description, width=35)
+    # Short Description
+    desc_lines = textwrap.wrap(description, width=40 if is_rtl else 45)
     for line in desc_lines[:3]:  # Max 3 lines
         bbox = draw.textbbox((0, 0), line, font=font_desc)
-        text_w = bbox[2] - bbox[0]
-        text_x = text_center_x - text_w // 2
-        draw.text((text_x, current_y), line, font=font_desc, fill=TEXT_LIGHT)
-        current_y += bbox[3] - bbox[1] + 6
+        text_h = bbox[3] - bbox[1]
+        draw.text((text_x, current_y), line, font=font_desc, fill=TEXT_GRAY)
+        current_y += text_h + 8
 
-    # ---- Gold accent line ----
-    current_y += 20
-    line_width = 60
-    line_x = text_center_x - line_width // 2
-    draw.rounded_rectangle(
-        [(line_x, current_y), (line_x + line_width, current_y + 3)],
-        radius=2,
-        fill=ACCENT_COLOR,
-    )
-    current_y += 24
+    # ---- RIGHT SIDE: Screenshot + Icon ----
+    # Position for screenshot (phone mockup)
+    screenshot_x = right_area_start + 60
+    screenshot_y = 80
+    screenshot_max_width = 320
+    screenshot_max_height = 460
 
-    # ---- Branding ----
+    main_img = _fetch_image(main_image_url)
+    if main_img:
+        # Resize to fit phone screen proportions
+        img_ratio = main_img.width / main_img.height
+        if img_ratio > (screenshot_max_width / screenshot_max_height):
+            target_w = screenshot_max_width
+            target_h = int(target_w / img_ratio)
+        else:
+            target_h = screenshot_max_height
+            target_w = int(target_h * img_ratio)
+
+        main_img = main_img.resize((target_w, target_h), Image.Resampling.LANCZOS)
+        main_img = _round_corners(main_img, 24)
+
+        # Add shadow
+        shadow = Image.new("RGBA", (target_w + 16, target_h + 16), (0, 0, 0, 0))
+        shadow_draw = ImageDraw.Draw(shadow)
+        shadow_draw.rounded_rectangle(
+            [(0, 0), (target_w + 16, target_h + 16)],
+            radius=24,
+            fill=(0, 0, 0, 40)
+        )
+        shadow = shadow.filter(ImageFilter.GaussianBlur(radius=12))
+
+        # Paste shadow and screenshot
+        img.paste(shadow, (screenshot_x - 8, screenshot_y - 8), shadow)
+        img.paste(main_img, (screenshot_x, screenshot_y), main_img)
+
+    # App Icon (top-right corner of screenshot area)
+    icon_img = _fetch_image(icon_url)
+    if icon_img:
+        icon_size = 100
+        icon_img = icon_img.resize((icon_size, icon_size), Image.Resampling.LANCZOS)
+        icon_img = _round_corners(icon_img, 22)
+
+        # Position icon at top-right with shadow
+        icon_x = OG_WIDTH - icon_size - 60
+        icon_y = 60
+
+        # Icon shadow
+        icon_shadow = Image.new("RGBA", (icon_size + 12, icon_size + 12), (0, 0, 0, 0))
+        icon_shadow_draw = ImageDraw.Draw(icon_shadow)
+        icon_shadow_draw.rounded_rectangle(
+            [(0, 0), (icon_size + 12, icon_size + 12)],
+            radius=22,
+            fill=(0, 0, 0, 50)
+        )
+        icon_shadow = icon_shadow.filter(ImageFilter.GaussianBlur(radius=8))
+
+        img.paste(icon_shadow, (icon_x - 6, icon_y - 6), icon_shadow)
+        img.paste(icon_img, (icon_x, icon_y), icon_img)
+
+    # ---- BOTTOM: Branding ----
+    branding_y = OG_HEIGHT - 90
     brand_text = "دليل التطبيقات القرآنية" if is_rtl else "Quran Apps Directory"
     bbox = draw.textbbox((0, 0), brand_text, font=font_brand_bold)
-    text_w = bbox[2] - bbox[0]
-    text_x = text_center_x - text_w // 2
-    draw.text((text_x, current_y), brand_text, font=font_brand_bold, fill=ACCENT_COLOR)
+    draw.text((PADDING + 60, branding_y), brand_text, font=font_brand_bold, fill=ACCENT_TEAL)
 
-    current_y += bbox[3] - bbox[1] + 6
-    sub_brand = "itqan.dev" if not is_rtl else "itqan.dev"
-    bbox = draw.textbbox((0, 0), sub_brand, font=font_brand)
-    text_w = bbox[2] - bbox[0]
-    text_x = text_center_x - text_w // 2
-    draw.text((text_x, current_y), sub_brand, font=font_brand, fill=TEXT_LIGHT)
+    branding_y += bbox[3] - bbox[1] + 8
+    sub_brand = "itqan.dev"
+    draw.text((PADDING + 60, branding_y), sub_brand, font=font_brand, fill=TEXT_GRAY)
 
     # ---- Convert to PNG bytes ----
     final = img.convert("RGB")
