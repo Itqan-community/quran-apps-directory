@@ -754,7 +754,10 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     if (!isPlatformBrowser(this.platformId)) return;
     const downloadsSection = this.document.querySelector("#downloads");
     if (downloadsSection) {
-      downloadsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      const header = this.document.querySelector(".modern-header");
+      const headerHeight = header ? header.getBoundingClientRect().height : 80;
+      const elementTop = downloadsSection.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: elementTop - headerHeight - 16, behavior: "smooth" });
     }
   }
 

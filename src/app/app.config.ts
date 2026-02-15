@@ -37,7 +37,9 @@ import {
   CodeOutline,
   PictureOutline,
   FileTextOutline,
-  SendOutline
+  SendOutline,
+  CloudUploadOutline,
+  LoadingOutline
 } from '@ant-design/icons-angular/icons';
 import { LucideAngularModule, Menu, X, Globe, Home, Info, Mail, Users, PlusCircle, ExternalLink, ChevronRight, Search } from 'lucide-angular';
 
@@ -142,7 +144,7 @@ export const appConfig: ApplicationConfig = {
         SearchOutline, SunOutline, MoonOutline, BgColorsOutline, ExportOutline,
         GlobalOutline, LeftOutline, RightOutline, UserOutline, MobileOutline,
         LinkOutline, AppstoreOutline, CodeOutline, PictureOutline, FileTextOutline,
-        SendOutline
+        SendOutline, CloudUploadOutline, LoadingOutline
       ]),
       LucideAngularModule.pick({ Menu, X, Globe, Home, Info, Mail, Users, PlusCircle, ExternalLink, ChevronRight, Search }),
       TranslateModule.forRoot({

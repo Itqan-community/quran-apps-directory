@@ -134,11 +134,13 @@ export class DeveloperComponent implements OnInit {
         (error) => this.handleDeveloperAppsError(error)
       );
     } else {
-      // No ID in URL - show error
-      console.error('❌ No developer ID in URL');
-      this.loading = false;
-      this.developerInfo = null;
-      this.developerApps = [];
+      // No ID in URL - fall back to search by developer name
+      const searchName = decodedName.replace(/-/g, ' ');
+      console.log('📡 No developer ID, falling back to search by name:', searchName);
+      this.appService.getAppsByDeveloper(searchName).subscribe(
+        (apps) => this.handleDeveloperAppsLoaded(apps),
+        (error) => this.handleDeveloperAppsError(error)
+      );
     }
   }
 

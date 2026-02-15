@@ -6,7 +6,7 @@
 
   <!-- Search Section -->
   <nz-card class="search-section">
-    <nz-tabset (nzSelectedIndexChange)="onTabChange($event)">
+    <nz-tabs (nzSelectedIndexChange)="onTabChange($event)">
       <!-- Track by ID -->
       <nz-tab [nzTitle]="'trackSubmission.byTrackingId' | translate">
         <div class="search-form">
@@ -53,7 +53,7 @@
           </div>
         </div>
       </nz-tab>
-    </nz-tabset>
+    </nz-tabs>
   </nz-card>
 
   <!-- Error Message -->
