@@ -55,7 +55,9 @@
       "resultsFor": "نتائج البحث عن",
       "result": "نتيجة",
       "results": "نتيجة",
-      "loadMore": "تحميل المزيد"
+      "loadMore": "تحميل المزيد",
+      "aiMatch": "تطابق",
+      "aiReasoning": "لماذا هذه النتيجة؟"
     },
     "categories": {
       "all": "التصنيف",

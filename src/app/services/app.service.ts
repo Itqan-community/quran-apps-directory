@@ -86,6 +86,8 @@ export interface QuranApp {
   AppStore_Link?: string | null;
   Google_Play_Link?: string | null;
   App_Gallery_Link?: string | null;
+  ai_reasoning?: string;
+  relevance_score?: number;
 }
 
 @Injectable({

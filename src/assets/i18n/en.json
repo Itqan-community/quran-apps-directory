@@ -55,7 +55,9 @@
       "resultsFor": "Search results for",
       "result": "result",
       "results": "results",
-      "loadMore": "Load More Results"
+      "loadMore": "Load More Results",
+      "aiMatch": "match",
+      "aiReasoning": "Why this result?"
     },
     "categories": {
       "all": "Category",
