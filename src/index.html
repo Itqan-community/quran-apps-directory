@@ -350,6 +350,30 @@
     <!-- Google Analytics loaded dynamically after user interaction for better performance -->
 
     <base href="/">
+
+    <!-- Stale deploy recovery: if cached HTML references JS files that no longer exist,
+         clear everything and reload. Uses capture phase to catch script load errors. -->
+    <script>
+      (function() {
+        var errors = 0;
+        window.addEventListener('error', function(e) {
+          if (e.target && e.target.tagName === 'SCRIPT') {
+            errors++;
+            if (errors >= 2 && !sessionStorage.getItem('sw_recovery')) {
+              sessionStorage.setItem('sw_recovery', '1');
+              if ('caches' in window) {
+                caches.keys().then(function(n) { n.forEach(function(k) { caches.delete(k); }); });
+              }
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(r) { r.forEach(function(sw) { sw.unregister(); }); });
+              }
+              setTimeout(function() { location.reload(); }, 300);
+            }
+          }
+        }, true);
+        window.addEventListener('load', function() { sessionStorage.removeItem('sw_recovery'); });
+      })();
+    </script>
   </head>
   <body>
     <app-root></app-root>

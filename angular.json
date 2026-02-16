@@ -93,7 +93,6 @@
               "src/favicon.ico",
               "src/sitemap.xml",
               "src/robots.txt",
-              "src/sw.js",
               "src/manifest.webmanifest",
               {
                 "glob": "_redirects",

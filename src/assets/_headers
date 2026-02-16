@@ -39,9 +39,6 @@
 /ngsw-worker.js
   Cache-Control: no-cache, must-revalidate
 
-/sw.js
-  Cache-Control: no-cache, must-revalidate
-
 /worker-basic.min.js
   Cache-Control: no-cache, must-revalidate
 
