@@ -94,6 +94,7 @@
               "src/sitemap.xml",
               "src/robots.txt",
               "src/manifest.webmanifest",
+              "src/sw.js",
               {
                 "glob": "_redirects",
                 "input": "src/assets",
