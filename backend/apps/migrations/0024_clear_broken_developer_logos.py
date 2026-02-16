@@ -12,7 +12,7 @@ def clear_broken_logos(apps, schema_editor):
             'Arabia IT',
             'Ealamy group',
         ]
-    ).update(logo='')
+    ).update(logo_url='')
     print(f"  Cleared {updated} broken developer logos")
 
 
