@@ -323,7 +323,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.navbarScrollService.updateSearchState({
       searchQuery: this.searchQuery,
       searchType: this.searchType,
-      categories: this.categories.slice(0, 5), // First 5 categories
+      categories: this.categories,
       selectedCategory: this.selectedCategory,
       currentLang: this.currentLang,
     });
@@ -748,6 +748,31 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   toggleAiInfo(appId: string, event: Event): void {
     event.stopPropagation();
     this.activeAiInfoId = this.activeAiInfoId === appId ? null : appId;
+  }
+
+  getPlatformLabel(platform: string): string {
+    const labels: Record<string, Record<string, string>> = {
+      android: { en: 'Android', ar: 'أندرويد' },
+      ios: { en: 'iOS', ar: 'آي أو إس' },
+      cross_platform: { en: 'All', ar: 'الجميع' },
+      web: { en: 'Web', ar: 'ويب' },
+    };
+    return labels[platform]?.[this.currentLang] || labels['cross_platform'][this.currentLang];
+  }
+
+  getStoreCount(app: any): number {
+    // If store links are available (detail view), count them
+    if (app.Google_Play_Link || app.AppStore_Link || app.App_Gallery_Link) {
+      let count = 0;
+      if (app.Google_Play_Link) count++;
+      if (app.AppStore_Link) count++;
+      if (app.App_Gallery_Link) count++;
+      return count;
+    }
+    // Fallback: derive from platform field
+    if (app.platform === 'cross_platform') return 2;
+    if (app.platform === 'android' || app.platform === 'ios') return 1;
+    return 1;
   }
 
   getRatingClass(rating: number): string {

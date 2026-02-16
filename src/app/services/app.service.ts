@@ -86,6 +86,7 @@ export interface QuranApp {
   AppStore_Link?: string | null;
   Google_Play_Link?: string | null;
   App_Gallery_Link?: string | null;
+  platform: string;
   ai_reasoning?: string;
   relevance_score?: number;
 }
@@ -139,6 +140,7 @@ export class AppService {
       AppStore_Link: backendApp.app_store_link || null,
       Google_Play_Link: backendApp.google_play_link || null,
       App_Gallery_Link: backendApp.app_gallery_link || null,
+      platform: backendApp.platform,
     };
   }
 

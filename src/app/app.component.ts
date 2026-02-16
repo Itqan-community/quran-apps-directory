@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, Inject, OnInit, OnDestroy, PLATFORM_ID } from "@angular/core";
+import { AfterViewInit, Component, HostListener, inject, Inject, OnInit, OnDestroy, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser, CommonModule } from "@angular/common";
 import { RouterOutlet, RouterLink, ActivatedRoute, Router, ActivatedRouteSnapshot, NavigationEnd } from "@angular/router";
 import { FormsModule } from "@angular/forms";
@@ -61,6 +61,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public navbarCategories: Category[] = [];
   public navbarSelectedCategory = 'all';
   public isNavbarSearching = false;
+  public isCategoryDropdownOpen = false;
   private destroy$ = new Subject<void>();
   private swUpdate = inject(SwUpdate);
 
@@ -241,6 +242,28 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.navigate(['/', this.currentLang], {
       queryParams: { smart_search: this.navbarSearchQuery.trim() }
     });
+  }
+
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.isCategoryDropdownOpen = false;
+  }
+
+  toggleCategoryDropdown(event: Event): void {
+    event.stopPropagation();
+    this.isCategoryDropdownOpen = !this.isCategoryDropdownOpen;
+  }
+
+  isDropdownCategorySelected(): boolean {
+    if (this.navbarSelectedCategory === 'all') return false;
+    const index = this.navbarCategories.findIndex(c => c.slug === this.navbarSelectedCategory);
+    return index >= 5;
+  }
+
+  getSelectedCategoryName(): string {
+    const cat = this.navbarCategories.find(c => c.slug === this.navbarSelectedCategory);
+    if (!cat) return '';
+    return this.currentLang === 'ar' ? cat.name_ar : cat.name_en;
   }
 
   onNavbarCategoryClick(categorySlug: string) {

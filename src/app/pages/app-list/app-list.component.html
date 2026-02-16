@@ -358,21 +358,9 @@
                 }}</span>
               </div>
 
-              <!-- Downloads -->
-              <div class="stat-item">
-                <span class="stat-value"
-                  >12 {{ currentLang === "ar" ? "مليون" : "M" }}</span
-                >
-                <span class="stat-label">{{
-                  currentLang === "ar" ? "التنزيلات" : "Downloads"
-                }}</span>
-              </div>
-
               <!-- Platform -->
               <div class="stat-item">
-                <span class="stat-value">{{
-                  currentLang === "ar" ? "الجميع" : "All"
-                }}</span>
+                <span class="stat-value">{{ getPlatformLabel(app.platform) }}</span>
                 <span class="stat-label">{{
                   currentLang === "ar" ? "المنصة" : "Platform"
                 }}</span>
