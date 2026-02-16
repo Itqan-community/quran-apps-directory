@@ -25,31 +25,39 @@ if (environment.sentry.enabled && environment.sentry.dsn) {
   });
 }
 
-console.log('📍 main.ts: Bootstrapping application');
+// Cache-busting: add ?r= param before Angular boots to bypass CF edge cache on deploy
+const url = new URL(window.location.href);
+if (!url.searchParams.has('r')) {
+  const ts = Math.floor(Date.now() / 10000);
+  url.searchParams.set('r', ts.toString());
+  window.location.replace(url.toString());
+} else {
+  console.log('📍 main.ts: Bootstrapping application');
 
-bootstrapApplication(AppComponent, appConfig)
-  .catch(err => {
-    console.error('Bootstrap error:', err);
+  bootstrapApplication(AppComponent, appConfig)
+    .catch(err => {
+      console.error('Bootstrap error:', err);
 
-    // Detect stale chunk errors (syntax error from HTML response or chunk load failure)
-    // This happens when cached JS filenames no longer exist after deployment
-    const isChunkError = err.message && (
-      err.message.includes('Loading chunk') ||
-      err.message.includes('ChunkLoadError') ||
-      err.message.includes("expected expression, got '<'") ||
-      err.message.includes('Unexpected token')
-    );
+      // Detect stale chunk errors (syntax error from HTML response or chunk load failure)
+      // This happens when cached JS filenames no longer exist after deployment
+      const isChunkError = err.message && (
+        err.message.includes('Loading chunk') ||
+        err.message.includes('ChunkLoadError') ||
+        err.message.includes("expected expression, got '<'") ||
+        err.message.includes('Unexpected token')
+      );
 
-    if (isChunkError) {
-      // Clear service worker cache and unregister workers
-      if ('caches' in window) {
-        caches.keys().then(names => names.forEach(name => caches.delete(name)));
+      if (isChunkError) {
+        // Clear service worker cache and unregister workers
+        if ('caches' in window) {
+          caches.keys().then(names => names.forEach(name => caches.delete(name)));
+        }
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations()
+            .then(regs => regs.forEach(reg => reg.unregister()));
+        }
+        // Silent reload - user just sees page refresh with fresh assets
+        window.location.reload();
       }
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations()
-          .then(regs => regs.forEach(reg => reg.unregister()));
-      }
-      // Silent reload - user just sees page refresh with fresh assets
-      window.location.reload();
-    }
-  });
+    });
+}
