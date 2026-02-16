@@ -815,6 +815,36 @@
       color: #999;
     }
   }
+
+  .smart-search-btn {
+    background: #000;
+    border: none;
+    border-radius: 50px;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 14px 40px;
+    height: auto;
+    line-height: 1;
+    margin-top: 16px;
+
+    &:hover,
+    &:focus {
+      background: #222;
+      color: #fff;
+    }
+
+    :host-context(.dark-theme) & {
+      background: #fff;
+      color: #000;
+
+      &:hover,
+      &:focus {
+        background: #e0e0e0;
+        color: #000;
+      }
+    }
+  }
 }
 
 // ============================================

@@ -249,7 +249,7 @@
         <p>{{ "empty.noApps.message" | translate }}</p>
         @if (searchType === 'traditional' && searchQuery.trim()) {
           <p class="smart-search-hint">{{ "empty.noApps.smartSearchHint" | translate }}</p>
-          <button nz-button nzType="primary" (click)="switchToSmartSearch()">
+          <button nz-button nzType="primary" class="smart-search-btn" (click)="switchToSmartSearch()">
             {{ "empty.noApps.trySmartSearch" | translate }}
           </button>
         }
