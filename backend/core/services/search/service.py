@@ -447,17 +447,20 @@ class AISearchService:
         augmented_query = self._augment_query_with_filters(query, filters) if filters else query
 
         embedding = self.get_embedding_cached(augmented_query)
-        if not embedding:
-            return {'results': [], 'facets': {}}
+        has_embedding = bool(embedding)
 
         # Search ALL published apps - no pre-filtering
         queryset = App.objects.filter(status='published')
 
-        # Vector search on full published queryset
-        # Prefetch categories for keyword scoring
-        candidates = queryset.select_related('developer').prefetch_related('categories').annotate(
-            distance=CosineDistance('embedding', embedding)
-        ).order_by('distance')[:limit]
+        if has_embedding:
+            # Normal path: vector search + multi-signal ranking
+            candidates = queryset.select_related('developer').prefetch_related('categories').annotate(
+                distance=CosineDistance('embedding', embedding)
+            ).order_by('distance')[:limit]
+        else:
+            # Fallback: keyword-only search (Gemini unavailable)
+            logger.warning(f"Embedding failed for query '{query}' - falling back to keyword search")
+            candidates = queryset.select_related('developer').prefetch_related('categories').all()[:200]
 
         candidate_list = list(candidates)
 
@@ -485,20 +488,29 @@ class AISearchService:
                 app._match_reasons = match_reasons
 
                 # Multi-signal scoring
-                distance = getattr(app, 'distance', 0) or 0
-                vector_similarity = 1 - distance
                 keyword_score = self._calculate_keyword_score(app, query)
                 metadata_boost_normalized = min(boost - 1.0, 1.0)
                 quality_boost = self._calculate_quality_boost(app)
 
                 app._keyword_score = keyword_score
                 app._quality_boost = quality_boost
-                app._combined_score = (
-                    (vector_similarity * 0.5)
-                    + (keyword_score * 0.3)
-                    + (metadata_boost_normalized * 0.1)
-                    + (quality_boost * 0.1)
-                )
+
+                if has_embedding:
+                    distance = getattr(app, 'distance', 0) or 0
+                    vector_similarity = 1 - distance
+                    app._combined_score = (
+                        (vector_similarity * 0.5)
+                        + (keyword_score * 0.3)
+                        + (metadata_boost_normalized * 0.1)
+                        + (quality_boost * 0.1)
+                    )
+                else:
+                    # No vector component - redistribute weights
+                    app._combined_score = (
+                        (keyword_score * 0.6)
+                        + (metadata_boost_normalized * 0.2)
+                        + (quality_boost * 0.2)
+                    )
 
             # Re-sort by combined score (descending)
             candidate_list.sort(key=lambda x: getattr(x, '_combined_score', 0), reverse=True)
@@ -508,10 +520,13 @@ class AISearchService:
         if include_facets:
             facets = self._calculate_facets(queryset)
 
-        return {
+        result = {
             'results': candidate_list,
             'facets': facets
         }
+        if not has_embedding:
+            result['_fallback_mode'] = True
+        return result
 
     def hybrid_search_cf(
         self,
