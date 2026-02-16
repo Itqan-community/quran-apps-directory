@@ -1199,7 +1199,18 @@
   align-items: center;
   gap: 2px;
   flex: 1;
-  text-align: center;
+
+  &:first-child {
+    align-items: flex-start;
+    text-align: left;
+    padding-inline-start: 16px;
+  }
+
+  &:last-child {
+    align-items: flex-end;
+    text-align: right;
+    padding-inline-end: 16px;
+  }
 
   @media (max-width: 640px) {
     gap: 1px;
