@@ -1,24 +1,27 @@
-import { AfterViewInit, Component, inject, OnInit } from "@angular/core";
+import { AfterViewInit, Component, HostListener, inject, Inject, OnInit, OnDestroy, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser, CommonModule } from "@angular/common";
 import { RouterOutlet, RouterLink, ActivatedRoute, Router, ActivatedRouteSnapshot, NavigationEnd } from "@angular/router";
+import { FormsModule } from "@angular/forms";
 import { NzLayoutModule } from "ng-zorro-antd/layout";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzSpaceModule } from "ng-zorro-antd/space";
 import { NzDividerModule } from "ng-zorro-antd/divider";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { NzIconModule } from "ng-zorro-antd/icon";
-// Icons are now globally registered in main.ts for better tree-shaking
 import { Title, Meta } from '@angular/platform-browser';
 import { LanguageService } from "./services/language.service";
 import { ThemeService } from "./services/theme.service";
 import { ThemeToggleComponent } from "./components/theme-toggle/theme-toggle.component";
 import { PerformanceService } from "./services/performance.service";
 import { DeferredAnalyticsService } from "./services/deferred-analytics.service";
-import { LcpMonitorService } from "./services/lcp-monitor.service";
-import { CacheOptimizationService } from "./services/cache-optimization.service";
-import { CacheValidatorService } from "./services/cache-validator.service";
 import { Http2OptimizationService } from "./services/http2-optimization.service";
-import { CriticalResourcePreloaderService } from "./services/critical-resource-preloader.service";
-import { filter } from "rxjs";
+import { AppImagePreloaderService } from "./services/app-image-preloader.service";
+import { NavbarScrollService, NavbarSearchState } from "./services/navbar-scroll.service";
+import { Category } from "./services/api.service";
+import { filter, Subject, takeUntil } from "rxjs";
+import { LucideAngularModule, Menu, X, Globe, Home, Info, Mail, Users, PlusCircle, ExternalLink, ChevronRight, Search } from 'lucide-angular';
+import { SafeHtmlPipe } from "./pipes/safe-html.pipe";
+import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 
 // Icons globally registered in main.ts
 
@@ -28,52 +31,62 @@ import { filter } from "rxjs";
   styleUrls: ["./app.component.scss"],
   standalone: true,
   imports: [
+    CommonModule,
     RouterOutlet,
     RouterLink,
+    FormsModule,
     NzLayoutModule,
     NzButtonModule,
     NzSpaceModule,
     NzDividerModule,
     TranslateModule,
     NzIconModule,
-    ThemeToggleComponent,
+    // ThemeToggleComponent,
+    LucideAngularModule,
+    SafeHtmlPipe,
   ],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public isRtl: boolean;
   public isMobileMenuVisible = false;
   public currentLang: "en" | "ar" = "en";
-  private translate = inject(TranslateService);
-  private titleService = inject(Title);
-  private metaService = inject(Meta);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
+
+  // Hide header/footer for internal tool pages
+  public hideChrome = false;
+
+  // Navbar compact mode with inline search
+  public isNavbarCompact = false;
+  public navbarSearchQuery = '';
+  public navbarSearchType: 'traditional' | 'smart' = 'traditional';
+  public navbarCategories: Category[] = [];
+  public navbarSelectedCategory = 'all';
+  public isNavbarSearching = false;
+  public isCategoryDropdownOpen = false;
+  private destroy$ = new Subject<void>();
+  private swUpdate = inject(SwUpdate);
 
   constructor(
-    private languageService: LanguageService, 
+    @Inject(PLATFORM_ID) private readonly platformId: Object,
+    private translate: TranslateService,
+    private titleService: Title,
+    private metaService: Meta,
+    private route: ActivatedRoute,
+    private router: Router,
+    private languageService: LanguageService,
     private themeService: ThemeService,
     private performanceService: PerformanceService,
     private deferredAnalytics: DeferredAnalyticsService,
-    private lcpMonitor: LcpMonitorService,
-    private cacheOptimization: CacheOptimizationService,
-    private cacheValidator: CacheValidatorService,
-    private http2Optimization: Http2OptimizationService
+    private http2Optimization: Http2OptimizationService,
+    private appImagePreloader: AppImagePreloaderService,
+    private navbarScrollService: NavbarScrollService
   ) {
     // Icons are globally registered in main.ts
-    // Get browser language
-    const browserLang = navigator.language;
-    const defaultLang = browserLang.startsWith("ar") ? "ar" : "en";
+    // Translations are initialized via APP_INITIALIZER in main.ts (ensures they load before render)
 
-    // Set initial RTL state based on language
-    this.isRtl = defaultLang === "ar";
-    document.documentElement.dir = this.isRtl ? "rtl" : "ltr";
-
-    // Set up translations
-    this.translate.setDefaultLang(defaultLang);
-    this.translate.use(defaultLang);
-    this.currentLang = defaultLang;
-
-    // Critical resource preloading removed - handled by optimized image component
+    // Get current language from TranslateService (already set by APP_INITIALIZER)
+    const currentLang = this.translate.currentLang || this.translate.getDefaultLang() || 'en';
+    this.currentLang = currentLang as "en" | "ar";
+    this.isRtl = this.currentLang === "ar";
   }
 
   getCurrentRouteParams(): any {
@@ -91,6 +104,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    console.log('🚀 AppComponent ngOnInit - listening to router events');
+
+    // Subscribe to router events
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      console.log('🔀 NavigationEnd:', event.url, 'Matched route config:', this.getCurrentRouteParams());
+    });
+
     this.updateMetaTags();
     this.translate.onLangChange.subscribe(() => {
       this.updateMetaTags();
@@ -101,37 +123,81 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.translate.onLangChange.subscribe((event) => {
       this.currentLang = event.lang as "en" | "ar";
       this.isRtl = this.currentLang === 'ar';
-      document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
-    });
-
-    // Also listen for route changes to update language
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
-      const lang = this.route.snapshot.firstChild?.paramMap.get('lang') || this.translate.getDefaultLang();
-      if (lang !== this.currentLang) {
-        this.currentLang = lang as "en" | "ar";
-        this.isRtl = this.currentLang === 'ar';
+      if (isPlatformBrowser(this.platformId)) {
         document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
       }
     });
+
+    // Also listen for route changes to update language and chrome visibility
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
+      // Check if current route wants to hide header/footer
+      this.hideChrome = !!this.route.snapshot.firstChild?.data?.['hideChrome'];
+
+      const lang = this.route.snapshot.firstChild?.paramMap.get('lang') || this.translate.getDefaultLang();
+      if (lang !== this.currentLang) {
+        // Wait for translations to load before updating state
+        this.translate.use(lang).subscribe(() => {
+          this.currentLang = lang as "en" | "ar";
+          this.isRtl = this.currentLang === 'ar';
+          if (isPlatformBrowser(this.platformId)) {
+            document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
+          }
+        });
+      }
+    });
+
+    // Auto-reload when a new app version is deployed
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.versionUpdates
+        .pipe(
+          filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'),
+          takeUntil(this.destroy$)
+        )
+        .subscribe(() => {
+          setTimeout(() => document.location.reload(), 100);
+        });
+    }
+
+    // Start preloading app images in background (non-blocking)
+    this.appImagePreloader.startPreloadingInBackground();
+
+    // Subscribe to navbar compact mode changes (desktop only)
+    this.navbarScrollService.compactMode$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isCompact => {
+        this.isNavbarCompact = isCompact;
+      });
+
+    // Subscribe to search state changes for navbar
+    this.navbarScrollService.searchState$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(state => {
+        this.navbarSearchQuery = state.searchQuery;
+        this.navbarSearchType = state.searchType;
+        this.navbarCategories = state.categories;
+        this.navbarSelectedCategory = state.selectedCategory;
+        this.isNavbarSearching = state.isSearching;
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   ngAfterViewInit() {
     // Language service will handle URL changes
     this.languageService.setLanguageFromUrl();
-    
+
     // Initialize performance monitoring
-        setTimeout(() => {
-          this.performanceService.measurePerformance();
-          this.performanceService.optimizeImages();
-          
-          // Initialize cache optimization monitoring
-          this.cacheOptimization.monitorCachePerformance();
-          this.cacheOptimization.preloadCriticalResources();
-          
-          // Initialize HTTP/2 optimization monitoring
-          this.http2Optimization.generateHTTP2Report();
-          this.http2Optimization.monitorHTTP2Usage();
-        }, 1000);
+    setTimeout(() => {
+      this.performanceService.measurePerformance();
+      this.performanceService.optimizeImages();
+
+      // Initialize HTTP/2 optimization monitoring
+      this.http2Optimization.generateHTTP2Report();
+      this.http2Optimization.monitorHTTP2Usage();
+    }, 1000);
 
     // Track route changes for analytics (when analytics is ready)
     this.router.events.pipe(
@@ -143,14 +209,80 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   toggleLanguage() {
-    this.isRtl = !this.isRtl;
-    const newLang = this.isRtl ? "ar" : "en";
+    const newLang = this.isRtl ? "en" : "ar";
     this.languageService.changeLanguage(newLang);
-    this.currentLang = newLang;
+    this.currentLang = newLang as "en" | "ar";
+    this.isRtl = newLang === "ar";
   }
 
   toggleMobileMenu() {
     this.isMobileMenuVisible = !this.isMobileMenuVisible;
+  }
+
+  onNavbarSearchInput() {
+    this.navbarScrollService.updateSearchState({ searchQuery: this.navbarSearchQuery });
+  }
+
+  onNavbarSearch() {
+    if (!this.navbarSearchQuery.trim()) return;
+    this.isNavbarSearching = true;
+    this.navbarScrollService.updateSearchState({ isSearching: true });
+    // Navigate to home with smart search query
+    this.router.navigate(['/', this.currentLang], {
+      queryParams: { smart_search: this.navbarSearchQuery.trim() }
+    });
+  }
+
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.isCategoryDropdownOpen = false;
+  }
+
+  toggleCategoryDropdown(event: Event): void {
+    event.stopPropagation();
+    this.isCategoryDropdownOpen = !this.isCategoryDropdownOpen;
+  }
+
+  isDropdownCategorySelected(): boolean {
+    if (this.navbarSelectedCategory === 'all') return false;
+    const index = this.navbarCategories.findIndex(c => c.slug === this.navbarSelectedCategory);
+    return index >= 5;
+  }
+
+  getSelectedCategoryName(): string {
+    const cat = this.navbarCategories.find(c => c.slug === this.navbarSelectedCategory);
+    if (!cat) return '';
+    return this.currentLang === 'ar' ? cat.name_ar : cat.name_en;
+  }
+
+  onNavbarCategoryClick(categorySlug: string) {
+    this.navbarSelectedCategory = categorySlug;
+    this.navbarScrollService.updateSearchState({ selectedCategory: categorySlug });
+
+    // Save current scroll position before navigation
+    const scrollY = isPlatformBrowser(this.platformId) ? window.scrollY : 0;
+
+    // Navigate to category
+    const route = categorySlug === 'all'
+      ? ['/', this.currentLang]
+      : ['/', this.currentLang, categorySlug];
+
+    this.router.navigate(route).then(() => {
+      // Restore scroll position after navigation using multiple attempts
+      // to ensure it works after Angular's change detection completes
+      if (isPlatformBrowser(this.platformId)) {
+        // First attempt immediately
+        window.scrollTo(0, scrollY);
+        // Second attempt after microtask
+        Promise.resolve().then(() => window.scrollTo(0, scrollY));
+        // Third attempt after next frame
+        requestAnimationFrame(() => {
+          window.scrollTo(0, scrollY);
+          // Fourth attempt after Angular settles
+          setTimeout(() => window.scrollTo(0, scrollY), 50);
+        });
+      }
+    });
   }
 
   private updateMetaTags() {

@@ -1,0 +1,54 @@
+name: Railway Development Health Check
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-railway-develop.yml'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    name: Development Backend Health Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Railway automatically deploys on git push - no manual deployment needed
+      - name: Wait for Railway auto-deployment
+        run: sleep 45
+
+      - name: Health check development API
+        run: |
+          echo "Running health check on development API..."
+          DEPLOY_URL="https://dev.api.quran-apps.itqan.dev"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOY_URL/health" || echo "0")
+
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "✅ Health check passed: Development API is healthy"
+          else
+            echo "⚠️  Health check returned: $HTTP_STATUS (may still be starting up)"
+          fi
+
+      - name: Deployment summary
+        run: |
+          echo "## Development Backend Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Status:** Deployment initiated" >> $GITHUB_STEP_SUMMARY
+          echo "🌐 **URL:** https://dev.api.quran-apps.itqan.dev" >> $GITHUB_STEP_SUMMARY
+          echo "🔀 **Branch:** develop" >> $GITHUB_STEP_SUMMARY
+          echo "📦 **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "👤 **Triggered by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "🚀 **Service:** quran-apps-api-dev" >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Development deployment failed"
+          echo "Please check Railway dashboard: https://railway.app"
+        continue-on-error: true

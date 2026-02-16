@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @Component({
   selector: 'app-about-us',
   standalone: true,
-  imports: [CommonModule, TranslateModule, NzIconModule],
+  imports: [TranslateModule, NzIconModule],
   templateUrl: './about-us.component.html',
   styleUrls: ['./about-us.component.scss']
 })

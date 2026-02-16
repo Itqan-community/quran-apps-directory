@@ -1,0 +1,65 @@
+{% extends "email/base.html" %}
+
+{% block title %}Submission Received - {{ app_name_en }}{% endblock %}
+
+{% block content %}
+<!-- English Section -->
+<div class="greeting">
+    Assalamu Alaikum {{ submitter_name }},
+</div>
+
+<div class="content">
+    <p>
+        Thank you for submitting <strong>{{ app_name_en }}</strong> to the Quran Apps Directory!
+    </p>
+
+    <p>
+        We have received your submission and it is now pending review by our team.
+        You will receive an email notification once your submission has been reviewed.
+    </p>
+
+    <div class="info-box">
+        <strong>Your Tracking ID:</strong>
+        <div class="tracking-id">{{ tracking_id }}</div>
+        <p style="margin-top: 10px; font-size: 14px;">
+            Save this ID to track your submission status.
+        </p>
+    </div>
+
+    <p>
+        <a href="{{ track_url }}" class="button">Track Your Submission</a>
+    </p>
+
+    <p>
+        Our review process typically takes 1-3 business days.
+        If we need any additional information, we will reach out to you via email.
+    </p>
+</div>
+
+<!-- Arabic Section -->
+<div class="arabic-section">
+    <div class="greeting">
+        السلام عليكم {{ submitter_name }}،
+    </div>
+
+    <div class="content">
+        <p>
+            شكراً لإرسالكم <strong>{{ app_name_ar }}</strong> إلى دليل تطبيقات القرآن!
+        </p>
+
+        <p>
+            لقد استلمنا طلبكم وهو الآن قيد المراجعة من قبل فريقنا.
+            سنرسل لكم إشعاراً عبر البريد الإلكتروني فور مراجعة الطلب.
+        </p>
+
+        <div class="info-box">
+            <strong>رقم التتبع:</strong>
+            <div class="tracking-id">{{ tracking_id }}</div>
+        </div>
+
+        <p style="font-size: 14px;">
+            تستغرق عملية المراجعة عادةً من 1 إلى 3 أيام عمل.
+        </p>
+    </div>
+</div>
+{% endblock %}

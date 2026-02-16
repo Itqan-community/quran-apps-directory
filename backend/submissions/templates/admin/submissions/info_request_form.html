@@ -1,0 +1,37 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 20px auto; padding: 20px;">
+    <h1>{{ title }}</h1>
+
+    <div style="background: #e7f3ff; border: 1px solid #1890ff; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+        <strong>App:</strong> {{ submission.app_name_en }} / {{ submission.app_name_ar }}<br>
+        <strong>Submitter:</strong> {{ submission.submitter_name }} ({{ submission.submitter_email }})
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div style="margin-bottom: 20px;">
+            <label for="id_info_request_message" style="display: block; font-weight: bold; margin-bottom: 5px;">
+                {{ form.info_request_message.label }}
+            </label>
+            {{ form.info_request_message }}
+            {% if form.info_request_message.help_text %}
+            <p style="color: #666; font-size: 12px; margin-top: 5px;">{{ form.info_request_message.help_text }}</p>
+            {% endif %}
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" style="background: #fa8c16; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">
+                Send Request
+            </button>
+            <a href="{% url 'admin:submissions_appsubmission_change' submission.id %}"
+               style="background: #6c757d; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none;">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+# .dockerignore - Exclude files from Docker build context
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Version Control
+.git
+.gitignore
+.gitlab-ci.yml
+.github/
+
+# Testing
+test-results/
+htmlcov/
+
+# Documentation
+docs/_build/
+site/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Database
+db.sqlite3
+*.db
+
+# Static & Media
+staticfiles/
+media/
+
+# Docker
+docker-compose.override.yml
+Dockerfile.prod
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Root files
+.pre-commit-config.yaml
+README.md
+LICENSE

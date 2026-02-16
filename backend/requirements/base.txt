@@ -1,0 +1,44 @@
+# Django Core
+Django==4.2.*
+django-ninja==1.2.0  # API framework following Itqan standards (Python 3.9 compatible)
+
+# Database
+psycopg2-binary==2.9.11
+
+# API Documentation
+drf-spectacular==0.28.0  # Still needed for some view decorators
+djangorestframework==3.16.1  # Required by drf-spectacular
+
+# Configuration
+python-decouple==3.8
+
+# CORS
+django-cors-headers==4.9.0
+
+# Images
+Pillow==11.3.0
+
+# Extensions
+django-extensions==4.1
+
+# Filtering & Search
+django-filter==24.3
+
+# Vector Search (AI Semantic Search)
+pgvector>=0.2.0
+openai>=1.0.0
+google-generativeai>=0.3.0
+beautifulsoup4>=4.12.0
+
+# Legacy Authentication & Security (being removed)
+# djangorestframework-simplejwt==5.3.2  # Legacy JWT
+# django-allauth==65.11.2  # Legacy OAuth
+
+# Caching
+django-redis==6.0.0  # Redis caching backend
+
+# File Storage & External Services
+boto3==1.35.*  # AWS S3 SDK for Cloudflare R2 uploads
+requests==2.32.*  # HTTP requests for downloading images from URLs
+python-dotenv==1.0.*  # Environment variable management for local development
+# django-storages[s3]==1.14.*  # Alternative: django-storages for S3-compatible storage

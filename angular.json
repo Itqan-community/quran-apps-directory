@@ -18,6 +18,26 @@
               "sourceMap": true
             },
             "staging": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
+                }
+              ],
+              "aot": true,
+              "extractLicenses": true,
+              "namedChunks": true,
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true
+            },
+            "develop": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.develop.ts"
+                }
+              ],
               "aot": true,
               "extractLicenses": true,
               "namedChunks": true,
@@ -26,6 +46,12 @@
               "sourceMap": true
             },
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
               "aot": true,
               "extractLicenses": true,
               "namedChunks": false,
@@ -40,14 +66,17 @@
                 }
               },
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": {
+                "scripts": true,
+                "styles": false,
+                "hidden": true
+              },
               "crossOrigin": "anonymous",
-              "serviceWorker": "ngsw-config.json",
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1.1mb",
-                  "maximumError": "1.3mb"
+                  "maximumWarning": "1.5mb",
+                  "maximumError": "2.0mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -58,12 +87,29 @@
             }
           },
           "options": {
+            "prerender": false,
+            "ssr": false,
             "assets": [
               "src/favicon.ico",
               "src/sitemap.xml",
               "src/robots.txt",
               "src/sw.js",
-              "src/assets"
+              "src/manifest.webmanifest",
+              {
+                "glob": "_redirects",
+                "input": "src/assets",
+                "output": "/"
+              },
+              {
+                "glob": "_headers",
+                "input": "src/assets",
+                "output": "/"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
+              }
             ],
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -75,7 +121,16 @@
               "src/global_styles.css",
               "./src/themes.scss"
             ],
-            "tsConfig": "tsconfig.app.json"
+            "tsConfig": "tsconfig.app.json",
+            "serviceWorker": "src/ngsw-config.json",
+            "optimization": {
+              "fonts": true,
+              "styles": {
+                "inlineCritical": false,
+                "minify": true
+              },
+              "scripts": true
+            }
           }
         },
         "serve": {

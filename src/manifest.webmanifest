@@ -1,0 +1,62 @@
+{
+  "name": "Quran Apps Directory - دليل التطبيقات القرآنية",
+  "short_name": "Quran Apps",
+  "description": "Comprehensive directory of Quranic applications - الدليل الشامل للتطبيقات القرآنية",
+  "theme_color": "#A0533B",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "assets/images/fav/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/images/fav/favicon-96x96.webp",
+      "sizes": "96x96",
+      "type": "image/webp"
+    },
+    {
+      "src": "assets/images/fav/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/images/fav/web-app-manifest-192x192.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/images/fav/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/images/fav/web-app-manifest-512x512.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/images/fav/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/images/fav/apple-touch-icon.webp",
+      "sizes": "180x180",
+      "type": "image/webp",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["education", "utilities", "lifestyle"],
+  "lang": ["en", "ar"],
+  "dir": "ltr"
+}

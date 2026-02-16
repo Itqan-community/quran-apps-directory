@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { filter } from 'rxjs';
@@ -8,13 +9,17 @@ import { filter } from 'rxjs';
 })
 export class LanguageService {
   private supportedLanguages = ['en', 'ar'];
-  private defaultLanguage = 'en';
+  private defaultLanguage = 'ar';
 
-  constructor(private route: ActivatedRoute, private router: Router, private translate: TranslateService) {
-    const browserLang = navigator.language;
-    this.defaultLanguage = browserLang.startsWith("ar") ? "ar" : "en";
-    this.translate.setDefaultLang(this.defaultLanguage);
-    this.translate.use(this.defaultLanguage);
+  constructor(
+    @Inject(PLATFORM_ID) private readonly platformId: Object,
+    private route: ActivatedRoute,
+    private router: Router,
+    private translate: TranslateService
+  ) {
+    // Translations are initialized via APP_INITIALIZER in main.ts
+    // Just get the current language and set up URL change listener
+    this.defaultLanguage = this.translate.currentLang || this.translate.getDefaultLang() || 'ar';
     this.setLanguageFromUrl();
   }
 
@@ -30,9 +35,13 @@ export class LanguageService {
 
       if (this.supportedLanguages.includes(lang)) {
         this.translate.setDefaultLang(lang);
-        this.translate.use(lang);
-        document.documentElement.lang = lang;
-        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'; // Adjust direction
+        // Wait for translations to load before updating DOM
+        this.translate.use(lang).subscribe(() => {
+          if (isPlatformBrowser(this.platformId)) {
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'; // Adjust direction
+          }
+        });
       } else {
         // Redirect to default language (preserve any additional path segments)
         const remainingPath = pathSegments.slice(1).join('/');
@@ -58,17 +67,22 @@ export class LanguageService {
 
   changeLanguage(lang: string) {
     if (this.supportedLanguages.includes(lang)) {
-      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-      this.translate.use(lang);
+      // Wait for translations to load before navigating
+      this.translate.use(lang).subscribe(() => {
+        if (isPlatformBrowser(this.platformId)) {
+          document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+          document.documentElement.lang = lang;
+        }
 
-      // Preserve path segments when changing language
-      const currentUrl = this.router.url;
-      const urlPath = currentUrl.split('?')[0];
-      const pathSegments = urlPath.split('/').filter(segment => segment);
-      const remainingPath = pathSegments.slice(1).join('/'); // Remove existing language, keep rest
-      const targetUrl = `/${lang}/${remainingPath}`;
+        // Preserve path segments when changing language
+        const currentUrl = this.router.url;
+        const urlPath = currentUrl.split('?')[0];
+        const pathSegments = urlPath.split('/').filter(segment => segment);
+        const remainingPath = pathSegments.slice(1).join('/'); // Remove existing language, keep rest
+        const targetUrl = `/${lang}/${remainingPath}`;
 
-      this.router.navigateByUrl(targetUrl);
+        this.router.navigateByUrl(targetUrl);
+      });
     }
   }
 

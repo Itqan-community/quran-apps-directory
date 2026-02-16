@@ -1,0 +1,12 @@
+/en
+/ar
+/en/about-us
+/ar/about-us
+/en/contact-us
+/ar/contact-us
+/en/submit-app
+/ar/submit-app
+/en/request
+/ar/request
+/en/track-submission
+/ar/track-submission

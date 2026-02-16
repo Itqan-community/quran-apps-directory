@@ -1,0 +1,263 @@
+<div class="search-comparison-container">
+  <h1 class="page-title">Smart Search Tool</h1>
+  <p class="page-subtitle">Search apps using Gemini Flash + pgvector hybrid semantic search</p>
+
+  <!-- Search Input -->
+  <div class="search-bar">
+    <nz-input-group nzSize="large" [nzSuffix]="searchBtn">
+      <input
+        nz-input
+        placeholder="Enter search query..."
+        [(ngModel)]="query"
+        (keydown.enter)="search()"
+      />
+    </nz-input-group>
+    <ng-template #searchBtn>
+      <button nz-button nzType="primary" nzSize="large" (click)="search()" [nzLoading]="loading">
+        Search
+      </button>
+    </ng-template>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-row">
+    <div class="filter-item">
+      <label>Features</label>
+      <nz-select
+        [(ngModel)]="filterFeatures"
+        nzMode="multiple"
+        nzPlaceHolder="Select features"
+        nzShowSearch
+        nzAllowClear
+        nzSize="small"
+      >
+        <nz-option
+          *ngFor="let opt of featureOptions"
+          [nzValue]="opt.value"
+          [nzLabel]="(currentLang === 'ar' ? opt.label_ar : opt.label_en) + (opt.count ? ' (' + opt.count + ')' : '')"
+        ></nz-option>
+      </nz-select>
+    </div>
+    <div class="filter-item">
+      <label>Riwayah</label>
+      <nz-select
+        [(ngModel)]="filterRiwayah"
+        nzMode="multiple"
+        nzPlaceHolder="Select riwayah"
+        nzShowSearch
+        nzAllowClear
+        nzSize="small"
+      >
+        <nz-option
+          *ngFor="let opt of riwayahOptions"
+          [nzValue]="opt.value"
+          [nzLabel]="(currentLang === 'ar' ? opt.label_ar : opt.label_en) + (opt.count ? ' (' + opt.count + ')' : '')"
+        ></nz-option>
+      </nz-select>
+    </div>
+    <div class="filter-item">
+      <label>Platform</label>
+      <nz-select
+        [(ngModel)]="filterPlatform"
+        nzMode="multiple"
+        nzPlaceHolder="Select platform"
+        nzShowSearch
+        nzAllowClear
+        nzSize="small"
+      >
+        <nz-option
+          *ngFor="let opt of platformOptions"
+          [nzValue]="opt.value"
+          [nzLabel]="(currentLang === 'ar' ? opt.label_ar : opt.label_en) + (opt.count ? ' (' + opt.count + ')' : '')"
+        ></nz-option>
+      </nz-select>
+    </div>
+    <div class="filter-item">
+      <label>Category</label>
+      <nz-select
+        [(ngModel)]="filterCategory"
+        nzMode="multiple"
+        nzPlaceHolder="Select category"
+        nzShowSearch
+        nzAllowClear
+        nzSize="small"
+      >
+        <nz-option
+          *ngFor="let opt of categoryOptions"
+          [nzValue]="opt.value"
+          [nzLabel]="currentLang === 'ar' ? opt.label_ar : opt.label_en"
+        ></nz-option>
+      </nz-select>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <nz-spin *ngIf="loading" nzSimple class="loading-spinner"></nz-spin>
+
+  <!-- Results -->
+  <div *ngIf="!loading && (pgResults.length > 0 || pgError)" class="results-section">
+    <div class="column-header pgvector-header">
+      <h2>Results</h2>
+      <div class="column-meta">
+        <nz-tag nzColor="blue">{{ pgResults.length }} results</nz-tag>
+        <nz-tag>{{ pgTime }}ms</nz-tag>
+      </div>
+    </div>
+
+    <nz-alert *ngIf="pgError" nzType="error" [nzMessage]="pgError" nzShowIcon></nz-alert>
+
+    <div *ngFor="let result of pgResults" class="result-card">
+      <nz-card nzSize="small" nzBordered>
+        <div class="result-header">
+          <img
+            *ngIf="result.application_icon"
+            [src]="result.application_icon"
+            class="app-icon clickable"
+            alt="icon"
+            (click)="openAppModal(result)"
+            nz-tooltip
+            nzTooltipTitle="View app details"
+          />
+          <div class="result-info">
+            <span class="app-name clickable" (click)="openAppModal(result)">{{ getAppName(result) }}</span>
+            <span class="relevance-score" [style.color]="getScoreColor(result.relevance_score)">
+              Score: {{ result.relevance_score | number:'1.2-2' }}
+            </span>
+          </div>
+        </div>
+        <p *ngIf="result.ai_reasoning" class="ai-reasoning">{{ result.ai_reasoning }}</p>
+        <p *ngIf="!result.ai_reasoning" class="short-description">{{ getShortDescription(result) }}</p>
+        <div *ngIf="result.match_reasons?.length" class="match-reasons">
+          <nz-tag *ngFor="let reason of result.match_reasons" nzColor="default">
+            {{ getMatchReasonLabel(reason) }}
+          </nz-tag>
+        </div>
+      </nz-card>
+    </div>
+
+    <nz-empty *ngIf="pgResults.length === 0 && !pgError" nzNotFoundContent="No results"></nz-empty>
+  </div>
+
+  <!-- Search History -->
+  <nz-divider *ngIf="history.length > 0"></nz-divider>
+
+  <div *ngIf="history.length > 0" class="history-section">
+    <div class="history-header">
+      <h3>Search History</h3>
+      <button nz-button nzType="text" nzDanger nzSize="small" (click)="clearHistory()">
+        Clear History
+      </button>
+    </div>
+
+    <div class="history-list">
+      <div
+        *ngFor="let item of history"
+        class="history-item"
+        (click)="restoreFromHistory(item)"
+        nz-tooltip
+        nzTooltipTitle="Click to restore these results"
+      >
+        <span class="history-query">"{{ item.query }}"</span>
+        <span class="history-filters">
+          <nz-tag *ngIf="item.filters.features" nzColor="blue">features:{{ item.filters.features }}</nz-tag>
+          <nz-tag *ngIf="item.filters.riwayah" nzColor="purple">riwayah:{{ item.filters.riwayah }}</nz-tag>
+          <nz-tag *ngIf="item.filters.platform" nzColor="orange">platform:{{ item.filters.platform }}</nz-tag>
+          <nz-tag *ngIf="item.filters.category" nzColor="cyan">category:{{ item.filters.category }}</nz-tag>
+        </span>
+        <span class="history-meta">
+          {{ item.pgCount }} results -
+          {{ item.pgTime }}ms -
+          {{ item.timestamp | date:'shortTime' }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- App Detail Modal -->
+<nz-modal
+  [(nzVisible)]="modalVisible"
+  [nzTitle]="modalTitleTpl"
+  [nzWidth]="720"
+  [nzFooter]="modalFooterTpl"
+  (nzOnCancel)="closeModal()"
+  nzCentered
+>
+  <ng-template #modalTitleTpl>
+    <div class="modal-title-row" *ngIf="modalApp">
+      <img *ngIf="modalApp.application_icon" [src]="modalApp.application_icon" class="modal-app-icon" alt="icon" />
+      <span>{{ getModalAppName() }}</span>
+    </div>
+  </ng-template>
+
+  <ng-container *nzModalContent>
+    <nz-spin *ngIf="modalLoading" nzSimple class="modal-spinner"></nz-spin>
+
+    <div *ngIf="!modalLoading && modalApp" class="modal-body">
+      <!-- Rating & Platform -->
+      <div class="modal-meta-row">
+        <div class="modal-rating" *ngIf="modalApp.avg_rating">
+          <nz-rate [ngModel]="modalRating" nzAllowHalf [nzDisabled]="true"></nz-rate>
+          <span class="rating-value">{{ modalApp.avg_rating }}</span>
+        </div>
+        <nz-tag *ngIf="modalApp.platform" nzColor="geekblue">{{ modalApp.platform }}</nz-tag>
+      </div>
+
+      <!-- Developer -->
+      <p *ngIf="getModalDeveloperName()" class="modal-developer">
+        By {{ getModalDeveloperName() }}
+      </p>
+
+      <!-- Categories -->
+      <div *ngIf="modalApp.categories?.length" class="modal-categories">
+        <nz-tag *ngFor="let cat of modalApp.categories" nzColor="default">
+          {{ cat.name_en || cat.slug || cat }}
+        </nz-tag>
+      </div>
+
+      <nz-divider></nz-divider>
+
+      <!-- Description -->
+      <div class="modal-description">
+        {{ getModalDescription() }}
+      </div>
+
+      <!-- Screenshots -->
+      <div *ngIf="getModalScreenshots().length > 0" class="modal-screenshots">
+        <nz-divider></nz-divider>
+        <h4>Screenshots</h4>
+        <div class="screenshots-scroll">
+          <img *ngFor="let src of getModalScreenshots()" [src]="src" class="modal-screenshot" alt="screenshot" />
+        </div>
+      </div>
+
+      <!-- Store Links -->
+      <div class="modal-links" *ngIf="modalApp.google_play_link || modalApp.app_store_link || modalApp.app_gallery_link">
+        <nz-divider></nz-divider>
+        <div class="store-links">
+          <a *ngIf="modalApp.google_play_link" [href]="modalApp.google_play_link" target="_blank" nz-button nzType="default" nzSize="small">
+            Google Play
+          </a>
+          <a *ngIf="modalApp.app_store_link" [href]="modalApp.app_store_link" target="_blank" nz-button nzType="default" nzSize="small">
+            App Store
+          </a>
+          <a *ngIf="modalApp.app_gallery_link" [href]="modalApp.app_gallery_link" target="_blank" nz-button nzType="default" nzSize="small">
+            AppGallery
+          </a>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #modalFooterTpl>
+    <a
+      *ngIf="modalApp?.slug"
+      [href]="'/' + currentLang + '/app/' + modalApp.slug"
+      target="_blank"
+      nz-button nzType="primary"
+    >
+      Open Full Page
+    </a>
+    <button nz-button nzType="default" (click)="closeModal()">Close</button>
+  </ng-template>
+</nz-modal>

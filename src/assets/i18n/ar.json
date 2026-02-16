@@ -1,4 +1,16 @@
 {
+  "loading": {
+    "apps": "جاري تحميل التطبيقات...",
+    "categories": "جاري تحميل الفئات..."
+  },
+  "empty": {
+    "noApps": {
+      "title": "لم يتم العثور على تطبيقات",
+      "message": "حاول تعديل معايير البحث أو تصفح جميع الفئات.",
+      "trySmartSearch": "جرب البحث الذكي",
+      "smartSearchHint": "البحث الذكي يستخدم الذكاء الاصطناعي للعثور على التطبيقات بالمعنى وليس فقط بالكلمات المفتاحية."
+    }
+  },
   "common": {
     "back": "رجوع",
     "submit": "إرسال",
@@ -10,12 +22,17 @@
     "home": "الرئيسة",
     "about": "عن المشروع",
     "contact": "تواصل معنا",
+    "submitApp": "أضف تطبيقك",
     "itqan_community": "مجتمع إتقان",
     "theme": "المظهر",
     "language": {
       "ar": "العربية",
       "en": "English"
     }
+  },
+  "theme": {
+    "switchToDark": "تفعيل الوضع الداكن",
+    "switchToLight": "تفعيل الوضع الفاتح"
   },
   "footer": {
     "copyright": "مشروع مفتوح المصدر، أحد مشاريع مجتمع إتقان لتقنيات القرآن، ١٤٤٧ هـ",
@@ -26,11 +43,26 @@
     "mushaf_fonts": "خطوط المصحف العثمانية"
   },
   "appList": {
+    "hero": {
+      "title": "نورٌ بين يديـــــك..",
+      "subtitle": "اختــــــــــــــــــــر رفيقـــــــــــــــــك في رحــــــــــــــــلة القــــــــــــــــــــرآن"
+    },
     "search": {
-      "placeholder": "البحث في التطبيقات..."
+      "placeholder": "اكتب البحث مثل: رواية حفص، مصحف ..",
+      "traditionalPlaceholder": "البحث في التطبيقات...",
+      "traditional": "البحث التقليدي",
+      "smart": "البحث الذكي",
+      "button": "ابحث الآن",
+      "sendButton": "إرسال",
+      "resultsFor": "نتائج البحث عن",
+      "result": "نتيجة",
+      "results": "نتيجة",
+      "loadMore": "تحميل المزيد",
+      "aiMatch": "تطابق",
+      "aiReasoning": "لماذا هذه النتيجة؟"
     },
     "categories": {
-      "all":"الكل",
+      "all": "التصنيف",
       "main-title": "دليل التطبيقات القرآنية",
       "title": "التصنيفات",
       "mushaf": "مصحف",
@@ -60,13 +92,22 @@
     "developer": "المطور",
     "description": "الوصف",
     "downloadLinks": "روابط التحميل",
+    "downloadApp": "تنزيل التطبيق",
+    "share": "مشاركة",
     "appStore": "متجر آبل",
     "playStore": "متجر جوجل بلاي",
     "huaweiStore": "متجر هواوي",
-    "relevantApps": "تطبيقات ذات صلة",
-    "screenshots": "لقطات الشاشة",
+    "relevantApps": "تطبيقات مشابهة",
+    "screenshots": "صور من التطبيق",
     "readMore": "اقرأ المزيد",
-    "readLess": "قلّص"
+    "readLess": "قلّص",
+    "stats": {
+      "rating": "التقييمات",
+      "downloads": "التنزيلات",
+      "downloadCount": "12 مليون",
+      "platform": "المنصة",
+      "allPlatforms": "الجميع"
+    }
   },
   "requestForm": {
     "title": "طلب إضافة تطبيق",
@@ -142,5 +183,125 @@
     },
     "acknowledgments": "شكر وتقدير",
     "acknowledgementsText": "نشكر جميع المطورين والمبدعين الذين يبذلون جهودهم لخدمة القرآن الكريم عبر التقنية. ونخص بالشكر الإخوة في مشروع التطبيقات الإسلامية على مشاركتهم لنا القائمة الأولية للتطبيقات."
+  },
+  "submitApp": {
+    "title": "أضف تطبيقك",
+    "subtitle": "شارك تطبيقك القرآني مع المجتمع",
+    "alreadySubmitted": "هل أرسلت تطبيقاً من قبل؟",
+    "trackYourSubmission": "تتبع طلبك",
+    "sections": {
+      "contact": "معلومات التواصل",
+      "appDetails": "تفاصيل التطبيق",
+      "storeLinks": "روابط المتاجر",
+      "categories": "التصنيفات",
+      "developer": "معلومات المطور",
+      "media": "الوسائط",
+      "additional": "ملاحظات إضافية"
+    },
+    "fields": {
+      "yourName": "اسمك",
+      "yourEmail": "بريدك الإلكتروني",
+      "phone": "رقم الهاتف",
+      "organization": "المؤسسة",
+      "isDeveloper": "أنا مطور/مالك هذا التطبيق",
+      "appNameEn": "اسم التطبيق (إنجليزي)",
+      "appNameAr": "اسم التطبيق (عربي)",
+      "shortDescEn": "وصف مختصر (إنجليزي)",
+      "shortDescAr": "وصف مختصر (عربي)",
+      "descEn": "الوصف الكامل (إنجليزي)",
+      "descAr": "الوصف الكامل (عربي)",
+      "googlePlay": "رابط Google Play",
+      "appStore": "رابط App Store",
+      "appGallery": "رابط Huawei AppGallery",
+      "website": "رابط الموقع",
+      "categories": "التصنيفات",
+      "devNameEn": "اسم المطور (إنجليزي)",
+      "devNameAr": "اسم المطور (عربي)",
+      "devWebsite": "موقع المطور",
+      "devEmail": "بريد المطور",
+      "iconUrl": "رابط أيقونة التطبيق",
+      "mainImageEn": "صورة الغلاف الرئيسية (إنجليزي)",
+      "mainImageAr": "صورة الغلاف الرئيسية (عربي)",
+      "screenshotsEn": "لقطات الشاشة (إنجليزي)",
+      "screenshotsAr": "لقطات الشاشة (عربي)",
+      "contentConfirmation": "أؤكد أن المعلومات المقدمة صحيحة ولدي الحق في تقديم هذا التطبيق. أفهم أنه سيتم مراجعته قبل النشر."
+    },
+    "placeholders": {
+      "yourName": "أدخل اسمك الكامل",
+      "yourEmail": "your@email.com",
+      "phone": "+1234567890",
+      "organization": "اسم الشركة أو المؤسسة",
+      "appNameEn": "أدخل اسم التطبيق بالإنجليزية",
+      "appNameAr": "أدخل اسم التطبيق بالعربية",
+      "shortDescEn": "وصف مختصر لتطبيقك (150 حرف كحد أقصى)",
+      "shortDescAr": "وصف مختصر بالعربية (150 حرف كحد أقصى)",
+      "descEn": "وصف تفصيلي لتطبيقك...",
+      "descAr": "وصف تفصيلي بالعربية...",
+      "googlePlay": "https://play.google.com/store/apps/details?id=...",
+      "appStore": "https://apps.apple.com/app/...",
+      "appGallery": "https://appgallery.huawei.com/...",
+      "website": "https://your-app-website.com",
+      "categories": "اختر تصنيفاً واحداً أو أكثر",
+      "devNameEn": "اسم المطور أو الشركة",
+      "devNameAr": "اسم المطور بالعربية",
+      "devWebsite": "https://developer-website.com",
+      "devEmail": "developer@email.com",
+      "iconUrl": "https://example.com/icon.png",
+      "mainImageEn": "https://example.com/cover-image-en.png",
+      "mainImageAr": "https://example.com/cover-image-ar.png",
+      "screenshots": "أدخل رابطاً واحداً في كل سطر",
+      "additionalNotes": "أي معلومات إضافية عن تطبيقك..."
+    },
+    "validation": {
+      "storeLink": "مطلوب رابط متجر واحد على الأقل (Google Play أو App Store)"
+    },
+    "hints": {
+      "iconUrl": "يُفضل: صورة PNG أو JPG بحجم 512×512",
+      "mainImage": "الصورة المميزة المعروضة على بطاقات التطبيقات. يُفضل: 600×400 PNG أو JPG",
+      "screenshots": "أدخل رابطاً واحداً في كل سطر. يُفضل حتى 5 لقطات."
+    },
+    "iconUpload": "أيقونة التطبيق",
+    "iconUploadHint": "صيغة PNG أو JPG أو WebP. الحد الأقصى 512 كيلوبايت.",
+    "iconUploadButton": "انقر أو اسحب لرفع الأيقونة",
+    "iconRequired": "أيقونة التطبيق مطلوبة",
+    "iconSizeError": "يجب أن يكون حجم الأيقونة أقل من 512 كيلوبايت",
+    "iconTypeError": "الصيغ المسموحة فقط: PNG و JPG و WebP",
+    "iconUploadSuccess": "تم رفع الأيقونة بنجاح",
+    "iconUploadError": "فشل في رفع الأيقونة",
+    "screenshotsDetected": "لقطة شاشة مكتشفة",
+    "submitButton": "إرسال التطبيق",
+    "success": {
+      "title": "تم إرسال التطبيق بنجاح!",
+      "message": "شكراً لك على إرسالك. سنراجع تطبيقك ونُعلمك بقرارنا.",
+      "trackingId": "رقم التتبع الخاص بك",
+      "trackingIdNote": "احفظ هذا الرقم لتتبع حالة طلبك",
+      "trackSubmission": "تتبع الطلب",
+      "submitAnother": "إرسال تطبيق آخر"
+    }
+  },
+  "trackSubmission": {
+    "title": "تتبع طلبك",
+    "subtitle": "تحقق من حالة طلب تطبيقك",
+    "byTrackingId": "برقم التتبع",
+    "byEmail": "بالبريد الإلكتروني",
+    "trackingIdPlaceholder": "أدخل رقم التتبع (مثال: QAD-ABC123)",
+    "trackingIdHint": "رقم التتبع الذي حصلت عليه عند إرسال التطبيق",
+    "emailPlaceholder": "أدخل البريد الإلكتروني المستخدم في الإرسال",
+    "emailHint": "يعرض جميع الطلبات المرتبطة بهذا البريد",
+    "search": "بحث",
+    "submittedOn": "تاريخ الإرسال",
+    "reviewedOn": "تاريخ المراجعة",
+    "viewAppListing": "عرض صفحة التطبيق",
+    "foundSubmissions": "الطلبات الموجودة",
+    "noSubmissions": "لم يتم العثور على طلبات لهذا البريد الإلكتروني",
+    "wantToSubmit": "هل تريد إرسال تطبيق جديد؟",
+    "submitNewApp": "إرسال تطبيق جديد",
+    "status": {
+      "pending": "قيد الانتظار",
+      "under_review": "قيد المراجعة",
+      "info_requested": "مطلوب معلومات إضافية",
+      "approved": "مقبول",
+      "rejected": "مرفوض"
+    }
   }
 }

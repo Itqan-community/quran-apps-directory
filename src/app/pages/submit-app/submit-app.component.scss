@@ -1,0 +1,364 @@
+.submit-app-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 24px 16px;
+  background: var(--surface-color, #f8f9fa);
+  border-radius: 8px;
+
+  h1 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+    color: var(--primary-color, #a0533b);
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-secondary, #666);
+    font-size: 14px;
+  }
+}
+
+.track-link-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  background: var(--info-bg, #e6f7ff);
+  border: 1px solid var(--info-border, #91d5ff);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-color, #333);
+  flex-wrap: wrap;
+
+  span[nz-icon] {
+    color: var(--primary-color, #a0533b);
+  }
+
+  a {
+    color: var(--primary-color, #a0533b);
+    font-weight: 500;
+    text-decoration: underline;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.form-section {
+  margin-bottom: 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+
+  ::ng-deep .ant-card-body {
+    padding: 16px;
+  }
+}
+
+.section-title {
+  margin: 0 0 16px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color, #eee);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color, #333);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  [nz-icon] {
+    color: var(--primary-color, #a0533b);
+    font-size: 18px;
+  }
+}
+
+// Form items with consistent spacing - vertical layout (label above input)
+::ng-deep nz-form-item {
+  margin-bottom: 14px;
+  flex-direction: column;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+::ng-deep nz-form-label {
+  padding: 0 0 6px 0;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--text-color, #333);
+  text-align: start;
+  flex: none;
+  width: 100%;
+
+  &::after {
+    display: none; // Remove the colon
+  }
+}
+
+::ng-deep nz-form-control {
+  flex: none;
+  width: 100%;
+}
+
+::ng-deep .ant-form-item-label {
+  text-align: start;
+  padding: 0 0 6px 0;
+
+  > label {
+    height: auto;
+
+    &::after {
+      display: none;
+    }
+  }
+}
+
+::ng-deep .ant-input,
+::ng-deep .ant-select-selector {
+  border-radius: 6px !important;
+}
+
+::ng-deep .ant-select {
+  width: 100%;
+}
+
+.checkbox-item {
+  margin-top: 8px;
+}
+
+.char-count {
+  font-size: 11px;
+  font-weight: normal;
+  color: var(--text-secondary, #999);
+  margin-left: 6px;
+
+  &.warning {
+    color: #fa8c16;
+  }
+}
+
+.field-hint {
+  font-size: 11px;
+  color: var(--text-secondary, #999);
+  margin-top: 4px;
+}
+
+.screenshot-count {
+  font-size: 12px;
+  color: #52c41a;
+  margin-top: 6px;
+}
+
+// Icon upload styles
+.icon-upload-container {
+  width: 100%;
+}
+
+.icon-uploader {
+  ::ng-deep .ant-upload-drag {
+    background: var(--surface-color, #fafafa);
+    border: 2px dashed var(--border-color, #d9d9d9);
+    border-radius: 8px;
+    padding: 16px;
+    transition: border-color 0.3s, background 0.3s;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      border-color: var(--primary-color, #a0533b);
+    }
+  }
+
+  ::ng-deep .ant-upload-list-picture-card {
+    margin-top: 12px;
+
+    .ant-upload-list-item {
+      width: 100px;
+      height: 100px;
+      border-radius: 8px;
+    }
+  }
+}
+
+.upload-drag-content {
+  text-align: center;
+  padding: 8px;
+}
+
+.upload-icon {
+  font-size: 32px;
+  color: var(--primary-color, #a0533b);
+  margin-bottom: 8px;
+}
+
+.upload-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color, #333);
+  margin: 0 0 4px 0;
+}
+
+.upload-hint {
+  font-size: 12px;
+  color: var(--text-secondary, #999);
+  margin: 0;
+}
+
+.upload-error {
+  color: #ff4d4f;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.upload-required-hint {
+  color: var(--text-secondary, #999);
+  margin-top: 8px;
+}
+
+.store-link-warning {
+  margin-bottom: 14px;
+}
+
+.confirmation-section {
+  background: #fdf2f0;
+
+  ::ng-deep .ant-card-body {
+    padding: 14px 16px;
+  }
+}
+
+.confirmation-text {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.submit-section {
+  text-align: center;
+  padding: 16px 0 32px;
+
+  button {
+    min-width: 180px;
+    height: 44px;
+    font-size: 15px;
+    border-radius: 6px;
+    background-color: var(--primary-color, #a0533b);
+    border-color: var(--primary-color, #a0533b);
+
+    &:hover:not(:disabled) {
+      background-color: #8a4632;
+      border-color: #8a4632;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+    }
+  }
+}
+
+// RTL support
+[dir="rtl"] {
+  .section-title [nz-icon] {
+    margin-left: 8px;
+    margin-right: 0;
+  }
+
+  .char-count {
+    margin-left: 0;
+    margin-right: 6px;
+  }
+}
+
+// Dark theme
+:host-context(.dark-theme) {
+  .page-header {
+    background: var(--surface-color, #1a1a1a);
+  }
+
+  .track-link-banner {
+    background: rgba(160, 83, 59, 0.15);
+    border-color: rgba(160, 83, 59, 0.3);
+    color: var(--text-color, #e0e0e0);
+  }
+
+  .form-section {
+    background: var(--card-bg, #1f1f1f);
+    border: 1px solid var(--border-color, #333);
+
+    ::ng-deep .ant-card {
+      background: transparent;
+    }
+  }
+
+  .section-title {
+    border-bottom-color: var(--border-color, #333);
+  }
+
+  .confirmation-section {
+    background: rgba(160, 83, 59, 0.15);
+  }
+
+  ::ng-deep nz-form-label {
+    color: var(--text-color, #e0e0e0);
+  }
+
+  .icon-uploader {
+    ::ng-deep .ant-upload-drag {
+      background: var(--surface-color, #2a2a2a);
+      border-color: var(--border-color, #444);
+    }
+  }
+
+  .upload-text {
+    color: var(--text-color, #e0e0e0);
+  }
+}
+
+// Responsive
+@media (max-width: 480px) {
+  .submit-app-container {
+    padding: 12px;
+  }
+
+  .page-header {
+    padding: 16px 12px;
+
+    h1 {
+      font-size: 20px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+
+  .track-link-banner {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .form-section {
+    margin-bottom: 12px;
+
+    ::ng-deep .ant-card-body {
+      padding: 12px;
+    }
+  }
+
+  .section-title {
+    font-size: 15px;
+  }
+}

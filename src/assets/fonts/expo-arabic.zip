@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <!-- Basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
+
+    <!-- Web Fonts  -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
+
+    <!-- Vendor CSS -->
+    
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-star-rating/4.0.6/css/star-rating.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-star-rating/4.0.6/themes/krajee-fas/theme.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Head Libs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+    
+
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="https://static.fontsgeek.com/css/theme.css">
+    <link rel="stylesheet" href="https://static.fontsgeek.com/fontsgeek.css">
+    <link rel="stylesheet" href="https://static.fontsgeek.com/css/theme-elements.css">
+    <!-- Skin CSS -->
+    <link rel="stylesheet" href="https://static.fontsgeek.com/css/skins/default.css">
+
+    
+
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158641623-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-158641623-1');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1809994501257583"     crossorigin="anonymous"></script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1809994501257583"
+     crossorigin="anonymous"></script>
+
+<script async custom-element="amp-ad" src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"></script>
+
+<script src="https://cmp.uniconsent.com/v2/stub.min.js"></script>
+<script async src='https://cmp.uniconsent.com/v2/7b0394d739/cmp.js'></script>
+<script type="text/javascript">
+window.googletag = window.googletag || {};
+window.googletag.cmd = window.googletag.cmd || [];
+window.googletag.cmd.push(function () {
+    window.googletag.pubads().enableAsyncRendering();
+    window.googletag.pubads().disableInitialLoad();
+});
+(adsbygoogle = window.adsbygoogle || []).pauseAdRequests = 1;
+</script>
+<script>
+__tcfapi("addEventListener", 2, function(tcData, success) {
+    if (success && tcData.unicLoad  === true) {
+        if(!window._initAds) {
+            window._initAds = true;
+            var script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://dsh7ky7308k4b.cloudfront.net/publishers/fontsgeekcom_new.min.js';
+            document.head.appendChild(script);
+	    
+	    var script = document.createElement('script');
+            script.async = true;
+            script.src = '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+            document.head.appendChild(script);
+        }
+    }
+});
+</script>
+
+
+<script>
+(function waitGEO() {
+    var readyGEO;
+    if (window['UnicI'] && window['UnicI'].geo && window['UnicI'].geo !== '-' ) {
+        readyGEO = true;
+        console.log(window['UnicI'].geo);
+        if (window['UnicI'].geo === 'EU') {
+            if(document.getElementById("unic-gdpr")) {
+              document.getElementById("unic-gdpr").style.display = 'block';
+            }
+        }
+        if (window['UnicI'].geo === 'CA') {
+            if(document.getElementById("unic-ccpa")) {
+              document.getElementById("unic-ccpa").style.display = 'block';
+            }
+        }
+    }
+    if (!readyGEO) {
+        setTimeout(waitGEO, 200);
+    }
+})();
+</script>
+
+    
+    <script async custom-element="amp-ad" src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"></script>
+
+<meta name="apple-itunes-app" content="app-id=6472871294, app-argument=https://apps.apple.com/us/app/clean-sudoku-play-or-solve/id6472871294">
+    
+
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#navSecondary" data-offset="172">
+
+    <div class="body">
+      <header id="header" class="header-effect-shrink" data-plugin-options="{'stickyEnabled': true, 'stickyEffect': 'shrink', 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyChangeLogo': true, 'stickyStartAt': 30, 'stickyHeaderContainerHeight': 70}">
+        <div class="header-body">
+          <div class="header-container container">
+            <div class="header-row">
+              <div class="header-column">
+                <div class="header-row">
+                  <div class="header-logo">
+                    <a href="/">
+                      <img alt="FontsGeek" width="150" height="35" data-sticky-width="150" data-sticky-height="35" src="https://static.fontsgeek.com/fontsgeek.png">
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="header-column justify-content-end">
+                <div class="header-row">
+                  <div class="header-nav header-nav-line header-nav-top-line header-nav-top-line-with-border order-2 order-lg-1">
+                    <div class="header-nav-main header-nav-main-square header-nav-main-effect-2 header-nav-main-sub-effect-1">
+                      <nav class="collapse">
+                        <ul class="nav nav-pills" id="mainNav">
+                          <li><a href="/" class="dropdown-item">Home</a></li>
+                          <li class="dropdown">
+                            <a class="dropdown-item" href="/fonts/">Fonts</a>
+                            <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="/fonts/">All Fonts</a></li>
+                              <li><a class="dropdown-item" href="/styles">All Font Styles</a></li>
+                              <li><a class="dropdown-item" href="/fonts/recently-added">Recently Added Fonts</a></li>
+                              <li><a class="dropdown-item" href="/fonts/random">Random Font</a></li>
+                            </ul>
+                          </li>
+                          <li><a href="/search/" class="dropdown-item">Search</a></li>
+                        </ul>
+                      </nav>
+                    </div>
+                    <button class="btn header-btn-collapse-nav" data-toggle="collapse" data-target=".header-nav-main nav">
+                      <i class="fas fa-bars"></i>
+                    </button>
+                  </div>
+                  <div class="header-nav-features header-nav-features-no-border header-nav-features-lg-show-border order-1 order-lg-2">
+                    <div class="header-nav-feature header-nav-features-search d-inline-flex">
+                      <a href="#" class="header-nav-features-toggle" data-focus="headerSearch"><i class="fas fa-search header-nav-top-icon"></i></a>
+                      <div class="header-nav-features-dropdown" id="headerTopSearchDropdown">
+                        <form role="search" action="/search/" method="get">
+                          <div class="simple-search input-group">
+                            <input class="form-control text-1" id="headerSearch" name="q" type="search" value="" placeholder="Search for a font">
+                            <span class="input-group-append">
+                              <button class="btn" type="submit">
+                                <i class="fa fa-search header-nav-top-icon"></i>
+                              </button>
+                            </span>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      
+
+      <div role="main" class="main">
+        
+<div class="container py-2">
+
+  <div class="row">
+    <div class="col-lg-9">
+
+      
+<div class="heading heading-border heading-middle-border">
+<h2 class="font-weight-normal">
+404
+</h2>
+</div>
+
+
+Sorry the page doesn't exist. You can search for any fonts using the form below
+<br/>
+<div class="inline-search clearfix margin-bottom-60">
+
+  <form role="form" method="get" action="/search/" class="widget_search">
+    <input type="search" placeholder="Search..." id="q" name="q" class="serch-input">
+    <button type="submit">
+      <i class="fa fa-search"></i>
+    </button>
+    <div class="clear"></div>
+  </form>
+</div>
+<div class="divider nomargin-bottom"><!-- divider --></div>
+
+
+
+
+
+
+    </div>
+
+    <div class="col-lg-3 mt-4 mt-lg-0">
+      <aside class="sidebar">
+        <p>Advertisements</p>
+        
+        <!-- TAGNAME: 300x250_1 -->
+<div id='div-gpt-ad-fontsgeekcom39777'>
+</div>
+<br/>
+
+<!-- TAGNAME: 300x250_2 -->
+<div id='div-gpt-ad-fontsgeekcom39778'>
+</div>
+        
+        <br/>
+        
+        <!-- TAGNAME: 300x250 -->
+<!-- /8095840/111.fontsgeek.com_desktop_300x250 -->
+<div id='div-gpt-ad-1491401132023-0'>
+</div>
+        
+        
+        
+      </aside>
+    </div>
+  </div>
+
+</div>
+
+
+
+      </div>
+      <footer id="footer">
+  <div class="container">
+    <div class="row py-5 my-4">
+      <div class="col-md-9 mb-4 mb-lg-0">
+        <div class="row pt-3">
+          <div class="col-6 col-lg-3 mb-4 mb-lg-0">
+            <h5 class="text-3 mb-3">Fonts</h5>
+            <ul class="list list-icons list-icons-sm mb-0">
+
+              <li><i class="fas fa-angle-right top-8"></i><a class="link-hover-style-1" href="/fonts/">List Fonts</a></li>
+              <li><i class="fas fa-angle-right top-8"></i><a class="link-hover-style-1" href="/fonts/recently-added">Recently Added Fonts</a></li>
+              <li><i class="fas fa-angle-right top-8"></i><a class="link-hover-style-1" href="/fonts/random">Random Font</a></li>
+              <li><i class="fas fa-angle-right top-8"></i><a class="link-hover-style-1" href="/fonts/most-downloaded">Most Downloaded Fonts</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-lg-3 mb-4 mb-lg-0">
+            <h5 class="text-3 mb-3">Users</h5>
+            <ul class="list list-icons list-icons-sm mb-0"></ul>
+          </div>
+          <div class="col-6 col-lg-3 mb-4 mb-lg-0">
+            <h5 class="text-3 mb-3">Support</h5>
+            <ul class="list list-icons list-icons-sm mb-0">
+              <li><i class="fas fa-angle-right top-8"></i> <a class="link-hover-style-1" href="/faq">FAQ</a></li>
+              <li><i class="fas fa-angle-right top-8"></i> <a class="link-hover-style-1" href="/help">Help Installing Fonts</a></li>
+              <li><i class="fas fa-angle-right top-8"></i> <a class="link-hover-style-1" href="/contact">Contact Us</a></li>
+            </ul>
+          </div>
+          <div class="col-6 col-lg-3 mb-4 mb-lg-0"></div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-4 mb-lg-0"></div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container py-2">
+      <div class="row py-4">
+        <div class="col-lg-7 d-flex align-items-center justify-content-center justify-content-lg-start mb-4 mb-lg-0">
+          <p>&copy; 2012 - 2026 FontsGeek.com | All Rights Reserved</p>
+        </div>
+        <div class="col-lg-4 d-flex align-items-center justify-content-center justify-content-lg-end">
+          <nav id="sub-menu">
+            <ul>
+              <li><i class="fas fa-angle-right"></i> <a href="/terms-and-conditions">Terms &amp; Conditions</a></li>
+              <li><i class="fas fa-angle-right"></i><a href="/privacy-policy">Privacy Policy</a></li>
+              <li><i class="fas fa-angle-right"></i><a id='unic-gdpr' onclick='__tcfapi("openunic");return false;' style='display:none;cursor:pointer;'>Change Ad Consent</a></li>
+              <li><i class="fas fa-angle-right"></i><a id='unic-ccpa' onclick="window.__uspapi('openunic')" style='display:none;cursor:pointer;'>Do not sell my data</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+    </div>
+
+    <!-- Vendor -->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-star-rating/4.0.6/js/star-rating.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-star-rating/4.0.6/themes/krajee-fas/theme.min.js"></script>
+    
+    <script src="https://static.fontsgeek.com/vendor/common/common.min.js"></script>
+    <!-- Theme Base, Components and Settings -->
+    <script src="https://static.fontsgeek.com/js/theme.js"></script>
+
+
+    <!-- Theme Initialization Files -->
+    <script src="https://static.fontsgeek.com/js/theme.init.js"></script>
+  </body>
+</html>

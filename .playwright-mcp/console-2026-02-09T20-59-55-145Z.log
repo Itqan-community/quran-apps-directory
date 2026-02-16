@@ -1,0 +1,57 @@
+[    2285ms] [WARNING]   WARN  [Statsig] Creating multiple Statsig clients with the same SDK key can lead to unexpected behavior. Multi-instance support requires different SDK keys. @ https://www.notion.so/_assets/65948-bf1a33ee43100a65.js:0
+[    2506ms] [WARNING] Ignoring inability to install OPFS sqlite3_vfs: Cannot install OPFS: Missing SharedArrayBuffer and/or Atomics. The server must emit the COOP/COEP response headers to enable those. See https://sqlite.org/wasm/doc/trunk/persistence.md#coop-coep @ https://www.notion.so/_assets/wasm-sqlite-worker-5cdd36e5fdcb4355.js:0
+[    2931ms] [WARNING] Amplitude Logger [Warn]: Event not tracked, no destination plugins on the instance @ https://www.notion.so/_assets/transport-support-79187dfcba564918.js:0
+[    3540ms] [ERROR] Access to fetch at 'https://o324374.ingest.sentry.io/api/5741876/envelope/?sentry_key=704fe3b1898d4ccda1d05fe1ee79a1f7&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.117.0' from origin 'https://www.notion.so' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://www.notion.so/3027056925c881dc8d75c7117775f2b1:0
+[    3540ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://o324374.ingest.sentry.io/api/5741876/envelope/?sentry_key=704fe3b1898d4ccda1d05fe1ee79a1f7&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.117.0:0
+[    3630ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://www.notion.so/api/v3/recordPageExit:0
+[    3643ms] [ERROR] HttpRequestError: Received HTTP 401
+    at https://www.notion.so/_assets/ClientFramework-4846e168155d0133.js:1:66262
+    at async g (https://www.notion.so/_assets/ClientFramework-4846e168155d0133.js:1:65851)
+    at async Module.de (https://www.notion.so/_assets/13369-81ba589ebfe8333d.js:183:316356) @ https://www.notion.so/_assets/51706-5b63f2c0f63a454b.js:0
+[    3787ms] [ERROR] Failed to load resource: the server responded with a status of 499 () @ https://snap.licdn.com/li.lms-analytics/insight.min.js:0
+[    3787ms] [ERROR] Refused to execute script from 'https://snap.licdn.com/li.lms-analytics/insight.min.js' because its MIME type ('image/png') is not executable. @ https://aif.notion.so/aif-production.html:0
+[    3826ms] [ERROR] Failed to load resource: the server responded with a status of 499 (Request has been forbidden by antivirus) @ https://wcs.naver.net/wcslog.js:0
+[    3826ms] [ERROR] Refused to execute script from 'https://wcs.naver.net/wcslog.js' because its MIME type ('image/png') is not executable. @ https://aif.notion.so/aif-production.html:0
+[    3826ms] [ERROR] Access to fetch at 'https://api.ipify.org/?format=json' from origin 'https://aif.notion.so' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://aif.notion.so/aif-production.html:0
+[    3826ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://api.ipify.org/?format=json:0
+[    3826ms] [ERROR] Error resolving ip TypeError: Failed to fetch
+    at resolveIp (https://cdn.metadata.io/site-insights.js:139:5)
+    at Object.init (https://cdn.metadata.io/site-insights.js:249:18)
+    at a.onload (<anonymous>:1:162) @ https://cdn.metadata.io/site-insights.js:144
+[    3900ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://www.notion.so/api/v3/getBillingData:0
+[    3901ms] [ERROR] HttpRequestError: Received HTTP 401
+    at https://www.notion.so/_assets/ClientFramework-4846e168155d0133.js:1:66262
+    at async g (https://www.notion.so/_assets/ClientFramework-4846e168155d0133.js:1:65851)
+    at async Object.de [as callApi] (https://www.notion.so/_assets/13369-81ba589ebfe8333d.js:183:316356)
+    at async Object.ae [as callCellCompatibleApi] (https://www.notion.so/_assets/13369-81ba589ebfe8333d.js:183:315015)
+    at async getValue (https://www.notion.so/_assets/13369-81ba589ebfe8333d.js:189:228177)
+    at async s (https://www.notion.so/_assets/ClientFramework-4846e168155d0133.js:1:13865)
+    at async https://www.notion.so/_assets/13369-81ba589ebfe8333d.js:189:227965
+    at async i.fetchFn (https://www.notion.so/_assets/13369-81ba589ebfe8333d.js:183:236411)
+    at async i.fetch (https://www.notion.so/_assets/ClientFramework-4846e168155d0133.js:1:12163) @ https://www.notion.so/_assets/51706-5b63f2c0f63a454b.js:0
+[    8292ms] [ERROR] Failed to load resource: the server responded with a status of 499 () @ https://snap.licdn.com/li.lms-analytics/insight.min.js:0
+[    8292ms] [ERROR] Refused to execute script from 'https://snap.licdn.com/li.lms-analytics/insight.min.js' because its MIME type ('image/png') is not executable. @ https://aif.notion.so/aif-production.html:0
+[    8805ms] [ERROR] Failed to load resource: the server responded with a status of 499 (Request has been forbidden by antivirus) @ https://wcs.naver.net/wcslog.js:0
+[    8806ms] [ERROR] Refused to execute script from 'https://wcs.naver.net/wcslog.js' because its MIME type ('image/png') is not executable. @ https://aif.notion.so/aif-production.html:0
+[    9182ms] [ERROR] Access to fetch at 'https://api.ipify.org/?format=json' from origin 'https://aif.notion.so' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://aif.notion.so/aif-production.html:0
+[    9182ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://api.ipify.org/?format=json:0
+[    9182ms] [ERROR] Error resolving ip TypeError: Failed to fetch
+    at resolveIp (https://cdn.metadata.io/site-insights.js:139:5)
+    at Object.init (https://cdn.metadata.io/site-insights.js:249:18)
+    at a.onload (<anonymous>:1:162) @ https://cdn.metadata.io/site-insights.js:144
+[    9218ms] [WARNING] Ignoring inability to install OPFS sqlite3_vfs: Cannot install OPFS: Missing SharedArrayBuffer and/or Atomics. The server must emit the COOP/COEP response headers to enable those. See https://sqlite.org/wasm/doc/trunk/persistence.md#coop-coep @ https://north-bottom-231.notion.site/_assets/wasm-sqlite-worker-5cdd36e5fdcb4355.js:0
+[    9878ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://north-bottom-231.notion.site/api/v3/getBillingData:0
+[    9879ms] [ERROR] HttpRequestError: Received HTTP 401
+    at https://north-bottom-231.notion.site/_assets/ClientFramework-4846e168155d0133.js:1:66262
+    at async g (https://north-bottom-231.notion.site/_assets/ClientFramework-4846e168155d0133.js:1:65851)
+    at async Object.de [as callApi] (https://north-bottom-231.notion.site/_assets/13369-81ba589ebfe8333d.js:183:316356)
+    at async Object.ae [as callCellCompatibleApi] (https://north-bottom-231.notion.site/_assets/13369-81ba589ebfe8333d.js:183:315015)
+    at async getValue (https://north-bottom-231.notion.site/_assets/13369-81ba589ebfe8333d.js:189:228177)
+    at async s (https://north-bottom-231.notion.site/_assets/ClientFramework-4846e168155d0133.js:1:13865)
+    at async https://north-bottom-231.notion.site/_assets/13369-81ba589ebfe8333d.js:189:227965
+    at async i.fetchFn (https://north-bottom-231.notion.site/_assets/13369-81ba589ebfe8333d.js:183:236411)
+    at async i.fetch (https://north-bottom-231.notion.site/_assets/ClientFramework-4846e168155d0133.js:1:12163)
+    at async r.awaitData (https://north-bottom-231.notion.site/_assets/13369-81ba589ebfe8333d.js:183:236567) @ https://north-bottom-231.notion.site/_assets/13369-81ba589ebfe8333d.js:182
+[   10417ms] [WARNING] Amplitude Logger [Warn]: Event not tracked, no destination plugins on the instance @ https://north-bottom-231.notion.site/_assets/transport-support-79187dfcba564918.js:0
+[   10834ms] [ERROR] Access to fetch at 'https://o324374.ingest.sentry.io/api/5741876/envelope/?sentry_key=704fe3b1898d4ccda1d05fe1ee79a1f7&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.117.0' from origin 'https://north-bottom-231.notion.site' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://north-bottom-231.notion.site/Story-1-7-Smart-Search-API-Hybrid-Semantic-Search-3027056925c881dc8d75c7117775f2b1:0
+[   10834ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://o324374.ingest.sentry.io/api/5741876/envelope/?sentry_key=704fe3b1898d4ccda1d05fe1ee79a1f7&sentry_version=7&sentry_client=sentry.javascript.browser%2F7.117.0:0

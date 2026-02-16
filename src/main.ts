@@ -1,55 +1,53 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideRouter } from '@angular/router';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { routes } from './app/app.routes';
-import { NzConfig, provideNzConfig } from 'ng-zorro-antd/core/config';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { importProvidersFrom } from '@angular/core';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import * as Sentry from '@sentry/angular';
 import { AppComponent } from './app/app.component';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { 
-  MenuOutline, 
-  ArrowUpOutline, 
-  ArrowDownOutline, 
-  SearchOutline,
-  SunOutline,
-  MoonOutline,
-  BgColorsOutline,
-  ExportOutline,
-  GlobalOutline,
-  LeftOutline,
-  RightOutline
-} from '@ant-design/icons-angular/icons';
+import { appConfig } from './app/app.config';
+import { environment } from './environments/environment';
 
-
-// AoT requires an exported function for factories
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+// Initialize Sentry before Angular bootstraps
+if (environment.sentry.enabled && environment.sentry.dsn) {
+  Sentry.init({
+    dsn: environment.sentry.dsn,
+    environment: environment.sentry.environment,
+    release: `quran-apps-directory@${environment.version}`,
+    // Tunnel routes requests through our backend to bypass ad blockers
+    ...(environment.sentry.tunnel && { tunnel: environment.sentry.tunnel }),
+    integrations: [
+      Sentry.browserTracingIntegration(),
+      Sentry.replayIntegration({
+        maskAllText: false,
+        blockAllMedia: false,
+      }),
+    ],
+    tracesSampleRate: environment.sentry.tracesSampleRate,
+    replaysSessionSampleRate: environment.sentry.replaysSessionSampleRate,
+    replaysOnErrorSampleRate: environment.sentry.replaysOnErrorSampleRate,
+  });
 }
 
-const ngZorroConfig: NzConfig = {
-  theme: {
-    primaryColor: '#A0533B'
-  }
-};
+bootstrapApplication(AppComponent, appConfig)
+  .catch(err => {
+    console.error('Bootstrap error:', err);
 
-bootstrapApplication(AppComponent, {
-  providers: [
-    provideRouter(routes),
-    provideAnimations(),
-    provideNzConfig(ngZorroConfig),
-    importProvidersFrom(
-      HttpClientModule,
-      NzIconModule.forRoot([MenuOutline, ArrowUpOutline, ArrowDownOutline, SearchOutline, SunOutline, MoonOutline, BgColorsOutline, ExportOutline, GlobalOutline, LeftOutline, RightOutline]),
-      TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [HttpClient]
-        }
-      })
-    )
-  ]
-}).catch(err => console.error(err));
+    // Detect stale chunk errors (syntax error from HTML response or chunk load failure)
+    // This happens when cached JS filenames no longer exist after deployment
+    const isChunkError = err.message && (
+      err.message.includes('Loading chunk') ||
+      err.message.includes('ChunkLoadError') ||
+      err.message.includes("expected expression, got '<'") ||
+      err.message.includes('Unexpected token')
+    );
+
+    if (isChunkError) {
+      // Clear service worker cache and unregister workers
+      if ('caches' in window) {
+        caches.keys().then(names => names.forEach(name => caches.delete(name)));
+      }
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations()
+          .then(regs => regs.forEach(reg => reg.unregister()));
+      }
+      // Silent reload - user just sees page refresh with fresh assets
+      window.location.reload();
+    }
+  });

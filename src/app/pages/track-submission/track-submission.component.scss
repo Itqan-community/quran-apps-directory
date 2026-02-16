@@ -1,0 +1,362 @@
+.track-submission-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 30px 20px;
+  background: var(--surface-color, #f8f9fa);
+  border-radius: 12px;
+
+  h1 {
+    margin: 0 0 10px 0;
+    font-size: 28px;
+    color: var(--primary-color, #a0533b);
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-secondary, #666);
+    font-size: 16px;
+  }
+}
+
+.search-section {
+  margin-bottom: 24px;
+  border-radius: 12px;
+
+  ::ng-deep .ant-tabs-nav {
+    margin-bottom: 20px;
+  }
+}
+
+.search-form {
+  padding: 10px 0;
+}
+
+.search-input-group {
+  display: flex;
+  gap: 12px;
+
+  .search-input {
+    flex: 1;
+    height: 44px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+
+  button {
+    height: 44px;
+    padding: 0 24px;
+    border-radius: 8px;
+  }
+}
+
+.search-hint {
+  font-size: 13px;
+  color: var(--text-secondary, #999);
+  margin-top: 8px;
+}
+
+.error-alert {
+  margin-bottom: 20px;
+}
+
+.loading-container {
+  text-align: center;
+  padding: 40px;
+}
+
+.result-card {
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+// Status badge + alert: ensure contrast in both themes
+.status-tag {
+  color: #0f3b0f;
+  background: #d6f5d6;
+  border-color: #9edb9e;
+}
+
+.status-alert.ant-alert-success {
+  background-color: #f1fff1;
+  border-color: #b7e6b7;
+  color: #0f3b0f;
+  font-weight: 600;
+
+  .ant-alert-icon {
+    color: #2e8a2e;
+  }
+
+  // Force inner text (nz-message) to be bold
+  .ant-alert-message {
+    color: #0f3b0f;
+    font-weight: 700;
+  }
+
+  // Override the default success text color
+  .ant-alert-content {
+    color: #0f3b0f;
+  }
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  .tracking-id {
+    font-family: monospace;
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--primary-color, #a0533b);
+    background: #fdf2f0;
+    padding: 8px 16px;
+    border-radius: 6px;
+  }
+}
+
+.result-content {
+  .app-info {
+    margin-bottom: 20px;
+
+    .app-info-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .app-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
+      object-fit: cover;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .app-name-container {
+      flex: 1;
+    }
+
+    .app-name {
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0 0 5px 0;
+      color: var(--text-color, #333);
+    }
+
+    .app-name-secondary {
+      font-size: 16px;
+      color: var(--text-secondary, #666);
+      margin: 0;
+    }
+  }
+
+  .status-message {
+    margin-bottom: 20px;
+  }
+
+  .dates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+
+    .date-item {
+      .date-label {
+        color: var(--text-secondary, #666);
+        margin-right: 8px;
+      }
+
+      .date-value {
+        font-weight: 500;
+      }
+    }
+  }
+
+  .app-link-section {
+    text-align: center;
+
+    a {
+      background-color: var(--primary-color, #a0533b);
+      border-color: var(--primary-color, #a0533b);
+    }
+  }
+}
+
+.submissions-list {
+  h3 {
+    margin-bottom: 16px;
+    color: var(--text-color, #333);
+  }
+}
+
+.submission-item {
+  margin-bottom: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+
+    .item-tracking-id {
+      font-family: monospace;
+      font-weight: bold;
+      color: var(--primary-color, #a0533b);
+    }
+  }
+
+  .item-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .item-app-name {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .item-date {
+      font-size: 13px;
+      color: var(--text-secondary, #999);
+    }
+  }
+}
+
+.submit-link {
+  text-align: center;
+  margin-top: 40px;
+  padding: 30px 20px;
+  background: var(--surface-color, #f8f9fa);
+  border-radius: 12px;
+
+  p {
+    margin: 0 0 15px 0;
+    color: var(--text-secondary, #666);
+  }
+}
+
+// RTL support
+[dir="rtl"] {
+  .search-input-group {
+    flex-direction: row-reverse;
+  }
+
+  .result-header .tracking-id {
+    direction: ltr;
+  }
+
+  .dates .date-item .date-label {
+    margin-right: 0;
+    margin-left: 8px;
+  }
+}
+
+// Dark theme
+:host-context(.dark-theme) {
+  .page-header,
+  .submit-link {
+    background: var(--surface-color, #1a1a1a);
+  }
+
+  .result-card,
+  .search-section,
+  .submission-item {
+    background: var(--card-bg, #1f1f1f);
+    border: 1px solid var(--border-color, #333);
+  }
+
+  .result-header .tracking-id {
+    background: rgba(160, 83, 59, 0.2);
+  }
+
+  .status-tag {
+    color: #c8f7c8;
+    background: #102512;
+    border-color: #2c5b2f;
+  }
+
+  ::ng-deep .ant-alert-success {
+    background-color: #f6ffed !important;
+    border: 1px solid #b7eb8f !important;
+    color: black !important;
+
+    .ant-alert-message,
+    .ant-alert-content,
+    .ant-alert-description {
+      color: black !important;
+    }
+
+    .ant-alert-icon {
+      color: #52c41a !important;
+    }
+  }
+
+  ::ng-deep .status-alert.ant-alert-success {
+    background-color: #f6ffed !important;
+    border: 1px solid #b7eb8f !important;
+    color: #000000 !important;
+    font-weight: 600;
+
+    .ant-alert-icon {
+      color: #52c41a !important;
+    }
+
+    .ant-alert-message {
+      color: black !important;
+      font-weight: 700;
+    }
+
+    .ant-alert-content {
+      color: black !important;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 600px) {
+  .track-submission-container {
+    padding: 15px;
+  }
+
+  .page-header {
+    padding: 20px 15px;
+
+    h1 {
+      font-size: 22px;
+    }
+  }
+
+  .search-input-group {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  .result-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .submission-item .item-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/main-*.js",
+          "/polyfills-*.js",
+          "/chunk-*.js",
+          "/styles-*.css"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|avif|webp|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    },
+    {
+      "name": "critical-resources",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/i18n/*.json",
+          "/assets/images/**/*.webp",
+          "/assets/images/**/*.avif"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-apps-categories",
+      "urls": [
+        "https://qad-backend-api-production.up.railway.app/api/apps/**",
+        "https://qad-backend-api-production.up.railway.app/api/categories/**",
+        "https://qad-backend-api-staging.up.railway.app/api/apps/**",
+        "https://qad-backend-api-staging.up.railway.app/api/categories/**",
+        "https://qad-backend-api-develop.up.railway.app/api/apps/**",
+        "https://qad-backend-api-develop.up.railway.app/api/categories/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 200,
+        "maxAge": "6h",
+        "timeout": "10s",
+        "strategy": "performance"
+      }
+    },
+    {
+      "name": "api-other",
+      "urls": [
+        "https://qad-backend-api-production.up.railway.app/api/**",
+        "https://qad-backend-api-staging.up.railway.app/api/**",
+        "https://qad-backend-api-develop.up.railway.app/api/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "10m",
+        "timeout": "10s",
+        "strategy": "performance"
+      }
+    },
+    {
+      "name": "translations-cache",
+      "urls": [
+        "/assets/i18n/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 10,
+        "maxAge": "0s",
+        "timeout": "5s",
+        "strategy": "network-first"
+      }
+    },
+    {
+      "name": "images-cache",
+      "urls": [
+        "/assets/images/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 200,
+        "maxAge": "30d",
+        "timeout": "5s",
+        "strategy": "performance"
+      }
+    }
+  ],
+  "navigationUrls": [
+    "/**",
+    "!/**/.*",
+    "!/**/*/*",
+    "!/**/*/**/.*",
+    "!/**/*.{js,html,json}"
+  ],
+  "navigationRequestStrategy": "freshness"
+}

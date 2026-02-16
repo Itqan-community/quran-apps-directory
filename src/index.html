@@ -4,7 +4,10 @@
     <title>دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+
+    <!-- Content Security Policy for Angular dynamic module loading -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: blob:; script-src-elem 'self' 'unsafe-inline' https: blob:; worker-src 'self' blob:; font-src 'self' data: https:; connect-src 'self' https: http://localhost:8000; media-src 'self' https:; object-src 'none'; frame-src 'self' https:; child-src 'self' blob:;">
+
     <!-- HTTP/2 optimized resource hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,30 +21,48 @@
     <link rel="dns-prefetch" href="https://googletagmanager.com">
     
     <!-- Ultra-optimized font loading with subsetting and critical path optimization -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap&text=QuranAppsDirectoryمجتمعإتقانلتقنياتالقرآناكتشفأفضلتطبيقاتالمصحفالتفسيرالتلاوةالتحفيظوالتدبر" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <!-- Preload full Rubik family (including Arabic glyphs) to avoid broken shaping in placeholders -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet"></noscript>
     
+    <!-- Expo Arabic Font - Primary font for the application -->
+    <style>
+      @font-face {
+        font-family: 'Expo Arabic';
+        src: url('/assets/fonts/ExpoArabic-Book.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Expo Arabic';
+        src: url('/assets/fonts/ExpoArabic-Medium.woff2') format('woff2');
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Expo Arabic';
+        src: url('/assets/fonts/ExpoArabic-Bold.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+    </style>
+
     <!-- Font fallback with perfect metrics matching to prevent CLS -->
     <style>
       @font-face {
-        font-family: 'Rubik Fallback';
-        src: local('Arial'), local('Helvetica');
+        font-family: 'Expo Arabic Fallback';
+        src: local('Arial'), local('Helvetica'), local('Tahoma');
         font-weight: 400;
         font-display: swap;
-        ascent-override: 92%;
-        descent-override: 24%;
-        line-gap-override: 0%;
-        size-adjust: 107%;
       }
       @font-face {
-        font-family: 'Rubik Fallback';
-        src: local('Arial Bold'), local('Helvetica Bold');
+        font-family: 'Expo Arabic Fallback';
+        src: local('Arial Bold'), local('Helvetica Bold'), local('Tahoma Bold');
         font-weight: 700;
         font-display: swap;
-        ascent-override: 92%;
-        descent-override: 24%;
-        line-gap-override: 0%;
-        size-adjust: 107%;
       }
     </style>
     
@@ -55,15 +76,12 @@
     <!-- Critical CSS for above-the-fold content -->
     <style>
       /* Critical font fallback to prevent layout shift */
-      body { 
-        font-family: 'Rubik Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; 
+      body {
+        font-family: 'Expo Arabic', 'Expo Arabic Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
         margin: 0;
         padding: 0;
         line-height: 1.6;
         background-color: #ffffff;
-      }
-      .font-loaded body { 
-        font-family: 'Rubik', 'Rubik Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; 
       }
       
       /* Critical layout styles - prevent CLS */
@@ -121,16 +139,6 @@
         margin-bottom: 0.5em;
         color: #000000d9;
         font-weight: 700;
-      }
-      
-      /* Critical above-the-fold styles */
-      .loading {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #fff;
-        font-family: inherit;
       }
       
       /* Header critical styles */
@@ -227,7 +235,7 @@
     <link rel="icon" type="image/svg+xml" href="/assets/images/fav/favicon.svg">
     <link rel="icon" type="image/png" sizes="96x96" href="/assets/images/fav/favicon-96x96.png">
     <link rel="apple-touch-icon" href="/assets/images/fav/apple-touch-icon.png">
-    <link rel="manifest" href="/assets/images/fav/site.webmanifest">
+    <link rel="manifest" href="/manifest.webmanifest">
     
     <!-- Theme and Browser Configuration -->
     <meta name="theme-color" content="#A0533B">
@@ -321,12 +329,12 @@
     <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://quran-apps.itqan.dev/" />
-    <meta property="og:title" content="دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم" />
+    <meta property="og:title" content="دليل التطبيقات القرآنية الشامل" />
     <meta property="og:description" content="الدليل الشامل لأفضل تطبيقات القرآن الكريم - تطبيقات المصحف، التفسير، التلاوة، التحفيظ والتدبر. اكتشف أكثر من 100 تطبيق قرآني مجاني ومدفوع" />
-    <meta property="og:image" content="https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.webp" />
+    <meta property="og:image" content="https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail-2x.jpg" />
     <meta property="og:image:alt" content="دليل التطبيقات القرآنية الشامل" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:width" content="2400" />
+    <meta property="og:image:height" content="1260" />
     <meta property="og:locale" content="ar_SA" />
     <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:site_name" content="دليل التطبيقات القرآنية" />
@@ -334,7 +342,7 @@
     <!-- Twitter Card Meta Tags -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://quran-apps.itqan.dev/" />
-    <meta property="twitter:title" content="دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم" />
+    <meta property="twitter:title" content="دليل التطبيقات القرآنية الشامل" />
     <meta property="twitter:description" content="الدليل الشامل لأفضل تطبيقات القرآن الكريم - تطبيقات المصحف، التفسير، التلاوة، التحفيظ والتدبر" />
     <meta property="twitter:image" content="https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail.webp" />
     <meta property="twitter:image:alt" content="دليل التطبيقات القرآنية الشامل" />
@@ -344,29 +352,6 @@
     <base href="/">
   </head>
   <body>
-    <app-root>
-        <style>
-          .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: 'Rubik', sans-serif;
-          }
-          .loading h1 {
-            font-size: 2rem;
-            font-weight: 500;
-          }
-        </style>
-      <div class="loading">
-        <img
-              height="100"
-              src="../assets/images/logo-with-text.svg"
-              alt="Quran Apps Directory Loading"
-              routerLink="/apps"
-              decoding="async"
-            />
-      </div>
-    </app-root>
+    <app-root></app-root>
   </body>
 </html>

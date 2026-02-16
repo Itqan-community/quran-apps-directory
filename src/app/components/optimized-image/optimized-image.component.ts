@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-optimized-image',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <img 
       [src]="originalSrc"
