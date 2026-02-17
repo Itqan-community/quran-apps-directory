@@ -510,3 +510,157 @@ class QueryCorrectionTest(TestCase):
     def test_known_vocabulary_word_not_corrected(self):
         """A word already in vocabulary should return None."""
         self.assertIsNone(suggest_query_correction('quran'))
+
+
+# =============================================================================
+# Unit Tests: IDF Weights
+# =============================================================================
+
+class IDFWeightsTest(TestCase):
+    """Tests for _get_word_idf_weights IDF calculation."""
+
+    def setUp(self):
+        self.developer = Developer.objects.create(
+            name_en='Dev', name_ar='مطور', email='dev@idf.com'
+        )
+        self.cat = Category.objects.create(
+            name_en='Test', name_ar='اختبار', slug='idf-test', is_active=True
+        )
+        # Create apps: 5 with 'مصحف', 1 with 'المكفوفين'
+        for i in range(5):
+            app = App.objects.create(
+                name_en=f'Mushaf App {i}', name_ar=f'مصحف تطبيق {i}',
+                slug=f'idf-mushaf-{i}',
+                short_description_en='Generic mushaf',
+                short_description_ar='مصحف عام',
+                developer=self.developer, platform='android',
+                avg_rating=Decimal('4.0'), status='published',
+            )
+            app.categories.add(self.cat)
+
+        self.blind_app = App.objects.create(
+            name_en='Ana Atlou', name_ar='أنا أتلو',
+            slug='idf-ana-atlou',
+            short_description_en='Quran for blind users',
+            short_description_ar='مصحف يدعم المكفوفين',
+            developer=self.developer, platform='android',
+            avg_rating=Decimal('4.5'), status='published',
+        )
+        self.blind_app.categories.add(self.cat)
+
+    def test_rare_word_gets_higher_weight(self):
+        """المكفوفين (1 app) should weigh more than مصحف (6 apps)."""
+        from core.services.search.service import AISearchService
+        service = AISearchService.__new__(AISearchService)
+
+        weights = service._get_word_idf_weights(['مصحف', 'المكفوفين'])
+        self.assertGreater(weights['المكفوفين'], weights['مصحف'])
+
+    def test_weights_sum_to_one(self):
+        """All weights should sum to 1.0."""
+        from core.services.search.service import AISearchService
+        service = AISearchService.__new__(AISearchService)
+
+        weights = service._get_word_idf_weights(['مصحف', 'المكفوفين'])
+        self.assertAlmostEqual(sum(weights.values()), 1.0, places=5)
+
+    def test_single_word_weight_is_one(self):
+        """A single query word should get weight 1.0."""
+        from core.services.search.service import AISearchService
+        service = AISearchService.__new__(AISearchService)
+
+        weights = service._get_word_idf_weights(['مصحف'])
+        self.assertAlmostEqual(weights['مصحف'], 1.0, places=5)
+
+    def test_empty_words_returns_empty(self):
+        """Empty word list returns empty dict."""
+        from core.services.search.service import AISearchService
+        service = AISearchService.__new__(AISearchService)
+
+        weights = service._get_word_idf_weights([])
+        self.assertEqual(weights, {})
+
+
+# =============================================================================
+# Integration Tests: Blind app ranking with IDF
+# =============================================================================
+
+class BlindAppRankingTest(TestCase):
+    """Verify blind-specific app ranks higher than generic mushaf apps."""
+
+    def setUp(self):
+        self.developer = Developer.objects.create(
+            name_en='Dev', name_ar='مطور', email='dev@blind.com'
+        )
+        self.cat_mushaf = Category.objects.create(
+            name_en='Mushaf', name_ar='مصحف', slug='blind-mushaf', is_active=True
+        )
+        self.cat_access = Category.objects.create(
+            name_en='Accessibility', name_ar='ذوي الاحتياجات',
+            slug='blind-access', is_active=True
+        )
+
+        # 5 generic mushaf apps
+        self.generic_apps = []
+        for i in range(5):
+            app = App.objects.create(
+                name_en=f'Mushaf App {i}', name_ar=f'مصحف {i}',
+                slug=f'blind-mushaf-{i}',
+                short_description_en=f'Mushaf reader {i}',
+                short_description_ar=f'قارئ مصحف {i}',
+                description_en=f'Read the Quran with this mushaf app {i}',
+                description_ar=f'اقرأ القرآن مع مصحف {i}',
+                developer=self.developer, platform='cross_platform',
+                avg_rating=Decimal('4.5'), status='published',
+            )
+            app.categories.add(self.cat_mushaf)
+            self.generic_apps.append(app)
+
+        # 1 blind-specific app
+        self.blind_app = App.objects.create(
+            name_en='Ana Atlou', name_ar='أنا أتلو',
+            slug='blind-ana-atlou',
+            short_description_en='Quran for blind and visually impaired',
+            short_description_ar='مصحف يدعم المكفوفين وذوي الاحتياجات البصرية',
+            description_en='Accessible Quran app for blind users with screen reader support',
+            description_ar='تطبيق قرآن يدعم المكفوفين مع دعم قارئ الشاشة',
+            developer=self.developer, platform='android',
+            avg_rating=Decimal('4.6'), status='published',
+        )
+        self.blind_app.categories.add(self.cat_access)
+
+    def test_blind_app_scores_higher_with_idf(self):
+        """For 'مصحف المكفوفين', blind app should score higher than generic mushaf."""
+        from core.services.search.service import AISearchService
+        service = AISearchService.__new__(AISearchService)
+
+        query = 'مصحف المكفوفين'
+        idf_weights = service._get_word_idf_weights(
+            [w for w in normalize_arabic(query.lower()).split() if len(w) > 2]
+        )
+
+        score_blind = service._calculate_keyword_score(
+            self.blind_app, query, idf_weights=idf_weights
+        )
+        # Check against all generic apps
+        for generic in self.generic_apps:
+            score_generic = service._calculate_keyword_score(
+                generic, query, idf_weights=idf_weights
+            )
+            self.assertGreater(
+                score_blind, score_generic,
+                f"Blind app ({score_blind}) should score higher than "
+                f"generic '{generic.name_en}' ({score_generic})"
+            )
+
+    def test_without_idf_generic_can_match(self):
+        """Without IDF, generic mushaf apps can score similarly (baseline)."""
+        from core.services.search.service import AISearchService
+        service = AISearchService.__new__(AISearchService)
+
+        query = 'مصحف المكفوفين'
+        score_blind = service._calculate_keyword_score(self.blind_app, query)
+        score_generic = service._calculate_keyword_score(self.generic_apps[0], query)
+        # Both should have some score (mushaf matches in both)
+        self.assertGreater(score_blind, 0.0)
+        self.assertGreater(score_generic, 0.0)
