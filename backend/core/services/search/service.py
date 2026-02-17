@@ -500,17 +500,17 @@ class AISearchService:
                     distance = getattr(app, 'distance', 0) or 0
                     vector_similarity = 1 - distance
                     app._combined_score = (
-                        (vector_similarity * 0.5)
-                        + (keyword_score * 0.3)
-                        + (metadata_boost_normalized * 0.1)
-                        + (quality_boost * 0.1)
+                        (vector_similarity * 0.35)
+                        + (keyword_score * 0.40)
+                        + (metadata_boost_normalized * 0.15)
+                        + (quality_boost * 0.10)
                     )
                 else:
                     # No vector component - redistribute weights
                     app._combined_score = (
-                        (keyword_score * 0.6)
-                        + (metadata_boost_normalized * 0.2)
-                        + (quality_boost * 0.2)
+                        (keyword_score * 0.55)
+                        + (metadata_boost_normalized * 0.25)
+                        + (quality_boost * 0.20)
                     )
 
             # Re-sort by combined score (descending)
@@ -695,14 +695,17 @@ class AISearchService:
     # ====================
 
     def _calculate_keyword_score(self, app: Any, query: str) -> float:
-        """Score 0.0-1.0 based on keyword presence in app fields."""
+        """Score 0.0-1.0 based on keyword presence in app fields.
+
+        Priority: title > full description > short description > category
+        """
         query_lower = normalize_arabic(query.lower())
         query_words = [w for w in query_lower.split() if len(w) > 2]
         if not query_words:
             return 0.0
 
         score = 0.0
-        # Exact name match (strongest signal)
+        # 1. Exact name match (strongest signal)
         name = normalize_arabic((app.name_en or '').lower())
         name_ar = normalize_arabic(app.name_ar or '')
         if query_lower in name or query_lower in name_ar:
@@ -712,16 +715,23 @@ class AISearchService:
             name_hits = sum(1 for w in query_words if w in name or w in name_ar)
             score += 0.3 * (name_hits / len(query_words))
 
-        # Short description matches
-        desc = normalize_arabic((app.short_description_en or '').lower())
-        desc_ar = normalize_arabic(app.short_description_ar or '')
-        desc_hits = sum(1 for w in query_words if w in desc or w in desc_ar)
-        score += 0.2 * (desc_hits / len(query_words))
+        # 2. Full description matches
+        full_desc = normalize_arabic((app.description_en or '').lower())
+        full_desc_ar = normalize_arabic(app.description_ar or '')
+        full_hits = sum(1 for w in query_words if w in full_desc or w in full_desc_ar)
+        score += 0.2 * (full_hits / len(query_words))
 
-        # Category name matches
+        # 3. Short description matches (reduced - full desc is more important)
+        short_desc = normalize_arabic((app.short_description_en or '').lower())
+        short_desc_ar = normalize_arabic(app.short_description_ar or '')
+        short_hits = sum(1 for w in query_words if w in short_desc or w in short_desc_ar)
+        score += 0.1 * (short_hits / len(query_words))
+
+        # 4. Category name matches (EN + AR)
         for cat in app.categories.all():
             cat_name = (cat.name_en or '').lower()
-            if any(w in cat_name for w in query_words):
+            cat_name_ar = normalize_arabic(cat.name_ar or '')
+            if any(w in cat_name or w in cat_name_ar for w in query_words):
                 score += 0.15
                 break
 
@@ -776,7 +786,7 @@ class AISearchService:
                     keywords.extend(opt.label_en.lower().split())
 
                     if any(kw in query_lower for kw in keywords):
-                        boost += 0.15
+                        boost += 0.25
                         match_reasons.append({
                             'type': metadata_type_name,
                             'value': opt.value,
@@ -802,7 +812,7 @@ class AISearchService:
                     ]
                     keywords.extend(opt.label_en.lower().split())
                     if any(kw in query_lower for kw in keywords):
-                        boost += 0.15
+                        boost += 0.25
                         match_reasons.append({
                             'type': metadata_type_name,
                             'value': option_value,
