@@ -265,6 +265,7 @@ class HybridSearchResponseSchema(BaseModel):
     facets: Dict[str, List[FacetValueSchema]] = Field(default_factory=dict, description="Filter facet counts")
     error: Optional[str] = Field(None, description="Error message if search provider failed")
     fallback_mode: bool = Field(False, description="True when embeddings failed and search fell back to keyword-only")
+    suggested_query: Optional[str] = Field(None, description="Suggested corrected query for typo detection")
 
     class Config:
         populate_by_name = True

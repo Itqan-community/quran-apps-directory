@@ -235,6 +235,17 @@
     </div>
   }
 
+  <!-- Did You Mean Suggestion -->
+  @if (suggestedQuery && searchExecuted && !isSmartSearching) {
+    <div class="did-you-mean">
+      <span>{{ 'appList.search.didYouMean' | translate }}</span>
+      <a (click)="searchWithSuggestion()" class="did-you-mean-link">
+        {{ suggestedQuery }}
+      </a>
+      <span>?</span>
+    </div>
+  }
+
   <!-- Empty State -->
   @if (initialLoadComplete && !isLoading && filteredApps.length === 0) {
     <div class="empty-state">

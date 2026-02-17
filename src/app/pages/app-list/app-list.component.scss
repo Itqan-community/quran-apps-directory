@@ -896,6 +896,44 @@
 }
 
 // ============================================
+// DID YOU MEAN SUGGESTION
+// ============================================
+.did-you-mean {
+  margin-bottom: 16px;
+  font-size: 15px;
+  color: #666;
+
+  :host-context(.dark-theme) & {
+    color: #999;
+  }
+
+  @media (max-width: 640px) {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+}
+
+.did-you-mean-link {
+  color: #1b5e20;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    color: #4caf50;
+  }
+
+  :host-context(.dark-theme) & {
+    color: #81c784;
+
+    &:hover {
+      color: #a5d6a7;
+    }
+  }
+}
+
+// ============================================
 // APPS GRID
 // ============================================
 .apps-grid {

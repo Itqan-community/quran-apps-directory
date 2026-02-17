@@ -158,6 +158,7 @@ def hybrid_search(
             "facets": facets,
             "error": error,
             "fallback_mode": search_result.get('_fallback_mode', False),
+            "suggested_query": search_result.get('suggested_query', None),
         }
 
     except Exception as e:

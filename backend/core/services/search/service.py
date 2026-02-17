@@ -9,7 +9,7 @@ from pgvector.django import CosineDistance
 
 from .factory import AISearchFactory
 from .crawler import AppCrawler
-from core.utils.arabic import normalize_arabic
+from core.utils.arabic import normalize_arabic, suggest_query_correction
 
 logger = logging.getLogger(__name__)
 
@@ -444,6 +444,9 @@ class AISearchService:
         """
         from apps.models import App
 
+        # Check for typo suggestion (informational only - does not alter search)
+        suggested = suggest_query_correction(query)
+
         # Soft filters: augment query with filter context instead of hard pre-filtering
         augmented_query = self._augment_query_with_filters(query, filters) if filters else query
 
@@ -535,6 +538,8 @@ class AISearchService:
         }
         if not has_embedding:
             result['_fallback_mode'] = True
+        if suggested:
+            result['suggested_query'] = suggested
         return result
 
     def hybrid_search_cf(

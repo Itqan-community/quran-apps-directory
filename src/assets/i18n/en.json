@@ -59,7 +59,8 @@
       "results": "results",
       "loadMore": "Load More Results",
       "aiMatch": "match",
-      "aiReasoning": "Why this result?"
+      "aiReasoning": "Why this result?",
+      "didYouMean": "Did you mean"
     },
     "categories": {
       "all": "Category",

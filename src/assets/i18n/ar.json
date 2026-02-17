@@ -59,7 +59,8 @@
       "results": "نتيجة",
       "loadMore": "تحميل المزيد",
       "aiMatch": "تطابق",
-      "aiReasoning": "لماذا هذه النتيجة؟"
+      "aiReasoning": "لماذا هذه النتيجة؟",
+      "didYouMean": "هل تقصد"
     },
     "categories": {
       "all": "التصنيف",
