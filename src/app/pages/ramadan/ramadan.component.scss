@@ -1,0 +1,669 @@
+// Ramadan 1447 Landing Page - Figma Redesign
+// Desert landscape hero, rich app cards, Expo Arabic font
+@use 'sass:color';
+
+// Design tokens from Figma
+$primary: #061c1a;
+$bg-light: #f3f3f3;
+$black-gray: #343434;
+$borders: #ebe8e8;
+$white: #ffffff;
+$text-muted: #7a7a7a;
+
+$card-radius: 22px;
+$btn-radius: 34px;
+$header-radius: 24px;
+$screenshot-radius: 16px;
+
+$font: 'Expo Arabic', 'Cairo', sans-serif;
+
+.ramadan-page {
+  min-height: 100vh;
+  background-color: $white;
+  font-family: $font;
+  color: $black-gray;
+  overflow-x: hidden;
+}
+
+// ==================
+// HEADER - Frosted Glass
+// ==================
+.ramadan-nav {
+  position: absolute;
+  top: 16px;
+  left: 24px;
+  right: 24px;
+  z-index: 10;
+
+  .nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: $header-radius;
+    padding: 10px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+  }
+
+  .nav-start {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .lang-pill {
+    background: $bg-light;
+    color: $black-gray;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: $font;
+    transition: background 0.2s;
+
+    &:hover {
+      background: color.adjust($bg-light, $lightness: -5%);
+    }
+  }
+
+  .community-pill {
+    background: $primary;
+    color: $white;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+
+    a {
+      color: $black-gray;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+
+      &:hover {
+        color: $primary;
+      }
+    }
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: $primary;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+
+    svg {
+      opacity: 0.8;
+    }
+  }
+}
+
+// ==================
+// HERO SECTION
+// ==================
+.hero {
+  position: relative;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .hero-decorations {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .gradient-circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+  }
+
+  .circle-1 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, #c9a96e 0%, transparent 70%);
+    top: -100px;
+    right: -100px;
+  }
+
+  .circle-2 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, #8b6914 0%, transparent 70%);
+    bottom: -50px;
+    left: -50px;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+    padding: 100px 24px 60px;
+  }
+
+  .hero-year {
+    display: block;
+    font-size: 80px;
+    font-weight: 700;
+    color: rgba($primary, 0.08);
+    line-height: 1;
+    margin-bottom: -10px;
+    letter-spacing: 8px;
+  }
+
+  .hero-title {
+    font-size: 39px;
+    font-weight: 600;
+    color: $primary;
+    margin: 0 0 16px;
+    line-height: 1.3;
+  }
+
+  .hero-description {
+    font-size: 18px;
+    color: $text-muted;
+    line-height: 1.8;
+    margin: 0;
+    max-width: 560px;
+    margin-inline: auto;
+    font-weight: 400;
+  }
+}
+
+// ==================
+// SECTIONS
+// ==================
+.sections-container {
+  padding: 0;
+}
+
+.app-section {
+  padding: 64px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid $borders;
+  }
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section-title {
+  font-size: 39px;
+  font-weight: 600;
+  color: $primary;
+  margin: 0 0 8px;
+}
+
+.section-subtitle {
+  font-size: 22px;
+  font-weight: 400;
+  color: $text-muted;
+  margin: 0 0 12px;
+}
+
+.section-description {
+  font-size: 18px;
+  font-weight: 400;
+  color: $text-muted;
+  line-height: 1.8;
+  margin: 0 auto;
+  max-width: 700px;
+}
+
+// ==================
+// CARDS GRID
+// ==================
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+// Rich App Card
+.rich-card {
+  background: $white;
+  border: 1px solid $borders;
+  border-radius: $card-radius;
+  overflow: hidden;
+  transition: box-shadow 0.2s, border-color 0.2s;
+
+  &:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    border-color: color.adjust($borders, $lightness: -8%);
+  }
+}
+
+.card-screenshot {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background: $bg-light;
+
+  :host ::ng-deep .screenshot-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: $screenshot-radius $screenshot-radius 0 0;
+  }
+}
+
+.card-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px 10px;
+
+  :host ::ng-deep .card-icon {
+    width: 69px;
+    height: 69px;
+    border-radius: 16px;
+    flex-shrink: 0;
+    object-fit: cover;
+  }
+}
+
+.card-text {
+  min-width: 0;
+  flex: 1;
+}
+
+.card-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: $primary;
+  margin: 0 0 4px;
+  line-height: 1.3;
+}
+
+.card-desc {
+  font-size: 14px;
+  color: $text-muted;
+  margin: 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Tags
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 18px;
+}
+
+.tag-pill {
+  background: $bg-light;
+  color: $black-gray;
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 13px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.tag-more {
+  background: transparent;
+  border: 1px solid $borders;
+  color: $text-muted;
+}
+
+// Stats
+.card-stats {
+  display: flex;
+  gap: 20px;
+  padding: 8px 18px;
+  border-top: 1px solid $borders;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: $text-muted;
+}
+
+.stat-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: $black-gray;
+}
+
+.star {
+  color: #f5a623;
+  font-size: 14px;
+}
+
+// Action Buttons
+.card-actions {
+  display: flex;
+  gap: 10px;
+  padding: 12px 18px 18px;
+}
+
+.btn-download {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: $primary;
+  color: $white;
+  border: none;
+  border-radius: $btn-radius;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  font-family: $font;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+.btn-share {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: $black-gray;
+  border: 1px solid $borders;
+  border-radius: $btn-radius;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: $font;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: $bg-light;
+  }
+}
+
+// Loading skeleton
+.skeleton-card {
+  height: 380px;
+  background: linear-gradient(90deg, $bg-light 25%, color.adjust($bg-light, $lightness: -3%) 50%, $bg-light 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: $card-radius;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+// ==================
+// FOOTER
+// ==================
+.ramadan-footer {
+  .footer-cta-section {
+    background: $bg-light;
+    text-align: center;
+    padding: 64px 24px;
+
+    .footer-cta-title {
+      font-size: 32px;
+      font-weight: 600;
+      color: $primary;
+      margin: 0 0 16px;
+    }
+
+    .footer-cta-description {
+      font-size: 16px;
+      color: $text-muted;
+      line-height: 1.8;
+      max-width: 600px;
+      margin: 0 auto 28px;
+    }
+
+    .footer-cta-btn {
+      display: inline-block;
+      background: $primary;
+      color: $white;
+      padding: 12px 36px;
+      border-radius: $btn-radius;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 500;
+      transition: opacity 0.2s;
+
+      &:hover {
+        opacity: 0.85;
+      }
+    }
+  }
+
+  .footer-bottom {
+    background: $white;
+    padding: 24px 32px;
+    border-top: 1px solid $borders;
+  }
+
+  .footer-bottom-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .footer-label {
+    font-size: 13px;
+    color: $text-muted;
+    font-weight: 500;
+  }
+
+  .footer-link-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    a {
+      font-size: 13px;
+      color: $text-muted;
+      text-decoration: none;
+      transition: color 0.2s;
+
+      &:hover {
+        color: $primary;
+      }
+    }
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: $primary;
+  }
+}
+
+// ==================
+// RESPONSIVE - Tablet
+// ==================
+@media (max-width: 1024px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .section-title {
+    font-size: 32px;
+  }
+
+  .section-subtitle {
+    font-size: 18px;
+  }
+}
+
+// ==================
+// RESPONSIVE - Mobile
+// ==================
+@media (max-width: 767px) {
+  .ramadan-nav {
+    top: 10px;
+    left: 12px;
+    right: 12px;
+
+    .nav-content {
+      padding: 8px 14px;
+    }
+
+    .nav-links {
+      display: none;
+    }
+
+    .nav-logo {
+      font-size: 12px;
+      gap: 4px;
+
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    .lang-pill,
+    .community-pill {
+      padding: 5px 12px;
+      font-size: 11px;
+    }
+  }
+
+  .hero {
+    min-height: 420px;
+
+    .hero-content {
+      padding: 80px 20px 40px;
+    }
+
+    .hero-year {
+      font-size: 48px;
+    }
+
+    .hero-title {
+      font-size: 28px;
+    }
+
+    .hero-description {
+      font-size: 15px;
+    }
+  }
+
+  .app-section {
+    padding: 40px 16px;
+  }
+
+  .section-title {
+    font-size: 26px;
+  }
+
+  .section-subtitle {
+    font-size: 16px;
+  }
+
+  .section-description {
+    font-size: 15px;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .card-name {
+    font-size: 17px;
+  }
+
+  .footer-bottom-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-links {
+    align-items: center;
+  }
+
+  .footer-link-items {
+    justify-content: center;
+  }
+}
+
+// ==================
+// RESPONSIVE - Large Desktop
+// ==================
+@media (min-width: 1440px) {
+  .hero {
+    min-height: 640px;
+  }
+
+  .hero .hero-year {
+    font-size: 100px;
+  }
+}

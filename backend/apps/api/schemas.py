@@ -264,6 +264,7 @@ class HybridSearchResponseSchema(BaseModel):
     results: List[HybridAppListSchema]
     facets: Dict[str, List[FacetValueSchema]] = Field(default_factory=dict, description="Filter facet counts")
     error: Optional[str] = Field(None, description="Error message if search provider failed")
+    fallback_mode: bool = Field(False, description="True when embeddings failed and search fell back to keyword-only")
 
     class Config:
         populate_by_name = True

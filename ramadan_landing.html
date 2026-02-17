@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dalil Quran Template V2</title>
+    <!-- Fonts -->
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com/css?family=Amiri:400,700|Cairo:400,600,700,900&display=swap">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Modern Reset & Variables */
+        :root {
+            /* V2 Color Palette */
+            --color-maroon: #8B2E2E;
+            /* Quran Section */
+            --color-purple: #4A148C;
+            /* Translations */
+            --color-green: #2E7D32;
+            /* Supplications */
+            --color-blue: #1565C0;
+            /* AI */
+            --color-gold: #FBC02D;
+            /* Accessibility */
+
+            --color-bg-light: #FDFCF8;
+            --color-text-dark: #333;
+            --color-text-muted: #555;
+
+            --font-display: 'Amiri', serif;
+            --font-body: 'Cairo', sans-serif;
+
+            --border-radius: 50px;
+            --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-bg-light);
+            color: var(--color-text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: opacity 0.2s;
+        }
+
+        a:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .flex-col {
+            flex-direction: column;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 28px;
+            border-radius: var(--border-radius);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .btn-black {
+            background-color: #000;
+            color: #fff;
+            min-width: 140px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            background: transparent;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--color-maroon);
+        }
+
+        .logo-mark {
+            width: 32px;
+            height: 32px;
+            background: var(--color-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: sans-serif;
+            font-size: 12px;
+        }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            padding: 60px 0 120px;
+            text-align: center;
+            /* Desert-like Gradient */
+            background: linear-gradient(180deg, #FFFDE7 0%, #EFEBE9 40%, #D7CCC8 100%);
+            overflow: hidden;
+        }
+
+        .hero-year {
+            font-family: var(--font-display);
+            font-size: 6rem;
+            color: var(--color-maroon);
+            opacity: 0.1;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 0;
+            white-space: nowrap;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            margin-top: 40px;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: 4rem;
+            color: var(--color-maroon);
+            line-height: 1.2;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: #5D4037;
+            margin-bottom: 50px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInDown 1s ease-out 0.2s backwards;
+        }
+
+        /* Features/Apps Icons in Hero */
+        .hero-apps-ring {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            animation: scaleIn 0.8s ease-out 0.4s backwards;
+        }
+
+        .hero-app-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: 2px solid #fff;
+        }
+
+        /* Quran Stand Illustration */
+        .hero-illustration {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            animation: fadeInUp 1s ease-out 0.6s backwards;
+        }
+
+        /* Sections */
+        .section-wrapper {
+            padding: 80px 0;
+        }
+
+        .section-content {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .section-wrapper.reverse .section-content {
+            flex-direction: row-reverse;
+        }
+
+        .image-col {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .text-col {
+            flex: 1.2;
+        }
+
+        .section-heading {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            line-height: 1.4;
+            margin-bottom: 30px;
+            color: #333;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .section-heading.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Badge Shape */
+        .badge-shape {
+            width: 320px;
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            position: relative;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+            transition: transform 0.4s ease;
+        }
+
+        .badge-shape:hover {
+            transform: scale(1.05);
+        }
+
+        .badge-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* List Items */
+        .list-items {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .item-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 12px;
+            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .item-card:hover {
+            background: #fff;
+            box-shadow: var(--shadow-card);
+            transform: translateX(-5px);
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: right;
+        }
+
+        .item-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            background: #f0f0f0;
+        }
+
+        .item-detail h4 {
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+
+        .item-detail p {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+
+        /* Theme Colors */
+        .theme-maroon .badge-bg path {
+            fill: var(--color-maroon);
+        }
+
+        .theme-purple .badge-bg path {
+            fill: var(--color-purple);
+        }
+
+        .theme-green .badge-bg path {
+            fill: var(--color-green);
+        }
+
+        .theme-blue .badge-bg path {
+            fill: var(--color-blue);
+        }
+
+        .theme-yellow .badge-bg path {
+            fill: var(--color-gold);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--color-maroon);
+            color: #fff;
+            padding: 60px 0 30px;
+            text-align: center;
+            margin-top: 80px;
+            position: relative;
+        }
+
+        /* Top curve */
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: var(--color-bg-light);
+            border-radius: 0 0 50% 50%;
+            z-index: 10;
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 20;
+            padding-top: 20px;
+        }
+
+        .footer-title {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .footer-text {
+            margin-bottom: 25px;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .footer-btn {
+            background: #fff;
+            color: var(--color-maroon);
+            font-weight: 700;
+            padding: 10px 30px;
+            border-radius: 50px;
+        }
+
+        .copyright {
+            margin-top: 40px;
+            font-size: 0.8rem;
+            opacity: 0.6;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .section-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 40px;
+            }
+
+            .section-wrapper.reverse .section-content {
+                flex-direction: column;
+            }
+
+            .item-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .item-card {
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px;
+            }
+
+            .badge-shape {
+                width: 280px;
+                height: 280px;
+                font-size: 1.8rem;
+                margin: 0 auto;
+            }
+
+            .header-nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container flex justify-between items-center">
+            <a href="#" class="btn btn-black" style="font-size: 0.8rem; padding: 8px 20px;">نسخة الهواتف</a>
+            <nav class="header-nav">
+                <a href="#">تواصل معنا</a>
+                <a href="#">عن المشروع</a>
+                <a href="#">الرئيسية</a>
+            </nav>
+            <div class="header-logo">
+                <span>تطبيقات القرآن</span>
+                <div class="logo-mark">Q</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="hero">
+        <div class="hero-year">1447 رمضان</div>
+
+        <div class="container hero-content">
+            <h1 class="hero-title">مع القران..<br>رفقة أقرب</h1>
+            <p class="hero-subtitle">يحظى القرآن في رمضان بحضور يومي منتظم في حياتنا، تتنوع معه أنماط القراءة والاستماع
+                والتدبر.</p>
+
+            <div class="hero-apps-ring">
+                <div class="hero-app-icon" style="color:var(--color-maroon)">📖</div>
+                <div class="hero-app-icon" style="color:var(--color-purple)">🌐</div>
+                <div class="hero-app-icon" style="color:var(--color-green)">🤲</div>
+                <div class="hero-app-icon" style="color:var(--color-blue)">🤖</div>
+            </div>
+
+            <div class="hero-illustration">
+                <!-- Artistic simplified Illustration SVG -->
+                <svg width="400" height="220" viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="standGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#8D6E63" />
+                            <stop offset="100%" stop-color="#5D4037" />
+                        </linearGradient>
+                    </defs>
+                    <!-- Quran Book Stand -->
+                    <path d="M120 180 L200 130 L280 180" stroke="url(#standGradient)" stroke-width="12"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M120 180 L100 210 M280 180 L300 210" stroke="#5D4037" stroke-width="12"
+                        stroke-linecap="round" />
+                    <!-- Open Book Pages -->
+                    <path d="M200 130 L130 100 Q120 95 110 105 L110 170 Q120 160 130 165 L200 190" fill="#FFF"
+                        stroke="#E0E0E0" />
+                    <path d="M200 130 L270 100 Q280 95 290 105 L290 170 Q280 160 270 165 L200 190" fill="#FFF"
+                        stroke="#E0E0E0" />
+                    <line x1="200" y1="130" x2="200" y2="190" stroke="#DDD" stroke-width="2" />
+                    <!-- Decorative Lanterns -->
+                    <circle cx="80" cy="180" r="15" fill="#FFC107" opacity="0.8" />
+                    <circle cx="320" cy="180" r="15" fill="#FFC107" opacity="0.8" />
+                    <path d="M80 165 L80 140 M320 165 L320 140" stroke="#333" stroke-width="1" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 1: Quran in Ramadan (Maroon) -->
+    <div class="section-wrapper theme-maroon">
+        <div class="container section-content">
+            <div class="text-col">
+                <h2 class="section-heading">يعمل القرآن في رمضان بحضور أعمق في حياتنا، تتنوع فيه انماط القراءة والسماع.
+                </h2>
+                <div class="list-items">
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-icon" style="color:var(--color-maroon); background:#FFEBEE;">🔊</div>
+                            <div class="item-detail">
+                                <h4>تلاوات القران</h4>
+                                <p>استمع لأعذب التلاوات</p>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-black">عرض التلاوات</a>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-icon" style="color:var(--color-maroon); background:#FFEBEE;">📖</div>
+                            <div class="item-detail">
+                                <h4>تصفح المصحف</h4>
+                                <p>قراءة ميسرة بالرسم العثماني</p>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-black">تصفح المصحف</a>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-icon" style="color:var(--color-maroon); background:#FFEBEE;">🗓️</div>
+                            <div class="item-detail">
+                                <h4>ختمات القران</h4>
+                                <p>خطط لختمتك في رمضان</p>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-black">بدء الختمة</a>
+                    </div>
+                </div>
+            </div>
+            <div class="image-col">
+                <div class="badge-shape">
+                    <svg class="badge-bg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <!-- 8-Point Star Geometric -->
+                        <path
+                            d="M50 0 L63 25 L90 20 L80 45 L100 65 L75 75 L65 100 L45 80 L20 95 L25 70 L0 55 L25 40 L15 15 L40 25 Z" />
+                    </svg>
+                    <span style="position:relative; z-index:2;">القرآن في<br>رمضان</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Translations (Purple) -->
+    <div class="section-wrapper reverse theme-purple" style="background-color: #F8F5FA;">
+        <div class="container section-content">
+            <div class="text-col">
+                <h2 class="section-heading">يمتد أثر القرآن إلى قلوب تنطق بلغات مختلفة.</h2>
+                <div class="list-items">
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-icon" style="color:var(--color-purple); background:#F3E5F5;">🌐</div>
+                            <div class="item-detail">
+                                <h4>قارئ القرآن</h4>
+                                <p>التطبيق الأمثل للقراءة</p>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-black">دخول للمشروع</a>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-icon" style="color:var(--color-purple); background:#F3E5F5;">📚</div>
+                            <div class="item-detail">
+                                <h4>القرآن الذكي</h4>
+                                <p>تجربة قراءة فريدة</p>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-black">دخول للمشروع</a>
+                    </div>
+                </div>
+            </div>
+            <div class="image-col">
+                <div class="badge-shape">
+                    <svg class="badge-bg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <path
+                            d="M50 0 L61 22 L85 15 L78 38 L100 50 L78 62 L85 85 L61 78 L50 100 L39 78 L15 85 L22 62 L0 50 L22 38 L15 15 L39 22 Z" />
+                    </svg>
+                    <span style="position:relative; z-index:2;">ترجمات<br>القرآن في<br>رمضان</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Supplications (Green) - NEW/RENAMED in V2 -->
+    <div class="section-wrapper theme-green">
+        <div class="container section-content">
+            <div class="text-col">
+                <h2 class="section-heading">الأدعية في رمضان.. أبواب السماء مفتوحة للسائلين.</h2>
+                <div class="list-items">
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-icon" style="color:var(--color-green); background:#E8F5E9;">🤲</div>
+                            <div class="item-detail">
+                                <h4>أدعية مأثورة</h4>
+                                <p>جوامع الدعاء من الكتاب والسنة</p>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-black">عرض الأدعية</a>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-icon" style="color:var(--color-green); background:#E8F5E9;">📿</div>
+                            <div class="item-detail">
+                                <h4>حصن المسلم</h4>
+                                <p>أذكار الصباح والمساء</p>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-black">تحميل التطبيق</a>
+                    </div>
+                </div>
+            </div>
+            <div class="image-col">
+                <div class="badge-shape">
+                    <svg class="badge-bg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <!-- Rounded Star -->
+                        <path d="M50 5 L80 20 L95 50 L80 80 L50 95 L20 80 L5 50 L20 20 Z" />
+                    </svg>
+                    <span style="position:relative; z-index:2;">الأدعية في<br>رمضان</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 4: AI (Blue) -->
+    <div class="section-wrapper reverse theme-blue" style="background-color: #E3F2FD;">
+        <div class="container section-content">
+            <div class="text-col">
+                <h2 class="section-heading">الذكاء الاصطناعي في خدمة القرآن، لتيسير تعلمه وفهمه للجميع.</h2>
+                <div class="list-items">
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-icon" style="color:var(--color-blue); background:#E3F2FD;">🤖</div>
+                            <div class="item-detail">
+                                <h4>المعلم الذكي</h4>
+                                <p>تصحيح التلاوة بالذكاء الاصطناعي</p>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-black">دخول التجربة</a>
+                    </div>
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-icon" style="color:var(--color-blue); background:#E3F2FD;">🔍</div>
+                            <div class="item-detail">
+                                <h4>باحث القرآن</h4>
+                                <p>محرك بحث قرآني ذكي</p>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-black">ابحث الآن</a>
+                    </div>
+                </div>
+            </div>
+            <div class="image-col">
+                <div class="badge-shape">
+                    <svg class="badge-bg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <path
+                            d="M50 0 L63 25 L90 20 L80 45 L100 65 L75 75 L65 100 L45 80 L20 95 L25 70 L0 55 L25 40 L15 15 L40 25 Z" />
+                    </svg>
+                    <span style="position:relative; z-index:2;">الذكاء<br>الاصطناعي<br>والقرآن</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 5: Accessibility (Yellow/Gold) -->
+    <div class="section-wrapper theme-yellow">
+        <div class="container section-content">
+            <div class="text-col">
+                <h2 class="section-heading">الوصول إلى القرآن حق متاح للجميع.</h2>
+                <div class="list-items">
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-icon" style="color:var(--color-gold); background:#FFFDE7;">👁️</div>
+                            <div class="item-detail">
+                                <h4>مصحف المكفوفين</h4>
+                                <p>تطبيق خالي من العوائق البصرية</p>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-black">عرض التفاصيل</a>
+                    </div>
+                </div>
+            </div>
+            <div class="image-col">
+                <div class="badge-shape">
+                    <svg class="badge-bg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <path
+                            d="M50 0 L61 22 L85 15 L78 38 L100 50 L78 62 L85 85 L61 78 L50 100 L39 78 L15 85 L22 62 L0 50 L22 38 L15 15 L39 22 Z" />
+                    </svg>
+                    <span style="position:relative; z-index:2;">القرآن<br>وإمكانية<br>الوصول</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-content">
+            <h2 class="footer-title">رمضان فرصة للمشاركة</h2>
+            <p class="footer-text">ساهم في نشر الخير ومشاركة الأجر مع من تحب</p>
+            <a href="#" class="footer-btn">شاركونا مقترحاتكم</a>
+
+            <div class="copyright">
+                <p>جميع الحقوق محفوظة &copy; 2026 تطبيقات القرآن</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll Reveal
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.section-heading').forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+
+</html>

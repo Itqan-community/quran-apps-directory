@@ -1,0 +1,162 @@
+<div class="ramadan-page" [dir]="currentLang === 'ar' ? 'rtl' : 'ltr'">
+  <!-- Header - Frosted Glass -->
+  <nav class="ramadan-nav">
+    <div class="nav-content">
+      <div class="nav-start">
+        <button class="lang-pill" (click)="changeLanguage()">
+          {{ currentLang === 'ar' ? 'EN' : 'ع' }}
+        </button>
+        <a href="https://community.itqan.dev" target="_blank" rel="noopener" class="community-pill">
+          {{ 'ramadan.nav.community' | translate }}
+        </a>
+      </div>
+      <div class="nav-links">
+        <a [routerLink]="['/', currentLang]">{{ 'ramadan.nav.home' | translate }}</a>
+        <a [routerLink]="['/', currentLang, 'about-us']">{{ 'ramadan.nav.about' | translate }}</a>
+        <a [routerLink]="['/', currentLang, 'contact-us']">{{ 'ramadan.nav.contact' | translate }}</a>
+      </div>
+      <a [routerLink]="['/', currentLang]" class="nav-logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+        </svg>
+        {{ 'ramadan.nav.directoryName' | translate }}
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Section - Desert Background -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="assets/images/ramadan-bg.svg" alt="" aria-hidden="true" loading="eager" fetchpriority="high">
+    </div>
+    <div class="hero-decorations">
+      <div class="gradient-circle circle-1"></div>
+      <div class="gradient-circle circle-2"></div>
+    </div>
+    <div class="hero-content">
+      <span class="hero-year">١٤٤٧</span>
+      <h1 class="hero-title">{{ 'ramadan.tagline' | translate }}</h1>
+      <p class="hero-description">{{ 'ramadan.description' | translate }}</p>
+    </div>
+  </section>
+
+  <!-- App Sections -->
+  <main class="sections-container">
+    @for (section of sections; track section.titleKey; let i = $index) {
+      <section class="app-section">
+        <div class="section-header">
+          <h2 class="section-title">{{ section.titleKey | translate }}</h2>
+          <p class="section-subtitle">{{ section.subtitleKey | translate }}</p>
+          <p class="section-description">{{ section.descriptionKey | translate }}</p>
+        </div>
+
+        @if (loading) {
+          <div class="cards-grid">
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+          </div>
+        } @else {
+          <div class="cards-grid">
+            @for (app of section.apps; track app.slug) {
+              <div class="rich-card">
+                <!-- Screenshot -->
+                @if (getScreenshot(app)) {
+                  <div class="card-screenshot">
+                    <app-optimized-image
+                      [src]="getScreenshot(app)!"
+                      [alt]="getAppName(app)"
+                      cssClass="screenshot-img"
+                      width="320"
+                      height="180"
+                      loading="lazy"
+                    ></app-optimized-image>
+                  </div>
+                }
+
+                <!-- App Info Row -->
+                <div class="card-info">
+                  <app-optimized-image
+                    [src]="app.application_icon"
+                    [alt]="getAppName(app)"
+                    cssClass="card-icon"
+                    width="69"
+                    height="69"
+                    loading="lazy"
+                  ></app-optimized-image>
+                  <div class="card-text">
+                    <h3 class="card-name">{{ getAppName(app) }}</h3>
+                    <p class="card-desc">{{ getAppDescription(app) }}</p>
+                  </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="card-tags">
+                  @for (tag of getAppTags(app); track tag) {
+                    <span class="tag-pill">{{ tag }}</span>
+                  }
+                  @if (getExtraTags(app) > 0) {
+                    <span class="tag-pill tag-more">+{{ getExtraTags(app) }}</span>
+                  }
+                </div>
+
+                <!-- Stats Row -->
+                <div class="card-stats">
+                  @if (app.avg_rating) {
+                    <div class="stat">
+                      <span class="stat-label">{{ 'ramadan.rating' | translate }}</span>
+                      <span class="stat-value">{{ app.avg_rating }} <span class="star">&#9733;</span></span>
+                    </div>
+                  }
+                  <div class="stat">
+                    <span class="stat-label">{{ 'ramadan.platform' | translate }}</span>
+                    <span class="stat-value">{{ getPlatformLabel(app) }}</span>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="card-actions">
+                  <a [routerLink]="['/', currentLang, 'app', app.slug]" class="btn-download">
+                    {{ 'ramadan.downloadApp' | translate }}
+                  </a>
+                  <button class="btn-share" (click)="shareApp(app, $event)">
+                    {{ 'ramadan.shareApp' | translate }}
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </section>
+    }
+  </main>
+
+  <!-- Footer CTA -->
+  <footer class="ramadan-footer">
+    <div class="footer-cta-section">
+      <h2 class="footer-cta-title">{{ 'ramadan.footer.title' | translate }}</h2>
+      <p class="footer-cta-description">{{ 'ramadan.footer.description' | translate }}</p>
+      <a href="https://community.itqan.dev" target="_blank" rel="noopener" class="footer-cta-btn">
+        {{ 'ramadan.footer.cta' | translate }}
+      </a>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-bottom-content">
+        <div class="footer-links">
+          <span class="footer-label">{{ 'ramadan.footer.openSource' | translate }}</span>
+          <div class="footer-link-items">
+            <a href="https://community.itqan.dev" target="_blank" rel="noopener">{{ 'ramadan.footer.mainSite' | translate }}</a>
+            <a [routerLink]="['/', currentLang]">{{ 'ramadan.footer.appsDirectory' | translate }}</a>
+            <a href="https://github.com/Itqan-community" target="_blank" rel="noopener">{{ 'ramadan.footer.devResources' | translate }}</a>
+          </div>
+        </div>
+        <div class="footer-brand">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+          </svg>
+          <span>{{ 'ramadan.nav.directoryName' | translate }}</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

@@ -9,6 +9,7 @@ from pgvector.django import CosineDistance
 
 from .factory import AISearchFactory
 from .crawler import AppCrawler
+from core.utils.arabic import normalize_arabic
 
 logger = logging.getLogger(__name__)
 
@@ -515,6 +516,14 @@ class AISearchService:
             # Re-sort by combined score (descending)
             candidate_list.sort(key=lambda x: getattr(x, '_combined_score', 0), reverse=True)
 
+        # Relevance cutoff - only when embeddings are available (not fallback mode)
+        if has_embedding and candidate_list:
+            RELEVANCE_THRESHOLD = 0.35
+            candidate_list = [
+                app for app in candidate_list
+                if getattr(app, '_combined_score', 0) >= RELEVANCE_THRESHOLD
+            ]
+
         # Calculate facets if requested
         facets = {}
         if include_facets:
@@ -687,15 +696,15 @@ class AISearchService:
 
     def _calculate_keyword_score(self, app: Any, query: str) -> float:
         """Score 0.0-1.0 based on keyword presence in app fields."""
-        query_lower = query.lower()
+        query_lower = normalize_arabic(query.lower())
         query_words = [w for w in query_lower.split() if len(w) > 2]
         if not query_words:
             return 0.0
 
         score = 0.0
         # Exact name match (strongest signal)
-        name = (app.name_en or '').lower()
-        name_ar = (app.name_ar or '')
+        name = normalize_arabic((app.name_en or '').lower())
+        name_ar = normalize_arabic(app.name_ar or '')
         if query_lower in name or query_lower in name_ar:
             score += 0.5
         else:
@@ -704,8 +713,8 @@ class AISearchService:
             score += 0.3 * (name_hits / len(query_words))
 
         # Short description matches
-        desc = (app.short_description_en or '').lower()
-        desc_ar = (app.short_description_ar or '')
+        desc = normalize_arabic((app.short_description_en or '').lower())
+        desc_ar = normalize_arabic(app.short_description_ar or '')
         desc_hits = sum(1 for w in query_words if w in desc or w in desc_ar)
         score += 0.2 * (desc_hits / len(query_words))
 
@@ -752,7 +761,7 @@ class AISearchService:
         """
         boost = 1.0
         match_reasons = []
-        query_lower = query.lower()
+        query_lower = normalize_arabic(query.lower())
 
         # Use prefetched metadata if available, otherwise fall back to DB query
         if prefetched_metadata is not None:
@@ -762,7 +771,7 @@ class AISearchService:
                     keywords = [
                         opt.value.lower(),
                         opt.label_en.lower(),
-                        opt.label_ar,
+                        normalize_arabic(opt.label_ar),
                     ]
                     keywords.extend(opt.label_en.lower().split())
 
@@ -789,7 +798,7 @@ class AISearchService:
                     keywords = [
                         option_value.lower(),
                         opt.label_en.lower(),
-                        opt.label_ar,
+                        normalize_arabic(opt.label_ar),
                     ]
                     keywords.extend(opt.label_en.lower().split())
                     if any(kw in query_lower for kw in keywords):

@@ -242,14 +242,15 @@ class HybridSearchServiceTest(HybridSearchTestMixin, TestCase):
         self.assertIn('facets', result)
         self.assertGreater(len(result['results']), 0)
 
-    def test_hybrid_search_no_embedding_returns_empty(self):
-        """When provider returns empty embedding, returns empty results."""
+    def test_hybrid_search_no_embedding_falls_back_to_keyword(self):
+        """When provider returns empty embedding, falls back to keyword search."""
         self.mock_provider.get_embedding.return_value = []
 
         result = self.service.hybrid_search(query='quran')
 
-        self.assertEqual(result['results'], [])
-        self.assertEqual(result['facets'], {})
+        # Fallback mode returns keyword-scored results instead of empty
+        self.assertTrue(result.get('_fallback_mode', False))
+        self.assertGreater(len(result['results']), 0)
 
     def test_hybrid_search_with_riwayah_filter_returns_all_published(self):
         """Soft filter: riwayah=hafs still returns all published apps (no exclusion)."""
