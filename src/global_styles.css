@@ -148,6 +148,22 @@ nz-layout.app-layout::after {
   height: 20px;
 }
 
+/* Ramadan theme overrides */
+html.ramadan-theme,
+html.ramadan-theme body,
+html.ramadan-theme nz-layout,
+html.ramadan-theme nz-content {
+  background: #f9ebe2 !important;
+}
+
+html.ramadan-theme nz-layout.app-layout::after {
+  display: none;
+}
+
+html.ramadan-theme nz-layout.app-layout {
+  padding-bottom: 0 !important;
+}
+
 /* Essential container styles */
 .container {
   width: 100%;

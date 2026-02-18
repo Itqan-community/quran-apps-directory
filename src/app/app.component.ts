@@ -53,6 +53,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Hide header/footer for internal tool pages
   public hideChrome = false;
+  public hideFooter = false;
+  public hideLanguageToggle = false;
 
   // Navbar compact mode with inline search
   public isNavbarCompact = false;
@@ -132,6 +134,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
       // Check if current route wants to hide header/footer
       this.hideChrome = !!this.route.snapshot.firstChild?.data?.['hideChrome'];
+      this.hideFooter = !!this.route.snapshot.firstChild?.data?.['hideFooter'];
+      this.hideLanguageToggle = !!this.route.snapshot.firstChild?.data?.['hideLanguageToggle'];
 
       const lang = this.route.snapshot.firstChild?.paramMap.get('lang') || this.translate.getDefaultLang();
       if (lang !== this.currentLang) {
