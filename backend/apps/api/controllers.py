@@ -278,8 +278,6 @@ def get_app_og_image(request, app_id: str):
         "application_icon": app_obj.application_icon.url if app_obj.application_icon else "",
         "main_image_en": app_obj.main_image_en.url if app_obj.main_image_en else "",
         "main_image_ar": app_obj.main_image_ar.url if app_obj.main_image_ar else "",
-        "screenshots_en": app_obj.screenshots_en if app_obj.screenshots_en else [],
-        "screenshots_ar": app_obj.screenshots_ar if app_obj.screenshots_ar else [],
         "slug": app_obj.slug,
         "updated_at": str(app_obj.updated_at),
     }
