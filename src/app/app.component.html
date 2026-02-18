@@ -20,7 +20,7 @@
         <a
           nz-button
           nzType="text"
-          [routerLink]="['/', currentLang, 'apps']"
+          [routerLink]="['/', currentLang]"
           class="nav-link"
         >
           {{ "header.home" | translate }}
@@ -61,17 +61,15 @@
             />
           </svg>
         </a>
-        @if (!hideLanguageToggle) {
-          <button
-            nz-button
-            nzType="text"
-            nzSize="large"
-            (click)="toggleLanguage()"
-            class="language-toggle"
-          >
-            {{ isRtl ? "EN" : "ع" }}
-          </button>
-        }
+        <button
+          nz-button
+          nzType="text"
+          nzSize="large"
+          (click)="toggleLanguage()"
+          class="language-toggle"
+        >
+          {{ isRtl ? "EN" : "ع" }}
+        </button>
         <!-- <app-theme-toggle></app-theme-toggle> -->
       </div>
 
@@ -204,16 +202,14 @@
                 </div>
           </div>
           <div style="display: flex; align-items: center; gap: 8px">
-            @if (!hideLanguageToggle) {
-              <button
-                nz-button
-                nzType="text"
-                (click)="toggleLanguage(); toggleMobileMenu()"
-                class="mobile-language-toggle"
-              >
-                {{ isRtl ? "EN" : "ع" }}
-              </button>
-            }
+            <button
+              nz-button
+              nzType="text"
+              (click)="toggleLanguage(); toggleMobileMenu()"
+              class="mobile-language-toggle"
+            >
+              {{ isRtl ? "EN" : "ع" }}
+            </button>
             <button
               nz-button
               nzType="text"
@@ -231,7 +227,7 @@
             nzType="text"
             nzBlock
             nzSize="large"
-            [routerLink]="['/', currentLang, 'apps']"
+            [routerLink]="['/', currentLang]"
             (click)="toggleMobileMenu()"
             class="mobile-nav-link"
           >
@@ -315,7 +311,7 @@
   <nz-content>
     <router-outlet></router-outlet>
   </nz-content>
-  <nz-footer *ngIf="!hideChrome && !hideFooter" class="main-footer">
+  <nz-footer *ngIf="!hideChrome" class="main-footer">
     <div class="footer-content">
       <div class="footer-section">
         <h4>{{ "footer.itqan_projects" | translate }}</h4>
