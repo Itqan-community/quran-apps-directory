@@ -9,6 +9,7 @@ from pgvector.django import CosineDistance
 
 from .factory import AISearchFactory
 from .crawler import AppCrawler
+from core.utils.arabic import normalize_arabic, suggest_query_correction
 
 logger = logging.getLogger(__name__)
 
@@ -443,21 +444,27 @@ class AISearchService:
         """
         from apps.models import App
 
+        # Check for typo suggestion (informational only - does not alter search)
+        suggested = suggest_query_correction(query)
+
         # Soft filters: augment query with filter context instead of hard pre-filtering
         augmented_query = self._augment_query_with_filters(query, filters) if filters else query
 
         embedding = self.get_embedding_cached(augmented_query)
-        if not embedding:
-            return {'results': [], 'facets': {}}
+        has_embedding = bool(embedding)
 
         # Search ALL published apps - no pre-filtering
         queryset = App.objects.filter(status='published')
 
-        # Vector search on full published queryset
-        # Prefetch categories for keyword scoring
-        candidates = queryset.select_related('developer').prefetch_related('categories').annotate(
-            distance=CosineDistance('embedding', embedding)
-        ).order_by('distance')[:limit]
+        if has_embedding:
+            # Normal path: vector search + multi-signal ranking
+            candidates = queryset.select_related('developer').prefetch_related('categories').annotate(
+                distance=CosineDistance('embedding', embedding)
+            ).order_by('distance')[:limit]
+        else:
+            # Fallback: keyword-only search (Gemini unavailable)
+            logger.warning(f"Embedding failed for query '{query}' - falling back to keyword search")
+            candidates = queryset.select_related('developer').prefetch_related('categories').all()[:200]
 
         candidate_list = list(candidates)
 
@@ -474,6 +481,10 @@ class AISearchService:
                 type_name = mv.metadata_option.metadata_type.name
                 app_meta.setdefault(type_name, []).append(mv.metadata_option)
 
+        # Pre-compute IDF weights once for all apps
+        idf_query_words = [w for w in normalize_arabic(query.lower()).split() if len(w) > 2]
+        idf_weights = self._get_word_idf_weights(idf_query_words) if idf_query_words else {}
+
         # Apply multi-signal ranking using the original query (not augmented)
         if apply_boost and candidate_list:
             for app in candidate_list:
@@ -485,33 +496,55 @@ class AISearchService:
                 app._match_reasons = match_reasons
 
                 # Multi-signal scoring
-                distance = getattr(app, 'distance', 0) or 0
-                vector_similarity = 1 - distance
-                keyword_score = self._calculate_keyword_score(app, query)
+                keyword_score = self._calculate_keyword_score(app, query, idf_weights=idf_weights)
                 metadata_boost_normalized = min(boost - 1.0, 1.0)
                 quality_boost = self._calculate_quality_boost(app)
 
                 app._keyword_score = keyword_score
                 app._quality_boost = quality_boost
-                app._combined_score = (
-                    (vector_similarity * 0.5)
-                    + (keyword_score * 0.3)
-                    + (metadata_boost_normalized * 0.1)
-                    + (quality_boost * 0.1)
-                )
+
+                if has_embedding:
+                    distance = getattr(app, 'distance', 0) or 0
+                    vector_similarity = 1 - distance
+                    app._combined_score = (
+                        (vector_similarity * 0.35)
+                        + (keyword_score * 0.40)
+                        + (metadata_boost_normalized * 0.15)
+                        + (quality_boost * 0.10)
+                    )
+                else:
+                    # No vector component - redistribute weights
+                    app._combined_score = (
+                        (keyword_score * 0.55)
+                        + (metadata_boost_normalized * 0.25)
+                        + (quality_boost * 0.20)
+                    )
 
             # Re-sort by combined score (descending)
             candidate_list.sort(key=lambda x: getattr(x, '_combined_score', 0), reverse=True)
+
+        # Relevance cutoff - only when embeddings are available (not fallback mode)
+        if has_embedding and candidate_list:
+            RELEVANCE_THRESHOLD = 0.35
+            candidate_list = [
+                app for app in candidate_list
+                if getattr(app, '_combined_score', 0) >= RELEVANCE_THRESHOLD
+            ]
 
         # Calculate facets if requested
         facets = {}
         if include_facets:
             facets = self._calculate_facets(queryset)
 
-        return {
+        result = {
             'results': candidate_list,
             'facets': facets
         }
+        if not has_embedding:
+            result['_fallback_mode'] = True
+        if suggested:
+            result['suggested_query'] = suggested
+        return result
 
     def hybrid_search_cf(
         self,
@@ -670,34 +703,85 @@ class AISearchService:
     # Phase 3: Ranking Boosting (Dynamic)
     # ====================
 
-    def _calculate_keyword_score(self, app: Any, query: str) -> float:
-        """Score 0.0-1.0 based on keyword presence in app fields."""
-        query_lower = query.lower()
+    def _get_word_idf_weights(self, query_words: list) -> dict:
+        """Calculate IDF-based weights for query words.
+
+        Rare words (matching fewer apps) get higher weight.
+        Returns normalized weights summing to 1.0.
+        """
+        import math
+        from apps.models import App
+        from django.db.models import Q
+
+        if not query_words:
+            return {}
+
+        total_apps = App.objects.filter(status='published').count()
+        if total_apps == 0:
+            uniform = 1.0 / len(query_words)
+            return {w: uniform for w in query_words}
+
+        raw_idfs = {}
+        for word in query_words:
+            count = App.objects.filter(status='published').filter(
+                Q(name_en__icontains=word) | Q(name_ar__icontains=word) |
+                Q(short_description_en__icontains=word) | Q(short_description_ar__icontains=word) |
+                Q(description_en__icontains=word) | Q(description_ar__icontains=word)
+            ).count()
+            raw_idfs[word] = math.log((total_apps + 1) / (1 + count))
+
+        total_idf = sum(raw_idfs.values())
+        if total_idf == 0:
+            uniform = 1.0 / len(query_words)
+            return {w: uniform for w in query_words}
+
+        return {w: idf / total_idf for w, idf in raw_idfs.items()}
+
+    def _calculate_keyword_score(self, app: Any, query: str, idf_weights: dict = None) -> float:
+        """Score 0.0-1.0 based on keyword presence in app fields.
+
+        Uses IDF weights when available so rare query words contribute more
+        than common ones. Priority: title > full description > short description > category.
+        """
+        query_lower = normalize_arabic(query.lower())
         query_words = [w for w in query_lower.split() if len(w) > 2]
         if not query_words:
             return 0.0
 
+        def _weighted_hit_sum(hits_list):
+            """Sum IDF weights for matching words, or fall back to uniform."""
+            if idf_weights:
+                return sum(idf_weights.get(w, 0.0) for w in hits_list)
+            return len(hits_list) / len(query_words)
+
         score = 0.0
-        # Exact name match (strongest signal)
-        name = (app.name_en or '').lower()
-        name_ar = (app.name_ar or '')
+        # 1. Exact name match (strongest signal)
+        name = normalize_arabic((app.name_en or '').lower())
+        name_ar = normalize_arabic(app.name_ar or '')
         if query_lower in name or query_lower in name_ar:
             score += 0.5
         else:
-            # Partial word matches in name
-            name_hits = sum(1 for w in query_words if w in name or w in name_ar)
-            score += 0.3 * (name_hits / len(query_words))
+            # Partial word matches in name (weight: 0.25)
+            name_hits = [w for w in query_words if w in name or w in name_ar]
+            score += 0.25 * _weighted_hit_sum(name_hits)
 
-        # Short description matches
-        desc = (app.short_description_en or '').lower()
-        desc_ar = (app.short_description_ar or '')
-        desc_hits = sum(1 for w in query_words if w in desc or w in desc_ar)
-        score += 0.2 * (desc_hits / len(query_words))
+        # 2. Full description matches (weight: 0.25)
+        full_desc = normalize_arabic((app.description_en or '').lower())
+        full_desc_ar = normalize_arabic(app.description_ar or '')
+        full_hits = [w for w in query_words if w in full_desc or w in full_desc_ar]
+        score += 0.25 * _weighted_hit_sum(full_hits)
 
-        # Category name matches
+        # 3. Short description matches (weight: 0.15)
+        short_desc = normalize_arabic((app.short_description_en or '').lower())
+        short_desc_ar = normalize_arabic(app.short_description_ar or '')
+        short_hits = [w for w in query_words if w in short_desc or w in short_desc_ar]
+        score += 0.15 * _weighted_hit_sum(short_hits)
+
+        # 4. Category name matches (EN + AR) (weight: 0.15)
         for cat in app.categories.all():
             cat_name = (cat.name_en or '').lower()
-            if any(w in cat_name for w in query_words):
+            cat_name_ar = normalize_arabic(cat.name_ar or '')
+            if any(w in cat_name or w in cat_name_ar for w in query_words):
                 score += 0.15
                 break
 
@@ -737,7 +821,7 @@ class AISearchService:
         """
         boost = 1.0
         match_reasons = []
-        query_lower = query.lower()
+        query_lower = normalize_arabic(query.lower())
 
         # Use prefetched metadata if available, otherwise fall back to DB query
         if prefetched_metadata is not None:
@@ -747,12 +831,12 @@ class AISearchService:
                     keywords = [
                         opt.value.lower(),
                         opt.label_en.lower(),
-                        opt.label_ar,
+                        normalize_arabic(opt.label_ar),
                     ]
                     keywords.extend(opt.label_en.lower().split())
 
                     if any(kw in query_lower for kw in keywords):
-                        boost += 0.15
+                        boost += 0.25
                         match_reasons.append({
                             'type': metadata_type_name,
                             'value': opt.value,
@@ -774,11 +858,11 @@ class AISearchService:
                     keywords = [
                         option_value.lower(),
                         opt.label_en.lower(),
-                        opt.label_ar,
+                        normalize_arabic(opt.label_ar),
                     ]
                     keywords.extend(opt.label_en.lower().split())
                     if any(kw in query_lower for kw in keywords):
-                        boost += 0.15
+                        boost += 0.25
                         match_reasons.append({
                             'type': metadata_type_name,
                             'value': option_value,

@@ -104,5 +104,5 @@
     "!/**/*/**/.*",
     "!/**/*.{js,html,json}"
   ],
-  "navigationRequestStrategy": "performance"
+  "navigationRequestStrategy": "freshness"
 }

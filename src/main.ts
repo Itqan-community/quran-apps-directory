@@ -25,8 +25,6 @@ if (environment.sentry.enabled && environment.sentry.dsn) {
   });
 }
 
-console.log('📍 main.ts: Bootstrapping application');
-
 bootstrapApplication(AppComponent, appConfig)
   .catch(err => {
     console.error('Bootstrap error:', err);

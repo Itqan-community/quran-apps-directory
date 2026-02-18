@@ -56,6 +56,11 @@ export const routes: Routes = [
     data: { title: 'Search Comparison', hideChrome: true },
     loadComponent: () => import('./pages/search-comparison/search-comparison.component').then(m => m.SearchComparisonComponent)
   },
+  {
+    path: ':lang/ramadan',
+    data: { title: 'Ramadan 1447' },
+    loadComponent: () => import('./pages/ramadan/ramadan.component').then(m => m.RamadanComponent)
+  },
 
   {
     path: ':lang/ramadan',

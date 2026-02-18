@@ -91,6 +91,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   // Cache for star arrays to prevent NG0100 errors from creating new references on each change detection
   private starArrayCache = new Map<number, { fillPercent: number }[]>();
   activeAiInfoId: string | null = null;
+  suggestedQuery: string | null = null;
 
   // Scroll-based navbar compact mode
   private isNavbarCompact = false;
@@ -323,7 +324,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.navbarScrollService.updateSearchState({
       searchQuery: this.searchQuery,
       searchType: this.searchType,
-      categories: this.categories.slice(0, 5), // First 5 categories
+      categories: this.categories,
       selectedCategory: this.selectedCategory,
       currentLang: this.currentLang,
     });
@@ -406,6 +407,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /** Fires on button click or Enter key */
   onSearch() {
+    this.suggestedQuery = null;
     const query = this.searchQuery.trim();
 
     // If query is empty, just respect current category filter
@@ -438,6 +440,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
             this.filteredApps = results;
             this.smartSearchTotal = response.count || 0;
             this.smartSearchHasMore = !!response.next;
+            this.suggestedQuery = response.suggested_query || null;
             this.isSmartSearching = false;
             this.searchExecuted = true;
             this.navbarScrollService.updateSearchState({ isSearching: false });
@@ -740,6 +743,14 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  searchWithSuggestion(): void {
+    if (!this.suggestedQuery) return;
+    this.searchQuery = this.suggestedQuery;
+    const query = this.suggestedQuery;
+    this.suggestedQuery = null;
+    this.onSearch();
+  }
+
   switchToSmartSearch(): void {
     this.searchType = 'smart';
     this.onSearch();
@@ -748,6 +759,31 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   toggleAiInfo(appId: string, event: Event): void {
     event.stopPropagation();
     this.activeAiInfoId = this.activeAiInfoId === appId ? null : appId;
+  }
+
+  getPlatformLabel(platform: string): string {
+    const labels: Record<string, Record<string, string>> = {
+      android: { en: 'Android', ar: 'أندرويد' },
+      ios: { en: 'iOS', ar: 'آي أو إس' },
+      cross_platform: { en: 'All', ar: 'الجميع' },
+      web: { en: 'Web', ar: 'ويب' },
+    };
+    return labels[platform]?.[this.currentLang] || labels['cross_platform'][this.currentLang];
+  }
+
+  getStoreCount(app: any): number {
+    // If store links are available (detail view), count them
+    if (app.Google_Play_Link || app.AppStore_Link || app.App_Gallery_Link) {
+      let count = 0;
+      if (app.Google_Play_Link) count++;
+      if (app.AppStore_Link) count++;
+      if (app.App_Gallery_Link) count++;
+      return count;
+    }
+    // Fallback: derive from platform field
+    if (app.platform === 'cross_platform') return 2;
+    if (app.platform === 'android' || app.platform === 'ios') return 1;
+    return 1;
   }
 
   getRatingClass(rating: number): string {

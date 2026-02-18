@@ -59,7 +59,8 @@
       "results": "results",
       "loadMore": "Load More Results",
       "aiMatch": "match",
-      "aiReasoning": "Why this result?"
+      "aiReasoning": "Why this result?",
+      "didYouMean": "Did you mean"
     },
     "categories": {
       "all": "Category",
@@ -277,6 +278,60 @@
       "trackingIdNote": "Save this ID to track your submission status",
       "trackSubmission": "Track Submission",
       "submitAnother": "Submit Another App"
+    }
+  },
+  "ramadan": {
+    "title": "Ramadan 1447",
+    "tagline": "With the Quran.. A Closer Companion",
+    "description": "In Ramadan we seek companionship, and the Quran creates for us a bond of believers' hearts. In this guide we curated diverse Quran apps suited for Ramadan to create a beautiful new companionship in this blessed month.",
+    "cta": "Browse Apps",
+    "sections": {
+      "quran": "Quran in Ramadan",
+      "translations": "Quran Translations in Ramadan",
+      "family": "For the Family in Ramadan",
+      "ai": "AI and the Quran",
+      "accessibility": "Quran and Accessibility"
+    },
+    "sectionSubtitle": {
+      "quran": "Apps to help you read and listen to the Quran",
+      "translations": "Apps providing Quran translations in various languages",
+      "family": "Quran apps that bring the family together in Ramadan",
+      "ai": "Apps using AI to serve the Quran",
+      "accessibility": "Apps designed for everyone's needs"
+    },
+    "sectionDesc": {
+      "quran": "The Quran holds a daily presence in our lives during Ramadan, with diverse patterns of reading, listening, and reflection. This collection features apps that help you read and listen to the Quran in different ways suited to the rhythm of the month.",
+      "translations": "The impact of the Quran extends to hearts that speak different languages. This collection brings together apps that provide Quran translations and contemplation in ways that bridge the gap between Muslims worldwide.",
+      "family": "The Quran holds a daily presence in our lives during Ramadan, with diverse patterns of reading, listening, and reflection. This collection features apps that help you and your family engage with the Quran together during the blessed month.",
+      "ai": "Apps that use artificial intelligence technologies to enhance the experience of reading, reflecting, and learning from the Holy Quran in innovative and smart ways.",
+      "accessibility": "Access to the Quran is a right available to all. This collection includes apps designed to meet the needs of those with visual or hearing impairments, providing accessible experiences for engaging with the Quranic text."
+    },
+    "downloadApp": "Download App",
+    "shareApp": "Share",
+    "lastUpdated": "Last updated",
+    "downloads": "Downloads",
+    "rating": "Rating",
+    "platform": "Platform",
+    "platformAll": "All",
+    "platformAndroid": "Android",
+    "platformIos": "iOS",
+    "footer": {
+      "title": "Ramadan is an Opportunity to Share",
+      "description": "The Living Quran Project - we explore ways to serve the Quran and share its message, delivering apps, ideas, and projects to as many people as possible.",
+      "cta": "Join ITQAN Community",
+      "openSource": "An open source project by ITQAN Community",
+      "appsDirectory": "Quran Apps 1447 AH",
+      "mainSite": "ITQAN Community Main Site",
+      "cms": "Quran Content Management System",
+      "devResources": "Developer Resources",
+      "quranProject": "The Green Quran Project"
+    },
+    "nav": {
+      "home": "Home",
+      "about": "About",
+      "contact": "Contact Us",
+      "community": "Quran Community",
+      "directoryName": "Quran Apps Directory"
     }
   },
   "trackSubmission": {

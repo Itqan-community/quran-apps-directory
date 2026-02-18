@@ -308,7 +308,9 @@ class App(PublishedModel):
                 counter += 1
 
         # Process main images before saving (only for new uploads)
-        self._process_main_images()
+        update_fields = kwargs.get('update_fields')
+        if not update_fields or 'main_image_en' in update_fields or 'main_image_ar' in update_fields:
+            self._process_main_images()
 
         # Track if this is a new instance
         is_new = self._state.adding
@@ -339,6 +341,9 @@ class App(PublishedModel):
 
         for field_name in ('main_image_en', 'main_image_ar'):
             field = getattr(self, field_name)
+            # Skip external URLs - they aren't stored in R2
+            if field and field.name and field.name.startswith(('http://', 'https://')):
+                continue
             # Only process new uploads (has file attribute with read method)
             if field and hasattr(field, 'file') and hasattr(field.file, 'read'):
                 try:

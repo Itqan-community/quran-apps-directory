@@ -682,6 +682,24 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     this.seoService.addStructuredData(combinedData);
   }
 
+  getPlatformLabel(platform: string): string {
+    const labels: Record<string, Record<string, string>> = {
+      android: { en: 'Android', ar: 'أندرويد' },
+      ios: { en: 'iOS', ar: 'آي أو إس' },
+      cross_platform: { en: 'All', ar: 'الجميع' },
+      web: { en: 'Web', ar: 'ويب' },
+    };
+    return labels[platform]?.[this.currentLang] || labels['cross_platform'][this.currentLang];
+  }
+
+  getStoreCount(app: QuranApp): number {
+    let count = 0;
+    if (app.Google_Play_Link) count++;
+    if (app.AppStore_Link) count++;
+    if (app.App_Gallery_Link) count++;
+    return count;
+  }
+
   getRatingClass(rating: number): string {
     if (!rating || rating === 0) return "poor";
     if (rating >= 4.5) return "excellent";

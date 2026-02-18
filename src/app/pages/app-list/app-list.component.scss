@@ -815,6 +815,36 @@
       color: #999;
     }
   }
+
+  .smart-search-btn {
+    background: #000;
+    border: none;
+    border-radius: 50px;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 14px 40px;
+    height: auto;
+    line-height: 1;
+    margin-top: 16px;
+
+    &:hover,
+    &:focus {
+      background: #222;
+      color: #fff;
+    }
+
+    :host-context(.dark-theme) & {
+      background: #fff;
+      color: #000;
+
+      &:hover,
+      &:focus {
+        background: #e0e0e0;
+        color: #000;
+      }
+    }
+  }
 }
 
 // ============================================
@@ -862,6 +892,44 @@
 
   @media (max-width: 640px) {
     font-size: 0.875rem;
+  }
+}
+
+// ============================================
+// DID YOU MEAN SUGGESTION
+// ============================================
+.did-you-mean {
+  margin-bottom: 16px;
+  font-size: 15px;
+  color: #666;
+
+  :host-context(.dark-theme) & {
+    color: #999;
+  }
+
+  @media (max-width: 640px) {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+}
+
+.did-you-mean-link {
+  color: #1b5e20;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    color: #4caf50;
+  }
+
+  :host-context(.dark-theme) & {
+    color: #81c784;
+
+    &:hover {
+      color: #a5d6a7;
+    }
   }
 }
 
@@ -1199,7 +1267,18 @@
   align-items: center;
   gap: 2px;
   flex: 1;
-  text-align: center;
+
+  &:first-child {
+    align-items: flex-start;
+    text-align: left;
+    padding-inline-start: 16px;
+  }
+
+  &:last-child {
+    align-items: flex-end;
+    text-align: right;
+    padding-inline-end: 16px;
+  }
 
   @media (max-width: 640px) {
     gap: 1px;

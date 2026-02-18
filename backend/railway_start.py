@@ -30,6 +30,15 @@ def main():
         print(f"✗ Migration failed: {e}")
         sys.exit(1)
 
+    # Reindex app embeddings for smart search (quick mode - skips crawling)
+    print("\n=== Reindexing App Embeddings ===")
+    try:
+        subprocess.run([sys.executable, "django_manage.py", "reindex_embeddings", "--quick"], check=True)
+        print("✓ Embeddings reindexed successfully")
+    except subprocess.CalledProcessError as e:
+        print(f"✗ Embedding reindex failed: {e}")
+        print("  Continuing with deployment...")
+
     # Load categories from frontend
     print("\n=== Loading Categories from Frontend ===")
     try:
