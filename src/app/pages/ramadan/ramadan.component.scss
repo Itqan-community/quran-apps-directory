@@ -1,0 +1,714 @@
+@use "sass:color";
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap");
+
+:host {
+  display: block;
+  background-color: #f9ebe2;
+}
+
+$bg-warm: #f9ebe2;
+$bg-card: #ffffff;
+$accent: #8b4513;
+$accent-gold: #c4943e;
+$text-dark: #2d1810;
+$text-muted: #6b5344;
+$radius-lg: 16px;
+$radius-md: 12px;
+
+.ramadan-page {
+  min-height: 100vh;
+  background-color: $bg-warm;
+}
+
+// Hero Section
+.hero-section {
+  width: 100%;
+  position: relative;
+  background-color: $bg-warm;
+
+  .hero-bg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .ramadan-calligraphy {
+    position: absolute;
+    top: 15%;
+    right: 10%;
+    width: 22%;
+    height: auto;
+    z-index: 2;
+  }
+
+  .ramdan-stars {
+    position: absolute;
+    top: 20%;
+    right: 30%;
+    width: 5%;
+    height: auto;
+    z-index: 2;
+  }
+
+  .hero-circle {
+    position: absolute;
+    bottom: 12%;
+    left: 60%;
+    width: 31.5rem;
+    height: auto;
+    z-index: 2;
+    opacity: 0.6;
+    translate: -50%;
+  }
+
+  .hero-icon {
+    position: absolute;
+    z-index: 3;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+  }
+
+  .hero-icon-1 {
+    bottom: 42%;
+    left: 45%;
+  }
+  .hero-icon-2 {
+    bottom: 35%;
+    right: 41%;
+  }
+  .hero-icon-3 {
+    bottom: 35%;
+    left: 41%;
+  }
+  .hero-icon-4 {
+    bottom: 42%;
+    right: 45%;
+  }
+
+  .hero-text-content {
+    position: absolute;
+    top: 15%;
+    right: 40%;
+    z-index: 2;
+    max-width: 700px;
+    text-align: right;
+    font-family: "IBM Plex Sans Arabic", sans-serif;
+  }
+
+  .hero-title {
+    font-family: "IBM Plex Sans Arabic", sans-serif;
+    font-size: 75px;
+    font-weight: 300;
+    color: $text-dark;
+    margin: 0 0 20px;
+    line-height: 1.5;
+  }
+
+  .hero-description {
+    font-family: "IBM Plex Sans Arabic", sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: $text-muted;
+    margin: 0;
+    line-height: 1.9;
+  }
+}
+
+// Hero responsive
+@media (max-width: 768px) {
+  .hero-section .hero-bg {
+    height: 50vh;
+  }
+
+  .hero-section .ramadan-calligraphy {
+    top: 90px;
+    right: 16px;
+    width: 120px;
+  }
+
+  .hero-section .ramdan-stars {
+    top: 90px;
+    right: 30%;
+    width: 50px;
+  }
+
+  .hero-section .hero-circle {
+    bottom: 90px;
+    width: 80px;
+  }
+
+  .hero-section .hero-icon {
+    width: 20px;
+    // height: 30px;
+  }
+
+  .hero-section .hero-text-content {
+    top: 100px;
+    right: auto;
+    left: 16px;
+    max-width: 50%;
+  }
+
+  .hero-section .hero-title {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .hero-section .hero-description {
+    font-size: 8px;
+    line-height: 1.6;
+  }
+}
+
+// Maskgroup Cards Section
+.maskgroup-section {
+  background-color: $bg-warm;
+  padding: clamp(30px, 5vw, 60px) clamp(16px, 3vw, 24px);
+}
+
+.maskgroup-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(40px, 6vw, 64px);
+  position: relative;
+}
+
+// Random stars decoration
+.random-star {
+  position: absolute;
+  width: clamp(120px, 15vw, 220px);
+  height: auto;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.7;
+}
+
+.star-1 {
+  top: 5%;
+  left: -5%;
+  transform: rotate(-15deg);
+}
+
+.star-2 {
+  top: 30%;
+  right: -6%;
+  transform: rotate(20deg);
+}
+
+.star-3 {
+  top: 60%;
+  left: -3%;
+  transform: rotate(10deg);
+}
+
+.star-4 {
+  top: 85%;
+  right: -4%;
+  transform: rotate(-25deg);
+}
+
+.star-5 {
+  top: 15%;
+  right: 2%;
+  transform: rotate(35deg);
+}
+
+.star-6 {
+  top: 45%;
+  left: 5%;
+  transform: rotate(-40deg);
+}
+
+.star-7 {
+  top: 72%;
+  right: 3%;
+  transform: rotate(15deg);
+}
+
+.star-8 {
+  top: 92%;
+  left: 8%;
+  transform: rotate(-10deg);
+}
+
+.star-9 {
+  top: 22%;
+  left: 10%;
+  transform: rotate(28deg);
+}
+
+.star-10 {
+  top: 52%;
+  right: -2%;
+  transform: rotate(-30deg);
+}
+
+.star-11 {
+  top: 78%;
+  left: -6%;
+  transform: rotate(18deg);
+}
+
+// Maskgroup Row - zigzag layout
+.maskgroup-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(24px, 4vw, 48px);
+
+  // Odd rows: content left, image right (default)
+  .maskgroup-content {
+    flex: 1;
+    order: 1;
+  }
+
+  .maskgroup-image-wrapper {
+    flex: 0 0 clamp(200px, 30vw, 350px);
+    order: 2;
+  }
+
+  // Even rows: image left, content right
+  &.maskgroup-row--reversed {
+    .maskgroup-image-wrapper {
+      order: 1;
+    }
+
+    .maskgroup-content {
+      order: 2;
+    }
+  }
+}
+
+.maskgroup-image-wrapper {
+  position: relative;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+}
+
+.maskgroup-card {
+  width: 100%;
+  height: auto;
+  border-radius: $radius-lg;
+  filter: drop-shadow(0 4px 16px rgba(45, 24, 16, 0.1));
+  display: block;
+}
+
+.maskgroup-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "DG Ghareeb", sans-serif;
+  font-size: clamp(18px, 3vw, 40px);
+  font-weight: 300;
+  color: #ffffff !important;
+  margin: 0;
+  direction: rtl;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  word-spacing: 100vw;
+  text-align: center;
+}
+
+// Content column
+.maskgroup-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.maskgroup-content-subtitle {
+  font-size: clamp(16px, 2vw, 22px);
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0 0 12px;
+  line-height: 1.6;
+}
+
+.maskgroup-content-title {
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0 0 12px;
+}
+
+.maskgroup-content-desc {
+  font-size: clamp(13px, 1.4vw, 16px);
+  color: $text-muted;
+  margin: 0 0 20px;
+  line-height: 1.8;
+}
+
+// App rows inside content column
+.maskgroup-apps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.maskgroup-app-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  transition: box-shadow 0.2s;
+  border-bottom: 1px solid rgb(226, 218, 218);
+}
+
+.maskgroup-app-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.maskgroup-app-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.maskgroup-app-name {
+  font-size: clamp(13px, 1.3vw, 15px);
+  font-weight: 600;
+  color: $text-dark;
+  margin: 0 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.maskgroup-app-desc {
+  font-size: clamp(11px, 1.1vw, 13px);
+  color: $text-muted;
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.maskgroup-app-btn {
+  flex-shrink: 0;
+  display: inline-block;
+  padding: 8px 20px;
+  background: black;
+  color: #fff !important;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 20px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+
+// Shimmer App Row Loading State
+.shimmer-app-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid rgb(226, 218, 218);
+}
+
+.shimmer-app-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, #f0e0d6 25%, #f5ece5 50%, #f0e0d6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.shimmer-app-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shimmer-app-name {
+  width: 60%;
+  height: 14px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #f0e0d6 25%, #f5ece5 50%, #f0e0d6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.shimmer-app-desc {
+  width: 80%;
+  height: 12px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #f0e0d6 25%, #f5ece5 50%, #f0e0d6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.shimmer-app-btn {
+  width: 100px;
+  height: 36px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, #f0e0d6 25%, #f5ece5 50%, #f0e0d6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// RTL Support
+.rtl {
+  direction: rtl;
+
+  .view-all-link .arrow {
+    transform: scaleX(1);
+  }
+}
+
+// Ramadan Custom Footer
+.ramadan-footer {
+  background-color: $bg-warm;
+  padding: clamp(24px, 4vw, 40px) 0 clamp(40px, 5vw, 60px);
+  width: 100%;
+  direction: rtl;
+}
+
+// Community CTA Banner
+.footer-cta {
+  background: #872928;
+  padding: clamp(32px, 5vw, 48px) clamp(16px, 10vw, 150px);
+  position: relative;
+  overflow: hidden;
+  font-family: "IBM Plex Sans Arabic", sans-serif;
+  margin-bottom: 32px;
+  color: white !important;
+}
+
+.footer-cta-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: clamp(16px, 3vw, 24px);
+  position: relative;
+  z-index: 1;
+}
+
+.footer-cta-text {
+  max-width: 700px;
+  flex: 1;
+}
+
+.footer-cta-title {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 300;
+  color: #ffffff;
+  margin: 0 0 12px;
+}
+
+.footer-cta-desc {
+  font-size: clamp(13px, 1.5vw, 15px);
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  line-height: 1.8;
+}
+
+.footer-cta-btn-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.footer-cta-decoration {
+  position: absolute;
+  width: clamp(200px, 30vw, 450px);
+  height: auto;
+  opacity: 0.7;
+  z-index: 0;
+  pointer-events: none;
+  filter: brightness(0) invert(1);
+}
+
+.footer-cta-btn {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  padding: clamp(10px, 1.5vw, 14px) clamp(20px, 3vw, 32px);
+  background: white;
+  color: black !important;
+  font-size: clamp(13px, 1.5vw, 16px);
+  font-weight: 600;
+  border-radius: 40px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+
+.footer-cta-pattern {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: clamp(100px, 20vw, 250px);
+  background:
+    radial-gradient(
+      circle at 20% 50%,
+      rgba(255, 255, 255, 0.08) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      circle at 50% 30%,
+      rgba(255, 255, 255, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(255, 255, 255, 0.04) 0%,
+      transparent 40%
+    );
+  opacity: 0.8;
+}
+
+// Sponsor & Info Row
+.footer-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px clamp(16px, 10vw, 150px);
+  border-bottom: 1px solid rgba(45, 24, 16, 0.1);
+  margin-bottom: 24px;
+}
+
+.footer-open-source {
+  font-size: clamp(12px, 1.3vw, 14px);
+  color: $text-muted;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.footer-sponsor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-sponsor-label {
+  font-size: clamp(11px, 1.2vw, 13px);
+  color: $text-muted;
+}
+
+// Links Row
+.footer-links-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px clamp(16px, 10vw, 150px) 0px;
+}
+
+.footer-links-title {
+  font-size: clamp(14px, 1.5vw, 16px);
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0 0 16px;
+}
+
+.footer-links-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(12px, 3vw, 32px);
+
+  a {
+    color: $text-muted;
+    text-decoration: none;
+    font-size: clamp(12px, 1.3vw, 14px);
+    transition: color 0.2s;
+
+    &:hover {
+      color: $accent-gold;
+    }
+  }
+}
+
+// Maskgroup rows responsive
+@media (max-width: 768px) {
+  .maskgroup-row {
+    flex-direction: column !important;
+
+    .maskgroup-image-wrapper {
+      order: -1 !important;
+      flex: none;
+      max-width: 180px;
+      margin: 0 auto;
+    }
+
+    .maskgroup-content {
+      order: 1 !important;
+    }
+  }
+
+  .maskgroup-app-row {
+    flex-wrap: wrap;
+  }
+
+  .maskgroup-app-btn {
+    width: auto;
+    padding: 6px 16px;
+    font-size: 12px;
+    text-align: center;
+  }
+}
+
+// Footer layout changes for small screens
+@media (max-width: 768px) {
+  .footer-cta-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-info-row {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .footer-sponsor {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .footer-links-row {
+    flex-direction: column;
+  }
+
+  .footer-links-list {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

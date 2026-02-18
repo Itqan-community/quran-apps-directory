@@ -1,0 +1,237 @@
+<div class="ramadan-page" [class.rtl]="currentLang === 'ar'">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <img
+      src="assets/images/ramadan.png"
+      alt="Ramadan 1447"
+      class="ramadan-calligraphy"
+    />
+
+    <img src="assets/images/ramdanStars.png" alt="" class="ramdan-stars" />
+
+    <div class="hero-text-content">
+      <h1 class="hero-title">مع القرآن.. رفقة أقرب</h1>
+      <p class="hero-description">
+        نبحث في رمضان عن السكينة، ونمنح القرآن حضورًا دائمًا يرافقنا طوال الشهر.
+        في هذا الدليل جمعنا لك ترشيحات لتطبيقات قرآنية متنوعة مناسبة لرمضان،
+        لنمنحك تجربة روحية مميزة في هذا الشهر الكريم.
+      </p>
+    </div>
+    <img
+      src="assets/images/RamadanHerobackground.png"
+      alt="Ramadan Kareem 1447"
+      class="hero-bg"
+    />
+  </section>
+
+  <!-- Maskgroup Cards with Content Sections -->
+  <section class="maskgroup-section">
+    <div class="maskgroup-container">
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-1"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-2"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-3"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-4"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-5"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-6"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-7"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-8"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-9"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-10"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-11"
+      />
+      @for (section of sections; track section.id; let i = $index) {
+        <div
+          class="maskgroup-row"
+          [class.maskgroup-row--reversed]="isReversed(i)"
+        >
+          <div class="maskgroup-content">
+            <h1 class="maskgroup-content-subtitle">
+              {{ getSectionSubtitle(section) }}
+            </h1>
+            <p class="maskgroup-content-desc">
+              {{ getSectionDescription(section) }}
+            </p>
+            <div class="maskgroup-apps-list">
+              @if (isLoading) {
+                @for (i of [1, 2, 3]; track i) {
+                  <div class="shimmer-app-row">
+                    <div class="shimmer-app-icon"></div>
+                    <div class="shimmer-app-info">
+                      <div class="shimmer-app-name"></div>
+                      <div class="shimmer-app-desc"></div>
+                    </div>
+                    <div class="shimmer-app-btn"></div>
+                  </div>
+                }
+              } @else {
+                @for (app of section.apps; track app.id) {
+                  <div class="maskgroup-app-row">
+                    <img
+                      [src]="app.application_icon"
+                      [alt]="getAppName(app)"
+                      class="maskgroup-app-icon"
+                      loading="lazy"
+                    />
+                    <div class="maskgroup-app-info">
+                      <h4 class="maskgroup-app-name">{{ getAppName(app) }}</h4>
+                      <p class="maskgroup-app-desc">
+                        {{ getAppDescription(app) }}
+                      </p>
+                    </div>
+                    <a
+                      class="maskgroup-app-btn"
+                      [routerLink]="[
+                        '/',
+                        currentLang,
+                        'app',
+                        app.slug || app.id,
+                      ]"
+                    >
+                      {{ currentLang === "ar" ? "تحميل التطبيق" : "Download" }}
+                    </a>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+          <div class="maskgroup-image-wrapper">
+            <img
+              [src]="section.image"
+              [alt]="section.title_ar"
+              class="maskgroup-card"
+              loading="lazy"
+            />
+            <h3 class="maskgroup-title">{{ section.title_ar }}</h3>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Ramadan Custom Footer -->
+  <footer class="ramadan-footer">
+    <!-- Community CTA Banner -->
+    <div class="footer-cta">
+      <div class="footer-cta-content">
+        <div class="footer-cta-text">
+          <h3 class="footer-cta-title">رمضان فرصة للمشاركة</h3>
+          <p class="footer-cta-desc">
+            مجتمع إتقان يجمع المهتمين بخدمة القرآن عبر التقنية، بالمشاركة،
+            والتجربة، وتبادل الترشيحات والأفكار.
+          </p>
+          <p class="footer-cta-desc">
+            انضم إلينا في رمضان، شاركنا ما تستخدمه، اقترح تطبيقات، أو شارك في
+            تطوير مشاريع تخدم القرآن خلال الشهر المبارك.
+          </p>
+        </div>
+        <div class="footer-cta-btn-wrapper">
+          <img
+            src="assets/images/Isolation_Mode.svg"
+            alt=""
+            class="footer-cta-decoration"
+          />
+          <a
+            class="footer-cta-btn"
+            href="https://community.itqan.dev/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            انضم إلى مجتمع إتقان
+          </a>
+        </div>
+      </div>
+      <div class="footer-cta-pattern"></div>
+    </div>
+
+    <!-- Sponsor & Info Row -->
+    <div class="footer-info-row">
+      <p class="footer-open-source">
+        مشروع مفتوح المصدر، أحد مشاريع مجتمع إتقان لتقنيات القرآن، ١٤٤٧ هـ
+      </p>
+      <div class="footer-sponsor">
+        <span class="footer-sponsor-label">المنصة برعاية</span>
+        <img src="/assets/images/charity.svg" alt="" />
+      </div>
+    </div>
+
+    <!-- Links Row -->
+    <div class="footer-links-row">
+      <h4 class="footer-links-title">مشاريع إتقان الأخرى</h4>
+      <ul class="footer-links-list">
+        <li>
+          <a
+            [href]="'https://itqan.dev/' + currentLang"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            الموقع الرئيسي لمجتمع إتقان
+          </a>
+          <img src="assets/images/link-square.svg" alt="" class="" />
+        </li>
+        <li>
+          <a
+            href="https://itqan.dev/projects"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            نظام إدارة المحتوى القرآني
+          </a>
+          <img src="assets/images/link-square.svg" alt="" class="" />
+        </li>
+        <li>
+          <a
+            href="https://itqan.dev/resources"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            موارد المطورين
+          </a>
+          <img src="assets/images/link-square.svg" alt="" class="" />
+        </li>
+      </ul>
+    </div>
+  </footer>
+</div>
