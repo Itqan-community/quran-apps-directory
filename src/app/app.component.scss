@@ -731,6 +731,11 @@ nz-footer.main-footer {
   @media (max-width: 768px) {
     padding-bottom: 30px; // Extra space on mobile
   }
+
+  &.ramadan-layout {
+    background-color: #f9ebe2 !important;
+    padding-bottom: 0 !important;
+  }
 }
 
 // Light theme specific adjustments for modern header

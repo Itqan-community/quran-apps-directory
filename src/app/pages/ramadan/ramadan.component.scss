@@ -1,9 +1,16 @@
 @use "sass:color";
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap");
 
+@font-face {
+  font-family: "DG Ghareeb";
+  src: url("/assets/fonts/DG-Ghareeb-REG.ttf") format("truetype");
+  font-display: swap;
+}
+
 :host {
   display: block;
   background-color: #f9ebe2;
+  overflow-x: hidden;
 }
 
 $bg-warm: #f9ebe2;
@@ -167,6 +174,7 @@ $radius-md: 12px;
 .maskgroup-section {
   background-color: $bg-warm;
   padding: clamp(30px, 5vw, 60px) clamp(16px, 3vw, 24px);
+  overflow-x: hidden;
 }
 
 .maskgroup-container {
@@ -307,7 +315,7 @@ $radius-md: 12px;
   transform: translate(-50%, -50%);
   font-family: "DG Ghareeb", sans-serif;
   font-size: clamp(18px, 3vw, 40px);
-  font-weight: 300;
+  font-weight: 400;
   color: #ffffff !important;
   margin: 0;
   direction: rtl;
