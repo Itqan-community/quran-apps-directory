@@ -777,6 +777,124 @@
   margin-top: 4px;
 }
 
+// ============================================
+// RAMADAN BANNER
+// ============================================
+
+.ramadan-banner {
+  position: relative;
+  border-radius: 16px;
+  margin: 24px auto 8px;
+  max-width: 1400px;
+  overflow: hidden;
+
+  .ramadan-banner-bg {
+    width: 100%;
+    display: block;
+  }
+
+  .ramadan-banner-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    padding-inline-start: 30%;
+    padding-inline-end: 48px;
+  }
+
+  .ramadan-banner-text {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ramadan-banner-title {
+    font-size: 40px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.4;
+    font-family: "Expo Arabic", sans-serif;
+
+    .title-muted {
+      color: #8c2121;
+      font-weight: 500;
+    }
+
+    .title-bold {
+      color: #c8ab9d;
+      font-weight: 700;
+    }
+  }
+
+  .ramadan-banner-desc {
+    font-size: 20px;
+    color: #8c2121;
+    margin: 0;
+    line-height: 1.8;
+    font-family: "Expo Arabic", sans-serif;
+  }
+
+  .ramadan-banner-btn {
+    display: inline-block;
+    background: #1f1f1f;
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 13px;
+    width: fit-content;
+    text-decoration: none;
+    transition: background 0.2s ease;
+    font-family: "Expo Arabic", sans-serif;
+
+    &:hover {
+      background: #383838;
+    }
+  }
+
+  // Tablet
+  @media (max-width: 1024px) {
+    .ramadan-banner-overlay {
+      padding-inline-start: 20%;
+      padding-inline-end: 32px;
+    }
+
+    .ramadan-banner-title {
+      font-size: 22px;
+    }
+  }
+
+  // Mobile
+  @media (max-width: 768px) {
+    margin: 16px 12px 8px;
+
+    .ramadan-banner-overlay {
+      padding-inline-start: 38%;
+      padding-inline-end: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .ramadan-banner-overlay {
+      padding-inline-start: 40%;
+      padding-inline-end: 12px;
+    }
+
+    .ramadan-banner-title {
+      font-size: 14px;
+    }
+
+    .ramadan-banner-desc {
+      font-size: 10px;
+      line-height: 1.6;
+    }
+
+    .ramadan-banner-btn {
+      padding: 8px 16px;
+      font-size: 11px;
+    }
+  }
+}
+
 .empty-state {
   display: flex;
   justify-content: center;
