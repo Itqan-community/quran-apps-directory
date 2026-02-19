@@ -165,8 +165,8 @@ $radius-md: 12px;
   }
 
   .hero-section .hero-description {
-    font-size: 8px;
-    line-height: 1.6;
+    font-size: 7.85px;
+    line-height: 1.5;
   }
 }
 
@@ -306,6 +306,9 @@ $radius-md: 12px;
   border-radius: $radius-lg;
   filter: drop-shadow(0 4px 16px rgba(45, 24, 16, 0.1));
   display: block;
+  @media screen and (max-width: 768px) {
+    width: 150px;
+  }
 }
 
 .maskgroup-title {
