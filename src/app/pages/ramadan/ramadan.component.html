@@ -1,162 +1,239 @@
-<div class="ramadan-page" [dir]="currentLang === 'ar' ? 'rtl' : 'ltr'">
-  <!-- Header - Frosted Glass -->
-  <nav class="ramadan-nav">
-    <div class="nav-content">
-      <div class="nav-start">
-        <button class="lang-pill" (click)="changeLanguage()">
-          {{ currentLang === 'ar' ? 'EN' : 'ع' }}
-        </button>
-        <a href="https://community.itqan.dev" target="_blank" rel="noopener" class="community-pill">
-          {{ 'ramadan.nav.community' | translate }}
-        </a>
-      </div>
-      <div class="nav-links">
-        <a [routerLink]="['/', currentLang]">{{ 'ramadan.nav.home' | translate }}</a>
-        <a [routerLink]="['/', currentLang, 'about-us']">{{ 'ramadan.nav.about' | translate }}</a>
-        <a [routerLink]="['/', currentLang, 'contact-us']">{{ 'ramadan.nav.contact' | translate }}</a>
-      </div>
-      <a [routerLink]="['/', currentLang]" class="nav-logo">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-        </svg>
-        {{ 'ramadan.nav.directoryName' | translate }}
-      </a>
-    </div>
-  </nav>
+<div class="ramadan-page" [class.rtl]="currentLang === 'ar'">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <img
+      src="assets/images/ramadan.png"
+      alt="Ramadan 1447"
+      class="ramadan-calligraphy"
+    />
 
-  <!-- Hero Section - Desert Background -->
-  <section class="hero">
-    <div class="hero-bg">
-      <img src="assets/images/ramadan-bg.svg" alt="" aria-hidden="true" loading="eager" fetchpriority="high">
+    <div class="hero-text-content">
+      <h1 class="hero-title">مع القرآن.. رفقة أقرب</h1>
+      <p class="hero-description">
+        نبحث في رمضان عن السكينة، ونمنح القرآن حضورًا دائمًا يرافقنا طوال الشهر.
+        في هذا الدليل جمعنا لك ترشيحات لتطبيقات قرآنية متنوعة مناسبة لرمضان،
+        لنمنحك تجربة روحية مميزة في هذا الشهر الكريم.
+      </p>
     </div>
-    <div class="hero-decorations">
-      <div class="gradient-circle circle-1"></div>
-      <div class="gradient-circle circle-2"></div>
-    </div>
-    <div class="hero-content">
-      <span class="hero-year">١٤٤٧</span>
-      <h1 class="hero-title">{{ 'ramadan.tagline' | translate }}</h1>
-      <p class="hero-description">{{ 'ramadan.description' | translate }}</p>
+    <img
+      src="assets/images/RamadanHerobackground.png"
+      alt="Ramadan Kareem 1447"
+      class="hero-bg"
+    />
+  </section>
+
+  <!-- Maskgroup Cards with Content Sections -->
+  <section class="maskgroup-section">
+    <div class="maskgroup-container">
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-1"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-2"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-3"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-4"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-5"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-6"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-7"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-8"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-9"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-10"
+      />
+      <img
+        src="assets/images/randomlyStars.svg"
+        alt=""
+        class="random-star star-11"
+      />
+      @for (section of sections; track section.id; let i = $index) {
+        <div
+          class="maskgroup-row"
+          [class.maskgroup-row--reversed]="isReversed(i)"
+        >
+          <div class="maskgroup-content">
+            <h1 class="maskgroup-content-subtitle">
+              {{ getSectionSubtitle(section) }}
+            </h1>
+            <p class="maskgroup-content-desc">
+              {{ getSectionDescription(section) }}
+            </p>
+            <div class="maskgroup-apps-list">
+              @if (isLoading) {
+                @for (i of [1, 2, 3]; track i) {
+                  <div class="shimmer-app-row">
+                    <div class="shimmer-app-icon"></div>
+                    <div class="shimmer-app-info">
+                      <div class="shimmer-app-name"></div>
+                      <div class="shimmer-app-desc"></div>
+                    </div>
+                    <div class="shimmer-app-btn"></div>
+                  </div>
+                }
+              } @else {
+                @for (app of section.apps; track app.id) {
+                  <div
+                    class="maskgroup-app-row"
+                    [routerLink]="['/', currentLang, 'app', app.slug || app.id]"
+                    style="cursor: pointer"
+                  >
+                    <img
+                      [src]="app.application_icon"
+                      [alt]="getAppName(app)"
+                      class="maskgroup-app-icon"
+                      loading="lazy"
+                    />
+                    <div class="maskgroup-app-info">
+                      <h4 class="maskgroup-app-name">{{ getAppName(app) }}</h4>
+                      <p class="maskgroup-app-desc">
+                        {{ getAppDescription(app) }}
+                      </p>
+                    </div>
+                    <a
+                      class="maskgroup-app-btn"
+                      [routerLink]="[
+                        '/',
+                        currentLang,
+                        'app',
+                        app.slug || app.id,
+                      ]"
+                    >
+                      {{ currentLang === "ar" ? "تفاصيل التطبيق" : "Download" }}
+                    </a>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+          <div class="maskgroup-image-wrapper">
+            <img
+              [src]="section.image"
+              [alt]="section.title_ar"
+              class="maskgroup-card"
+              loading="lazy"
+            />
+            <h3 class="maskgroup-title">{{ section.title_ar }}</h3>
+          </div>
+        </div>
+      }
     </div>
   </section>
 
-  <!-- App Sections -->
-  <main class="sections-container">
-    @for (section of sections; track section.titleKey; let i = $index) {
-      <section class="app-section">
-        <div class="section-header">
-          <h2 class="section-title">{{ section.titleKey | translate }}</h2>
-          <p class="section-subtitle">{{ section.subtitleKey | translate }}</p>
-          <p class="section-description">{{ section.descriptionKey | translate }}</p>
-        </div>
-
-        @if (loading) {
-          <div class="cards-grid">
-            <div class="skeleton-card"></div>
-            <div class="skeleton-card"></div>
-            <div class="skeleton-card"></div>
-          </div>
-        } @else {
-          <div class="cards-grid">
-            @for (app of section.apps; track app.slug) {
-              <div class="rich-card">
-                <!-- Screenshot -->
-                @if (getScreenshot(app)) {
-                  <div class="card-screenshot">
-                    <app-optimized-image
-                      [src]="getScreenshot(app)!"
-                      [alt]="getAppName(app)"
-                      cssClass="screenshot-img"
-                      width="320"
-                      height="180"
-                      loading="lazy"
-                    ></app-optimized-image>
-                  </div>
-                }
-
-                <!-- App Info Row -->
-                <div class="card-info">
-                  <app-optimized-image
-                    [src]="app.application_icon"
-                    [alt]="getAppName(app)"
-                    cssClass="card-icon"
-                    width="69"
-                    height="69"
-                    loading="lazy"
-                  ></app-optimized-image>
-                  <div class="card-text">
-                    <h3 class="card-name">{{ getAppName(app) }}</h3>
-                    <p class="card-desc">{{ getAppDescription(app) }}</p>
-                  </div>
-                </div>
-
-                <!-- Tags -->
-                <div class="card-tags">
-                  @for (tag of getAppTags(app); track tag) {
-                    <span class="tag-pill">{{ tag }}</span>
-                  }
-                  @if (getExtraTags(app) > 0) {
-                    <span class="tag-pill tag-more">+{{ getExtraTags(app) }}</span>
-                  }
-                </div>
-
-                <!-- Stats Row -->
-                <div class="card-stats">
-                  @if (app.avg_rating) {
-                    <div class="stat">
-                      <span class="stat-label">{{ 'ramadan.rating' | translate }}</span>
-                      <span class="stat-value">{{ app.avg_rating }} <span class="star">&#9733;</span></span>
-                    </div>
-                  }
-                  <div class="stat">
-                    <span class="stat-label">{{ 'ramadan.platform' | translate }}</span>
-                    <span class="stat-value">{{ getPlatformLabel(app) }}</span>
-                  </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="card-actions">
-                  <a [routerLink]="['/', currentLang, 'app', app.slug]" class="btn-download">
-                    {{ 'ramadan.downloadApp' | translate }}
-                  </a>
-                  <button class="btn-share" (click)="shareApp(app, $event)">
-                    {{ 'ramadan.shareApp' | translate }}
-                  </button>
-                </div>
-              </div>
-            }
-          </div>
-        }
-      </section>
-    }
-  </main>
-
-  <!-- Footer CTA -->
+  <!-- Ramadan Custom Footer -->
   <footer class="ramadan-footer">
-    <div class="footer-cta-section">
-      <h2 class="footer-cta-title">{{ 'ramadan.footer.title' | translate }}</h2>
-      <p class="footer-cta-description">{{ 'ramadan.footer.description' | translate }}</p>
-      <a href="https://community.itqan.dev" target="_blank" rel="noopener" class="footer-cta-btn">
-        {{ 'ramadan.footer.cta' | translate }}
-      </a>
-    </div>
-    <div class="footer-bottom">
-      <div class="footer-bottom-content">
-        <div class="footer-links">
-          <span class="footer-label">{{ 'ramadan.footer.openSource' | translate }}</span>
-          <div class="footer-link-items">
-            <a href="https://community.itqan.dev" target="_blank" rel="noopener">{{ 'ramadan.footer.mainSite' | translate }}</a>
-            <a [routerLink]="['/', currentLang]">{{ 'ramadan.footer.appsDirectory' | translate }}</a>
-            <a href="https://github.com/Itqan-community" target="_blank" rel="noopener">{{ 'ramadan.footer.devResources' | translate }}</a>
-          </div>
+    <!-- Community CTA Banner -->
+    <div class="footer-cta">
+      <div class="footer-cta-content">
+        <div class="footer-cta-text">
+          <h3 class="footer-cta-title">رمضان فرصة للمشاركة</h3>
+          <p class="footer-cta-desc">
+            مجتمع إتقان يجمع المهتمين بخدمة القرآن عبر التقنية، بالمشاركة،
+            والتجربة، وتبادل الترشيحات والأفكار.
+          </p>
+          <p class="footer-cta-desc">
+            انضم إلينا في رمضان، شاركنا ما تستخدمه، اقترح تطبيقات، أو شارك في
+            تطوير مشاريع تخدم القرآن خلال الشهر المبارك.
+          </p>
         </div>
-        <div class="footer-brand">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-          </svg>
-          <span>{{ 'ramadan.nav.directoryName' | translate }}</span>
+        <div class="footer-cta-btn-wrapper">
+          <img
+            src="assets/images/Isolation_Mode.svg"
+            alt=""
+            class="footer-cta-decoration"
+          />
+          <a
+            class="footer-cta-btn"
+            href="https://community.itqan.dev/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            انضم إلى مجتمع إتقان
+          </a>
         </div>
       </div>
+      <div class="footer-cta-pattern"></div>
+    </div>
+
+    <!-- Sponsor & Info Row -->
+    <div class="footer-info-row">
+      <p class="footer-open-source">
+        مشروع مفتوح المصدر، أحد مشاريع مجتمع إتقان لتقنيات القرآن، ١٤٤٧ هـ
+      </p>
+      <div class="footer-sponsor">
+        <span class="footer-sponsor-label">المنصة برعاية</span>
+        <img src="/assets/images/charity.svg" alt="" />
+      </div>
+    </div>
+
+    <!-- Links Row -->
+    <div class="footer-links-row">
+      <h4 class="footer-links-title">مشاريع إتقان الأخرى</h4>
+      <ul class="footer-links-list">
+        <li>
+          <a
+            [href]="'https://itqan.dev/' + currentLang"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            الموقع الرئيسي لمجتمع إتقان
+          </a>
+          <img src="assets/images/link-square.svg" alt="" class="" />
+        </li>
+        <li>
+          <a
+            href="https://itqan.dev/projects"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            نظام إدارة المحتوى القرآني
+          </a>
+          <img src="assets/images/link-square.svg" alt="" class="" />
+        </li>
+        <li>
+          <a
+            href="https://itqan.dev/resources"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            موارد المطورين
+          </a>
+          <img src="assets/images/link-square.svg" alt="" class="" />
+        </li>
+      </ul>
     </div>
   </footer>
 </div>
