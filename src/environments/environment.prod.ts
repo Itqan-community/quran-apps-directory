@@ -14,7 +14,7 @@ export const environment = {
     debugMode: false,
     logging: false,
     showStagingBanner: false,
-    enableServiceWorker: true
+    enableServiceWorker: false
   },
   sentry: {
     enabled: true,

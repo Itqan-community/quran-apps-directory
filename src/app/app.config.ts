@@ -1,5 +1,5 @@
 import { ApplicationConfig, ErrorHandler, APP_INITIALIZER, PLATFORM_ID } from '@angular/core';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter, Router, withInMemoryScrolling } from '@angular/router';
 import * as Sentry from '@sentry/angular';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS, withFetch } from '@angular/common/http';
@@ -10,13 +10,11 @@ import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-transla
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzConfig, provideNzConfig } from 'ng-zorro-antd/core/config';
-import { ServiceWorkerModule } from '@angular/service-worker';
 import { firstValueFrom } from 'rxjs';
 import { CacheInterceptor } from './interceptors/cache.interceptor';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { TimeoutInterceptor } from './interceptors/timeout.interceptor';
 import { routes } from './app.routes';
-import { environment } from '../environments/environment';
 import {
   MenuOutline,
   ArrowUpOutline,
@@ -92,7 +90,7 @@ const ngZorroConfig: NzConfig = {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
     provideAnimations(),
     provideHttpClient(withInterceptorsFromDi(), withFetch()),
     provideNzConfig(ngZorroConfig),
@@ -133,10 +131,6 @@ export const appConfig: ApplicationConfig = {
     },
     importProvidersFrom(
       HttpClientModule,
-      ServiceWorkerModule.register('ngsw-worker.js', {
-        enabled: environment.production,
-        registrationStrategy: 'registerImmediately'
-      }),
       NzIconModule.forRoot([
         MenuOutline, ArrowUpOutline, ArrowDownOutline, ArrowRightOutline,
         SearchOutline, SunOutline, MoonOutline, BgColorsOutline, ExportOutline,

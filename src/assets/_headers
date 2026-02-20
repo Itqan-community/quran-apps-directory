@@ -17,6 +17,7 @@
   X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=()
+  Cache-Control: public, max-age=0, must-revalidate
 
 # Hashed static assets - long-term immutable caching
 # NOTE: Do NOT set Content-Type here. Cloudflare Pages detects MIME types
@@ -35,15 +36,22 @@
 /styles-*.css
   Cache-Control: public, max-age=31536000, immutable
 
-# Service worker files - no caching
+# Translation files - must stay fresh, not hashed
+/assets/i18n/*.json
+  Cache-Control: no-store, must-revalidate
+
+# Font files - never change, cache forever
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Image assets - 7-day cache with revalidation
+/assets/images/*
+  Cache-Control: public, max-age=604800, must-revalidate
+
+# PWA manifest - must stay fresh, not hashed
+/manifest.webmanifest
+  Cache-Control: no-cache, must-revalidate
+
+# Cleanup service worker - no caching
 /sw.js
-  Cache-Control: no-cache, must-revalidate
-
-/ngsw-worker.js
-  Cache-Control: no-cache, must-revalidate
-
-/worker-basic.min.js
-  Cache-Control: no-cache, must-revalidate
-
-/ngsw.json
   Cache-Control: no-cache, must-revalidate
