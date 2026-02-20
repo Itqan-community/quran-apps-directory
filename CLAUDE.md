@@ -1,6 +1,8 @@
-﻿# CLAUDE.md
+# CLAUDE.md
 
-## Git Policy
+This file provides guidance to Claude Code when working with the Quran Apps Directory codebase.
+
+## 1. Git Policy
 
 **NEVER auto-commit, stage, or perform any git actions unless the user explicitly requests it.** The user will review and handle git operations manually.
 
@@ -18,23 +20,19 @@ feat/{Short Title}
 
 ---
 
-## 0. Prompt Enhancement Protocol
-**MANDATORY: Before starting ANY task**, enhance the user's prompt through this process:
-You will act like my pm. gather requirements and understand scope before starting any task i give you. start by asking questions with simple a, b, c options. thereafter you will act like a architect to devise the best solution. thereafter you will act like a senior develop to implement code that is KISS, DRY & SOLID. 
-When given your instruction, follow this workflow for each task:
+## 2. Workflow Protocol (Opt-in)
 
-  Phase 1: PM → Gather requirements through simple a/b/c questions until scope is clear
+When given a task, **ask the user first** whether they want the full PM/Architect/Developer workflow or want to skip straight to implementation.
 
-  Phase 2: Architect → Design the solution with clear boundaries and interfaces
+If the user opts in, follow this phased approach:
 
-  Phase 3: Developer → Implement clean code (KISS, DRY, SOLID)
-  
+**Phase 1: PM** - Gather requirements through simple a/b/c questions until scope is clear
+**Phase 2: Architect** - Design the solution with clear boundaries and interfaces
+**Phase 3: Developer** - Implement clean code (KISS, DRY, SOLID)
 
-Use the built in Claude ask user questions tool "AskUserQuestion" to ask one question at a time with options to enhance the prompt:
-When starting each phase, ensure you have a clear understanding of the task at hand and the expected outcome. This includes reviewing the context gathered in Phase 1, understanding the requirements from Phase 2, and implementing the solution in Phase 3..
-Start with outputing: "Starting Phase #: {Persona} {with emoticon})"
----
-## 0.1. Context Gathering
+Use `AskUserQuestion` to ask one question at a time with options. Start each phase with: `"Starting Phase #: {Persona}"`
+
+### 2.1. Context Gathering (Phase 1)
 
 Identify and document:
 - **Affected files/modules** - Which code will be touched
@@ -44,7 +42,7 @@ Identify and document:
 - **Documentation** - Relevant docs that may need updates
 - **Related tickets/issues** - If mentioned or discoverable
 
-## 0.2. Requirements Clarification
+### 2.2. Requirements Clarification (Phase 1)
 
 Define explicitly:
 - **Acceptance criteria** - Measurable outcomes that define "done"
@@ -52,17 +50,17 @@ Define explicitly:
 - **Scope boundaries** - What is explicitly IN and OUT of scope
 - **Assumptions** - Any assumptions being made
 
-## 0.3. Confirmation Loop
+### 2.3. Confirmation Loop
 
 Present the enhanced prompt back to the user:
 
 ```
-📋 **Enhanced Prompt**
+**Enhanced Prompt**
 
-**Task:** [clear, specific description of what will be done]
+**Task:** [clear, specific description]
 
 **Context:**
-- Files: [list of affected files/modules]
+- Files: [affected files/modules]
 - Branch: [current git branch]
 - Dependencies: [relevant integrations]
 
@@ -76,42 +74,83 @@ Present the enhanced prompt back to the user:
 **Assumptions:**
 - [assumption 1]
 
----
 Proceed with this understanding?
 ```
 
-**⚠️ Do NOT proceed until the user confirms.**
+**Do NOT proceed until the user confirms.**
 
 ---
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## 3. Tooling
 
-## Project Overview
+### Serena MCP - Code Intelligence
+**Always use Serena MCP tools when available** for code navigation and understanding:
+- Use Serena for exploring codebase structure, finding symbol definitions, references, and call hierarchies
+- Prefer Serena over manual file searching for understanding code relationships
+- Use Serena's semantic code analysis before making changes to understand impact
 
-Quran Apps Directory - A bilingual (Arabic/English) Angular 20 application for discovering Islamic applications. Uses standalone components architecture with lazy loading.
+### Beads - Issue & Task Tracking
+**Always use Beads (`bd` commands) when available** for tracking work:
+- **Before starting work**: Check `bd ready` for unblocked tasks, or create a new issue with `bd create`
+- **During work**: Track progress by updating issues with `bd update`
+- **Multi-session work**: Always use Beads for tasks that span sessions - it persists across conversation compaction
+- **Dependencies**: Use `bd dep` to link related issues and track blockers
+- **Closing**: Use `bd close` when work is complete
 
-## Build & Development Commands
+### Context7 - Angular Documentation
+Use Context7 MCP for up-to-date Angular documentation:
+- **Library ID**: `/websites/v20_angular_dev` (Angular 20 official docs, 9,390 code examples)
+- **Alternative**: `/angular/angular` for framework source-level docs
+- Query Context7 before implementing Angular patterns you're unsure about
+- Use for checking Angular 20-specific APIs, signals, standalone components, SSR, etc.
+
+### Tooling Workflow
+1. Check `bd ready` or `bd list` for existing tasks
+2. Use Serena to understand affected code before making changes
+3. Query Context7 for Angular patterns when needed
+4. Create/update Beads issues to track progress
+5. Close issues when done
+
+---
+
+## 4. Project Overview
+
+Quran Apps Directory - A bilingual (Arabic/English) Angular 20 application for discovering Islamic applications. Uses standalone components architecture with lazy loading. Features a seasonal Ramadan mode that changes the home page experience when enabled.
+
+---
+
+## 5. Build & Development Commands
 
 ```bash
 # Development
-npm start                    # Start dev server at localhost:4200
+npm start                    # Start dev server at localhost:4200 (alias: npm run dev)
+npm run serve:dev            # Serve with development config
 npm run serve:staging        # Serve with staging config
 npm run serve:prod           # Serve with production config
 
 # Building (each runs sitemap generation first)
-npm run build                # Development build
+npm run build                # Default build
+npm run build:dev            # Development build (no compression)
 npm run build:develop        # Develop environment + compression
 npm run build:staging        # Staging + compression
 npm run build:prod           # Production + compression
 
+# Deployment
+npm run deploy               # Build and copy to dist
+npm run deploy:staging       # Staging build
+npm run deploy:prod          # Production build
+
 # Utilities
-npm run generate-sitemap     # Regenerate sitemap.xml
+npm run generate-sitemap     # Regenerate sitemap.xml (alias: npm run sitemap)
 npm run analyze              # Bundle analysis (requires stats.json)
 npm run lighthouse           # Local Lighthouse audit
 npm run lighthouse:prod      # Production Lighthouse audit
+npm run performance:test     # Production build + Lighthouse JSON report
 ```
 
-## Architecture
+---
+
+## 6. Architecture
 
 ### Tech Stack
 - **Angular 20** with standalone components (no NgModules)
@@ -124,48 +163,76 @@ npm run lighthouse:prod      # Production Lighthouse audit
 ```
 src/app/
 ├── components/       # Reusable UI (optimized-image, theme-toggle)
-├── directives/       # Custom directives
+├── directives/       # Custom directives (optimized-image)
+├── guards/           # Route guards (ramadan-redirect)
 ├── interceptors/     # HTTP interceptors (cache, error, timeout)
-├── pages/            # Route components (lazy loaded)
+├── pages/            # Route components (10 pages, all lazy loaded)
 ├── pipes/            # Custom pipes (nl2br, optimized-image, safe-html)
-└── services/         # Business logic (15 services)
+└── services/         # Business logic & utilities (15 services + data/loaders)
 ```
 
-### Routing Pattern
-All routes follow `/:lang/:page` pattern with language prefix (en/ar):
-- `/:lang` - Home (all apps)
-- `/:lang/:category` - Category listing (must be LAST among specific routes)
-- `/:lang/app/:id` - App detail
-- `/:lang/developer/:developer` - Developer profile
-- `/:lang/submit-app` - App submission form
-- `/:lang/track-submission` - Track submission status
+### Routing
 
-**Important**: Specific routes must be defined BEFORE the generic `/:lang/:category` route in `app.routes.ts`.
+All routes follow `/:lang/:page` pattern with language prefix (`en`/`ar`). Routes are defined in `app.routes.ts`.
+
+**Important**: Specific routes must be defined BEFORE the generic `/:lang/:category` route to prevent incorrect matching.
+
+| Route | Component | Notes |
+|-------|-----------|-------|
+| `/:lang` | AppListComponent or RamadanComponent | Home - switches based on `RAMADAN_MODE` flag |
+| `/:lang/app/:id` | AppDetailComponent | App detail page |
+| `/:lang/apps` | AppListComponent | Full apps listing |
+| `/:lang/developer/:developer` | DeveloperComponent | Developer profile |
+| `/:lang/submit-app` | SubmitAppComponent | App submission form |
+| `/:lang/track-submission` | TrackSubmissionComponent | Track submission status |
+| `/:lang/request` | RequestFormComponent | Request form |
+| `/:lang/about-us` | AboutUsComponent | About page |
+| `/:lang/contact-us` | ContactUsComponent | Contact page |
+| `/:lang/search-comparison` | SearchComparisonComponent | Search comparison (hides chrome) |
+| `/:lang/ramadan` | RamadanComponent | Dedicated Ramadan page (hides footer) |
+| `/:lang/:category` | AppListComponent | **Must be LAST** - generic category listing |
+| `**` | Redirect to `/ar` | Fallback |
+
+### Ramadan Mode
+
+The `RAMADAN_MODE` flag in `src/app/guards/ramadan-redirect.guard.ts` controls seasonal behavior:
+- **When enabled**: Home route (`/:lang`) loads `RamadanComponent` with footer and language toggle hidden
+- **When disabled**: Home route loads standard `AppListComponent`
+- The dedicated `/:lang/ramadan` route is always available regardless of the flag
 
 ### Service Architecture
+
+Core services:
 - **ApiService** - REST API client with BehaviorSubject state management
+- **AppService** - Application data management
 - **ThemeService** - Dark/light/auto theme with Angular Signals
 - **LanguageService** - URL-based language detection, RTL/LTR handling
 - **SeoService** - Schema.org structured data, dynamic meta tags
 - **SubmissionService** - App submission and tracking
+
+Performance optimization services:
+- **LcpMonitorService** - Largest Contentful Paint tracking
+- **DeferredAnalyticsService** - Lazy analytics loading
+- **CriticalResourcePreloaderService** - Prioritize essential asset loading
+- **Http2OptimizationService** - HTTP/2 feature leveraging
+- **PerformanceService** - General performance utilities
+- **AppImagePreloaderService** - Image preloading
+- **ImageOptimizationService** - Image delivery optimization
+
+Other utilities:
+- **NavbarScrollService** - Scroll-aware navbar behavior
+- **ScriptLoaderService** - Dynamic script loading
+
+Data files in `services/`: `applicationsData.ts` (reference data), `translate-server-loader.ts` (SSR translation loader)
 
 ### HTTP Interceptor Chain
 ```
 Request → TimeoutInterceptor → CacheInterceptor → ErrorInterceptor → Backend
 ```
 
-## Environment Configuration
+---
 
-| Environment | API URL | Branch |
-|-------------|---------|--------|
-| Development | localhost:8000/api | local |
-| Develop | dev.api.quran-apps.itqan.dev/api | develop |
-| Staging | staging API | staging |
-| Production | qad-backend-api-production.up.railway.app/api | main |
-
-Environment files in `src/environments/`. Angular handles file replacement via `angular.json` fileReplacements.
-
-## Key Patterns
+## 7. Key Patterns
 
 ### Standalone Components
 All components use explicit imports:
@@ -193,9 +260,11 @@ if (isPlatformBrowser(this.platformId)) {
 ```
 
 ### Translation Loading
-Translations load via APP_INITIALIZER before app renders. Files at `src/assets/i18n/{lang}.json`.
+Translations load via `APP_INITIALIZER` before app renders. Files at `src/assets/i18n/{lang}.json`.
 
-## Backend API
+---
+
+## 8. Backend API
 
 Django REST backend with endpoints:
 - `GET /api/apps/` - List apps (filters: search, category, platform, featured)
@@ -204,26 +273,45 @@ Django REST backend with endpoints:
 - `POST /api/submissions/` - Submit new app
 - `GET /api/submissions/track/{trackingId}` - Track submission
 
-## PWA & Caching
+---
+
+## 9. Environment Configuration
+
+| Environment | API URL | Branch |
+|-------------|---------|--------|
+| Development | localhost:8000/api | local |
+| Develop | dev.api.quran-apps.itqan.dev/api | develop |
+| Staging | staging API | staging |
+| Production | qad-backend-api-production.up.railway.app/api | main |
+
+Environment files in `src/environments/`. Angular handles file replacement via `angular.json` fileReplacements.
+
+---
+
+## 10. PWA & Caching
 
 Service worker enabled in production (`ngsw-config.json`):
 - App shell prefetched
 - Translations: freshness strategy (1 day)
 - Images from R2 CDN: performance strategy (7 days)
 
-## Build Pipeline
+---
 
+## 11. Build Pipeline & Bundle Budgets
+
+### Build Pipeline
 1. `generate-sitemap.js` creates sitemap.xml
 2. Angular build with environment config
 3. `compress-assets.js` adds Gzip/Brotli (staging/prod only)
 
-## Bundle Budgets
-
+### Bundle Budgets
 Configured in `angular.json`:
 - Initial bundle: 1.5MB warning, 2.0MB error
 - Component styles: 20KB warning, 40KB error
 
-## Adding New Apps to Directory
+---
+
+## 12. Adding New Apps to Directory
 
 Standard process for adding a new Islamic app:
 
