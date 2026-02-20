@@ -76,6 +76,9 @@
     <!-- Critical CSS for above-the-fold content -->
     <style>
       /* Critical font fallback to prevent layout shift */
+      html, body {
+        overscroll-behavior-y: contain;
+      }
       body {
         font-family: 'Expo Arabic', 'Expo Arabic Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
         margin: 0;
@@ -356,10 +359,15 @@
     <script>
       (function() {
         var errors = 0;
+        var loaded = false;
+        window.addEventListener('load', function() {
+          loaded = true;
+          sessionStorage.removeItem('sw_recovery');
+        });
         window.addEventListener('error', function(e) {
           if (e.target && e.target.tagName === 'SCRIPT') {
             errors++;
-            if (errors >= 2 && !sessionStorage.getItem('sw_recovery')) {
+            if (errors >= 3 && !loaded && !sessionStorage.getItem('sw_recovery')) {
               sessionStorage.setItem('sw_recovery', '1');
               if ('caches' in window) {
                 caches.keys().then(function(n) { n.forEach(function(k) { caches.delete(k); }); });
@@ -371,7 +379,6 @@
             }
           }
         }, true);
-        window.addEventListener('load', function() { sessionStorage.removeItem('sw_recovery'); });
       })();
     </script>
   </head>

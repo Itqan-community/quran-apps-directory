@@ -782,6 +782,10 @@
 // ============================================
 
 .ramadan-banner {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
   position: relative;
   border-radius: 16px;
   margin: 24px auto 8px;
