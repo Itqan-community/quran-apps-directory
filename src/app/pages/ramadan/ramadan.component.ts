@@ -222,6 +222,7 @@ export class RamadanComponent implements OnInit, OnDestroy {
 
     if (isPlatformBrowser(this.platformId)) {
       document.documentElement.classList.add("ramadan-theme");
+      window.scrollTo(0, 0);
     }
   }
 

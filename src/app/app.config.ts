@@ -1,5 +1,5 @@
 import { ApplicationConfig, ErrorHandler, APP_INITIALIZER, PLATFORM_ID } from '@angular/core';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter, Router, withInMemoryScrolling } from '@angular/router';
 import * as Sentry from '@sentry/angular';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS, withFetch } from '@angular/common/http';
@@ -92,7 +92,7 @@ const ngZorroConfig: NzConfig = {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
     provideAnimations(),
     provideHttpClient(withInterceptorsFromDi(), withFetch()),
     provideNzConfig(ngZorroConfig),
