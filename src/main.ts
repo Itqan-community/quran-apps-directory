@@ -25,6 +25,11 @@ if (environment.sentry.enabled && environment.sentry.dsn) {
   });
 }
 
+// Prevent browser from auto-restoring scroll position on reload
+if (typeof window !== 'undefined' && 'scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
 bootstrapApplication(AppComponent, appConfig)
   .catch(err => {
     console.error('Bootstrap error:', err);
