@@ -423,69 +423,6 @@ $radius-md: 12px;
     transform 0.2s;
 }
 
-// Shimmer App Row Loading State
-.shimmer-app-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  border-bottom: 1px solid rgb(226, 218, 218);
-}
-
-.shimmer-app-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  flex-shrink: 0;
-  background: linear-gradient(90deg, #f0e0d6 25%, #f5ece5 50%, #f0e0d6 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-.shimmer-app-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.shimmer-app-name {
-  width: 60%;
-  height: 14px;
-  border-radius: 4px;
-  background: linear-gradient(90deg, #f0e0d6 25%, #f5ece5 50%, #f0e0d6 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-.shimmer-app-desc {
-  width: 80%;
-  height: 12px;
-  border-radius: 4px;
-  background: linear-gradient(90deg, #f0e0d6 25%, #f5ece5 50%, #f0e0d6 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-.shimmer-app-btn {
-  width: 100px;
-  height: 36px;
-  border-radius: 20px;
-  flex-shrink: 0;
-  background: linear-gradient(90deg, #f0e0d6 25%, #f5ece5 50%, #f0e0d6 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
 // RTL Support
 .rtl {
   direction: rtl;
