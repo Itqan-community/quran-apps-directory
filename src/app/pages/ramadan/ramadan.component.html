@@ -5,6 +5,9 @@
       src="assets/images/ramadan.png"
       alt="Ramadan 1447"
       class="ramadan-calligraphy"
+      fetchpriority="high"
+      width="600"
+      height="400"
     />
 
     <div class="hero-text-content">
@@ -16,9 +19,12 @@
       </p>
     </div>
     <img
-      src="assets/images/RamadanHerobackground.png"
+      src="assets/images/RamadanHerobackground.webp"
       alt="Ramadan Kareem 1447"
       class="hero-bg"
+      fetchpriority="high"
+      width="1920"
+      height="1396"
     />
   </section>
 
@@ -93,49 +99,37 @@
               {{ getSectionDescription(section) }}
             </p>
             <div class="maskgroup-apps-list">
-              @if (isLoading) {
-                @for (i of [1, 2, 3]; track i) {
-                  <div class="shimmer-app-row">
-                    <div class="shimmer-app-icon"></div>
-                    <div class="shimmer-app-info">
-                      <div class="shimmer-app-name"></div>
-                      <div class="shimmer-app-desc"></div>
-                    </div>
-                    <div class="shimmer-app-btn"></div>
+              @for (app of section.apps; track app.id) {
+                <div
+                  class="maskgroup-app-row"
+                  [routerLink]="['/', currentLang, 'app', app.slug || app.id]"
+                  style="cursor: pointer"
+                >
+                  <img
+                    [src]="app.application_icon"
+                    [alt]="getAppName(app)"
+                    class="maskgroup-app-icon"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div class="maskgroup-app-info">
+                    <h4 class="maskgroup-app-name">{{ getAppName(app) }}</h4>
+                    <p class="maskgroup-app-desc">
+                      {{ getAppDescription(app) }}
+                    </p>
                   </div>
-                }
-              } @else {
-                @for (app of section.apps; track app.id) {
-                  <div
-                    class="maskgroup-app-row"
-                    [routerLink]="['/', currentLang, 'app', app.slug || app.id]"
-                    style="cursor: pointer"
+                  <a
+                    class="maskgroup-app-btn"
+                    [routerLink]="[
+                      '/',
+                      currentLang,
+                      'app',
+                      app.slug || app.id,
+                    ]"
                   >
-                    <img
-                      [src]="app.application_icon"
-                      [alt]="getAppName(app)"
-                      class="maskgroup-app-icon"
-                      loading="lazy"
-                    />
-                    <div class="maskgroup-app-info">
-                      <h4 class="maskgroup-app-name">{{ getAppName(app) }}</h4>
-                      <p class="maskgroup-app-desc">
-                        {{ getAppDescription(app) }}
-                      </p>
-                    </div>
-                    <a
-                      class="maskgroup-app-btn"
-                      [routerLink]="[
-                        '/',
-                        currentLang,
-                        'app',
-                        app.slug || app.id,
-                      ]"
-                    >
-                      {{ currentLang === "ar" ? "تفاصيل التطبيق" : "Download" }}
-                    </a>
-                  </div>
-                }
+                    {{ currentLang === "ar" ? "تفاصيل التطبيق" : "Download" }}
+                  </a>
+                </div>
               }
             </div>
           </div>
@@ -144,7 +138,7 @@
               [src]="section.image"
               [alt]="section.title_ar"
               class="maskgroup-card"
-              loading="lazy"
+              [loading]="i < 2 ? 'eager' : 'lazy'"
             />
             <h3 class="maskgroup-title">{{ section.title_ar }}</h3>
           </div>
