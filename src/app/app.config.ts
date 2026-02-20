@@ -90,7 +90,7 @@ const ngZorroConfig: NzConfig = {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top' })),
+    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'disabled' })),
     provideAnimations(),
     provideHttpClient(withInterceptorsFromDi(), withFetch()),
     provideNzConfig(ngZorroConfig),
