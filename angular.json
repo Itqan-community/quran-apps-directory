@@ -122,7 +122,6 @@
               "./src/themes.scss"
             ],
             "tsConfig": "tsconfig.app.json",
-            "serviceWorker": "src/ngsw-config.json",
             "optimization": {
               "fonts": true,
               "styles": {

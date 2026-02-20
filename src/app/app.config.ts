@@ -10,13 +10,11 @@ import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-transla
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzConfig, provideNzConfig } from 'ng-zorro-antd/core/config';
-import { ServiceWorkerModule } from '@angular/service-worker';
 import { firstValueFrom } from 'rxjs';
 import { CacheInterceptor } from './interceptors/cache.interceptor';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { TimeoutInterceptor } from './interceptors/timeout.interceptor';
 import { routes } from './app.routes';
-import { environment } from '../environments/environment';
 import {
   MenuOutline,
   ArrowUpOutline,
@@ -133,10 +131,6 @@ export const appConfig: ApplicationConfig = {
     },
     importProvidersFrom(
       HttpClientModule,
-      ServiceWorkerModule.register('ngsw-worker.js', {
-        enabled: environment.production,
-        registrationStrategy: 'registerImmediately'
-      }),
       NzIconModule.forRoot([
         MenuOutline, ArrowUpOutline, ArrowDownOutline, ArrowRightOutline,
         SearchOutline, SunOutline, MoonOutline, BgColorsOutline, ExportOutline,

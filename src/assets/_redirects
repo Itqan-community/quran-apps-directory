@@ -13,9 +13,7 @@
 /*.json 200
 /_headers 200
 /_redirects 200
-/ngsw-worker.js 200
 /sw.js 200
-/worker-basic.min.js 200
 /sitemap.xml 200
 
 # SPA routing: All other routes serve index.html
