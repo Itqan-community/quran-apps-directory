@@ -171,7 +171,7 @@
 </section>
 
 <!-- Ramadan Banner -->
-<div class="ramadan-banner" dir="rtl">
+<a class="ramadan-banner" dir="rtl" [routerLink]="['/', currentLang, 'ramadan']">
   <picture>
     <source
       media="(max-width: 768px)"
@@ -192,15 +192,12 @@
       <p class="ramadan-banner-desc">
         نبحث في رمضان عن السكينة، ونمنح القرآن حضورًا دائمًا يرافقنا طوال الشهر
       </p>
-      <a
-        class="ramadan-banner-btn"
-        [routerLink]="['/', currentLang, 'ramadan']"
-      >
-        إستكشف اختيارات رمضان
-      </a>
+      <span class="ramadan-banner-btn">
+        استكشف اختيارات رمضان
+      </span>
     </div>
   </div>
-</div>
+</a>
 
 <!-- Main Content -->
 <div class="main-content">
