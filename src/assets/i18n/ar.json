@@ -40,7 +40,8 @@
     "content_management": "نظام إدارة المحتوى القرآني",
     "main_site": "الموقع الرئيسي لمجتمع إتقان",
     "resources": "موارد المطورين",
-    "mushaf_fonts": "خطوط المصحف العثمانية"
+    "mushaf_fonts": "خطوط المصحف العثمانية",
+    "sponsored_by": "المنصة برعاية"
   },
   "appList": {
     "hero": {

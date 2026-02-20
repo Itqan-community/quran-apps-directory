@@ -601,103 +601,124 @@
 }
 // Footer Styles
 nz-footer.main-footer {
-  text-align: center;
-  padding: 2rem 1rem 2rem 1rem;
+  padding: 0;
   background: var(--BG, #f3f3f3);
   color: var(--text-secondary, #666);
   margin: 100px 50px 0 50px !important;
   border-radius: 50px;
-  margin-bottom: 0px !important; // Space below footer
+  margin-bottom: 0px !important;
 
   @media (max-width: 768px) {
     margin: 60px 16px 0 16px !important;
     margin-bottom: 0 !important;
-    padding-bottom: 3rem !important;
     border-radius: 24px;
   }
 
   .footer-content {
     width: 100%;
-    margin: 40 auto;
+  }
+
+  // Info Row (open source text + sponsor logos)
+  .footer-info-row {
     display: flex;
-    flex-wrap: nowrap;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: 2rem;
+    align-items: center;
+    padding: 24px clamp(24px, 6vw, 80px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 
     @media (max-width: 768px) {
       flex-direction: column;
-      align-items: flex-start !important;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 20px 24px;
     }
   }
 
-  .footer-section {
-    flex: 1;
-    width: 50%;
+  .footer-open-source {
+    font-size: clamp(12px, 1.3vw, 14px);
+    color: var(--text-secondary, #666);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .footer-sponsor {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
     @media (max-width: 768px) {
       width: 100%;
-    }
-
-    h4 {
-      color: var(--text-color, #333);
-      margin-bottom: 1rem;
-      font-weight: 600;
-      text-align: start;
-      margin: 10px 15px;
-
-      @media (max-width: 768px) {
-        text-align: start;
-        margin: 10px 0;
-      }
-    }
-
-    .copyright {
-      margin: 0;
-      color: black;
-      line-height: 1.6;
-      text-align: end;
-
-      @media (max-width: 768px) {
-        text-align: start;
-        font-size: 14px;
-      }
+      justify-content: center;
+      gap: 4px;
     }
   }
 
-  .footer-links {
+  .footer-sponsor-label {
+    font-size: clamp(11px, 1.2vw, 13px);
+    color: var(--text-secondary, #666);
+  }
+
+  .footer-sponsor-maknon {
+    width: 80px;
+  }
+
+  // Links Row (heading + project links)
+  .footer-links-row {
     display: flex;
-    justify-content: flex-start;
-    gap: 1rem;
-    list-style: none;
-    padding: 0;
-    margin: 0px 10px;
-    flex-wrap: wrap;
-    color: black !important;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px clamp(24px, 6vw, 80px) 24px;
 
     @media (max-width: 768px) {
-      justify-content: flex-start !important;
-      gap: 0.5rem 1rem;
-      margin: 0;
-      font-size: 12px;
-      color: black !important;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 16px 24px 24px;
+    }
+  }
+
+  .footer-links-title {
+    font-size: clamp(14px, 1.5vw, 16px);
+    font-weight: 700;
+    color: var(--text-color, #333);
+    margin: 0;
+  }
+
+  .footer-links-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(12px, 3vw, 32px);
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 12px;
     }
 
     li {
-      margin-bottom: 0;
-      min-width: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       white-space: nowrap;
-      color: black !important;
-      // margin: 0px;
     }
 
     a {
+      color: var(--text-secondary, #666);
       text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: color 0.3s ease;
-      letter-spacing: normal;
+      font-size: clamp(12px, 1.3vw, 14px);
+      transition: color 0.2s;
+
+      &:hover {
+        color: var(--text-color, #333);
+      }
+    }
+
+    img {
+      width: 16px;
+      height: 16px;
+      opacity: 0.5;
     }
   }
 
@@ -705,10 +726,6 @@ nz-footer.main-footer {
   [dir="rtl"] & {
     .footer-content {
       direction: rtl;
-    }
-
-    .footer-links a {
-      flex-direction: row-reverse;
     }
   }
 }
