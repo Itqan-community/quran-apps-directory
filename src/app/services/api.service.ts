@@ -2,12 +2,18 @@ import { Injectable, PLATFORM_ID, Inject, makeStateKey, TransferState } from '@a
 import { isPlatformServer, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, tap, take } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 // Transfer state keys for SSR hydration
 const APPS_STATE_KEY = makeStateKey<App[]>('apps');
 const CATEGORIES_STATE_KEY = makeStateKey<Category[]>('categories');
+
+// localStorage cache keys
+const CACHE_VERSION = '1';
+const CACHE_VERSION_KEY = 'qad-cache-version';
+const APPS_CACHE_KEY = 'qad-apps-cache';
+const CATEGORIES_CACHE_KEY = 'qad-categories-cache';
 
 export interface App {
   id: string;
@@ -104,21 +110,33 @@ export class ApiService {
    * This prevents duplicate API calls after prerendering
    */
   private hydrateFromTransferState(): void {
-    // Check for apps data
+    // Check for apps data: TransferState (SSR) > localStorage > nothing
     if (this.transferState.hasKey(APPS_STATE_KEY)) {
       const apps = this.transferState.get(APPS_STATE_KEY, []);
       if (apps.length > 0) {
         this.appsSubject.next(apps);
         this.transferState.remove(APPS_STATE_KEY);
+        this.writeCache(APPS_CACHE_KEY, apps);
+      }
+    } else {
+      const cachedApps = this.readCache<App[]>(APPS_CACHE_KEY);
+      if (cachedApps && cachedApps.length > 0) {
+        this.appsSubject.next(cachedApps);
       }
     }
 
-    // Check for categories data
+    // Check for categories data: TransferState (SSR) > localStorage > nothing
     if (this.transferState.hasKey(CATEGORIES_STATE_KEY)) {
       const categories = this.transferState.get(CATEGORIES_STATE_KEY, []);
       if (categories.length > 0) {
         this.categoriesSubject.next(categories);
         this.transferState.remove(CATEGORIES_STATE_KEY);
+        this.writeCache(CATEGORIES_CACHE_KEY, categories);
+      }
+    } else {
+      const cachedCategories = this.readCache<Category[]>(CATEGORIES_CACHE_KEY);
+      if (cachedCategories && cachedCategories.length > 0) {
+        this.categoriesSubject.next(cachedCategories);
       }
     }
   }
@@ -142,6 +160,8 @@ export class ApiService {
       const cachedApps = this.appsSubject.value;
       if (cachedApps.length > 0) {
         // Return cached data immediately without loading spinner
+        // and trigger background revalidation
+        this.revalidateApps();
         return of({ count: cachedApps.length, next: null, previous: null, results: cachedApps as App[] });
       }
     }
@@ -163,6 +183,11 @@ export class ApiService {
       tap(response => {
         this.setLoading(false);
         this.appsSubject.next(response.results);
+
+        // Cache in localStorage for future visits (browser only, home page only)
+        if (isPlatformBrowser(this.platformId) && isHomePageRequest) {
+          this.writeCache(APPS_CACHE_KEY, response.results);
+        }
 
         // On server, store data in TransferState for client hydration (only for home page)
         if (isPlatformServer(this.platformId) && isHomePageRequest) {
@@ -245,11 +270,13 @@ export class ApiService {
    * Uses TransferState for SSR hydration
    */
   getCategories(): Observable<Category[]> {
-    // On browser, check if we already have data from TransferState
+    // On browser, check if we already have data from TransferState or localStorage
     if (isPlatformBrowser(this.platformId)) {
       const cachedCategories = this.categoriesSubject.value;
       if (cachedCategories.length > 0) {
         // Return cached data immediately without loading spinner
+        // and trigger background revalidation
+        this.revalidateCategories();
         return of(cachedCategories);
       }
     }
@@ -261,6 +288,11 @@ export class ApiService {
       tap(categories => {
         this.setLoading(false);
         this.categoriesSubject.next(categories);
+
+        // Cache in localStorage for future visits (browser only)
+        if (isPlatformBrowser(this.platformId)) {
+          this.writeCache(CATEGORIES_CACHE_KEY, categories);
+        }
 
         // On server, store data in TransferState for client hydration
         if (isPlatformServer(this.platformId)) {
@@ -379,6 +411,66 @@ export class ApiService {
    */
   refreshCategories(): void {
     this.getCategories().subscribe();
+  }
+
+  // localStorage cache helpers
+
+  private readCache<T>(key: string): T | null {
+    try {
+      if (localStorage.getItem(CACHE_VERSION_KEY) !== CACHE_VERSION) {
+        localStorage.removeItem(APPS_CACHE_KEY);
+        localStorage.removeItem(CATEGORIES_CACHE_KEY);
+        localStorage.setItem(CACHE_VERSION_KEY, CACHE_VERSION);
+        return null;
+      }
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) as T : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private writeCache(key: string, data: unknown): void {
+    try {
+      localStorage.setItem(CACHE_VERSION_KEY, CACHE_VERSION);
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch { /* QuotaExceededError — silently ignore */ }
+  }
+
+  private getAppsFingerprint(apps: App[]): string {
+    return `${apps.length}:${apps.map(a => a.id).join(',')}`;
+  }
+
+  private getCategoriesFingerprint(categories: Category[]): string {
+    return `${categories.length}:${categories.map(c => c.id).join(',')}`;
+  }
+
+  private revalidateApps(): void {
+    this.http.get<AppListResponse>(`${this.apiUrl}/apps/`).pipe(take(1)).subscribe({
+      next: (response) => {
+        const current = this.getAppsFingerprint(this.appsSubject.value);
+        const fresh = this.getAppsFingerprint(response.results);
+        if (current !== fresh) {
+          this.appsSubject.next(response.results);
+          this.writeCache(APPS_CACHE_KEY, response.results);
+        }
+      },
+      error: () => { /* stale data is fine */ }
+    });
+  }
+
+  private revalidateCategories(): void {
+    this.http.get<Category[]>(`${this.apiUrl}/categories/`).pipe(take(1)).subscribe({
+      next: (categories) => {
+        const current = this.getCategoriesFingerprint(this.categoriesSubject.value);
+        const fresh = this.getCategoriesFingerprint(categories);
+        if (current !== fresh) {
+          this.categoriesSubject.next(categories);
+          this.writeCache(CATEGORIES_CACHE_KEY, categories);
+        }
+      },
+      error: () => { /* stale data is fine */ }
+    });
   }
 
   // Private helper methods
