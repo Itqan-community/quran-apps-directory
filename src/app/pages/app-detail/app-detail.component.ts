@@ -28,6 +28,8 @@ import { NzDividerModule } from "ng-zorro-antd/divider";
 import { categories } from "../../services/applicationsData";
 import { NzRateModule } from "ng-zorro-antd/rate";
 import { NzImageModule, NzImageService } from "ng-zorro-antd/image";
+  error: boolean = false;
+  errorType: 'notFound' | 'api' | null = null;
 import { FormsModule } from "@angular/forms";
 // import function to register Swiper custom elements
 import { register } from "swiper/element/bundle";
@@ -242,6 +244,12 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
             this.hideSwiper,
             "loading:",
             this.loading,
+          this.error = true;
+          if (err.status === 404) {
+            this.errorType = 'notFound';
+          } else {
+            this.errorType = 'api';
+          }
           );
         } else {
           console.error("❌ DEBUG: No app data returned for:", appParam);
