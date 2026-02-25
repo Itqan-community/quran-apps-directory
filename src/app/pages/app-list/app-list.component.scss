@@ -1119,16 +1119,15 @@
   .badges-container {
     position: absolute;
     top: 10px;
-    inset-inline-start: 10px; // ✅ LTR: left | RTL: right
+    left: 10px;
+    right: auto;
+    inset-inline-start: 10px;
     display: flex;
     flex-direction: column;
     gap: 6px;
     z-index: 5;
-    // Don’t block clicking the card/routerLink
+    align-items: flex-start;
     pointer-events: none;
-    // Fallback for older browsers:
-    left: 10px;
-    right: auto;
 
     :host-context([dir='rtl']) & {
       right: 10px;

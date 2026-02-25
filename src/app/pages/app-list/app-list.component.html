@@ -229,29 +229,26 @@
       itemtype="https://schema.org/SoftwareApplication">
       <!-- Cover Image -->
       <div class="card-cover">
-
         <div class="badges-container">
-
           @if (app.featured) {
           <span class="badge featured">
             <span nz-icon nzType="star" nzTheme="fill"></span>
             {{ 'app.badge.featured' | translate }}
           </span>
           }
-
           @if (isNewApp(app)) {
           <span class="badge new">
             {{ 'app.badge.new' | translate }}
           </span>
           }
-
         </div>
-
         <app-optimized-image [src]="
                 (currentLang === 'en' ? app.mainImage_en : app.mainImage_ar) ||
                 'https://itqan.dev/images/home/hero-card-mushaf.svg'
-              " [alt]="app.Name_En + ' screenshot'" cssClass="cover-image" width="400" height="240" aspectRatio="5/3"
-          [loading]="getImageLoadingStrategy(i)" [fetchpriority]="getImagePriority(i)"></app-optimized-image>
+              "
+          [alt]="(currentLang === 'ar' ? app.Name_Ar : app.Name_En) + (currentLang === 'ar' ? ' لقطة شاشة' : ' screenshot')"
+          cssClass="cover-image" width="400" height="240" aspectRatio="5/3" [loading]="getImageLoadingStrategy(i)"
+          [fetchpriority]="getImagePriority(i)"></app-optimized-image>
 
 
 
