@@ -8,12 +8,7 @@
     <div class="hero-ellipse hero-ellipse-orange-small"></div>
     <div class="hero-gradient"></div>
     <div class="hero-pattern"></div>
-    <img
-      src="assets/images/star.svg"
-      alt=""
-      class="hero-star-decoration"
-      aria-hidden="true"
-    />
+    <img src="assets/images/star.svg" alt="" class="hero-star-decoration" aria-hidden="true" />
   </div>
 
   <div class="hero-content">
@@ -25,75 +20,42 @@
     <div class="search-container">
       <!-- Search Type Tabs -->
       <div class="search-tabs">
-        <button
-          class="search-tab"
-          [class.active]="searchType === 'traditional'"
-          (click)="searchType = 'traditional'"
-        >
+        <button class="search-tab" [class.active]="searchType === 'traditional'" (click)="searchType = 'traditional'">
           {{ "appList.search.traditional" | translate }}
         </button>
-        <button
-          class="search-tab"
-          [class.active]="searchType === 'smart'"
-          (click)="searchType = 'smart'"
-        >
+        <button class="search-tab" [class.active]="searchType === 'smart'" (click)="searchType = 'smart'">
           {{ "appList.search.smart" | translate }}
         </button>
       </div>
 
       <!-- Search Input -->
       <div class="search-input-wrapper">
-        <div
-          class="search-input-container"
-          [class.smart-mode]="searchType === 'smart'"
-        >
+        <div class="search-input-container" [class.smart-mode]="searchType === 'smart'">
           <span class="search-icon" [class.searching]="isSmartSearching">
             @if (searchType === "smart") {
-              <img
-                src="assets/images/searchLogo.svg"
-                alt="Smart Search"
-                class="search-logo-img"
-                [class.spinning]="isSmartSearching"
-                width="20"
-                height="20"
-              />
+            <img src="assets/images/searchLogo.svg" alt="Smart Search" class="search-logo-img"
+              [class.spinning]="isSmartSearching" width="20" height="20" />
             } @else {
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.3-4.3"></path>
-              </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
             }
           </span>
-          <input
-            type="text"
-            class="search-input"
-            [placeholder]="
+          <input type="text" class="search-input" [placeholder]="
               (searchType === 'smart'
                 ? 'appList.search.placeholder'
                 : 'appList.search.traditionalPlaceholder'
               ) | translate
-            "
-            [(ngModel)]="searchQuery"
-            (ngModelChange)="onTypingSearch()"
-            (keyup.enter)="onSearch()"
-            aria-label="Search apps"
-          />
+            " [(ngModel)]="searchQuery" (ngModelChange)="onTypingSearch()" (keyup.enter)="onSearch()"
+            aria-label="Search apps" />
           <button class="search-button" (click)="onSearch()">
             {{
-              (searchType === "smart"
-                ? "appList.search.sendButton"
-                : "appList.search.button"
-              ) | translate
+            (searchType === "smart"
+            ? "appList.search.sendButton"
+            : "appList.search.button"
+            ) | translate
             }}
           </button>
         </div>
@@ -102,13 +64,8 @@
 
     <!-- Categories Filter Chips -->
     <div class="categories-chips-wrapper">
-      <div
-        class="categories-chips"
-        (mousedown)="startDragging($event)"
-        (mousemove)="onDrag($event)"
-        (mouseup)="stopDragging()"
-        (mouseleave)="stopDragging()"
-      >
+      <div class="categories-chips" (mousedown)="startDragging($event)" (mousemove)="onDrag($event)"
+        (mouseup)="stopDragging()" (mouseleave)="stopDragging()">
         <!-- All Categories Chip -->
         <div
           class="category-chip"
@@ -116,31 +73,17 @@
           (click)="onCategoryChipClick('all')"
         >
           <span class="chip-icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="18"
-              height="18"
-            >
-              <path
-                fill="currentColor"
-                d="M3.75 3.75v4.5h4.5v-4.5zm-2.25 0A2.25 2.25 0 0 1 3.75 1.5h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5A2.25 2.25 0 0 1 1.5 8.25zm2.25 12v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25zm18.75-12h-4.5v4.5h4.5zm-4.5-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25v-4.5a2.25 2.25 0 0 1 2.25-2.25m0 14.25v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25z"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+              <path fill="currentColor"
+                d="M3.75 3.75v4.5h4.5v-4.5zm-2.25 0A2.25 2.25 0 0 1 3.75 1.5h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5A2.25 2.25 0 0 1 1.5 8.25zm2.25 12v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25zm18.75-12h-4.5v4.5h4.5zm-4.5-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25v-4.5a2.25 2.25 0 0 1 2.25-2.25m0 14.25v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25z" />
             </svg>
           </span>
           <span class="chip-text">{{
             "appList.categories.all" | translate
-          }}</span>
+            }}</span>
           <span class="chip-arrow">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
               <path d="m6 9 6 6 6-6" />
             </svg>
           </span>
@@ -170,15 +113,8 @@
 <!-- Ramadan Banner -->
 <a class="ramadan-banner" dir="rtl" [routerLink]="['/', currentLang, 'ramadan']">
   <picture>
-    <source
-      media="(max-width: 768px)"
-      srcset="assets/images/ramadan-banner-mobile.png"
-    />
-    <img
-      src="assets/images/ramadanPanner.png"
-      alt=""
-      class="ramadan-banner-bg"
-    />
+    <source media="(max-width: 768px)" srcset="assets/images/ramadan-banner-mobile.png" />
+    <img src="assets/images/ramadanPanner.png" alt="" class="ramadan-banner-bg" />
   </picture>
   <div class="ramadan-banner-overlay">
     <div class="ramadan-banner-text">
@@ -200,310 +136,252 @@
 <div class="main-content">
   <!-- Error Alert -->
   @if (error) {
-    <div class="error-container">
-      <nz-alert [nzMessage]="errorMessage" nzType="error" nzShowIcon></nz-alert>
-      <ng-template #errorMessage>
-        <div class="error-content">
-          <span>{{ error }}</span>
-          <button
-            nz-button
-            nzType="primary"
-            nzSize="small"
-            (click)="retryLoadData()"
-            [nzLoading]="isLoading"
-          >
-            {{ currentLang === "ar" ? "إعادة المحاولة" : "Retry" }}
-          </button>
-        </div>
-      </ng-template>
-    </div>
+  <div class="error-container">
+    <nz-alert [nzMessage]="errorMessage" nzType="error" nzShowIcon></nz-alert>
+    <ng-template #errorMessage>
+      <div class="error-content">
+        <span>{{ error }}</span>
+        <button nz-button nzType="primary" nzSize="small" (click)="retryLoadData()" [nzLoading]="isLoading">
+          {{ currentLang === "ar" ? "إعادة المحاولة" : "Retry" }}
+        </button>
+      </div>
+    </ng-template>
+  </div>
   }
 
   <!-- Shimmer Loading State -->
   @if ((isLoading || isSmartSearching) && filteredApps.length === 0) {
-    <div class="apps-grid">
-      @for (item of [1, 2, 3, 4, 5, 6]; track item) {
-        <div class="app-card shimmer-card">
-          <div class="card-cover shimmer-cover">
-            <div class="shimmer-block"></div>
-          </div>
-          <div class="card-body">
-            <div class="app-info">
-              <div class="shimmer-icon"></div>
-              <div class="shimmer-text-group">
-                <div class="shimmer-line shimmer-title"></div>
-                <div class="shimmer-line shimmer-desc"></div>
-              </div>
-            </div>
-            <div class="shimmer-line shimmer-meta"></div>
+  <div class="apps-grid">
+    @for (item of [1, 2, 3, 4, 5, 6]; track item) {
+    <div class="app-card shimmer-card">
+      <div class="card-cover shimmer-cover">
+        <div class="shimmer-block"></div>
+      </div>
+      <div class="card-body">
+        <div class="app-info">
+          <div class="shimmer-icon"></div>
+          <div class="shimmer-text-group">
+            <div class="shimmer-line shimmer-title"></div>
+            <div class="shimmer-line shimmer-desc"></div>
           </div>
         </div>
-      }
+        <div class="shimmer-line shimmer-meta"></div>
+      </div>
     </div>
+    }
+  </div>
   }
 
   <!-- Search Results Header -->
   @if (
-    searchExecuted && searchQuery.trim() && !isSmartSearching && !isLoading
+  searchExecuted && searchQuery.trim() && !isSmartSearching && !isLoading
   ) {
-    <div class="search-results-header">
-      <h2 class="search-results-title">
-        {{ "appList.search.resultsFor" | translate }} "{{ searchQuery }}"
-      </h2>
-      <span class="search-results-count">
-        {{ filteredApps.length }}
-        {{
-          filteredApps.length === 1
-            ? ("appList.search.result" | translate)
-            : ("appList.search.results" | translate)
-        }}
-      </span>
-    </div>
+  <div class="search-results-header">
+    <h2 class="search-results-title">
+      {{ "appList.search.resultsFor" | translate }} "{{ searchQuery }}"
+    </h2>
+    <span class="search-results-count">
+      {{ filteredApps.length }}
+      {{
+      filteredApps.length === 1
+      ? ("appList.search.result" | translate)
+      : ("appList.search.results" | translate)
+      }}
+    </span>
+  </div>
   }
 
   <!-- Did You Mean Suggestion -->
   @if (suggestedQuery && searchExecuted && !isSmartSearching) {
-    <div class="did-you-mean">
-      <span>{{ "appList.search.didYouMean" | translate }}</span>
-      <a (click)="searchWithSuggestion()" class="did-you-mean-link">
-        {{ suggestedQuery }}
-      </a>
-      <span>?</span>
-    </div>
+  <div class="did-you-mean">
+    <span>{{ "appList.search.didYouMean" | translate }}</span>
+    <a (click)="searchWithSuggestion()" class="did-you-mean-link">
+      {{ suggestedQuery }}
+    </a>
+    <span>?</span>
+  </div>
   }
 
   <!-- Empty State -->
   @if (initialLoadComplete && !isLoading && filteredApps.length === 0) {
-    <div class="empty-state">
-      <div class="empty-state-content">
-        <img
-          src="assets/images/no-results.svg"
-          alt=""
-          class="empty-state-img"
-          aria-hidden="true"
-        />
-        <h3>{{ "empty.noApps.title" | translate }}</h3>
-        <p>{{ "empty.noApps.message" | translate }}</p>
-        @if (searchType === "traditional" && searchQuery.trim()) {
-          <p class="smart-search-hint">
-            {{ "empty.noApps.smartSearchHint" | translate }}
-          </p>
-          <button
-            nz-button
-            nzType="primary"
-            class="smart-search-btn"
-            (click)="switchToSmartSearch()"
-          >
-            {{ "empty.noApps.trySmartSearch" | translate }}
-          </button>
-        }
-      </div>
+  <div class="empty-state">
+    <div class="empty-state-content">
+      <img src="assets/images/no-results.svg" alt="" class="empty-state-img" aria-hidden="true" />
+      <h3>{{ "empty.noApps.title" | translate }}</h3>
+      <p>{{ "empty.noApps.message" | translate }}</p>
+      @if (searchType === "traditional" && searchQuery.trim()) {
+      <p class="smart-search-hint">
+        {{ "empty.noApps.smartSearchHint" | translate }}
+      </p>
+      <button nz-button nzType="primary" class="smart-search-btn" (click)="switchToSmartSearch()">
+        {{ "empty.noApps.trySmartSearch" | translate }}
+      </button>
+      }
     </div>
+  </div>
   }
 
   <!-- Apps Grid -->
   @if (filteredApps.length > 0) {
-    <div class="apps-grid">
-      @for (app of filteredApps; track app.id; let i = $index) {
-        <article
-          class="app-card"
-          [routerLink]="['/', currentLang, 'app', getAppUrlParam(app)]"
-          itemscope
-          itemtype="https://schema.org/SoftwareApplication"
-        >
-          <!-- Cover Image -->
-          <div class="card-cover">
-            <app-optimized-image
-              [src]="
+  <div class="apps-grid">
+    @for (app of filteredApps; track app.id; let i = $index) {
+    <article class="app-card" [routerLink]="['/', currentLang, 'app', getAppUrlParam(app)]" itemscope
+      itemtype="https://schema.org/SoftwareApplication">
+      <!-- Cover Image -->
+      <div class="card-cover">
+
+        <div class="badges-container">
+          <span *ngIf="app.featured" class="badge featured">
+            <i class="fas fa-star"></i> {{ 'app.badge.featured' | translate }}
+          </span>
+          <span *ngIf="isNewApp(app)" class="badge new">
+            {{ 'app.badge.new' | translate }}
+          </span>
+        </div>
+
+        <app-optimized-image [src]="
                 (currentLang === 'en' ? app.mainImage_en : app.mainImage_ar) ||
                 'https://itqan.dev/images/home/hero-card-mushaf.svg'
-              "
-              [alt]="app.Name_En + ' screenshot'"
-              cssClass="cover-image"
-              width="400"
-              height="240"
-              aspectRatio="5/3"
-              [loading]="getImageLoadingStrategy(i)"
-              [fetchpriority]="getImagePriority(i)"
-            ></app-optimized-image>
-          </div>
+              " [alt]="app.Name_En + ' screenshot'" cssClass="cover-image" width="400" height="240" aspectRatio="5/3"
+          [loading]="getImageLoadingStrategy(i)" [fetchpriority]="getImagePriority(i)"></app-optimized-image>
 
-          <!-- Card Body -->
-          <div class="card-body">
-            <!-- App Info Row -->
-            <div class="app-info">
-              <div class="app-icon-wrapper">
-                <app-optimized-image
-                  [src]="
+
+
+      </div>
+
+      <!-- Card Body -->
+      <div class="card-body">
+        <!-- App Info Row -->
+        <div class="app-info">
+          <div class="app-icon-wrapper">
+            <app-optimized-image [src]="
                     app.applicationIcon ||
                     'https://itqan.dev/images/home/hero-card-mushaf.svg'
-                  "
-                  [alt]="app.Name_En + ' icon'"
-                  cssClass="app-icon"
-                  width="56"
-                  height="56"
-                  aspectRatio="1/1"
-                  loading="lazy"
-                  fetchpriority="low"
-                ></app-optimized-image>
-              </div>
-              <div class="app-details">
-                <h3 class="app-name" itemprop="name">
-                  {{ currentLang === "en" ? app.Name_En : app.Name_Ar }}
-                </h3>
-                <p class="app-description" itemprop="description">
-                  {{
-                    currentLang === "en"
-                      ? app.Short_Description_En
-                      : app.Short_Description_Ar
-                  }}
-                </p>
-              </div>
-            </div>
+                  " [alt]="app.Name_En + ' icon'" cssClass="app-icon" width="56" height="56" aspectRatio="1/1"
+              loading="lazy" fetchpriority="low"></app-optimized-image>
+          </div>
+          <div class="app-details">
+            <h3 class="app-name" itemprop="name">
+              {{ currentLang === "en" ? app.Name_En : app.Name_Ar }}
+            </h3>
+            <p class="app-description" itemprop="description">
+              {{
+              currentLang === "en"
+              ? app.Short_Description_En
+              : app.Short_Description_Ar
+              }}
+            </p>
+          </div>
+        </div>
 
-            <!-- Category Tags -->
-            <div class="category-tags">
-              @for (cat of app.categories | slice: 0 : 3; track cat) {
-                <span class="category-tag">
-                  {{ "appList.categories." + cat | translate }}
-                </span>
+        <!-- Category Tags -->
+        <div class="category-tags">
+          @for (cat of app.categories | slice: 0 : 3; track cat) {
+          <span class="category-tag">
+            {{ "appList.categories." + cat | translate }}
+          </span>
+          }
+          @if (app.categories.length > 3) {
+          <span class="category-tag category-more" (click)="$event.stopPropagation()">
+            +{{ app.categories.length - 3 }}
+            <span class="category-tooltip">
+              @for (cat of app.categories | slice: 3; track cat) {
+              <span class="tooltip-tag">{{
+                "appList.categories." + cat | translate
+                }}</span>
               }
-              @if (app.categories.length > 3) {
-                <span
-                  class="category-tag category-more"
-                  (click)="$event.stopPropagation()"
-                >
-                  +{{ app.categories.length - 3 }}
-                  <span class="category-tooltip">
-                    @for (cat of app.categories | slice: 3; track cat) {
-                      <span class="tooltip-tag">{{
-                        "appList.categories." + cat | translate
-                      }}</span>
-                    }
-                  </span>
-                </span>
-              }
+            </span>
+          </span>
+          }
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <!-- Rating -->
+          <div class="stat-item">
+            <div>
+              <span class="stat-icon"><img src="assets/images/starr.svg" alt="" /></span>
+              <span class="stat-value" style="margin: 3px">
+                {{ app.Apps_Avg_Rating || 0 | number: "1.1-1" }}</span>
             </div>
-
-            <!-- Stats Row -->
-            <div class="stats-row">
-              <!-- Rating -->
-              <div class="stat-item">
-                <div>
-                  <span class="stat-icon"
-                    ><img src="assets/images/starr.svg" alt=""
-                  /></span>
-                  <span class="stat-value" style="margin: 3px">
-                    {{ app.Apps_Avg_Rating || 0 | number: "1.1-1" }}</span
-                  >
-                </div>
-                <span class="stat-label">{{
-                  currentLang === "ar" ? "التقييمات" : "Rating"
-                }}</span>
-              </div>
-
-              <!-- Platform -->
-              <div class="stat-item">
-                <span class="stat-value">{{
-                  getPlatformLabel(app.platform)
-                }}</span>
-                <span class="stat-label">{{
-                  currentLang === "ar" ? "المنصة" : "Platform"
-                }}</span>
-              </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="card-actions">
-              <button
-                class="btn-primary"
-                (click)="navigateToDownloads(app, $event)"
-              >
-                {{ currentLang === "ar" ? "تنزيل التطبيق" : "Download App" }}
-              </button>
-              <button class="btn-secondary" (click)="shareApp(app, $event)">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                  <polyline points="16 6 12 2 8 6" />
-                  <line x1="12" x2="12" y1="2" y2="15" />
-                </svg>
-                {{ currentLang === "ar" ? "مشاركة" : "Share" }}
-              </button>
-            </div>
-
-            <!-- AI Reasoning Tooltip (smart search only) -->
-            @if (app.ai_reasoning) {
-              <div class="ai-info-wrapper" (click)="$event.stopPropagation()">
-                <span class="ai-info-icon">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="M12 16v-4"></path>
-                    <path d="M12 8h.01"></path>
-                  </svg>
-                </span>
-                <div class="ai-info-tooltip">
-                  <div class="ai-info-header">
-                    <span class="ai-info-title">{{
-                      "appList.search.aiReasoning" | translate
-                    }}</span>
-                    @if (app.relevance_score) {
-                      <span class="ai-info-score"
-                        >{{ app.relevance_score * 100 | number: "1.0-0" }}%
-                        {{ "appList.search.aiMatch" | translate }}</span
-                      >
-                    }
-                  </div>
-                  <p class="ai-info-text">{{ app.ai_reasoning }}</p>
-                </div>
-              </div>
-            }
+            <span class="stat-label">{{
+              currentLang === "ar" ? "التقييمات" : "Rating"
+              }}</span>
           </div>
 
-          <!-- Schema.org Metadata -->
-          <meta itemprop="applicationCategory" content="Islamic Application" />
-          <meta itemprop="operatingSystem" content="Mobile App" />
-        </article>
-      }
-    </div>
+          <!-- Platform -->
+          <div class="stat-item">
+            <span class="stat-value">{{
+              getPlatformLabel(app.platform)
+              }}</span>
+            <span class="stat-label">{{
+              currentLang === "ar" ? "المنصة" : "Platform"
+              }}</span>
+          </div>
+        </div>
 
-    <!-- Load More Button for Smart Search -->
-    @if (smartSearchHasMore && !isSmartSearching) {
-      <div
-        class="load-more-container"
-        style="text-align: center; margin: 24px 0"
-      >
-        <button
-          nz-button
-          nzType="default"
-          nzSize="large"
-          (click)="loadMoreSmartResults()"
-        >
-          {{ "appList.search.loadMore" | translate }}
-        </button>
+        <!-- Action Buttons -->
+        <div class="card-actions">
+          <button class="btn-primary" (click)="navigateToDownloads(app, $event)">
+            {{ currentLang === "ar" ? "تنزيل التطبيق" : "Download App" }}
+          </button>
+          <button class="btn-secondary" (click)="shareApp(app, $event)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+              <polyline points="16 6 12 2 8 6" />
+              <line x1="12" x2="12" y1="2" y2="15" />
+            </svg>
+            {{ currentLang === "ar" ? "مشاركة" : "Share" }}
+          </button>
+        </div>
+
+        <!-- AI Reasoning Tooltip (smart search only) -->
+        @if (app.ai_reasoning) {
+        <div class="ai-info-wrapper" (click)="$event.stopPropagation()">
+          <span class="ai-info-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 16v-4"></path>
+              <path d="M12 8h.01"></path>
+            </svg>
+          </span>
+          <div class="ai-info-tooltip">
+            <div class="ai-info-header">
+              <span class="ai-info-title">{{
+                "appList.search.aiReasoning" | translate
+                }}</span>
+              @if (app.relevance_score) {
+              <span class="ai-info-score">{{ app.relevance_score * 100 | number: "1.0-0" }}%
+                {{ "appList.search.aiMatch" | translate }}</span>
+              }
+            </div>
+            <p class="ai-info-text">{{ app.ai_reasoning }}</p>
+          </div>
+        </div>
+        }
       </div>
+
+      <!-- Schema.org Metadata -->
+      <meta itemprop="applicationCategory" content="Islamic Application" />
+      <meta itemprop="operatingSystem" content="Mobile App" />
+    </article>
     }
-    @if (isSmartSearching && filteredApps.length > 0) {
-      <div style="text-align: center; margin: 24px 0">
-        <nz-spin nzSimple></nz-spin>
-      </div>
-    }
+  </div>
+
+  <!-- Load More Button for Smart Search -->
+  @if (smartSearchHasMore && !isSmartSearching) {
+  <div class="load-more-container" style="text-align: center; margin: 24px 0">
+    <button nz-button nzType="default" nzSize="large" (click)="loadMoreSmartResults()">
+      {{ "appList.search.loadMore" | translate }}
+    </button>
+  </div>
+  }
+  @if (isSmartSearching && filteredApps.length > 0) {
+  <div style="text-align: center; margin: 24px 0">
+    <nz-spin nzSimple></nz-spin>
+  </div>
+  }
   }
 </div>

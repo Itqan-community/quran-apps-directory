@@ -359,5 +359,11 @@
       "approved": "Approved",
       "rejected": "Rejected"
     }
+  },
+  "app": {
+    "badge": {
+      "featured": "Featured",
+      "new": "New"
+    }
   }
 }

@@ -538,8 +538,8 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectedCategory === "all"
           ? true
           : (app.categories || [])
-              .map((c) => c.toLowerCase())
-              .includes(this.selectedCategory);
+            .map((c) => c.toLowerCase())
+            .includes(this.selectedCategory);
 
       if (!inCategory) return false;
 
@@ -640,8 +640,8 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const categoryName =
       categoryMap[this.currentLang][
-        this
-          .selectedCategory as keyof (typeof categoryMap)[typeof this.currentLang]
+      this
+        .selectedCategory as keyof (typeof categoryMap)[typeof this.currentLang]
       ] ||
       (this.currentLang === "ar"
         ? "تطبيقات القرآن الكريم"
@@ -709,10 +709,10 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     const collectionData =
       this.selectedCategory !== "all"
         ? this.seoService.generateCollectionPageStructuredData(
-            this.selectedCategory,
-            this.filteredApps,
-            this.currentLang,
-          )
+          this.selectedCategory,
+          this.filteredApps,
+          this.currentLang,
+        )
         : null;
 
     // Combine structured data
@@ -971,4 +971,17 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
   }
+
+  isNewApp(app: QuranApp): boolean {
+    if (!app.created_at) return false;
+
+    const createdDate = new Date(app.created_at);
+    if (isNaN(createdDate.getTime())) return false;
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    return createdDate > thirtyDaysAgo;
+  }
+
 }

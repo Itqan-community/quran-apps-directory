@@ -51,6 +51,7 @@ interface BackendApp {
   developer_name?: string;
   developer_name_ar?: string;
   categories: BackendCategory[];
+  created_at: string;
 }
 
 interface BackendListResponse {
@@ -89,6 +90,8 @@ export interface QuranApp {
   platform: string;
   ai_reasoning?: string;
   relevance_score?: number;
+  featured: boolean;
+  created_at: string;
 }
 
 @Injectable({
@@ -98,7 +101,7 @@ export class AppService {
   private apiUrl = environment.apiUrl;
   private apiVersion = (environment as any).apiVersion || 'v1';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Get HTTP headers with API versioning
@@ -141,6 +144,8 @@ export class AppService {
       Google_Play_Link: backendApp.google_play_link || null,
       App_Gallery_Link: backendApp.app_gallery_link || null,
       platform: backendApp.platform,
+      featured: !!backendApp.featured,
+      created_at: backendApp.created_at || '',
     };
   }
 

@@ -242,6 +242,7 @@
   margin: 0 0 12px;
   line-height: 1.2;
   font-family: "Expo Arabic", sans-serif; // fallback to sans-serif
+
   :host-context(.dark-theme) & {
     color: #81c784;
   }
@@ -455,10 +456,12 @@
     transform: scale(1) rotate(0deg);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.15) rotate(180deg);
     opacity: 0.6;
   }
+
   100% {
     transform: scale(1) rotate(360deg);
     opacity: 1;
@@ -703,6 +706,7 @@
   0% {
     background-position: -400px 0;
   }
+
   100% {
     background-position: 400px 0;
   }
@@ -1109,6 +1113,53 @@
 
   :host-context(.dark-theme) & {
     background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  }
+
+
+  .badges-container {
+    position: absolute;
+    top: 10px;
+    inset-inline-start: 10px; // ✅ LTR: left | RTL: right
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 5;
+
+    // Don’t block clicking the card/routerLink
+    pointer-events: none;
+
+    // Fallback for older browsers:
+    left: 10px;
+    right: auto;
+
+    :host-context([dir='rtl']) & {
+      right: 10px;
+      left: auto;
+    }
+  }
+
+  .badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    pointer-events: none;
+
+    &.featured {
+      background-color: #ffd700;
+      color: #000;
+    }
+
+    &.new {
+      background-color: #28a745;
+      color: #fff;
+    }
   }
 
   .cover-image,
@@ -1704,7 +1755,7 @@
 // NG-ZORRO OVERRIDES
 // ============================================
 :host ::ng-deep {
-  .ant-spin-nested-loading > div > .ant-spin {
+  .ant-spin-nested-loading>div>.ant-spin {
     max-height: none;
   }
 }
