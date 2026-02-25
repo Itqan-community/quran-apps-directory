@@ -231,12 +231,20 @@
       <div class="card-cover">
 
         <div class="badges-container">
-          <span *ngIf="app.featured" class="badge featured">
-            <i class="fas fa-star"></i> {{ 'app.badge.featured' | translate }}
+
+          @if (app.featured) {
+          <span class="badge featured">
+            <span nz-icon nzType="star" nzTheme="fill"></span>
+            {{ 'app.badge.featured' | translate }}
           </span>
-          <span *ngIf="isNewApp(app)" class="badge new">
+          }
+
+          @if (isNewApp(app)) {
+          <span class="badge new">
             {{ 'app.badge.new' | translate }}
           </span>
+          }
+
         </div>
 
         <app-optimized-image [src]="

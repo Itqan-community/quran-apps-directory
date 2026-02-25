@@ -1124,10 +1124,8 @@
     flex-direction: column;
     gap: 6px;
     z-index: 5;
-
     // Don’t block clicking the card/routerLink
     pointer-events: none;
-
     // Fallback for older browsers:
     left: 10px;
     right: auto;
@@ -1143,12 +1141,10 @@
     border-radius: 4px;
     font-size: 0.75rem;
     font-weight: bold;
-
     line-height: 1;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-
     pointer-events: none;
 
     &.featured {
