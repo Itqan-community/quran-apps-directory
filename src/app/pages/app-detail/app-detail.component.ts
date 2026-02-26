@@ -1,6 +1,7 @@
 import {
   Component,
   OnInit,
+  OnDestroy,
   AfterViewInit,
   ViewChild,
   ElementRef,
@@ -29,13 +30,12 @@ import { categories } from "../../services/applicationsData";
 import { NzRateModule } from "ng-zorro-antd/rate";
 import { NzImageModule, NzImageService } from "ng-zorro-antd/image";
 import { FormsModule } from "@angular/forms";
-// import function to register Swiper custom elements
+import { Subscription } from "rxjs"; // Added for memory leak fix
 import { register } from "swiper/element/bundle";
 import { Nl2brPipe } from "../../pipes/nl2br.pipe";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SeoService } from "../../services/seo.service";
 import { environment } from "../../../environments/environment";
-// register Swiper custom elements
 register();
 
 @Component({
@@ -62,7 +62,7 @@ register();
   styleUrls: ["./app-detail.component.scss"],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppDetailComponent implements OnInit, AfterViewInit {
+export class AppDetailComponent implements OnInit, OnDestroy, AfterViewInit { // Added OnDestroy
   @ViewChild("swiperContainer") swiperContainer: any;
   @ViewChild("relatedCarousel") relatedCarousel!: ElementRef<HTMLDivElement>;
 
@@ -71,9 +71,11 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
   currentLang: "en" | "ar" = "ar";
   categoriesSet: Array<{ name: string; icon: string }> = categories;
   isExpanded = false;
-  // Cache for star arrays to prevent NG0100 errors from creating new references on each change detection
   private starArrayCache = new Map<number, { fillPercent: number }[]>();
   private swiperInitAttempts = 0;
+
+  // Subscriptions management for memory leak fix
+  private subscriptions: Subscription[] = [];
 
   swiperParams = {
     slidesPerView: "auto",
@@ -106,28 +108,30 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {
     this.currentLang = this.translateService.currentLang as "ar" | "en";
-    // Subscribe to language changes
-    this.translateService.onLangChange.subscribe((event) => {
+    
+    // Subscribe to language changes - store subscription for cleanup
+    const langSub = this.translateService.onLangChange.subscribe((event) => {
       this.currentLang = event.lang as "en" | "ar";
       console.log("🌐 DEBUG: Language changed to:", this.currentLang);
-      // Reinitialize swiper when language changes (same pattern as data load)
       if (this.swiperContainer) {
         console.log("🔄 DEBUG: Reinitializing Swiper after language change...");
         this.hideSwiper = false;
         setTimeout(() => {
           this.hideSwiper = true;
-          console.log(
-            "🔄 DEBUG: Swiper container reset after language change, initializing...",
-          );
         }, 50);
         setTimeout(() => {
-          console.log(
-            "🔄 DEBUG: Final Swiper initialization after language change...",
-          );
           this.initializeSwiper();
         }, 100);
       }
     });
+    this.subscriptions.push(langSub);
+  }
+
+  // Memory leak fix: Clean up all subscriptions on destroy
+  ngOnDestroy(): void {
+    console.log("🧹 DEBUG: Cleaning up subscriptions...");
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions = [];
   }
 
   private getBrowserLanguage(): "en" | "ar" {
@@ -137,7 +141,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    // Set language immediately from snapshot
     const lang = this.route.snapshot.params["lang"];
     const id = this.route.snapshot.params["id"];
 
@@ -145,20 +148,17 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       this.currentLang = lang as "en" | "ar";
     }
 
-    // Subscribe to route parameter changes (both lang and id)
-    this.route.params.subscribe((params) => {
+    // Subscribe to route parameter changes - store for cleanup
+    const paramsSub = this.route.params.subscribe((params) => {
       const newLang = params["lang"];
       const newId = params["id"];
 
-      // Update language if changed
       if (newLang && newLang !== this.currentLang) {
         this.currentLang = newLang as "en" | "ar";
       }
 
-      // Load app data when ID changes (or on initial load)
       if (newId) {
         this.loading = true;
-        // Scroll to top of page when loading new app detail (unless fragment is present)
         if (isPlatformBrowser(this.platformId)) {
           const fragment = this.route.snapshot.fragment;
           if (!fragment) {
@@ -168,20 +168,20 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
         this.loadAppData(newId);
       }
     });
+    this.subscriptions.push(paramsSub);
 
-    // Handle fragment navigation (e.g., #downloads)
-    this.route.fragment.subscribe((fragment) => {
+    // Handle fragment navigation - store for cleanup
+    const fragmentSub = this.route.fragment.subscribe((fragment) => {
       if (fragment === "downloads" && isPlatformBrowser(this.platformId)) {
-        // Wait for app data to load and DOM to render
         setTimeout(() => {
           this.scrollToDownloads();
         }, 500);
       }
     });
+    this.subscriptions.push(fragmentSub);
   }
 
   private loadAppData(appParam: string) {
-    // Parse the app parameter: format is "slug_id" (e.g., "wahy_46")
     const lastUnderscoreIndex = appParam.lastIndexOf("_");
     let appId: string = appParam;
 
@@ -192,105 +192,70 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       }
     }
 
-    this.appService.getAppById(appId).subscribe(
+    // Store subscription for cleanup
+    const appSub = this.appService.getAppById(appId).subscribe(
       (app) => {
         if (app) {
           console.log("✅ DEBUG: App data loaded successfully:", app.Name_En);
-          console.log(
-            "📊 DEBUG: Screenshots count (EN):",
-            app.screenshots_en?.length || 0,
-          );
-          console.log(
-            "📊 DEBUG: Screenshots count (AR):",
-            app.screenshots_ar?.length || 0,
-          );
-          console.log("🌐 DEBUG: Current language:", this.currentLang);
-          console.log(
-            "🖼️ DEBUG: First screenshot URL:",
-            app.screenshots_en?.[0] || "No screenshots",
-          );
-
           this.app = app;
-          this.cdr.detectChanges(); // Trigger immediate change detection
-          console.log(app.categories);
+          this.cdr.detectChanges();
           if (app.categories.length > 0) {
-            this.appService
+            // Store nested subscription for cleanup
+            const categorySub = this.appService
               .getAppsByCategory(app.categories[0])
               .subscribe((apps) => {
                 this.relevantApps = apps.filter((a) => a.id !== app.id);
               });
+            this.subscriptions.push(categorySub);
           }
 
-          // Update SEO data after app is loaded
           this.updateSeoData();
-          // FIX: Set loading to false immediately since we have the app data
-          // Images will load asynchronously and that's fine
           this.loading = false;
-          this.cdr.detectChanges(); // Trigger change detection after setting loading = false
+          this.cdr.detectChanges();
 
-          // Reinitialize Swiper after data loads (ensure container is ready)
           this.swiperInitAttempts = 0;
           setTimeout(() => {
-            console.log("?? DEBUG: Initializing Swiper after data load...");
             this.initializeSwiper();
           }, 0);
           setTimeout(() => {
             this.initializeSwiper();
           }, 150);
-          console.log(
-            "⚙️ DEBUG: Component state after loading - hideSwiper:",
-            this.hideSwiper,
-            "loading:",
-            this.loading,
-          );
         } else {
           console.error("❌ DEBUG: No app data returned for:", appParam);
         }
       },
       (error) => {
         console.error("❌ DEBUG: Error loading app data:", error);
-      },
+      }
     );
+    this.subscriptions.push(appSub);
   }
 
-  // Add a method to handle navigation to a related app
+  // Rest of the methods remain the same...
   navigateToApp(lookupId: string) {
-    // Clear current app data before navigation to prevent stale data display
     this.app = undefined;
     this.loading = true;
     this.relevantApps = [];
     this.cdr.detectChanges();
 
-    // Find the app in relevantApps to get its slug
     const targetApp = this.relevantApps.find((app) => app.id === lookupId);
-
     let slug = targetApp?.slug || "";
+    slug = slug.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 
-    // Normalize the slug: convert spaces to hyphens
-    slug = slug
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "");
-
-    // If no slug after normalization, generate from app name
     if (!slug && targetApp) {
       slug = targetApp.Name_En.toLowerCase()
         .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/g, "");
     }
 
-    // Extract just the name part of the slug if it includes a numeric prefix (like "1-wahy" -> "wahy")
     if (slug && slug.includes("-")) {
       const parts = slug.split("-");
-      // If first part is numeric, remove it
       if (/^\d+$/.test(parts[0])) {
         slug = parts.slice(1).join("-");
       }
     }
 
     slug = slug || lookupId;
-
-    // Format: "slug_lookupId" (e.g., "wahy_1")
     const urlParam = `${slug}_${lookupId}`;
     this.router.navigate([`/${this.currentLang}/app/${urlParam}`]).then(() => {
       if (isPlatformBrowser(this.platformId)) {
@@ -300,37 +265,23 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /**
-   * Navigate to related app's detail page and scroll to downloads section
-   */
   navigateToAppDownloads(lookupId: string, event: Event) {
     event.stopPropagation();
-
-    // Find the app in relevantApps to get its slug BEFORE clearing
     const targetApp = this.relevantApps.find((app) => app.id === lookupId);
-
-    // Clear current app data before navigation to prevent stale data display
     this.app = undefined;
     this.loading = true;
     this.relevantApps = [];
     this.cdr.detectChanges();
 
     let slug = targetApp?.slug || "";
+    slug = slug.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 
-    // Normalize the slug: convert spaces to hyphens
-    slug = slug
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "");
-
-    // If no slug after normalization, generate from app name
     if (!slug && targetApp) {
       slug = targetApp.Name_En.toLowerCase()
         .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/g, "");
     }
 
-    // Extract just the name part of the slug if it includes a numeric prefix
     if (slug && slug.includes("-")) {
       const parts = slug.split("-");
       if (/^\d+$/.test(parts[0])) {
@@ -339,8 +290,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     }
 
     slug = slug || lookupId;
-
-    // Format: "slug_lookupId" (e.g., "wahy_1")
     const urlParam = `${slug}_${lookupId}`;
     this.router
       .navigate([`/${this.currentLang}/app/${urlParam}`], {
@@ -351,15 +300,10 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       });
   }
 
-  /**
-   * Share related app link using Web Share API or clipboard fallback
-   */
   async shareRelatedApp(lookupId: string, event: Event): Promise<void> {
     event.stopPropagation();
-
     if (!isPlatformBrowser(this.platformId)) return;
 
-    // Find the app in relevantApps
     const targetApp = this.relevantApps.find((app) => app.id === lookupId);
     if (!targetApp) return;
 
@@ -371,12 +315,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
         : targetApp.Short_Description_En;
 
     let slug = targetApp.slug || "";
-
-    // Normalize the slug
-    slug = slug
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "");
+    slug = slug.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 
     if (!slug) {
       slug = targetApp.Name_En.toLowerCase()
@@ -384,7 +323,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
         .replace(/[^a-z0-9-]/g, "");
     }
 
-    // Extract just the name part of the slug if it includes a numeric prefix
     if (slug && slug.includes("-")) {
       const parts = slug.split("-");
       if (/^\d+$/.test(parts[0])) {
@@ -393,7 +331,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     }
 
     slug = slug || lookupId;
-
     const urlParam = `${slug}_${lookupId}`;
     const shareUrl = `${window.location.origin}/${this.currentLang}/app/${urlParam}`;
 
@@ -407,7 +344,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       if (navigator.share) {
         await navigator.share(shareData);
       } else {
-        // Fallback: copy to clipboard
         await navigator.clipboard.writeText(shareUrl);
         alert(
           this.currentLang === "ar"
@@ -422,9 +358,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /**
-   * Open lightbox gallery starting at the specified image index
-   */
   openLightbox(index: number): void {
     const screenshots =
       this.currentLang === "en"
@@ -437,7 +370,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       alt: `${this.app?.Name_En || "App"} screenshot ${i + 1}`,
     }));
 
-    // Reorder images array so clicked image is first, maintaining circular order
     const reorderedImages = [...images.slice(index), ...images.slice(0, index)];
 
     this.nzImageService.preview(reorderedImages, {
@@ -447,29 +379,22 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // Add a method to handle category click navigation
   navigateToCategory(categoryName: string) {
-    // Try multiple ways to get the language
     const langFromParamMap = this.route.snapshot.paramMap.get("lang");
     const langFromParams = this.route.snapshot.params["lang"];
     const finalLang = langFromParamMap || langFromParams || this.currentLang;
 
     const targetPath = `/${finalLang}/${categoryName.toLowerCase()}`;
 
-    // Use Angular router for proper navigation with route parameters
     this.router
-      .navigate([targetPath], {
-        replaceUrl: false, // Don't replace the current URL, preserve history
-      })
+      .navigate([targetPath], { replaceUrl: false })
       .then((success) => {
         if (!success && isPlatformBrowser(this.platformId)) {
-          // Fallback to direct navigation if router fails
           const fullUrl = `${window.location.origin}${targetPath}`;
           window.location.href = fullUrl;
         }
       })
       .catch(() => {
-        // Fallback to direct navigation
         if (isPlatformBrowser(this.platformId)) {
           const fullUrl = `${window.location.origin}${targetPath}`;
           window.location.href = fullUrl;
@@ -479,36 +404,17 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     console.log("🔧 DEBUG: ngAfterViewInit called");
-    console.log("📦 DEBUG: Swiper container exists:", !!this.swiperContainer);
-    console.log("👁️ DEBUG: hideSwiper state:", this.hideSwiper);
-    console.log("📱 DEBUG: App data loaded:", !!this.app);
-
     if (this.app) {
-      console.log(
-        "🖼️ DEBUG: App screenshots in ngAfterViewInit:",
-        this.app.screenshots_en?.length || 0,
-      );
-      // Initialize Swiper if data is already available
       this.initializeSwiper();
-    } else {
-      console.log(
-        "⏳ DEBUG: App data not loaded yet, Swiper will initialize after data loads",
-      );
     }
   }
 
-  // Separate method for Swiper initialization to reuse
   private initializeSwiper() {
     if (this.swiperContainer && this.app) {
-      console.log("🚀 DEBUG: Initializing Swiper...");
       try {
         const swiperEl = this.swiperContainer.nativeElement;
-        console.log("🎯 DEBUG: Swiper element:", swiperEl);
-        console.log("⚙️ DEBUG: Swiper params:", this.swiperParams);
-
         Object.assign(swiperEl, this.swiperParams);
         swiperEl.initialize();
-        console.log("✅ DEBUG: Swiper initialized successfully");
         this.swiperInitAttempts = 0;
       } catch (error) {
         console.error("❌ DEBUG: Swiper initialization failed:", error);
@@ -517,15 +423,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       if (this.swiperInitAttempts < 5) {
         this.swiperInitAttempts += 1;
         setTimeout(() => this.initializeSwiper(), 120);
-      } else {
-        if (!this.swiperContainer) {
-          console.warn("⚠️ DEBUG: Swiper container not available");
-        }
-        if (!this.app) {
-          console.warn(
-            "⚠️ DEBUG: App data not available for Swiper initialization",
-          );
-        }
       }
     }
   }
@@ -539,23 +436,17 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
 
   shouldShowReadMore(text: string | null): boolean {
     if (text === null) return false;
-    // Only show read more button if text is long enough
-    return text.length > 200; // Adjust character threshold as needed
+    return text.length > 200;
   }
 
   navigateToDeveloper() {
     if (this.app && this.app.Developer_Name_En) {
-      // Format: "developer-slug_developerId"
-      // The developer ID comes from the API response (app.Developer_Id)
-      // Developer name is normalized to slug format (dashes, lowercase) for SEO purposes
       const developerName = this.app.Developer_Name_En.toLowerCase()
         .replace(/\s+/g, "-")
         .replace(/[^a-z0-9-]/g, "");
       const developerId = this.app.Developer_Id || "";
 
       if (developerId) {
-        // Use ID-based URL for robust API queries
-        // Format: "developer-slug_id" (e.g., "quran-com_6")
         const urlParam = `${developerName}_${developerId}`;
         this.router.navigate([`/${this.currentLang}/developer/${urlParam}`]);
       } else {
@@ -578,7 +469,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
         ? this.app.Description_Ar
         : this.app.Description_En;
 
-    // Preload first screenshot for LCP optimization
     const screenshots =
       this.currentLang === "ar"
         ? this.app.screenshots_ar
@@ -587,7 +477,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       this.addPreloadLink(screenshots[0]);
     }
 
-    // Update page title and meta tags
     const title =
       this.currentLang === "ar"
         ? `${appName} - تطبيق قرآني من دليل التطبيقات القرآنية`
@@ -600,24 +489,18 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       content: `${appDescription} - ${fullDescription?.substring(0, 150)}...`,
     });
 
-    // Update Open Graph tags
+    const ogImageUrl = `${environment.apiUrl}/apps/${this.app.slug}/og-image/?lang=${this.currentLang}`;
     this.metaService.updateTag({ property: "og:title", content: title });
     this.metaService.updateTag({
       property: "og:description",
       content: appDescription || "",
     });
-    const ogImageUrl = `${environment.apiUrl}/apps/${this.app.slug}/og-image/?lang=${this.currentLang}`;
-    this.metaService.updateTag({
-      property: "og:image",
-      content: ogImageUrl,
-    });
+    this.metaService.updateTag({ property: "og:image", content: ogImageUrl });
     this.metaService.updateTag({
       property: "og:url",
       content: `https://quran-apps.itqan.dev/${this.currentLang}/app/${this.app.slug}_${this.app.id}`,
     });
     this.metaService.updateTag({ property: "og:type", content: "website" });
-
-    // Update Twitter Card tags
     this.metaService.updateTag({
       property: "twitter:card",
       content: "summary_large_image",
@@ -632,7 +515,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       content: ogImageUrl,
     });
 
-    // Add app-specific keywords
     const keywords = [
       this.currentLang === "ar" ? "تطبيق قرآني" : "Quran app",
       this.currentLang === "ar" ? "تطبيق إسلامي" : "Islamic app",
@@ -646,13 +528,10 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       content: keywords.join(", "),
     });
 
-    // Add enhanced structured data for the app
     const appStructuredData = this.seoService.generateEnhancedAppStructuredData(
       this.app,
       this.currentLang,
     );
-
-    // Add breadcrumb structured data
     const breadcrumbs = [
       {
         name: this.currentLang === "ar" ? "الرئيسية" : "Home",
@@ -676,9 +555,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       this.currentLang,
     );
 
-    // Combine structured data
     const combinedData = [appStructuredData, breadcrumbData, organizationData];
-
     this.seoService.addStructuredData(combinedData);
   }
 
@@ -710,13 +587,11 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
   }
 
   getStarArray(rating: number | undefined | null): { fillPercent: number }[] {
-    // Ensure rating is a valid number to prevent NG0100 errors
     const safeRating =
       typeof rating === "number" && !isNaN(rating)
         ? Math.round(rating * 10) / 10
         : 0;
 
-    // Return cached array if available to prevent NG0100 errors
     if (this.starArrayCache.has(safeRating)) {
       return this.starArrayCache.get(safeRating)!;
     }
@@ -725,31 +600,25 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     const fullStars = Math.floor(safeRating);
     const remainder = safeRating % 1;
 
-    // Add full stars
     for (let i = 0; i < fullStars; i++) {
       stars.push({ fillPercent: 100 });
     }
 
-    // Add partial star if needed
     if (remainder > 0 && fullStars < 5) {
       stars.push({ fillPercent: Math.round(remainder * 100) });
     }
 
-    // Add empty stars to reach 5 total
     while (stars.length < 5) {
       stars.push({ fillPercent: 0 });
     }
 
-    // Cache the result
     this.starArrayCache.set(safeRating, stars);
-
     return stars;
   }
 
   private addPreloadLink(imageUrl: string) {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    // Remove existing preload link for screenshots if any
     const existingLink = this.document.querySelector(
       'link[rel="preload"][data-screenshot-preload]',
     );
@@ -757,7 +626,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       existingLink.remove();
     }
 
-    // Add new preload link for LCP image
     const link = this.document.createElement("link");
     link.rel = "preload";
     link.as = "image";
@@ -767,7 +635,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     this.document.head.appendChild(link);
   }
 
-  // Scroll to download links section
   scrollToDownloads() {
     if (!isPlatformBrowser(this.platformId)) return;
     const downloadsSection = this.document.querySelector("#downloads");
@@ -779,7 +646,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // Share app using Web Share API or fallback
   async shareApp() {
     if (!isPlatformBrowser(this.platformId) || !this.app) return;
 
@@ -801,9 +667,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       if (navigator.share) {
         await navigator.share(shareData);
       } else {
-        // Fallback: copy to clipboard
         await navigator.clipboard.writeText(shareUrl);
-        // You could show a toast notification here
         console.log("Link copied to clipboard");
       }
     } catch (error) {
@@ -811,7 +675,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // Related apps carousel navigation
   scrollRelatedLeft() {
     const el = this.relatedCarousel?.nativeElement;
     if (el) {
@@ -828,7 +691,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // Carousel navigation methods
   slidePrev() {
     if (this.swiperContainer?.nativeElement?.swiper) {
       this.swiperContainer.nativeElement.swiper.slidePrev();
