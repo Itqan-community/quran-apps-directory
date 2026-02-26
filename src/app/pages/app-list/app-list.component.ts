@@ -251,9 +251,13 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.apps = apiApps.map((app) =>
           this.apiService.formatAppForDisplay(app),
         );
-        // If no category is selected, update filtered apps
-        if (this.selectedCategory === "all" && !this.searchQuery.trim()) {
-          this.filteredApps = this.apps;
+        // Re-apply current filter whenever apps update
+        if (!this.searchQuery.trim() && !this.isSmartSearchActive) {
+          if (this.selectedCategory === "all") {
+            this.filteredApps = this.apps;
+          } else {
+            this.applyCategoryAndSearchFilters();
+          }
         }
       });
 
