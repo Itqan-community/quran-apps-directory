@@ -1,0 +1,26 @@
+<!-- Error State Component -->
+<div class="error-container">
+  <div class="error-icon">
+    <span class="icon">🔍</span>
+  </div>
+
+  <div class="error-code" *ngIf="statusCode">{{ statusCode }}</div>
+
+  <h1 class="error-title">{{ title || defaultTitle }}</h1>
+
+  <p class="error-message">{{ message || defaultMessage }}</p>
+
+  <div class="error-actions">
+    <button
+      *ngIf="showBackButton"
+      class="btn btn-secondary"
+      (click)="goBack()"
+    >
+      ← Go Back
+    </button>
+
+    <button class="btn btn-primary" (click)="goHome()">
+      🏠 Back to Home
+    </button>
+  </div>
+</div>
