@@ -1,6 +1,7 @@
 import {
   Component,
   OnInit,
+  OnDestroy,
   AfterViewInit,
   ViewChild,
   ElementRef,
@@ -22,6 +23,7 @@ import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzTagModule } from "ng-zorro-antd/tag";
 import { NzGridModule } from "ng-zorro-antd/grid";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { Subject, takeUntil } from "rxjs";
 import { AppService, QuranApp } from "../../services/app.service";
 import { DomSanitizer, SafeHtml, Title, Meta } from "@angular/platform-browser";
 import { NzDividerModule } from "ng-zorro-antd/divider";
@@ -62,9 +64,10 @@ register();
   styleUrls: ["./app-detail.component.scss"],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppDetailComponent implements OnInit, AfterViewInit {
+export class AppDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild("swiperContainer") swiperContainer: any;
   @ViewChild("relatedCarousel") relatedCarousel!: ElementRef<HTMLDivElement>;
+  private destroy$ = new Subject<void>();
 
   app?: QuranApp;
   relevantApps: QuranApp[] = [];
@@ -90,6 +93,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
 
   hideSwiper = true;
   loading = true;
+  errorType: 'not-found' | 'server-error' | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -107,7 +111,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
   ) {
     this.currentLang = this.translateService.currentLang as "ar" | "en";
     // Subscribe to language changes
-    this.translateService.onLangChange.subscribe((event) => {
+    this.translateService.onLangChange.pipe(takeUntil(this.destroy$)).subscribe((event) => {
       this.currentLang = event.lang as "en" | "ar";
       console.log("🌐 DEBUG: Language changed to:", this.currentLang);
       // Reinitialize swiper when language changes (same pattern as data load)
@@ -192,6 +196,9 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       }
     }
 
+    this.errorType = null;
+    this.app = undefined;
+    this.metaService.removeTag('name="robots"');
     this.appService.getAppById(appId).subscribe(
       (app) => {
         if (app) {
@@ -245,12 +252,48 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
           );
         } else {
           console.error("❌ DEBUG: No app data returned for:", appParam);
+          this.loading = false;
+          this.errorType = 'not-found';
+          this.updateErrorSeo();
         }
       },
-      (error) => {
+      (error: { status?: number }) => {
         console.error("❌ DEBUG: Error loading app data:", error);
+        this.loading = false;
+        if (error.status === 404) {
+          this.errorType = 'not-found';
+        } else {
+          this.errorType = 'server-error';
+        }
+        this.updateErrorSeo();
       },
     );
+  }
+
+  retryLoad() {
+    const id = this.route.snapshot.params["id"];
+    if (id) {
+      this.loading = true;
+      this.errorType = null;
+      this.loadAppData(id);
+    }
+  }
+
+  private updateErrorSeo() {
+    const title =
+      this.errorType === 'not-found'
+        ? this.currentLang === 'ar'
+          ? 'التطبيق غير موجود - دليل التطبيقات القرآنية'
+          : 'App Not Found - Quran Apps Directory'
+        : this.currentLang === 'ar'
+          ? 'حدث خطأ - دليل التطبيقات القرآنية'
+          : 'Something Went Wrong - Quran Apps Directory';
+
+    this.titleService.setTitle(title);
+
+    if (this.errorType === 'not-found') {
+      this.metaService.updateTag({ name: 'robots', content: 'noindex' });
+    }
   }
 
   // Add a method to handle navigation to a related app
@@ -475,6 +518,11 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
           window.location.href = fullUrl;
         }
       });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   ngAfterViewInit() {

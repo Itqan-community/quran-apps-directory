@@ -109,7 +109,13 @@
       "downloadCount": "12M+",
       "platform": "Platform",
       "allPlatforms": "All"
-    }
+    },
+    "notFound": "App Not Found",
+    "notFoundMessage": "The app you're looking for doesn't exist or may have been removed.",
+    "backToHome": "Back to Home",
+    "errorTitle": "Something Went Wrong",
+    "errorMessage": "We couldn't load this app. Please try again.",
+    "retry": "Try Again"
   },
   "requestForm": {
     "title": "Request App Addition",

@@ -1,4 +1,4 @@
-<!-- Shimmer Loading State -->
+<!-- Loading / Error / Content states (mutually exclusive) -->
 @if (!app && loading) {
   <div>
     <!-- Hero Shimmer -->
@@ -53,10 +53,86 @@
       </div>
     </div>
   </div>
-}
-
-<!-- Main container with app details -->
-@if (app) {
+} @else if (errorType === 'not-found') {
+  <!-- Not Found State -->
+  <div class="error-state-container" role="alert">
+    <div class="error-state-content">
+      <svg
+        class="error-state-icon"
+        aria-hidden="true"
+        focusable="false"
+        xmlns="http://www.w3.org/2000/svg"
+        width="64"
+        height="64"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="11" cy="11" r="8" />
+        <path d="m21 21-4.3-4.3" />
+        <path d="M8 11h6" />
+      </svg>
+      <h2 class="error-state-title">
+        {{ "appDetail.notFound" | translate }}
+      </h2>
+      <p class="error-state-message">
+        {{ "appDetail.notFoundMessage" | translate }}
+      </p>
+      <a
+        [routerLink]="['/' + currentLang]"
+        nz-button
+        nzType="primary"
+        nzSize="large"
+        class="error-state-action"
+      >
+        {{ "appDetail.backToHome" | translate }}
+      </a>
+    </div>
+  </div>
+} @else if (errorType === 'server-error') {
+  <!-- Server Error State -->
+  <div class="error-state-container" role="alert">
+    <div class="error-state-content">
+      <svg
+        class="error-state-icon error-state-icon--danger"
+        aria-hidden="true"
+        focusable="false"
+        xmlns="http://www.w3.org/2000/svg"
+        width="64"
+        height="64"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" x2="12" y1="8" y2="12" />
+        <line x1="12" x2="12.01" y1="16" y2="16" />
+      </svg>
+      <h2 class="error-state-title">
+        {{ "appDetail.errorTitle" | translate }}
+      </h2>
+      <p class="error-state-message">
+        {{ "appDetail.errorMessage" | translate }}
+      </p>
+      <button
+        nz-button
+        nzType="primary"
+        nzSize="large"
+        class="error-state-action"
+        (click)="retryLoad()"
+      >
+        {{ "appDetail.retry" | translate }}
+      </button>
+    </div>
+  </div>
+} @else if (app) {
+  <!-- Main container with app details -->
   <div>
     <!-- Hero Section with App Info -->
     <section class="app-hero-section">
@@ -941,6 +1017,27 @@
           }
         </div>
       </div>
+    </div>
+  </div>
+} @else {
+  <!-- Fallback for unexpected state -->
+  <div class="error-state-container" role="alert">
+    <div class="error-state-content">
+      <h2 class="error-state-title">
+        {{ "appDetail.errorTitle" | translate }}
+      </h2>
+      <p class="error-state-message">
+        {{ "appDetail.errorMessage" | translate }}
+      </p>
+      <button
+        nz-button
+        nzType="primary"
+        nzSize="large"
+        class="error-state-action"
+        (click)="retryLoad()"
+      >
+        {{ "appDetail.retry" | translate }}
+      </button>
     </div>
   </div>
 }

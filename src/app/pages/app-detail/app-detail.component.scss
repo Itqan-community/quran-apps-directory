@@ -2110,3 +2110,43 @@ html[dir="rtl"] .content-section {
     width: auto;
   }
 }
+
+// Error / Not Found State
+.error-state-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 2rem;
+}
+
+.error-state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 420px;
+}
+
+.error-state-icon {
+  color: var(--text-secondary, #6b7280);
+  margin-bottom: 1.5rem;
+
+  &--danger {
+    color: var(--error-color, #d73a4a);
+  }
+}
+
+.error-state-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  margin: 0 0 0.5rem 0;
+}
+
+.error-state-message {
+  font-size: 1rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 0 0 1.5rem 0;
+  line-height: 1.6;
+}

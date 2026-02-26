@@ -165,15 +165,11 @@ export class AppService {
   /**
    * Get app by ID or slug from the API
    */
-  getAppById(id: string): Observable<QuranApp | undefined> {
+  getAppById(id: string): Observable<QuranApp> {
     return this.http
       .get<BackendApp>(`${this.apiUrl}/apps/${id}`, { headers: this.getHeaders() })
       .pipe(
         map((app) => this.mapBackendApp(app)),
-        catchError(error => {
-          console.error('[AppService] Error loading app:', error);
-          return of(undefined);
-        })
       );
   }
 
