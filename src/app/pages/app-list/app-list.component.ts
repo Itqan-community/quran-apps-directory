@@ -490,8 +490,18 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   onCategoryChipClick(slug: string): void {
     this.selectedCategory = slug;
     if (slug === 'all') {
-      this.isSmartSearchActive = false;
-      this.filteredApps = this.apps;
+      if (this.isSmartSearchActive && this.searchQuery.trim()) {
+        this.onSearch();
+      } else {
+        this.isSmartSearchActive = false;
+        this.isSmartSearching = false;
+        this.searchExecuted = false;
+        this.smartSearchHasMore = false;
+        this.smartSearchPage = 1;
+        this.smartSearchTotal = 0;
+        this.suggestedQuery = null;
+        this.filteredApps = [...this.apps];
+      }
     } else {
       this.filterByCategory(slug);
     }
