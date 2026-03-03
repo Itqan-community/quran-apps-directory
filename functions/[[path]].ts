@@ -108,20 +108,25 @@ const fetchCategoryData = async (slug: string): Promise<any> => {
 
 // OG tag generation
 const generateOGTags = (route: RouteInfo, data: any): OGTags => {
-  // App page
+  // App page — use backend-generated OG card (branded 1200×630 image)
   if (route.type === 'app' && data) {
     const title = route.lang === 'ar' ? data.name_ar : data.name_en;
     const description = route.lang === 'ar'
       ? (data.short_description_ar || data.description_ar)
       : (data.short_description_en || data.description_en);
 
-    const hasAppIcon = !!data.application_icon;
+    // Point to the backend OG image endpoint which generates a branded share card
+    const ogImage = data.slug
+      ? `${API_BASE}/apps/${data.slug}/og-image/?lang=${route.lang}`
+      : (data.application_icon || DEFAULT_IMAGE);
+    const isGeneratedCard = !!data.slug;
+
     return {
       title: title || 'Quran App',
       description: description || '',
-      image: data.application_icon || DEFAULT_IMAGE,
-      imageWidth: hasAppIcon ? 512 : 1200,
-      imageHeight: hasAppIcon ? 512 : 630,
+      image: ogImage,
+      imageWidth: isGeneratedCard ? 1200 : 512,
+      imageHeight: isGeneratedCard ? 630 : 512,
       url: `${BASE_URL}/${route.lang}/app/${data.slug}`,
       type: 'website',
       locale: route.lang === 'ar' ? 'ar_SA' : 'en_US',
