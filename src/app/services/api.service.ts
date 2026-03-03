@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { catchError, map, tap, take } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { isAppNew } from '../utils/app.utils';
 
 // Transfer state keys for SSR hydration
 const APPS_STATE_KEY = makeStateKey<App[]>('apps');
@@ -500,10 +501,7 @@ export class ApiService {
       }, []);
     }
 
-    const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
-    const isNew = app.created_at
-      ? (Date.now() - new Date(app.created_at).getTime()) < thirtyDaysMs
-      : false;
+    const isNew = isAppNew(app.created_at);
 
     return {
       ...app,

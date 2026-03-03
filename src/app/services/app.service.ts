@@ -3,6 +3,7 @@ import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { map, catchError } from "rxjs/operators";
 import { environment } from "../../environments/environment";
+import { isAppNew } from '../utils/app.utils';
 
 // Backend API response interfaces
 interface BackendCategory {
@@ -145,9 +146,7 @@ export class AppService {
       App_Gallery_Link: backendApp.app_gallery_link || null,
       platform: backendApp.platform,
       featured: backendApp.featured ?? false,
-      isNew: backendApp.created_at
-        ? (Date.now() - new Date(backendApp.created_at).getTime()) < 30 * 24 * 60 * 60 * 1000
-        : false,
+      isNew: isAppNew(backendApp.created_at),
     };
   }
 
