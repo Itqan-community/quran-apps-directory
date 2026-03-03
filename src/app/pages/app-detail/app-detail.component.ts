@@ -230,6 +230,9 @@ export class AppDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       error: (error) => {
         console.error("Error loading app data:", error);
+        this.app = undefined;
+        this.relevantApps = [];
+        this.loading = false;
       },
     });
   }
