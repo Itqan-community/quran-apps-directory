@@ -1,7 +1,7 @@
 export const applicationsData = [
     {
         "id": "1_Wahy",
-        "Name_Ar":"وَحي",
+        "Name_Ar": "وَحي",
         "Name_En": "Wahy",
         "Short_Description_Ar": "القرآن تلاوة وتفسير كلمة بكلمة",
         "Short_Description_En": "Learn Holy Quran word-by-word",
@@ -9,6 +9,7 @@ export const applicationsData = [
         "Description_En": "Holy Quran app with unique features like Highlight the word being recited, word-translation, repeating ayah in recitation (to help in memorization) and many translations/tafsirs, and more ..\nFeatures:\n- Highlight the word being recited by the reciter, to help non-arabic speakers and the kids.\n- Listen Many recitations, with ayah repeating (to help in memorization).\n- Many translations and tafsirs.\n- Download recitations to play it without internet.\n- Ayah Searching\n- Adding Bookmarks.\n- Mushaf Mode and List Mode.",
         "status": "Done",
         "sort": 1,
+        "featured": true,
         "Apps_Avg_Rating": 4.9,
         "categories": [
             "mushaf",
@@ -50,7 +51,7 @@ export const applicationsData = [
     },
     {
         "id": "15_Ayah",
-        "Name_Ar":"آية",
+        "Name_Ar": "آية",
         "Name_En": "Ayah",
         "Short_Description_Ar": "التطبيق الأمثل لقراءة القرآن",
         "Short_Description_En": "Quran App",
@@ -58,6 +59,7 @@ export const applicationsData = [
         "Description_En": "Ayah is a modern, fully-featured Quran app that is beautiful and easy to use.\nAyah's clean, intuitive interface makes for a relaxing reading experience without any visual clutter. It's also fast to help you get back reading as quickly as possible.\nWith Ayah, you can listen to your favorite Quran recitations, with verse-by-verse highlighting and customizable repeat options.\nFEATURES\n• The latest edition of the Madinah Mushaf\n• Tens of reciters to choose from\n• Extensive sharing options\n• Khatmah\n• Colorful bookmarks\n• Starred verses\n• Quick searching\n• Verse of the day\n• Thematic highlighting\n• Reminders\n• Dark Mode",
         "status": "Done",
         "sort": 2,
+        "created_at": "2026-02-15T00:00:00Z",
         "Apps_Avg_Rating": 4.3,
         "categories": [
             "mushaf",
@@ -95,7 +97,7 @@ export const applicationsData = [
     },
     {
         "id": "14_Quran Mobasher",
-        "Name_Ar":"القرآن مباشر",
+        "Name_Ar": "القرآن مباشر",
         "Name_En": "Quran Mobasher",
         "Short_Description_Ar": "تعليم القرآن..في كل زمان ومكان",
         "Short_Description_En": "Teaching Quran... anytime, anywhere",
@@ -103,6 +105,8 @@ export const applicationsData = [
         "Description_En": "Quran Mobasher is the first mobile app that allows students to learn Quran using only a mobile phone connected to the internet, from any place and at any time. Quran Mobasher offers different kinds of sessions:\n• Recitation Correction : The student can choose any mode of recitation and recite to a teacher who focuses on correcting the provisions and phonetic rules of Quranic recitation.\n• Memorization :The student can memorize and recite Quran to any of the available teachers at any time.\n• Teaching Kids :Kida are taught Quran using Al-Qaida Noorania method.",
         "status": "Done",
         "sort": 3,
+        "featured": true,
+        "created_at": "2026-02-20T00:00:00Z",
         "Apps_Avg_Rating": 4.9,
         "categories": [
             "recite",
@@ -135,7 +139,7 @@ export const applicationsData = [
     },
     {
         "id": "10_Adnan The Quran Teacher",
-        "Name_Ar":"عدنان معلم القرآن",
+        "Name_Ar": "عدنان معلم القرآن",
         "Name_En": "Adnan The Quran Teacher",
         "Short_Description_Ar": "تطبيق تفاعلي للأطفال لتعلم وحفظ القرآن الكريم",
         "Short_Description_En": "Interactive application for children to teach and memorize the full Noble Quran",
@@ -185,7 +189,7 @@ export const applicationsData = [
     },
     {
         "id": "17_Al Fatiha",
-        "Name_Ar":"الفاتحة",
+        "Name_Ar": "الفاتحة",
         "Name_En": "Al Fatiha",
         "Short_Description_Ar": "تصحيح قراءة الفاتحة",
         "Short_Description_En": "Teaching Al-Fatihah Online",
@@ -224,7 +228,7 @@ export const applicationsData = [
     },
     {
         "id": "5_Quran",
-        "Name_Ar":"قرآن",
+        "Name_Ar": "قرآن",
         "Name_En": "Quran",
         "Short_Description_Ar": "من صناع Quran.com",
         "Short_Description_En": "from Quran.com",
@@ -268,7 +272,7 @@ export const applicationsData = [
     },
     {
         "id": "36_Mushaf Altdabbor",
-        "Name_Ar":"مصحف التدبر",
+        "Name_Ar": "مصحف التدبر",
         "Name_En": "Mushaf Altdabbor",
         "Short_Description_Ar": "تدبر القرآن الكريم",
         "Short_Description_En": "تدبر القرآن الكريم",
@@ -308,7 +312,7 @@ export const applicationsData = [
     },
     {
         "id": "11_Tarteel",
-        "Name_Ar":"ترتيل",
+        "Name_Ar": "ترتيل",
         "Name_En": "Tarteel",
         "Short_Description_Ar": "صاحبك للقرآن",
         "Short_Description_En": "A.I. Quran Mistake Detection",
@@ -356,7 +360,7 @@ export const applicationsData = [
     },
     {
         "id": "6_Rayyaan & Bayaan",
-        "Name_Ar":"ريان وبيان",
+        "Name_Ar": "ريان وبيان",
         "Name_En": "Rayyaan & Bayaan",
         "Short_Description_Ar": "مساعدة الأطفال على حفظ ومراجعة القرآن",
         "Short_Description_En": "مساعدة الأطفال على حفظ ومراجعة القرآن",
@@ -398,7 +402,7 @@ export const applicationsData = [
     },
     {
         "id": "39_Ayah widget",
-        "Name_Ar":"آية ويدجت",
+        "Name_Ar": "آية ويدجت",
         "Name_En": "Ayah widget",
         "Short_Description_Ar": "عرض آيات قرآنية على الويدجت بشكل متغير",
         "Short_Description_En": "عرض آيات قرآنية على الويدجت بشكل متغير",
@@ -433,7 +437,7 @@ export const applicationsData = [
     },
     {
         "id": "48_Mushaf Mecca",
-        "Name_Ar":"مصحف مكة",
+        "Name_Ar": "مصحف مكة",
         "Name_En": "Mushaf Mecca",
         "Short_Description_Ar": "تطبيق قرآني متطور بخصائص فريدة",
         "Short_Description_En": "Your Essential Quran App",
@@ -480,7 +484,7 @@ export const applicationsData = [
     },
     {
         "id": "9_Maher",
-        "Name_Ar":"ماهر",
+        "Name_Ar": "ماهر",
         "Name_En": "Maher",
         "Short_Description_Ar": "تسميع القرآن الكريم",
         "Short_Description_En": "Live recitation recognition",
@@ -525,7 +529,7 @@ export const applicationsData = [
     },
     {
         "id": "49_Elmohafez",
-        "Name_Ar":"محفظ الوحيين",
+        "Name_Ar": "محفظ الوحيين",
         "Name_En": "Elmohafez",
         "Short_Description_Ar": "طريقك الميسر لحفظ كتاب الله",
         "Short_Description_En": "Your companion in memorizing the holy Quran",
@@ -577,7 +581,7 @@ export const applicationsData = [
     },
     {
         "id": "7_Moddakir",
-        "Name_Ar":"مُدَكر",
+        "Name_Ar": "مُدَكر",
         "Name_En": "Moddakir",
         "Short_Description_Ar": "لتعليم القرآن",
         "Short_Description_En": "Teaching Quran",
@@ -617,7 +621,7 @@ export const applicationsData = [
     },
     {
         "id": "38_MA'ANONI DA SHIRIYAR ALQUR'ANI",
-        "Name_Ar":"تفسير الهوسا",
+        "Name_Ar": "تفسير الهوسا",
         "Name_En": "MA'ANONI DA SHIRIYAR ALQUR'ANI",
         "Short_Description_Ar": "معاني وتفسير القرآن بلغة الهوسا",
         "Short_Description_En": "Hausa Tafsir",
@@ -666,7 +670,7 @@ export const applicationsData = [
     },
     {
         "id": "50_Mofassal",
-        "Name_Ar":"مفصل",
+        "Name_Ar": "مفصل",
         "Name_En": "Mofassal",
         "Short_Description_Ar": "لإنشاء الخطط القرآنية",
         "Short_Description_En": "Create Quranic Plans",
@@ -706,7 +710,7 @@ export const applicationsData = [
     },
     {
         "id": "51_The Correct Quotation",
-        "Name_Ar":"الاستشهاد الصحيح",
+        "Name_Ar": "الاستشهاد الصحيح",
         "Name_En": "The Correct Quotation",
         "Short_Description_Ar": "لوحة مفاتيح القرآن",
         "Short_Description_En": "Quran Keyboard",
@@ -747,7 +751,7 @@ export const applicationsData = [
     },
     {
         "id": "52_Satr",
-        "Name_Ar":"سطر",
+        "Name_Ar": "سطر",
         "Name_En": "Satr",
         "Short_Description_Ar": "تلاوة مبتكرة مرنة",
         "Short_Description_En": "Innovative flexible recitation",
@@ -783,7 +787,7 @@ export const applicationsData = [
     },
     {
         "id": "53_Moeen",
-        "Name_Ar":"معين",
+        "Name_Ar": "معين",
         "Name_En": "Moeen",
         "Short_Description_Ar": "مصحف المراجعة",
         "Short_Description_En": "مصحف المراجعة",
@@ -823,7 +827,7 @@ export const applicationsData = [
     },
     {
         "id": "80_Quran Tadabbur",
-        "Name_Ar":"القرآن الكريم تدبر وعمل",
+        "Name_Ar": "القرآن الكريم تدبر وعمل",
         "Name_En": "Quran Tadabbur",
         "Short_Description_Ar": "منهج متكامل في التدريب على تدبر القرآن الكريم والعمل به",
         "Short_Description_En": "القرآن الكريم تدبر وعمل",
@@ -861,7 +865,7 @@ export const applicationsData = [
     },
     {
         "id": "69_Translations of Quran meanings",
-        "Name_Ar":"ترجمات معاني القرآن الكريم",
+        "Name_Ar": "ترجمات معاني القرآن الكريم",
         "Name_En": "Translations of Quran meanings",
         "Short_Description_Ar": "موسوعة تراجم معاني القرآن الكريم",
         "Short_Description_En": "Quran Encyclopedia",
@@ -902,7 +906,7 @@ export const applicationsData = [
     },
     {
         "id": "54_Ana Atlou",
-        "Name_Ar":"أنا أتلو",
+        "Name_Ar": "أنا أتلو",
         "Name_En": "Ana Atlou",
         "Short_Description_Ar": "مصحف رقمي صوتي للمكفوفين",
         "Short_Description_En": "A digital audio Quran for the visually impaired",
@@ -940,7 +944,7 @@ export const applicationsData = [
     },
     {
         "id": "55_Alfanous",
-        "Name_Ar":"الفانوس",
+        "Name_Ar": "الفانوس",
         "Name_En": "Alfanous",
         "Short_Description_Ar": "محرك بحث قرآني متقدم",
         "Short_Description_En": "Advanced Quranic search engine",
@@ -982,7 +986,7 @@ export const applicationsData = [
     },
     {
         "id": "57_Noor International Quran",
-        "Name_Ar":"مصحف نور إنترناشيونال",
+        "Name_Ar": "مصحف نور إنترناشيونال",
         "Name_En": "Noor International Quran",
         "Short_Description_Ar": "قرآن كامل مع ترجمات متعددة، بحث فوري، تلاوات صوتية، وميزات إضافية",
         "Short_Description_En": "The most reliable translations",
@@ -1033,7 +1037,7 @@ export const applicationsData = [
     },
     {
         "id": "58_Werdy",
-        "Name_Ar":"وردي",
+        "Name_Ar": "وردي",
         "Name_En": "Werdy",
         "Short_Description_Ar": "رفيقك في ختم القرآن صُمم لمن يفضل المصحف الورقي",
         "Short_Description_En": "رفيقك في ختم القرآن صُمم لمن يفضل المصحف الورقي",
@@ -1074,7 +1078,7 @@ export const applicationsData = [
     },
     {
         "id": "37_Interactive Tafsir",
-        "Name_Ar":"التفسير التفاعلي",
+        "Name_Ar": "التفسير التفاعلي",
         "Name_En": "Interactive Tafsir",
         "Short_Description_Ar": "تفسير صوتي ونصي",
         "Short_Description_En": "Read and listen to interpretations",
@@ -1109,7 +1113,7 @@ export const applicationsData = [
     },
     {
         "id": "59_School Mushaf",
-        "Name_Ar":"المصحف المدرسي",
+        "Name_Ar": "المصحف المدرسي",
         "Name_En": "School Mushaf",
         "Short_Description_Ar": "تطبيق لتلاوة وتحفيظ سور المنهج الدراسي مع جوائز، تلاوات بصوت مشاهير القراء، وميزات قابلة للتخصيص",
         "Short_Description_En": "تطبيق لتلاوة وتحفيظ سور المنهج الدراسي مع جوائز، تلاوات بصوت مشاهير القراء، وميزات قابلة للتخصيص",
@@ -1150,7 +1154,7 @@ export const applicationsData = [
     },
     {
         "id": "60_School Mushaf - Sign Language",
-        "Name_Ar":"المصحف المدرسي الإشاري",
+        "Name_Ar": "المصحف المدرسي الإشاري",
         "Name_En": "School Mushaf - Sign Language",
         "Short_Description_Ar": "منهج القرآن الكريم المعتمد للطلبة الصم (العوق السمعي) بلغة الإشارة",
         "Short_Description_En": "منهج القرآن الكريم المعتمد للطلبة الصم (العوق السمعي) بلغة الإشارة",
@@ -1192,7 +1196,7 @@ export const applicationsData = [
     },
     {
         "id": "23_Quran Hafs",
-        "Name_Ar":"مصحف حفص",
+        "Name_Ar": "مصحف حفص",
         "Name_En": "Quran Hafs",
         "Short_Description_Ar": "من مجمع الملك فهد لطباعة المصحف الشريف",
         "Short_Description_En": "By King Fahd Quran Printing Complex",
@@ -1242,7 +1246,7 @@ export const applicationsData = [
     },
     {
         "id": "65_Tangheem Al Quran",
-        "Name_Ar":"تنغيم القرآن",
+        "Name_Ar": "تنغيم القرآن",
         "Name_En": "Tangheem Al Quran",
         "Short_Description_Ar": "تطبيق لإتقان 31 أسلوبًا لغويًا قرآنيًا",
         "Short_Description_En": "Mastering 31 Quranic linguistic styles",
@@ -1283,7 +1287,7 @@ export const applicationsData = [
     },
     {
         "id": "56_Tebyan Quran",
-        "Name_Ar":"مصحف تبيان للصم",
+        "Name_Ar": "مصحف تبيان للصم",
         "Name_En": "Tebyan Quran",
         "Short_Description_Ar": "مُصحف تفاعلي للصمّ مع تفسير بلغة الإشارة وميزات متقدمة",
         "Short_Description_En": "Interactive Quran for the deaf with sign language interpretations",
@@ -1330,7 +1334,7 @@ export const applicationsData = [
     },
     {
         "id": "62_Quran Warsh",
-        "Name_Ar":"مصحف ورش",
+        "Name_Ar": "مصحف ورش",
         "Name_En": "Quran Warsh",
         "Short_Description_Ar": "من مجمع الملك فهد لطباعة المصحف الشريف",
         "Short_Description_En": "By King Fahd Quran Printing Complex",
@@ -1381,7 +1385,7 @@ export const applicationsData = [
     },
     {
         "id": "70_Quranic Recitations Collection",
-        "Name_Ar":"جامع التلاوات القرآنية",
+        "Name_Ar": "جامع التلاوات القرآنية",
         "Name_En": "Quranic Recitations Collection",
         "Short_Description_Ar": "الاستماع إلى القرآن بأكثر من 900 قارئ",
         "Short_Description_En": "Quran listening with 900+ reciters",
@@ -1430,7 +1434,7 @@ export const applicationsData = [
     },
     {
         "id": "64_Kaedat Alnoor",
-        "Name_Ar":"قاعدة النور",
+        "Name_Ar": "قاعدة النور",
         "Name_En": "Kaedat Alnoor",
         "Short_Description_Ar": "تعليم القاعدة النورانية",
         "Short_Description_En": "Noorani Qaida and Arabic alphabet",
@@ -1473,7 +1477,7 @@ export const applicationsData = [
     },
     {
         "id": "81_Amazighi Quran",
-        "Name_Ar":"المصحف الأمازيغي",
+        "Name_Ar": "المصحف الأمازيغي",
         "Name_En": "Amazighi Quran",
         "Short_Description_Ar": "المصحف المحمدي برواية ورش",
         "Short_Description_En": "Muhammadi Mushaf with a narration of Warsh",
@@ -1524,7 +1528,7 @@ export const applicationsData = [
     },
     {
         "id": "82_Quran Indonesia Kemenag koran",
-        "Name_Ar":"المصحف الإندونيسي",
+        "Name_Ar": "المصحف الإندونيسي",
         "Name_En": "Quran Indonesia Kemenag koran",
         "Short_Description_Ar": "تطبيق متكامل للقرآن الكريم",
         "Short_Description_En": "Comprehensive Quran app",
@@ -1572,7 +1576,7 @@ export const applicationsData = [
     },
     {
         "id": "47_Convey",
-        "Name_Ar":"بلغوا",
+        "Name_Ar": "بلغوا",
         "Name_En": "Convey",
         "Short_Description_Ar": "تسهيل نشر وتبليغ كتاب الله",
         "Short_Description_En": "Facilitate the spread and conveyance of Allah's Book",
@@ -1611,7 +1615,7 @@ export const applicationsData = [
     },
     {
         "id": "67_Salem",
-        "Name_Ar":"سالم",
+        "Name_Ar": "سالم",
         "Name_En": "Salem",
         "Short_Description_Ar": "حروف العربية والفاتحة للأطفال",
         "Short_Description_En": "Arabic letters and Al-Fatihah",
@@ -1653,7 +1657,7 @@ export const applicationsData = [
     },
     {
         "id": "83_Telawa Warsh",
-        "Name_Ar":"مصحف التلاوة ورش",
+        "Name_Ar": "مصحف التلاوة ورش",
         "Name_En": "Telawa Warsh",
         "Short_Description_Ar": "القرآن برواية ورش عن نافع",
         "Short_Description_En": "القرآن برواية ورش عن نافع",
@@ -1705,7 +1709,7 @@ export const applicationsData = [
     },
     {
         "id": "63_Wiqaya",
-        "Name_Ar":"وقاية اللسان",
+        "Name_Ar": "وقاية اللسان",
         "Name_En": "Wiqaya",
         "Short_Description_Ar": "الوقاية من اللحن الجلي والخفي",
         "Short_Description_En": "Tajweed, correcting pronunciation",
@@ -1741,7 +1745,7 @@ export const applicationsData = [
     },
     {
         "id": "35_Study Quran",
-        "Name_Ar":"تدارس القرآن",
+        "Name_Ar": "تدارس القرآن",
         "Name_En": "Study Quran",
         "Short_Description_Ar": "مصحف تفاعلي: تدبر، تفسير لكل آية",
         "Short_Description_En": "Interactive digital Mushaf",
@@ -1785,7 +1789,7 @@ export const applicationsData = [
     },
     {
         "id": "13_The Holy Quran",
-        "Name_Ar":"القرآن الكريم",
+        "Name_Ar": "القرآن الكريم",
         "Name_En": "The Holy Quran",
         "Short_Description_Ar": "القرآن في الواقع الافتراضي",
         "Short_Description_En": "The Quran in Virtual Reality",
@@ -1829,7 +1833,7 @@ export const applicationsData = [
     },
     {
         "id": "41_Ghareeb",
-        "Name_Ar":"غريب",
+        "Name_Ar": "غريب",
         "Name_En": "Ghareeb",
         "Short_Description_Ar": "تعلم معاني القرآن الكريم، بأسلوب وسهل وممتع، يتناسب مع جميع الأعمار",
         "Short_Description_En": "تعلم معاني القرآن الكريم، بأسلوب وسهل وممتع، يتناسب مع جميع الأعمار",
@@ -1866,7 +1870,7 @@ export const applicationsData = [
     },
     {
         "id": "61_Ehfaz Al Quran",
-        "Name_Ar":"احفظ القرآن",
+        "Name_Ar": "احفظ القرآن",
         "Name_En": "Ehfaz Al Quran",
         "Short_Description_Ar": "حفظ سور القرآن الكريم بطريقة الألواح",
         "Short_Description_En": "Memorization of the Holy Quran using theLouh method",
@@ -1905,7 +1909,7 @@ export const applicationsData = [
     },
     {
         "id": "Surah",
-        "Name_Ar":"سورة",
+        "Name_Ar": "سورة",
         "Name_En": "Surah",
         "Short_Description_Ar": "مصحف رقمي موثوق مع التفسير",
         "Short_Description_En": "Noble Quran with Tafsir",

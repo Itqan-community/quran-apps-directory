@@ -44,6 +44,7 @@ interface BackendApp {
   review_count: number;
   view_count: number;
   featured: boolean;
+  created_at?: string | null;
   platform: string;
   sort_order: number;
   status: string;
@@ -87,6 +88,8 @@ export interface QuranApp {
   Google_Play_Link?: string | null;
   App_Gallery_Link?: string | null;
   platform: string;
+  featured: boolean;
+  isNew: boolean;
   ai_reasoning?: string;
   relevance_score?: number;
 }
@@ -98,7 +101,7 @@ export class AppService {
   private apiUrl = environment.apiUrl;
   private apiVersion = (environment as any).apiVersion || 'v1';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Get HTTP headers with API versioning
@@ -141,6 +144,10 @@ export class AppService {
       Google_Play_Link: backendApp.google_play_link || null,
       App_Gallery_Link: backendApp.app_gallery_link || null,
       platform: backendApp.platform,
+      featured: backendApp.featured ?? false,
+      isNew: backendApp.created_at
+        ? (Date.now() - new Date(backendApp.created_at).getTime()) < 30 * 24 * 60 * 60 * 1000
+        : false,
     };
   }
 

@@ -500,6 +500,11 @@ export class ApiService {
       }, []);
     }
 
+    const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+    const isNew = app.created_at
+      ? (Date.now() - new Date(app.created_at).getTime()) < thirtyDaysMs
+      : false;
+
     return {
       ...app,
       Name_En: app.name_en,
@@ -524,6 +529,8 @@ export class ApiService {
       categories: formattedCategories,
       slug: app.slug,
       status: app.status,
+      featured: app.featured ?? false,
+      isNew,
       ai_reasoning: (app as any).ai_reasoning || undefined,
       relevance_score: (app as any).relevance_score ?? undefined
     };

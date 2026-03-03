@@ -1141,6 +1141,85 @@
   }
 }
 
+// ============================================
+// APP CARD BADGES
+// ============================================
+@keyframes badge-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-badges {
+  position: absolute;
+  inset-block-start: 20px;  // top
+  inset-inline-start: 20px; // left in LTR, right in RTL
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 5;
+  animation: badge-fade-in 0.25s ease both;
+
+  @media (max-width: 640px) {
+    inset-block-start: 12px;
+    inset-inline-start: 12px;
+    gap: 4px;
+  }
+}
+
+.app-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  line-height: 1.2;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+
+  @media (max-width: 640px) {
+    font-size: 10px;
+    padding: 3px 7px;
+  }
+}
+
+// Gold / amber — Featured
+.badge-featured {
+  background: rgba(212, 160, 23, 0.92);
+  color: #fff !important;
+
+  svg {
+    flex-shrink: 0;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
+  }
+
+  :host-context(.dark-theme) & {
+    background: rgba(235, 180, 40, 0.88);
+    color: #1a1000;
+  }
+}
+
+// Emerald — New
+.badge-new {
+  background: rgba(34, 160, 84, 0.92);
+  color: #fff !important;
+
+  :host-context(.dark-theme) & {
+    background: rgba(46, 196, 104, 0.88);
+    color: #001a09;
+  }
+}
+
 .card-body {
   padding: 16px;
   display: flex;

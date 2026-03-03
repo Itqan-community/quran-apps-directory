@@ -326,6 +326,25 @@
               [loading]="getImageLoadingStrategy(i)"
               [fetchpriority]="getImagePriority(i)"
             ></app-optimized-image>
+
+            <!-- App Badges -->
+            @if (app.featured || app.isNew) {
+              <div class="card-badges">
+                @if (app.featured) {
+                  <span class="app-badge badge-featured">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    {{ 'appList.badges.featured' | translate }}
+                  </span>
+                }
+                @if (app.isNew) {
+                  <span class="app-badge badge-new">
+                    {{ 'appList.badges.new' | translate }}
+                  </span>
+                }
+              </div>
+            }
           </div>
 
           <!-- Card Body -->
