@@ -1,4 +1,4 @@
-import { Component, OnInit, PLATFORM_ID, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
@@ -12,6 +12,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppService, QuranApp } from '../../services/app.service';
 import { Title, Meta } from '@angular/platform-browser';
 import { SeoService } from '../../services/seo.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-developer',
@@ -31,7 +33,7 @@ import { SeoService } from '../../services/seo.service';
   templateUrl: './developer.component.html',
   styleUrls: ['./developer.component.scss']
 })
-export class DeveloperComponent implements OnInit {
+export class DeveloperComponent implements OnInit, OnDestroy {
   developerApps: QuranApp[] = [];
   developerInfo: any = null;
   currentLang: 'en' | 'ar' = 'ar';
@@ -40,6 +42,7 @@ export class DeveloperComponent implements OnInit {
   developerParam = ''; // Store the full parameter (name_id)
   // Cache for star arrays to prevent NG0100 errors from creating new references on each change detection
   private starArrayCache = new Map<number, { fillPercent: number }[]>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     @Inject(PLATFORM_ID) private readonly platformId: Object,
@@ -54,7 +57,7 @@ export class DeveloperComponent implements OnInit {
     console.log('🏗️ DeveloperComponent constructor called');
     this.currentLang = this.translateService.currentLang as 'ar' | 'en';
     // Subscribe to language changes
-    this.translateService.onLangChange.subscribe((event) => {
+    this.translateService.onLangChange.pipe(takeUntil(this.destroy$)).subscribe((event) => {
       this.currentLang = event.lang as 'en' | 'ar';
       this.updatePageTitle();
     });
@@ -74,7 +77,7 @@ export class DeveloperComponent implements OnInit {
     }
 
     // Subscribe to route parameter changes
-    this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       console.log('🔄 Route params changed:', params);
       const newLang = params['lang'];
       const newDeveloperParam = params['developer'];
@@ -307,6 +310,11 @@ export class DeveloperComponent implements OnInit {
     if (rating >= 3.5) return 'good';
     if (rating >= 2.5) return 'fair';
     return 'poor';
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   getStarArray(rating: number | undefined | null): { fillPercent: number }[] {
