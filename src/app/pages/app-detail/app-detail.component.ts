@@ -150,17 +150,22 @@ export class AppDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     // Subscribe to route parameter changes (both lang and id)
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      const newLang = params["lang"];
-      const newId = params["id"];
+    // Using switchMap to cancel in-flight requests when route ID changes
+    this.route.params.pipe(
+      takeUntil(this.destroy$),
+      switchMap((params) => {
+        const newLang = params["lang"];
+        const newId = params["id"];
 
-      // Update language if changed
-      if (newLang && newLang !== this.currentLang) {
-        this.currentLang = newLang as "en" | "ar";
-      }
+        // Update language if changed
+        if (newLang && newLang !== this.currentLang) {
+          this.currentLang = newLang as "en" | "ar";
+        }
 
-      // Load app data when ID changes (or on initial load)
-      if (newId) {
+        if (!newId) {
+          return of(null);
+        }
+
         this.loading = true;
         // Scroll to top of page when loading new app detail (unless fragment is present)
         if (isPlatformBrowser(this.platformId)) {
@@ -169,45 +174,13 @@ export class AppDetailComponent implements OnInit, AfterViewInit, OnDestroy {
             window.scrollTo({ top: 0, behavior: "auto" });
           }
         }
-        this.loadAppData(newId);
-      }
-    });
 
-    // Handle fragment navigation (e.g., #downloads)
-    this.route.fragment.pipe(takeUntil(this.destroy$)).subscribe((fragment) => {
-      if (fragment === "downloads" && isPlatformBrowser(this.platformId)) {
-        // Wait for app data to load and DOM to render
-        setTimeout(() => {
-          this.scrollToDownloads();
-        }, 500);
-      }
-    });
-  }
-
-  private loadAppData(appParam: string) {
-    // Parse the app parameter: format is "slug_id" (e.g., "wahy_46")
-    const lastUnderscoreIndex = appParam.lastIndexOf("_");
-    let appId: string = appParam;
-
-    if (lastUnderscoreIndex !== -1) {
-      const potentialId = appParam.substring(lastUnderscoreIndex + 1);
-      if (potentialId.length > 0) {
-        appId = potentialId;
-      }
-    }
-
-    this.appService.getAppById(appId).pipe(
-      switchMap((app) => {
-        if (app && app.categories.length > 0) {
-          return this.appService.getAppsByCategory(app.categories[0]).pipe(
-            switchMap((apps) => of({ app, relevantApps: apps.filter((a) => a.id !== app.id) })),
-          );
-        }
-        return of({ app, relevantApps: [] as QuranApp[] });
+        return this.loadAppData$(newId);
       }),
-      takeUntil(this.destroy$),
     ).subscribe({
-      next: ({ app, relevantApps }) => {
+      next: (result) => {
+        if (!result) return;
+        const { app, relevantApps } = result;
         if (app) {
           this.app = app;
           this.relevantApps = relevantApps;
@@ -224,8 +197,6 @@ export class AppDetailComponent implements OnInit, AfterViewInit, OnDestroy {
           setTimeout(() => {
             this.initializeSwiper();
           }, 150);
-        } else {
-          console.error("No app data returned for:", appParam);
         }
       },
       error: (error) => {
@@ -235,6 +206,40 @@ export class AppDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         this.loading = false;
       },
     });
+
+    // Handle fragment navigation (e.g., #downloads)
+    this.route.fragment.pipe(takeUntil(this.destroy$)).subscribe((fragment) => {
+      if (fragment === "downloads" && isPlatformBrowser(this.platformId)) {
+        // Wait for app data to load and DOM to render
+        setTimeout(() => {
+          this.scrollToDownloads();
+        }, 500);
+      }
+    });
+  }
+
+  private loadAppData$(appParam: string) {
+    // Parse the app parameter: format is "slug_id" (e.g., "wahy_46")
+    const lastUnderscoreIndex = appParam.lastIndexOf("_");
+    let appId: string = appParam;
+
+    if (lastUnderscoreIndex !== -1) {
+      const potentialId = appParam.substring(lastUnderscoreIndex + 1);
+      if (potentialId.length > 0) {
+        appId = potentialId;
+      }
+    }
+
+    return this.appService.getAppById(appId).pipe(
+      switchMap((app) => {
+        if (app && app.categories.length > 0) {
+          return this.appService.getAppsByCategory(app.categories[0]).pipe(
+            switchMap((apps) => of({ app, relevantApps: apps.filter((a) => a.id !== app.id) })),
+          );
+        }
+        return of({ app, relevantApps: [] as QuranApp[] });
+      }),
+    );
   }
 
   // Add a method to handle navigation to a related app
