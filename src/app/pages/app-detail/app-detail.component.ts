@@ -179,25 +179,35 @@ export class AppDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       }),
     ).subscribe({
       next: (result) => {
-        if (!result) return;
-        const { app, relevantApps } = result;
-        if (app) {
-          this.app = app;
-          this.relevantApps = relevantApps;
-          this.cdr.detectChanges();
-
-          this.updateSeoData();
+        if (!result) {
+          this.app = undefined;
+          this.relevantApps = [];
           this.loading = false;
-          this.cdr.detectChanges();
-
-          this.swiperInitAttempts = 0;
-          setTimeout(() => {
-            this.initializeSwiper();
-          }, 0);
-          setTimeout(() => {
-            this.initializeSwiper();
-          }, 150);
+          return;
         }
+        const { app, relevantApps } = result;
+        if (!app) {
+          this.app = undefined;
+          this.relevantApps = [];
+          this.loading = false;
+          return;
+        }
+
+        this.app = app;
+        this.relevantApps = relevantApps;
+        this.cdr.detectChanges();
+
+        this.updateSeoData();
+        this.loading = false;
+        this.cdr.detectChanges();
+
+        this.swiperInitAttempts = 0;
+        setTimeout(() => {
+          this.initializeSwiper();
+        }, 0);
+        setTimeout(() => {
+          this.initializeSwiper();
+        }, 150);
       },
       error: (error) => {
         console.error("Error loading app data:", error);
