@@ -5,6 +5,13 @@
   command = "ng build --configuration=staging"
   publish = "dist/browser"
 
+# API proxy - hides staging backend URL from client bundle
+[[redirects]]
+  from = "/api/*"
+  to = "https://qad-backend-api-staging.up.railway.app/api/:splat"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
