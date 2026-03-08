@@ -113,21 +113,12 @@ export class AppDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     // Subscribe to language changes
     this.translateService.onLangChange.pipe(takeUntil(this.destroy$)).subscribe((event) => {
       this.currentLang = event.lang as "en" | "ar";
-      console.log("🌐 DEBUG: Language changed to:", this.currentLang);
-      // Reinitialize swiper when language changes (same pattern as data load)
       if (this.swiperContainer) {
-        console.log("🔄 DEBUG: Reinitializing Swiper after language change...");
         this.hideSwiper = false;
         setTimeout(() => {
           this.hideSwiper = true;
-          console.log(
-            "🔄 DEBUG: Swiper container reset after language change, initializing...",
-          );
         }, 50);
         setTimeout(() => {
-          console.log(
-            "🔄 DEBUG: Final Swiper initialization after language change...",
-          );
           this.initializeSwiper();
         }, 100);
       }
@@ -477,54 +468,26 @@ export class AppDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    console.log("🔧 DEBUG: ngAfterViewInit called");
-    console.log("📦 DEBUG: Swiper container exists:", !!this.swiperContainer);
-    console.log("👁️ DEBUG: hideSwiper state:", this.hideSwiper);
-    console.log("📱 DEBUG: App data loaded:", !!this.app);
-
     if (this.app) {
-      console.log(
-        "🖼️ DEBUG: App screenshots in ngAfterViewInit:",
-        this.app.screenshots_en?.length || 0,
-      );
-      // Initialize Swiper if data is already available
       this.initializeSwiper();
-    } else {
-      console.log(
-        "⏳ DEBUG: App data not loaded yet, Swiper will initialize after data loads",
-      );
     }
   }
 
   // Separate method for Swiper initialization to reuse
   private initializeSwiper() {
     if (this.swiperContainer && this.app) {
-      console.log("🚀 DEBUG: Initializing Swiper...");
       try {
         const swiperEl = this.swiperContainer.nativeElement;
-        console.log("🎯 DEBUG: Swiper element:", swiperEl);
-        console.log("⚙️ DEBUG: Swiper params:", this.swiperParams);
-
         Object.assign(swiperEl, this.swiperParams);
         swiperEl.initialize();
-        console.log("✅ DEBUG: Swiper initialized successfully");
         this.swiperInitAttempts = 0;
       } catch (error) {
-        console.error("❌ DEBUG: Swiper initialization failed:", error);
+        console.error("Swiper initialization failed:", error);
       }
     } else {
       if (this.swiperInitAttempts < 5) {
         this.swiperInitAttempts += 1;
         setTimeout(() => this.initializeSwiper(), 120);
-      } else {
-        if (!this.swiperContainer) {
-          console.warn("⚠️ DEBUG: Swiper container not available");
-        }
-        if (!this.app) {
-          console.warn(
-            "⚠️ DEBUG: App data not available for Swiper initialization",
-          );
-        }
       }
     }
   }
@@ -558,7 +521,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         const urlParam = `${developerName}_${developerId}`;
         this.router.navigate([`/${this.currentLang}/developer/${urlParam}`]);
       } else {
-        console.warn("⚠️ No developer ID found for app:", this.app.Name_En);
+        console.warn("No developer ID found for app:", this.app.Name_En);
       }
     }
   }
