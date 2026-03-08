@@ -199,8 +199,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   toggleLanguage() {
     const newLang = this.isRtl ? "en" : "ar";
     this.languageService.changeLanguage(newLang);
-    this.currentLang = newLang as "en" | "ar";
-    this.isRtl = newLang === "ar";
   }
 
   toggleMobileMenu() {
