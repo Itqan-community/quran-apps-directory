@@ -12,8 +12,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AppService, QuranApp } from '../../services/app.service';
 import { Title, Meta } from '@angular/platform-browser';
 import { SeoService } from '../../services/seo.service';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-developer',
@@ -54,9 +54,7 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     private metaService: Meta,
     private seoService: SeoService
   ) {
-    console.log('🏗️ DeveloperComponent constructor called');
     this.currentLang = this.translateService.currentLang as 'ar' | 'en';
-    // Subscribe to language changes
     this.translateService.onLangChange.pipe(takeUntil(this.destroy$)).subscribe((event) => {
       this.currentLang = event.lang as 'en' | 'ar';
       this.updatePageTitle();
@@ -64,95 +62,70 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('🔍 DeveloperComponent ngOnInit called');
-
-    // Set language immediately from snapshot
     const lang = this.route.snapshot.params['lang'];
-    const developerName = this.route.snapshot.params['developer'];
-
-    console.log('📍 Route snapshot params - lang:', lang, 'developer:', developerName);
 
     if (lang) {
       this.currentLang = lang as 'en' | 'ar';
     }
 
-    // Subscribe to route parameter changes
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      console.log('🔄 Route params changed:', params);
-      const newLang = params['lang'];
-      const newDeveloperParam = params['developer'];
+    this.route.params.pipe(
+      takeUntil(this.destroy$),
+      switchMap((params) => {
+        const newLang = params['lang'];
+        const newDeveloperParam = params['developer'];
 
-      console.log('📍 New params - lang:', newLang, 'developer:', newDeveloperParam);
+        if (newLang && newLang !== this.currentLang) {
+          this.currentLang = newLang as 'en' | 'ar';
+        }
 
-      // Update language if changed
-      if (newLang && newLang !== this.currentLang) {
-        this.currentLang = newLang as 'en' | 'ar';
-      }
+        if (!newDeveloperParam) {
+          return of(null);
+        }
 
-      // Load developer data when developer param changes (or on initial load)
-      if (newDeveloperParam) {
-        console.log('📤 Calling loadDeveloperData with:', newDeveloperParam);
         this.developerParam = newDeveloperParam;
         this.loading = true;
-        this.loadDeveloperData(newDeveloperParam);
-      } else {
-        console.log('⚠️ No developer param in route');
-      }
+        return this.loadDeveloperData$(newDeveloperParam);
+      }),
+    ).subscribe({
+      next: (apps) => {
+        if (apps) {
+          this.handleDeveloperAppsLoaded(apps);
+        }
+      },
+      error: (error) => this.handleDeveloperAppsError(error),
     });
   }
 
-  private loadDeveloperData(developerParam: string) {
-    // Parse the developer parameter: format is "developerName_developerId"
-    // Extract developer ID from URL parameter
+  private loadDeveloperData$(developerParam: string): Observable<QuranApp[]> {
     const lastUnderscoreIndex = developerParam.lastIndexOf('_');
     let developerId: string | null = null;
     let developerName = developerParam;
 
     if (lastUnderscoreIndex !== -1) {
       const potentialId = developerParam.substring(lastUnderscoreIndex + 1);
-      // Check if the part after underscore is a valid ID (numeric)
       if (/^\d+$/.test(potentialId)) {
         developerId = potentialId;
         developerName = developerParam.substring(0, lastUnderscoreIndex);
-        console.log('✅ Parsed developer ID from URL:', developerId);
       }
     }
 
-    // Decode the developer name from URL
     let decodedName = decodeURIComponent(developerName).trim();
-    // If it still looks double-encoded, decode again
     if (decodedName.includes('%')) {
       decodedName = decodeURIComponent(decodedName).trim();
     }
 
-    console.log('Developer route param:', developerParam);
-    console.log('Developer ID:', developerId);
-    console.log('Developer name:', decodedName);
-
-    // Load from API using developer_id
     if (developerId) {
-      console.log('📡 Fetching from API using developer_id:', developerId);
-      this.appService.getAppsByDeveloperId(developerId).subscribe(
-        (apps) => this.handleDeveloperAppsLoaded(apps),
-        (error) => this.handleDeveloperAppsError(error)
-      );
-    } else {
-      // No ID in URL - fall back to search by developer name
-      const searchName = decodedName.replace(/-/g, ' ');
-      console.log('📡 No developer ID, falling back to search by name:', searchName);
-      this.appService.getAppsByDeveloper(searchName).subscribe(
-        (apps) => this.handleDeveloperAppsLoaded(apps),
-        (error) => this.handleDeveloperAppsError(error)
-      );
+      return this.appService.getAppsByDeveloperId(developerId);
     }
+
+    const searchName = decodedName.replace(/-/g, ' ');
+    return this.appService.getAppsByDeveloper(searchName);
   }
 
   private handleDeveloperAppsLoaded(apps: QuranApp[]) {
     if (apps && apps.length > 0) {
-      console.log('✅ Loaded apps from API:', apps.length);
       this.developerApps = apps;
     } else {
-      console.log('⚠️ No apps found for this developer');
       this.developerApps = [];
     }
 
@@ -182,7 +155,7 @@ export class DeveloperComponent implements OnInit, OnDestroy {
 
   private handleDeveloperAppsError(error: any) {
     // Handle subscription error
-    console.error('❌ Error loading developer data:', error);
+    console.error('Error loading developer data:', error);
     this.developerApps = [];
     this.developerInfo = null;
     this.loading = false;
