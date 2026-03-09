@@ -44,12 +44,8 @@
     {
       "name": "api-apps-categories",
       "urls": [
-        "https://qad-backend-api-production.up.railway.app/api/apps/**",
-        "https://qad-backend-api-production.up.railway.app/api/categories/**",
-        "https://qad-backend-api-staging.up.railway.app/api/apps/**",
-        "https://qad-backend-api-staging.up.railway.app/api/categories/**",
-        "https://qad-backend-api-develop.up.railway.app/api/apps/**",
-        "https://qad-backend-api-develop.up.railway.app/api/categories/**"
+        "/api/apps/**",
+        "/api/categories/**"
       ],
       "cacheConfig": {
         "maxSize": 200,
@@ -61,9 +57,7 @@
     {
       "name": "api-other",
       "urls": [
-        "https://qad-backend-api-production.up.railway.app/api/**",
-        "https://qad-backend-api-staging.up.railway.app/api/**",
-        "https://qad-backend-api-develop.up.railway.app/api/**"
+        "/api/**"
       ],
       "cacheConfig": {
         "maxSize": 100,

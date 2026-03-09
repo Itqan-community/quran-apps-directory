@@ -1,4 +1,8 @@
 # Cloudflare Pages Redirects Configuration
+
+# Proxy API requests to backend (hides internal service URL)
+/api/* https://qad-backend-api-production.up.railway.app/api/:splat 200
+
 # SPA routing: Serve index.html for all routes EXCEPT static assets
 
 # Exclude static assets from redirect

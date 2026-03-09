@@ -606,7 +606,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       property: "og:description",
       content: appDescription || "",
     });
-    const ogImageUrl = `${environment.apiUrl}/apps/${this.app.slug}/og-image/?lang=${this.currentLang}`;
+    const ogImageUrl = `${environment.appUrl}/api/apps/${this.app.slug}/og-image/?lang=${this.currentLang}`;
     this.metaService.updateTag({
       property: "og:image",
       content: ogImageUrl,
