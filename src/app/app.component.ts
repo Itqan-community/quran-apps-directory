@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, HostListener, Inject, OnInit, OnDestroy, PLATFORM_ID } from "@angular/core";
-import { isPlatformBrowser, CommonModule } from "@angular/common";
+import { AfterViewInit, Component, HostListener, Inject, OnInit, OnDestroy, PLATFORM_ID, Renderer2 } from "@angular/core";
+import { isPlatformBrowser, CommonModule, DOCUMENT } from "@angular/common";
 import { RouterOutlet, RouterLink, ActivatedRoute, Router, ActivatedRouteSnapshot, NavigationEnd } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { NzLayoutModule } from "ng-zorro-antd/layout";
@@ -49,11 +49,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public isRtl: boolean;
   public isMobileMenuVisible = false;
   public currentLang: "en" | "ar" = "en";
-
   // Hide header/footer for internal tool pages
   public hideChrome = false;
   public hideFooter = false;
-
   // Navbar compact mode with inline search
   public isNavbarCompact = false;
   public navbarSearchQuery = '';
@@ -66,6 +64,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     @Inject(PLATFORM_ID) private readonly platformId: Object,
+    @Inject(DOCUMENT) private document: Document,
+    private renderer: Renderer2,
     private translate: TranslateService,
     private titleService: Title,
     private metaService: Meta,
@@ -80,6 +80,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     private navbarScrollService: NavbarScrollService
   ) {
     // Icons are globally registered in main.ts
+  
     // Translations are initialized via APP_INITIALIZER in main.ts (ensures they load before render)
 
     // Get current language from TranslateService (already set by APP_INITIALIZER)
@@ -104,14 +105,12 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     console.log('🚀 AppComponent ngOnInit - listening to router events');
-
     // Subscribe to router events
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       console.log('🔀 NavigationEnd:', event.url, 'Matched route config:', this.getCurrentRouteParams());
     });
-
     this.updateMetaTags();
     this.translate.onLangChange.subscribe(() => {
       this.updateMetaTags();
@@ -122,9 +121,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.translate.onLangChange.subscribe((event) => {
       this.currentLang = event.lang as "en" | "ar";
       this.isRtl = this.currentLang === 'ar';
-      if (isPlatformBrowser(this.platformId)) {
-        document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
-      }
+      this.updateDirectionAndLanguage();
     });
 
     // Also listen for route changes to update language and chrome visibility
@@ -139,23 +136,18 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         this.translate.use(lang).subscribe(() => {
           this.currentLang = lang as "en" | "ar";
           this.isRtl = this.currentLang === 'ar';
-          if (isPlatformBrowser(this.platformId)) {
-            document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
-          }
+          this.updateDirectionAndLanguage();
         });
       }
     });
-
     // Start preloading app images in background (non-blocking)
     this.appImagePreloader.startPreloadingInBackground();
-
     // Subscribe to navbar compact mode changes (desktop only)
     this.navbarScrollService.compactMode$
       .pipe(takeUntil(this.destroy$))
       .subscribe(isCompact => {
         this.isNavbarCompact = isCompact;
       });
-
     // Subscribe to search state changes for navbar
     this.navbarScrollService.searchState$
       .pipe(takeUntil(this.destroy$))
@@ -176,7 +168,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     // Language service will handle URL changes
     this.languageService.setLanguageFromUrl();
-
     // Initialize performance monitoring
     setTimeout(() => {
       this.performanceService.measurePerformance();
@@ -186,7 +177,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       this.http2Optimization.generateHTTP2Report();
       this.http2Optimization.monitorHTTP2Usage();
     }, 1000);
-
     // Track route changes for analytics (when analytics is ready)
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
@@ -201,6 +191,18 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.languageService.changeLanguage(newLang);
     this.currentLang = newLang as "en" | "ar";
     this.isRtl = newLang === "ar";
+    
+    // Update DOM immediately when the button is toggled
+    this.updateDirectionAndLanguage();
+  }
+
+  // Helper method to safely update DOM
+  private updateDirectionAndLanguage() {
+    if (isPlatformBrowser(this.platformId)) {
+      const dir = this.isRtl ? 'rtl' : 'ltr';
+      this.renderer.setAttribute(this.document.documentElement, 'dir', dir);
+      this.renderer.setAttribute(this.document.documentElement, 'lang', this.currentLang);
+    }
   }
 
   toggleMobileMenu() {
@@ -248,13 +250,14 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.navbarScrollService.updateSearchState({ selectedCategory: categorySlug });
 
     // Save current scroll position before navigation
-    const scrollY = isPlatformBrowser(this.platformId) ? window.scrollY : 0;
+    const scrollY = isPlatformBrowser(this.platformId) ?
+      window.scrollY : 0;
 
     // Navigate to category
     const route = categorySlug === 'all'
-      ? ['/', this.currentLang]
+      ?
+      ['/', this.currentLang]
       : ['/', this.currentLang, categorySlug];
-
     this.router.navigate(route).then(() => {
       // Restore scroll position after navigation using multiple attempts
       // to ensure it works after Angular's change detection completes
@@ -264,6 +267,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         // Second attempt after microtask
         Promise.resolve().then(() => window.scrollTo(0, scrollY));
         // Third attempt after next frame
+     
         requestAnimationFrame(() => {
           window.scrollTo(0, scrollY);
           // Fourth attempt after Angular settles
@@ -275,7 +279,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private updateMetaTags() {
     const currentUrl = `https://quran-apps.itqan.dev${this.router.url}`;
-    
     if (this.currentLang === 'ar') {
       // Arabic SEO optimization
       this.titleService.setTitle("دليل التطبيقات القرآنية الشامل - أفضل تطبيقات القرآن الكريم");
@@ -322,11 +325,11 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     
     // Add canonical URL
     this.metaService.updateTag({ rel: "canonical", href: currentUrl });
-    
     // Add alternate language tags (hreflang)
     const baseUrl = currentUrl.replace(/\/(ar|en)/, '');
     this.metaService.updateTag({ rel: "alternate", hreflang: "ar", href: `${baseUrl}/ar` });
     this.metaService.updateTag({ rel: "alternate", hreflang: "en", href: `${baseUrl}/en` });
     this.metaService.updateTag({ rel: "alternate", hreflang: "x-default", href: `${baseUrl}/en` });
   }
+  
 }
