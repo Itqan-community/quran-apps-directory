@@ -1,0 +1,55 @@
+<div *ngIf="showTour" class="tour-overlay" [dir]="currentLang === 'ar' ? 'rtl' : 'ltr'">
+  <div class="tour-backdrop"></div>
+
+  <div class="tour-tooltip">
+    <div class="tooltip-card">
+      <div class="progress-track">
+        <div class="progress-fill" [style.width.%]="(currentStep + 1) / steps.length * 100"></div>
+      </div>
+
+      <div class="tooltip-body">
+  <div class="tooltip-header">
+    <span class="step-badge">
+      {{ currentLang === 'ar' ? 'خطوة' : 'Step' }} 
+      {{currentStep + 1}} 
+      {{ currentLang === 'ar' ? 'من' : 'of' }} 
+      {{steps.length}}
+    </span>
+    <button *ngIf="currentStep > 0 && currentStep < steps.length - 1" 
+            class="skip-link" (click)="skip()">
+      {{ getButtonText('skip') }}
+    </button>
+  </div>
+
+  <h2 class="tooltip-title">{{ steps[currentStep]?.title }}</h2>
+  <p class="tooltip-desc">{{ steps[currentStep]?.description }}</p>
+
+  <div class="search-toggle-container" *ngIf="steps[currentStep]?.id === 'search-step'">
+     </div>
+
+  <div class="tooltip-actions">
+    <button class="btn-tour btn-tour-primary" (click)="next()" 
+            [style.width]="currentStep === 0 ? '100%' : 'auto'">
+      {{ 
+         currentStep === 0 ? getButtonText('start') : 
+         (currentStep === steps.length - 1 ? getButtonText('finish') : getButtonText('next')) 
+      }}
+    </button>
+    
+    <button *ngIf="currentStep > 0" 
+            class="btn-tour btn-tour-secondary" (click)="back()">
+      {{ getButtonText('back') }}
+    </button>
+  </div>
+</div>
+
+      <div class="dots-row">
+        <span *ngFor="let s of steps; let i = index" 
+              class="dot" 
+              [class.dot-active]="i === currentStep"
+              [class.dot-done]="i < currentStep">
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

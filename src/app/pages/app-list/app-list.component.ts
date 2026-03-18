@@ -39,7 +39,7 @@ import { SeoService } from "../../services/seo.service";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
 import { NavbarScrollService } from "../../services/navbar-scroll.service";
-
+import { OnboardingTourComponent } from '../../components/onboarding-tour/onboarding-tour.spec';
 @Component({
   selector: "app-list",
   standalone: true,
@@ -58,6 +58,7 @@ import { NavbarScrollService } from "../../services/navbar-scroll.service";
     TranslateModule,
     OptimizedImageComponent,
     SafeHtmlPipe,
+    OnboardingTourComponent
   ],
   templateUrl: "./app-list.component.html",
   styleUrls: ["./app-list.component.scss"],

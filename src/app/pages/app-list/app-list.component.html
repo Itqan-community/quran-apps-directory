@@ -1,3 +1,7 @@
+
+
+
+<app-onboarding-tour></app-onboarding-tour>
 <!-- Hero Section with Background -->
 <section class="hero-section">
   <div class="hero-background">
@@ -44,6 +48,7 @@
       <!-- Search Input -->
       <div class="search-input-wrapper">
         <div
+          id="search-input"
           class="search-input-container"
           [class.smart-mode]="searchType === 'smart'"
         >
@@ -101,7 +106,7 @@
     </div>
 
     <!-- Categories Filter Chips -->
-    <div class="categories-chips-wrapper">
+    <div id="categories" class="categories-chips-wrapper">
       <div
         class="categories-chips"
         (mousedown)="startDragging($event)"

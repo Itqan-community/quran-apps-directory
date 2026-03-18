@@ -1,0 +1,205 @@
+/* ═══════════════════════════════════════
+   ONBOARDING TOUR — CLEAN STYLES
+   ═══════════════════════════════════════ */
+
+.tour-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.tour-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+.tour-tooltip {
+  position: relative;
+  z-index: 10000;
+  width: 90%;
+  max-width: 400px;
+}
+
+.tooltip-card {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  border: 1px solid #eee;
+  direction: inherit; /* ليرث الاتجاه من الـ tour-overlay */
+  text-align: start;
+}
+
+/* الخلفية المظلمة التي تغطي كل شيء */
+.tour-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7); /* تغميق الخلفية أكثر للتركيز */
+  backdrop-filter: blur(3px);
+  z-index: 9998;
+  transition: all 0.3s ease;
+}
+
+/* الكلاس الذي سيتم إضافته للعنصر المستهدف (البحث أو التصنيفات) */
+.tour-highlight {
+  position: relative !important;
+  z-index: 10001 !important; /* يجب أن يكون أعلى من الـ backdrop والـ tooltip */
+  box-shadow: 0 0 0 5000px rgba(0, 0, 0, 0.7), /* هذا هو السر: ظل ضخم جداً يغطي الشاشة */
+              0 0 15px rgba(255, 255, 255, 0.5); /* وهج خفيف حول العنصر */
+  border-radius: 8px; /* اختياري حسب شكل العنصر */
+  pointer-events: none; /* لمنع التفاعل مع العنصر أثناء الشرح إذا أردت */
+  transition: all 0.3s ease;
+}
+/* شريط التقدم */
+.progress-track {
+  height: 5px;
+  background: #f0f0f0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #a855f7);
+  transition: width 0.4s ease;
+}
+
+.tooltip-body {
+  padding: 24px;
+}
+
+.tooltip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.step-badge {
+  background: #eef2ff;
+  color: #6366f1;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.skip-link {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.tooltip-title {
+  font-size: 1.4rem;
+  color: #1f2937;
+  margin: 10px 0;
+}
+
+.tooltip-desc {
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* تخصيص خيارات البحث */
+.search-options {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  background: #f9fafb;
+  padding: 5px;
+  border-radius: 12px;
+}
+
+.btn-search-type {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: transparent;
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+.btn-search-type.active {
+  background: #ffffff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  color: #6366f1;
+}
+
+.search-hint {
+  font-size: 0.8rem;
+  color: #10b981; /* لون أخضر للنجاح أو التميز */
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+/* الأزرار */
+.tooltip-actions {
+  display: flex;
+  flex-direction: row-reverse; /* لجعل "التالي" على اليسار و"السابق" على اليمين في RTL */
+  gap: 12px;
+}
+
+.btn-tour {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btn-tour-primary {
+  background: #d9cbfc;
+  color: white;
+  border-radius: 50px;
+}
+
+.btn-tour-primary:hover {
+  background: #bfb2e3;
+}
+
+.btn-tour-secondary {
+  background: #e7e9ef;
+  color: #4b5563;
+  border-radius: 50px;
+
+}
+
+.skip-link{
+  background: #e7e9ef;
+  color: #4b5563;
+  border-radius: 50px;
+  font-size: smaller;
+  padding: 7px;
+}
+/* نقاط التنقل */
+.dots-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 15px 0;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d1d5db;
+}
+
+.dot-active {
+  background: #6366f1;
+  width: 20px;
+  border-radius: 10px;
+}
