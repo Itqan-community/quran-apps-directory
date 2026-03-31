@@ -115,13 +115,16 @@ const generateOGTags = (route: RouteInfo, data: any): OGTags => {
       ? (data.short_description_ar || data.description_ar)
       : (data.short_description_en || data.description_en);
 
-    const hasAppIcon = !!data.application_icon;
+    const ogImage = data.slug
+      ? `${API_BASE}/apps/${data.slug}/og-image/?lang=${route.lang}`
+      : DEFAULT_IMAGE;
+
     return {
       title: title || 'Quran App',
       description: description || '',
-      image: data.application_icon || DEFAULT_IMAGE,
-      imageWidth: hasAppIcon ? 512 : 1200,
-      imageHeight: hasAppIcon ? 512 : 630,
+      image: ogImage,
+      imageWidth: 1200,
+      imageHeight: 630,
       url: `${BASE_URL}/${route.lang}/app/${data.slug}`,
       type: 'website',
       locale: route.lang === 'ar' ? 'ar_SA' : 'en_US',

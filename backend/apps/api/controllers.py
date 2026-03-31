@@ -282,10 +282,14 @@ def get_app_og_image(request, app_id: str):
         "updated_at": str(app_obj.updated_at),
     }
 
-    image_bytes = generate_og_image(app_data, lang=lang)
+    try:
+        image_bytes = generate_og_image(app_data, lang=lang)
+    except Exception:
+        from django.shortcuts import redirect
+        return redirect("https://quran-apps.itqan.dev/assets/images/Social-Media-Thumnail-2x.jpg")
 
     response = HttpResponse(image_bytes, content_type="image/png")
-    response["Cache-Control"] = "public, max-age=86400"  # Cache for 24 hours
+    response["Cache-Control"] = "public, max-age=86400"
     return response
 
 

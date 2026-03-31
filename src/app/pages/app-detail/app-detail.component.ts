@@ -639,6 +639,18 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       content: ogImageUrl,
     });
     this.metaService.updateTag({
+      property: "og:image:width",
+      content: "1200",
+    });
+    this.metaService.updateTag({
+      property: "og:image:height",
+      content: "630",
+    });
+    this.metaService.updateTag({
+      property: "og:image:alt",
+      content: appName,
+    });
+    this.metaService.updateTag({
       property: "og:url",
       content: `https://quran-apps.itqan.dev/${this.currentLang}/app/${this.app.slug}_${this.app.id}`,
     });
