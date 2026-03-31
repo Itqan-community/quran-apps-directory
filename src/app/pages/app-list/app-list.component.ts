@@ -10,7 +10,7 @@ import {
   ViewChild,
   AfterViewInit,
 } from "@angular/core";
-import { CommonModule, isPlatformBrowser, SlicePipe } from "@angular/common";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
 import { RouterModule, ActivatedRoute, Router } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { NzGridModule } from "ng-zorro-antd/grid";
@@ -30,12 +30,13 @@ import {
   catchError,
   filter,
   finalize,
-  take,
   takeUntil,
   switchMap,
   debounceTime,
+  tap,
 } from "rxjs/operators";
 import { SeoService } from "../../services/seo.service";
+import { RAMADAN_MODE } from "../../guards/ramadan-redirect.guard";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
 import { NavbarScrollService } from "../../services/navbar-scroll.service";
@@ -74,12 +75,18 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   smartSearchPage = 1;
   smartSearchTotal = 0;
   smartSearchHasMore = false;
-  private isSmartSearchActive = false;
+  isSmartSearchActive = false;
   categories: Category[] = [];
   isLoading = true;
-  // Track if initial data load has completed (to avoid showing "no apps" before data arrives)
+  ramadanMode = RAMADAN_MODE;
   initialLoadComplete = false;
   error: string | null = null;
+
+  private readonly PAGE_SIZE = 20;
+  private currentPage = 1;
+  totalAppCount = 0;
+  hasMoreApps = false;
+  isLoadingMore = false;
   isDragging = false;
   startX = 0;
   scrollLeft = 0;
@@ -92,6 +99,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   private isInitialLoad = true;
   // Cache for star arrays to prevent NG0100 errors from creating new references on each change detection
   private starArrayCache = new Map<number, { fillPercent: number }[]>();
+  private newAppCache = new Map<string, boolean>();
   activeAiInfoId: string | null = null;
   suggestedQuery: string | null = null;
 
@@ -168,9 +176,6 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     }
 
-    // Load categories and apps from API
-    this.loadData();
-
     // Handle smart_search query param from navbar search
     this.route.queryParamMap
       .pipe(
@@ -197,64 +202,75 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
           if (lang && (lang === "ar" || lang === "en")) {
             this.currentLang = lang as "en" | "ar";
-            // Ensure TranslateService uses the correct language
             if (this.translateService.currentLang !== lang) {
               this.translateService.use(lang);
             }
           }
 
-          // Set the selected category
-          this.selectedCategory = category ? category.toLowerCase() : "all";
+          const newCategory = category ? category.toLowerCase() : "all";
+          const isFirstLoad = this.isInitialLoad;
+          const categoryChanged = this.selectedCategory !== newCategory;
+          this.selectedCategory = newCategory;
 
-          // Wait for apps to be loaded before filtering
-          return this.apiService.apps$.pipe(
-            filter((apps) => apps.length > 0),
-            take(1),
-            switchMap((apiApps) => {
-              // Update apps from the observable directly to avoid race condition
-              this.apps = apiApps.map((app) =>
-                this.apiService.formatAppForDisplay(app),
-              );
-              if (this.selectedCategory === "all") {
+          if (isFirstLoad || categoryChanged) {
+            this.currentPage = 1;
+            this.apps = [];
+            this.filteredApps = [];
+            this.isLoading = true;
+
+            const fetchParams: any = { page: 1, page_size: this.PAGE_SIZE };
+            if (newCategory !== 'all') {
+              fetchParams.category = newCategory;
+            }
+
+            return combineLatest([
+              this.apiService.getCategories().pipe(
+                catchError(() => of([])),
+              ),
+              this.apiService.getApps(fetchParams).pipe(
+                catchError(() => of({ count: 0, next: null, previous: null, results: [] })),
+              ),
+            ]).pipe(
+              tap(([categories, response]) => {
+                if (isFirstLoad) {
+                  if (!categories || categories.length === 0) {
+                    this.categories = [];
+                  }
+                }
+                this.apps = response.results.map((app: any) =>
+                  this.apiService.formatAppForDisplay(app),
+                );
                 this.filteredApps = this.apps;
-              } else {
-                this.filterByCategory(this.selectedCategory);
-              }
-              return of(params);
-            }),
-          );
+                this.totalAppCount = response.count;
+                this.hasMoreApps = !!response.next;
+                this.isLoading = false;
+                this.initialLoadComplete = true;
+
+                if (isFirstLoad && (!categories || categories.length === 0) &&
+                    (!response.results || response.results.length === 0) && !this.error) {
+                  this.error = this.currentLang === "ar"
+                    ? "تعذر تحميل المحتوى. يرجى التحقق من اتصالك بالإنترنت وإعادة تحميل الصفحة."
+                    : "Unable to load content. Please check your connection and refresh the page.";
+                }
+              }),
+              switchMap(() => of(params)),
+            );
+          }
+
+          return of(params);
         }),
         takeUntil(this.destroy$),
       )
       .subscribe(() => {
-        // Scroll to top of page when route changes (browser only)
-        // Skip on initial load to prevent snapping user back to top during loading
         if (isPlatformBrowser(this.platformId)) {
           if (this.isInitialLoad) {
             this.isInitialLoad = false;
           } else {
             window.scrollTo({ top: 0, behavior: "auto" });
           }
-
-          // Scroll selected category into view (horizontally within categories section)
           setTimeout(() => this.scrollSelectedCategoryIntoView(), 100);
         }
-
-        // Update SEO data after apps and route parameters are set
         this.updateSeoData();
-      });
-
-    // Subscribe to apps from API service for reactive updates
-    this.apiService.apps$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((apiApps) => {
-        this.apps = apiApps.map((app) =>
-          this.apiService.formatAppForDisplay(app),
-        );
-        // If no category is selected, update filtered apps
-        if (this.selectedCategory === "all" && !this.searchQuery.trim()) {
-          this.filteredApps = this.apps;
-        }
       });
 
     // Subscribe to categories from API service
@@ -346,55 +362,98 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private loadData() {
-    // Load both categories and apps concurrently using combineLatest for better control
+    this.currentPage = 1;
+    const fetchParams: any = { page: 1, page_size: this.PAGE_SIZE };
+    if (this.selectedCategory !== 'all') {
+      fetchParams.category = this.selectedCategory;
+    }
+
     combineLatest([
       this.apiService.getCategories().pipe(
-        catchError((error) => {
-          console.error("Failed to load categories:", error);
-          return of([]);
-        }),
+        catchError(() => of([])),
       ),
-      this.apiService.getApps().pipe(
-        catchError((error) => {
-          console.error("Failed to load apps:", error);
-          return of({ count: 0, next: null, previous: null, results: [] });
-        }),
+      this.apiService.getApps(fetchParams).pipe(
+        catchError(() => of({ count: 0, next: null, previous: null, results: [] })),
       ),
     ])
       .pipe(
         finalize(() => {
-          // Ensure loading state is set to false after both requests complete
           this.isLoading = false;
           this.initialLoadComplete = true;
         }),
         takeUntil(this.destroy$),
       )
       .subscribe(([categories, appsResponse]) => {
-        // Categories are already handled by the service and subject
-        // Apps are already handled by the service and subject
-        // Just ensure our local state is updated properly
         if (!categories || categories.length === 0) {
           this.categories = [];
         }
-        if (
-          !appsResponse ||
-          !appsResponse.results ||
-          appsResponse.results.length === 0
-        ) {
+        if (!appsResponse?.results || appsResponse.results.length === 0) {
           this.apps = [];
           this.filteredApps = [];
+        } else {
+          this.apps = appsResponse.results.map((app: any) =>
+            this.apiService.formatAppForDisplay(app),
+          );
+          this.filteredApps = this.apps;
+          this.totalAppCount = appsResponse.count;
+          this.hasMoreApps = !!appsResponse.next;
         }
 
-        // Show error message if both categories and apps failed to load
-        // This helps users understand why the page appears blank
         const hasNoCategories = !categories || categories.length === 0;
-        const hasNoApps =
-          !appsResponse?.results || appsResponse.results.length === 0;
+        const hasNoApps = !appsResponse?.results || appsResponse.results.length === 0;
         if (hasNoCategories && hasNoApps && !this.error) {
-          this.error =
-            this.currentLang === "ar"
-              ? "تعذر تحميل المحتوى. يرجى التحقق من اتصالك بالإنترنت وإعادة تحميل الصفحة."
-              : "Unable to load content. Please check your connection and refresh the page.";
+          this.error = this.currentLang === "ar"
+            ? "تعذر تحميل المحتوى. يرجى التحقق من اتصالك بالإنترنت وإعادة تحميل الصفحة."
+            : "Unable to load content. Please check your connection and refresh the page.";
+        }
+      });
+  }
+
+  loadMoreApps(): void {
+    if (!this.hasMoreApps || this.isLoadingMore || this.isSmartSearchActive) return;
+    this.isLoadingMore = true;
+    this.currentPage++;
+
+    const params: any = { page: this.currentPage, page_size: this.PAGE_SIZE };
+    if (this.selectedCategory !== 'all') {
+      params.category = this.selectedCategory;
+    }
+    if (this.searchQuery.trim() && this.searchType === 'traditional') {
+      params.search = this.searchQuery.trim();
+    }
+
+    this.apiService.getApps(params)
+      .pipe(
+        catchError(() => {
+          this.currentPage--;
+          return of({ count: 0, next: null, previous: null, results: [] });
+        }),
+        finalize(() => {
+          this.isLoadingMore = false;
+          this.cdr.detectChanges();
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((response) => {
+        if (response.results.length > 0) {
+          const newApps = response.results.map((app: any) =>
+            this.apiService.formatAppForDisplay(app),
+          );
+          this.apps = [...this.apps, ...newApps];
+          this.hasMoreApps = !!response.next;
+          this.totalAppCount = response.count;
+
+          if (!this.searchQuery.trim() || this.searchType !== 'traditional') {
+            if (this.selectedCategory === 'all') {
+              this.filteredApps = this.apps;
+            } else {
+              this.applyCategoryAndSearchFilters();
+            }
+          } else {
+            this.applyCategoryAndSearchFilters();
+          }
+        } else {
+          this.hasMoreApps = false;
         }
       });
   }
@@ -418,7 +477,6 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.suggestedQuery = null;
     const query = this.searchQuery.trim();
 
-    // If query is empty, just respect current category filter
     if (!query) {
       this.isSmartSearching = false;
       this.searchExecuted = false;
@@ -462,7 +520,6 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
-    // Local, tolerant search on already-loaded apps (avoids strict backend matching)
     this.searchExecuted = true;
     this.applyCategoryAndSearchFilters();
   }
@@ -497,12 +554,38 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onCategoryChipClick(slug: string): void {
     this.selectedCategory = slug;
+    this.currentPage = 1;
+    this.apps = [];
+    this.filteredApps = [];
+    this.isLoading = true;
+
     if (slug === 'all') {
       this.isSmartSearchActive = false;
-      this.filteredApps = this.apps;
-    } else {
-      this.filterByCategory(slug);
     }
+
+    const params: any = { page: 1, page_size: this.PAGE_SIZE };
+    if (slug !== 'all') {
+      params.category = slug;
+    }
+
+    this.apiService.getApps(params)
+      .pipe(
+        catchError(() => of({ count: 0, next: null, previous: null, results: [] })),
+        finalize(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((response) => {
+        this.apps = response.results.map((app: any) =>
+          this.apiService.formatAppForDisplay(app),
+        );
+        this.filteredApps = this.apps;
+        this.totalAppCount = response.count;
+        this.hasMoreApps = !!response.next;
+      });
+
     const route = slug === 'all'
       ? ['/', this.currentLang]
       : ['/', this.currentLang, slug];
@@ -521,6 +604,10 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   retryLoadData() {
     this.error = null;
     this.isLoading = true;
+    this.currentPage = 1;
+    this.hasMoreApps = false;
+    this.apps = [];
+    this.filteredApps = [];
     this.loadData();
   }
 
@@ -852,6 +939,28 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.starArrayCache.set(safeRating, stars);
 
     return stars;
+  }
+
+  private static readonly NEW_APP_THRESHOLD_DAYS = 30;
+
+  isNewApp(app: QuranApp): boolean {
+    if (this.newAppCache.has(app.id)) {
+      return this.newAppCache.get(app.id)!;
+    }
+    if (!app.created_at) {
+      this.newAppCache.set(app.id, false);
+      return false;
+    }
+    const created = new Date(app.created_at);
+    if (isNaN(created.getTime())) {
+      this.newAppCache.set(app.id, false);
+      return false;
+    }
+    const threshold = new Date();
+    threshold.setDate(threshold.getDate() - AppListComponent.NEW_APP_THRESHOLD_DAYS);
+    const result = created >= threshold;
+    this.newAppCache.set(app.id, result);
+    return result;
   }
 
   /**

@@ -179,17 +179,20 @@ export class ApiService {
       });
     }
 
+    const isPaginated = !!(params?.page && params.page > 1);
+
     return this.http.get<AppListResponse>(`${this.apiUrl}/apps/`, { params: httpParams }).pipe(
       tap(response => {
         this.setLoading(false);
-        this.appsSubject.next(response.results);
 
-        // Cache in localStorage for future visits (browser only, home page only)
+        if (!isPaginated) {
+          this.appsSubject.next(response.results);
+        }
+
         if (isPlatformBrowser(this.platformId) && isHomePageRequest) {
           this.writeCache(APPS_CACHE_KEY, response.results);
         }
 
-        // On server, store data in TransferState for client hydration (only for home page)
         if (isPlatformServer(this.platformId) && isHomePageRequest) {
           this.transferState.set(APPS_STATE_KEY, response.results);
         }

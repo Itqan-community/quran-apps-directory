@@ -168,6 +168,7 @@
 </section>
 
 <!-- Ramadan Banner -->
+@if (ramadanMode) {
 <a class="ramadan-banner" dir="rtl" [routerLink]="['/', currentLang, 'ramadan']">
   <picture>
     <source
@@ -195,6 +196,7 @@
     </div>
   </div>
 </a>
+}
 
 <!-- Main Content -->
 <div class="main-content">
@@ -313,6 +315,24 @@
         >
           <!-- Cover Image -->
           <div class="card-cover">
+            @let appIsNew = isNewApp(app);
+            @if (app.featured || appIsNew) {
+              <div class="card-badges">
+                @if (app.featured) {
+                  <span class="badge badge--featured">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    {{ "appList.badges.featured" | translate }}
+                  </span>
+                }
+                @if (appIsNew) {
+                  <span class="badge badge--new">
+                    {{ "appList.badges.new" | translate }}
+                  </span>
+                }
+              </div>
+            }
             <app-optimized-image
               [src]="
                 (currentLang === 'en' ? app.mainImage_en : app.mainImage_ar) ||
@@ -501,6 +521,25 @@
       </div>
     }
     @if (isSmartSearching && filteredApps.length > 0) {
+      <div style="text-align: center; margin: 24px 0">
+        <nz-spin nzSimple></nz-spin>
+      </div>
+    }
+
+    <!-- Load More Button for Regular List -->
+    @if (hasMoreApps && !isLoadingMore && !isSmartSearchActive) {
+      <div class="load-more-container" style="text-align: center; margin: 32px 0">
+        <button
+          nz-button
+          nzType="default"
+          nzSize="large"
+          (click)="loadMoreApps()"
+        >
+          {{ "appList.search.loadMore" | translate }}
+        </button>
+      </div>
+    }
+    @if (isLoadingMore) {
       <div style="text-align: center; margin: 24px 0">
         <nz-spin nzSimple></nz-spin>
       </div>
