@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'developers',
     'submissions',
     'metadata',  # Dynamic metadata system for multi-filter API support
+    'assistant',  # Dalil Assistant - guided app recommendation flow
 ]
 
 MIDDLEWARE = [

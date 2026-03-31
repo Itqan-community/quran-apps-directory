@@ -472,48 +472,6 @@ html[dir="rtl"] .app-hero-section {
   }
 }
 
-.error-state{
-  color: #000000;
-  text-align: center;
-    margin-left: auto;
-  margin-right: auto;
-  margin-top: 125px;
-}
-
-button[nz-button][nzType="primary"] {
-  background-color: #000000;
-  border-color: #000000;
-  color: #ffffff;  
-  display: block; 
-  height: 48px; 
-  padding: 8px 16px;
-  border-radius: 50px;
-    
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 60px;
-  font-size: 16px;
-  font-weight: 500;
-  text-align: center; 
-  
-
-  &:hover {
-    background-color: #333333;
-    border-color: #333333;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-  
-
-  &:active {
-    background-color: #1a1a1a;
-    border-color: #1a1a1a;
-  }
-  
-  &:lang(ar) {
-    font-family: 'Cairo', sans-serif;
-  }
-}
-
 .carousel-nav-buttons {
   display: flex;
   gap: 8px;

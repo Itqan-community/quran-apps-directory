@@ -47,6 +47,7 @@ interface BackendApp {
   platform: string;
   sort_order: number;
   status: string;
+  created_at?: string;
   developer?: BackendDeveloper;
   developer_name?: string;
   developer_name_ar?: string;
@@ -87,6 +88,8 @@ export interface QuranApp {
   Google_Play_Link?: string | null;
   App_Gallery_Link?: string | null;
   platform: string;
+  featured?: boolean;
+  created_at?: string;
   ai_reasoning?: string;
   relevance_score?: number;
 }
@@ -141,6 +144,8 @@ export class AppService {
       Google_Play_Link: backendApp.google_play_link || null,
       App_Gallery_Link: backendApp.app_gallery_link || null,
       platform: backendApp.platform,
+      featured: backendApp.featured,
+      created_at: backendApp.created_at,
     };
   }
 

@@ -22,6 +22,7 @@
     "home": "الرئيسة",
     "about": "عن المشروع",
     "contact": "تواصل معنا",
+    "assistant": "دليل مساعد",
     "submitApp": "أضف تطبيقك",
     "itqan_community": "مجتمع إتقان",
     "theme": "المظهر",
@@ -82,6 +83,10 @@
     "apps": {
       "title": "قائمة التطبيقات",
       "sort": "ترتيب حسب التقييم"
+    },
+    "badges": {
+      "featured": "مميز",
+      "new": "جديد"
     }
   },
   "developer": {

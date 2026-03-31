@@ -36,6 +36,7 @@ import {
   debounceTime,
 } from "rxjs/operators";
 import { SeoService } from "../../services/seo.service";
+import { RAMADAN_MODE } from "../../guards/ramadan-redirect.guard";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
 import { NavbarScrollService } from "../../services/navbar-scroll.service";
@@ -78,6 +79,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   private isSmartSearchActive = false;
   categories: Category[] = [];
   isLoading = true;
+  ramadanMode = RAMADAN_MODE;
   // Track if initial data load has completed (to avoid showing "no apps" before data arrives)
   initialLoadComplete = false;
   error: string | null = null;
@@ -93,6 +95,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   private isInitialLoad = true;
   // Cache for star arrays to prevent NG0100 errors from creating new references on each change detection
   private starArrayCache = new Map<number, { fillPercent: number }[]>();
+  private newAppCache = new Map<string, boolean>();
   activeAiInfoId: string | null = null;
   suggestedQuery: string | null = null;
 
@@ -853,6 +856,28 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.starArrayCache.set(safeRating, stars);
 
     return stars;
+  }
+
+  private static readonly NEW_APP_THRESHOLD_DAYS = 30;
+
+  isNewApp(app: QuranApp): boolean {
+    if (this.newAppCache.has(app.id)) {
+      return this.newAppCache.get(app.id)!;
+    }
+    if (!app.created_at) {
+      this.newAppCache.set(app.id, false);
+      return false;
+    }
+    const created = new Date(app.created_at);
+    if (isNaN(created.getTime())) {
+      this.newAppCache.set(app.id, false);
+      return false;
+    }
+    const threshold = new Date();
+    threshold.setDate(threshold.getDate() - AppListComponent.NEW_APP_THRESHOLD_DAYS);
+    const result = created >= threshold;
+    this.newAppCache.set(app.id, result);
+    return result;
   }
 
   /**

@@ -22,6 +22,7 @@
     "home": "Home",
     "about": "About",
     "contact": "Contact Us",
+    "assistant": "Dalil",
     "submitApp": "Submit App",
     "itqan_community": "ITQAN Community",
     "theme": "Theme",
@@ -82,6 +83,10 @@
     "apps": {
       "title": "Apps List",
       "sort": "Sort by rating"
+    },
+    "badges": {
+      "featured": "Featured",
+      "new": "New"
     }
   },
   "developer": {
