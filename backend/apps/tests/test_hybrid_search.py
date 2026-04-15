@@ -242,14 +242,15 @@ class HybridSearchServiceTest(HybridSearchTestMixin, TestCase):
         self.assertIn('facets', result)
         self.assertGreater(len(result['results']), 0)
 
-    def test_hybrid_search_no_embedding_returns_empty(self):
-        """When provider returns empty embedding, returns empty results."""
+    def test_hybrid_search_no_embedding_falls_back_to_keyword(self):
+        """When provider returns empty embedding, falls back to keyword search."""
         self.mock_provider.get_embedding.return_value = []
 
         result = self.service.hybrid_search(query='quran')
 
-        self.assertEqual(result['results'], [])
-        self.assertEqual(result['facets'], {})
+        # Fallback mode returns keyword-scored results instead of empty
+        self.assertTrue(result.get('_fallback_mode', False))
+        self.assertGreater(len(result['results']), 0)
 
     def test_hybrid_search_with_riwayah_filter_returns_all_published(self):
         """Soft filter: riwayah=hafs still returns all published apps (no exclusion)."""
@@ -384,6 +385,26 @@ class HybridSearchServiceTest(HybridSearchTestMixin, TestCase):
 
         call_args = self.mock_provider.get_embedding.call_args[0][0]
         self.assertEqual(call_args, 'quran')
+
+    def test_typo_returns_suggested_query(self):
+        """Query with typo returns suggested_query in result."""
+        result = self.service.hybrid_search(query='wersh', include_facets=False)
+        self.assertEqual(result.get('suggested_query'), 'warsh')
+
+    def test_arabic_typo_returns_suggested_query(self):
+        """Arabic typo returns suggested_query."""
+        result = self.service.hybrid_search(query='قران', include_facets=False)
+        self.assertEqual(result.get('suggested_query'), 'قرآن')
+
+    def test_correct_query_has_no_suggestion(self):
+        """Correct query has no suggested_query key."""
+        result = self.service.hybrid_search(query='warsh', include_facets=False)
+        self.assertNotIn('suggested_query', result)
+
+    def test_correct_arabic_has_no_suggestion(self):
+        """Correct Arabic query has no suggested_query."""
+        result = self.service.hybrid_search(query='ورش', include_facets=False)
+        self.assertNotIn('suggested_query', result)
 
 
 # =============================================================================
@@ -714,6 +735,38 @@ class HybridSearchAPITest(HybridSearchTestMixin, TestCase):
         # Verify service was called with include_facets=False
         call_kwargs = self.mock_service.hybrid_search.call_args[1]
         self.assertFalse(call_kwargs['include_facets'])
+
+    def test_api_returns_suggested_query_for_typo(self):
+        """API returns suggested_query when query has a typo."""
+        self.mock_service.hybrid_search.return_value = {
+            'results': [],
+            'facets': {},
+            'suggested_query': 'warsh',
+        }
+        response = self.client.get('/api/search/hybrid/', {'q': 'wersh'})
+        data = response.json()
+        self.assertEqual(data['suggested_query'], 'warsh')
+
+    def test_api_returns_null_for_correct_query(self):
+        """API returns null suggested_query for correct query."""
+        self.mock_service.hybrid_search.return_value = {
+            'results': [],
+            'facets': {},
+        }
+        response = self.client.get('/api/search/hybrid/', {'q': 'warsh'})
+        data = response.json()
+        self.assertIsNone(data['suggested_query'])
+
+    def test_api_schema_includes_suggested_query_field(self):
+        """API response always includes suggested_query field."""
+        self.mock_service.hybrid_search.return_value = {
+            'results': [],
+            'facets': {},
+            'suggested_query': 'quran',
+        }
+        response = self.client.get('/api/search/hybrid/', {'q': 'kuran'})
+        data = response.json()
+        self.assertIn('suggested_query', data)
 
     def test_hybrid_endpoint_comma_separated_filters(self):
         """?features=offline,audio parses correctly."""

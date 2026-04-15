@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { RAMADAN_MODE } from './guards/ramadan-redirect.guard';
 
 export const routes: Routes = [
   // SEO and utility routes
@@ -55,6 +56,17 @@ export const routes: Routes = [
     data: { title: 'Search Comparison', hideChrome: true },
     loadComponent: () => import('./pages/search-comparison/search-comparison.component').then(m => m.SearchComparisonComponent)
   },
+  {
+    path: ':lang/ramadan',
+    data: { title: 'Ramadan 1447', hideFooter: true },
+    loadComponent: () => import('./pages/ramadan/ramadan.component').then(m => m.RamadanComponent)
+  },
+
+  {
+    path: ':lang/apps',
+    data: { title: 'Apps' },
+    loadComponent: () => import('./pages/app-list/app-list.component').then(m => m.AppListComponent)
+  },
 
   // Generic category route (must come AFTER all specific routes)
   {
@@ -66,11 +78,13 @@ export const routes: Routes = [
     }
   },
 
-  // Generic route without category (shows all apps)
+  // Home route - loads Ramadan page when RAMADAN_MODE is true, otherwise apps list
   {
     path: ':lang',
-    data: { title: 'Home' },
-    loadComponent: () => import('./pages/app-list/app-list.component').then(m => m.AppListComponent)
+    data: { title: 'Home', ...(RAMADAN_MODE ? { hideFooter: true, hideLanguageToggle: true } : {}) },
+    loadComponent: () => RAMADAN_MODE
+      ? import('./pages/ramadan/ramadan.component').then(m => m.RamadanComponent)
+      : import('./pages/app-list/app-list.component').then(m => m.AppListComponent)
   },
   { path: '**', redirectTo: '/ar', pathMatch: 'full'}
 ];

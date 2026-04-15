@@ -156,7 +156,9 @@ def hybrid_search(
             "next": f"?q={q}&page={page + 1}" if end < total else None,
             "previous": f"?q={q}&page={page - 1}" if page > 1 else None,
             "facets": facets,
-            "error": error
+            "error": error,
+            "fallback_mode": search_result.get('_fallback_mode', False),
+            "suggested_query": search_result.get('suggested_query', None),
         }
 
     except Exception as e:

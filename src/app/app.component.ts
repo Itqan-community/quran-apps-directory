@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, inject, Inject, OnInit, OnDestroy, PLATFORM_ID } from "@angular/core";
+import { AfterViewInit, Component, HostListener, Inject, OnInit, OnDestroy, PLATFORM_ID } from "@angular/core";
 import { isPlatformBrowser, CommonModule } from "@angular/common";
 import { RouterOutlet, RouterLink, ActivatedRoute, Router, ActivatedRouteSnapshot, NavigationEnd } from "@angular/router";
 import { FormsModule } from "@angular/forms";
@@ -21,7 +21,7 @@ import { Category } from "./services/api.service";
 import { filter, Subject, takeUntil } from "rxjs";
 import { LucideAngularModule, Menu, X, Globe, Home, Info, Mail, Users, PlusCircle, ExternalLink, ChevronRight, Search } from 'lucide-angular';
 import { SafeHtmlPipe } from "./pipes/safe-html.pipe";
-import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
+
 
 // Icons globally registered in main.ts
 
@@ -53,6 +53,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Hide header/footer for internal tool pages
   public hideChrome = false;
+  public hideFooter = false;
 
   // Navbar compact mode with inline search
   public isNavbarCompact = false;
@@ -63,7 +64,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   public isNavbarSearching = false;
   public isCategoryDropdownOpen = false;
   private destroy$ = new Subject<void>();
-  private swUpdate = inject(SwUpdate);
 
   constructor(
     @Inject(PLATFORM_ID) private readonly platformId: Object,
@@ -106,57 +106,25 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     console.log('🚀 AppComponent ngOnInit - listening to router events');
 
-    // Subscribe to router events
+    // Subscribe to language changes from the single source of truth (LanguageService)
+    // This replaces the previous competing onLangChange + NavigationEnd language handlers
+    this.languageService.currentLang$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((lang) => {
+        this.currentLang = lang as 'en' | 'ar';
+        this.isRtl = lang === 'ar';
+        this.updateMetaTags();
+      });
+
+    // Listen for route changes to update chrome visibility only (NOT language)
+    // Language is handled exclusively by LanguageService
     this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: any) => {
-      console.log('🔀 NavigationEnd:', event.url, 'Matched route config:', this.getCurrentRouteParams());
-    });
-
-    this.updateMetaTags();
-    this.translate.onLangChange.subscribe(() => {
-      this.updateMetaTags();
-    });
-
-    // Language service will handle language detection and RTL/LTR settings
-    // Just update the currentLang property when language changes
-    this.translate.onLangChange.subscribe((event) => {
-      this.currentLang = event.lang as "en" | "ar";
-      this.isRtl = this.currentLang === 'ar';
-      if (isPlatformBrowser(this.platformId)) {
-        document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
-      }
-    });
-
-    // Also listen for route changes to update language and chrome visibility
-    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
-      // Check if current route wants to hide header/footer
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
       this.hideChrome = !!this.route.snapshot.firstChild?.data?.['hideChrome'];
-
-      const lang = this.route.snapshot.firstChild?.paramMap.get('lang') || this.translate.getDefaultLang();
-      if (lang !== this.currentLang) {
-        // Wait for translations to load before updating state
-        this.translate.use(lang).subscribe(() => {
-          this.currentLang = lang as "en" | "ar";
-          this.isRtl = this.currentLang === 'ar';
-          if (isPlatformBrowser(this.platformId)) {
-            document.documentElement.dir = this.isRtl ? 'rtl' : 'ltr';
-          }
-        });
-      }
+      this.hideFooter = !!this.route.snapshot.firstChild?.data?.['hideFooter'];
     });
-
-    // Auto-reload when a new app version is deployed
-    if (this.swUpdate.isEnabled) {
-      this.swUpdate.versionUpdates
-        .pipe(
-          filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'),
-          takeUntil(this.destroy$)
-        )
-        .subscribe(() => {
-          setTimeout(() => document.location.reload(), 100);
-        });
-    }
 
     // Start preloading app images in background (non-blocking)
     this.appImagePreloader.startPreloadingInBackground();
@@ -186,9 +154,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    // Language service will handle URL changes
-    this.languageService.setLanguageFromUrl();
-
     // Initialize performance monitoring
     setTimeout(() => {
       this.performanceService.measurePerformance();
@@ -201,7 +166,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Track route changes for analytics (when analytics is ready)
     this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroy$)
     ).subscribe((event: NavigationEnd) => {
       // Track page view with deferred analytics
       this.deferredAnalytics.trackPageView(event.urlAfterRedirects);
@@ -209,10 +175,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   toggleLanguage() {
-    const newLang = this.isRtl ? "en" : "ar";
+    const newLang = this.currentLang === 'ar' ? 'en' : 'ar';
     this.languageService.changeLanguage(newLang);
-    this.currentLang = newLang as "en" | "ar";
-    this.isRtl = newLang === "ar";
   }
 
   toggleMobileMenu() {

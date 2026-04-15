@@ -93,8 +93,8 @@
               "src/favicon.ico",
               "src/sitemap.xml",
               "src/robots.txt",
-              "src/sw.js",
               "src/manifest.webmanifest",
+              "src/sw.js",
               {
                 "glob": "_redirects",
                 "input": "src/assets",
@@ -122,7 +122,6 @@
               "./src/themes.scss"
             ],
             "tsConfig": "tsconfig.app.json",
-            "serviceWorker": "src/ngsw-config.json",
             "optimization": {
               "fonts": true,
               "styles": {

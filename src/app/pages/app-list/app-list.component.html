@@ -113,9 +113,7 @@
         <div
           class="category-chip"
           [class.active]="selectedCategory === 'all'"
-          [routerLink]="['/', currentLang]"
-          [routerLinkActive]="'active'"
-          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="onCategoryChipClick('all')"
         >
           <span class="chip-icon">
             <svg
@@ -153,8 +151,7 @@
           <div
             class="category-chip"
             [class.active]="selectedCategory === category.slug"
-            [routerLink]="['/', currentLang, category.slug]"
-            [routerLinkActive]="'active'"
+            (click)="onCategoryChipClick(category.slug)"
           >
             <span
               class="chip-icon"
@@ -169,6 +166,37 @@
     </div>
   </div>
 </section>
+
+<!-- Ramadan Banner -->
+@if (ramadanMode) {
+<a class="ramadan-banner" dir="rtl" [routerLink]="['/', currentLang, 'ramadan']">
+  <picture>
+    <source
+      media="(max-width: 768px)"
+      srcset="assets/images/ramadan-banner-mobile.png"
+    />
+    <img
+      src="assets/images/ramadanPanner.png"
+      alt=""
+      class="ramadan-banner-bg"
+    />
+  </picture>
+  <div class="ramadan-banner-overlay">
+    <div class="ramadan-banner-text">
+      <h2 class="ramadan-banner-title">
+        <span class="title-muted">مع القرآن.. </span>
+        <span class="title-bold">رفقة أقرب</span>
+      </h2>
+      <p class="ramadan-banner-desc">
+        نبحث في رمضان عن السكينة، ونمنح القرآن حضورًا دائمًا يرافقنا طوال الشهر
+      </p>
+      <span class="ramadan-banner-btn">
+        استكشف اختيارات رمضان
+      </span>
+    </div>
+  </div>
+</a>
+}
 
 <!-- Main Content -->
 <div class="main-content">
@@ -235,6 +263,17 @@
     </div>
   }
 
+  <!-- Did You Mean Suggestion -->
+  @if (suggestedQuery && searchExecuted && !isSmartSearching) {
+    <div class="did-you-mean">
+      <span>{{ "appList.search.didYouMean" | translate }}</span>
+      <a (click)="searchWithSuggestion()" class="did-you-mean-link">
+        {{ suggestedQuery }}
+      </a>
+      <span>?</span>
+    </div>
+  }
+
   <!-- Empty State -->
   @if (initialLoadComplete && !isLoading && filteredApps.length === 0) {
     <div class="empty-state">
@@ -247,9 +286,16 @@
         />
         <h3>{{ "empty.noApps.title" | translate }}</h3>
         <p>{{ "empty.noApps.message" | translate }}</p>
-        @if (searchType === 'traditional' && searchQuery.trim()) {
-          <p class="smart-search-hint">{{ "empty.noApps.smartSearchHint" | translate }}</p>
-          <button nz-button nzType="primary" (click)="switchToSmartSearch()">
+        @if (searchType === "traditional" && searchQuery.trim()) {
+          <p class="smart-search-hint">
+            {{ "empty.noApps.smartSearchHint" | translate }}
+          </p>
+          <button
+            nz-button
+            nzType="primary"
+            class="smart-search-btn"
+            (click)="switchToSmartSearch()"
+          >
             {{ "empty.noApps.trySmartSearch" | translate }}
           </button>
         }
@@ -269,6 +315,24 @@
         >
           <!-- Cover Image -->
           <div class="card-cover">
+            @let appIsNew = isNewApp(app);
+            @if (app.featured || appIsNew) {
+              <div class="card-badges">
+                @if (app.featured) {
+                  <span class="badge badge--featured">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    {{ "appList.badges.featured" | translate }}
+                  </span>
+                }
+                @if (appIsNew) {
+                  <span class="badge badge--new">
+                    {{ "appList.badges.new" | translate }}
+                  </span>
+                }
+              </div>
+            }
             <app-optimized-image
               [src]="
                 (currentLang === 'en' ? app.mainImage_en : app.mainImage_ar) ||
@@ -360,7 +424,9 @@
 
               <!-- Platform -->
               <div class="stat-item">
-                <span class="stat-value">{{ getPlatformLabel(app.platform) }}</span>
+                <span class="stat-value">{{
+                  getPlatformLabel(app.platform)
+                }}</span>
                 <span class="stat-label">{{
                   currentLang === "ar" ? "المنصة" : "Platform"
                 }}</span>
@@ -369,7 +435,10 @@
 
             <!-- Action Buttons -->
             <div class="card-actions">
-              <button class="btn-primary" (click)="navigateToDownloads(app, $event)">
+              <button
+                class="btn-primary"
+                (click)="navigateToDownloads(app, $event)"
+              >
                 {{ currentLang === "ar" ? "تنزيل التطبيق" : "Download App" }}
               </button>
               <button class="btn-secondary" (click)="shareApp(app, $event)">
@@ -394,7 +463,17 @@
             @if (app.ai_reasoning) {
               <div class="ai-info-wrapper" (click)="$event.stopPropagation()">
                 <span class="ai-info-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
                     <circle cx="12" cy="12" r="10"></circle>
                     <path d="M12 16v-4"></path>
                     <path d="M12 8h.01"></path>
@@ -402,9 +481,14 @@
                 </span>
                 <div class="ai-info-tooltip">
                   <div class="ai-info-header">
-                    <span class="ai-info-title">{{ "appList.search.aiReasoning" | translate }}</span>
+                    <span class="ai-info-title">{{
+                      "appList.search.aiReasoning" | translate
+                    }}</span>
                     @if (app.relevance_score) {
-                      <span class="ai-info-score">{{ (app.relevance_score * 100) | number:'1.0-0' }}% {{ "appList.search.aiMatch" | translate }}</span>
+                      <span class="ai-info-score"
+                        >{{ app.relevance_score * 100 | number: "1.0-0" }}%
+                        {{ "appList.search.aiMatch" | translate }}</span
+                      >
                     }
                   </div>
                   <p class="ai-info-text">{{ app.ai_reasoning }}</p>
@@ -422,14 +506,22 @@
 
     <!-- Load More Button for Smart Search -->
     @if (smartSearchHasMore && !isSmartSearching) {
-      <div class="load-more-container" style="text-align: center; margin: 24px 0;">
-        <button nz-button nzType="default" nzSize="large" (click)="loadMoreSmartResults()">
+      <div
+        class="load-more-container"
+        style="text-align: center; margin: 24px 0"
+      >
+        <button
+          nz-button
+          nzType="default"
+          nzSize="large"
+          (click)="loadMoreSmartResults()"
+        >
           {{ "appList.search.loadMore" | translate }}
         </button>
       </div>
     }
     @if (isSmartSearching && filteredApps.length > 0) {
-      <div style="text-align: center; margin: 24px 0;">
+      <div style="text-align: center; margin: 24px 0">
         <nz-spin nzSimple></nz-spin>
       </div>
     }

@@ -1,5 +1,5 @@
 <!-- Shimmer Loading State -->
-@if (!app && loading) {
+@if (!app && status === 'loading') {
   <div>
     <!-- Hero Shimmer -->
     <section class="app-hero-section">
@@ -672,7 +672,7 @@
               </button>
             </div>
           </div>
-          @if (loading) {
+          @if (status === 'loading') {
             <div class="swiper-loader"><span></span></div>
           }
           <!-- Show swiper if screenshots exist -->
@@ -700,7 +700,7 @@
                     loading="eager"
                     [attr.fetchpriority]="i === 0 ? 'high' : 'auto'"
                     decoding="async"
-                    (load)="loading = false"
+                    (load)="status = 'success'"
                     (click)="openLightbox(i)"
                   />
                 </swiper-slide>

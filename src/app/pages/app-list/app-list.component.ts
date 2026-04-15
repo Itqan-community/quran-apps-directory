@@ -30,11 +30,13 @@ import {
   catchError,
   filter,
   finalize,
+  take,
   takeUntil,
   switchMap,
   debounceTime,
 } from "rxjs/operators";
 import { SeoService } from "../../services/seo.service";
+import { RAMADAN_MODE } from "../../guards/ramadan-redirect.guard";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
 import { NavbarScrollService } from "../../services/navbar-scroll.service";
@@ -76,6 +78,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   private isSmartSearchActive = false;
   categories: Category[] = [];
   isLoading = true;
+  ramadanMode = RAMADAN_MODE;
   // Track if initial data load has completed (to avoid showing "no apps" before data arrives)
   initialLoadComplete = false;
   error: string | null = null;
@@ -88,9 +91,12 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedCategory: string = "all";
   isDarkMode = false;
   private destroy$ = new Subject<void>();
+  private isInitialLoad = true;
   // Cache for star arrays to prevent NG0100 errors from creating new references on each change detection
   private starArrayCache = new Map<number, { fillPercent: number }[]>();
+  private newAppCache = new Map<string, boolean>();
   activeAiInfoId: string | null = null;
+  suggestedQuery: string | null = null;
 
   // Scroll-based navbar compact mode
   private isNavbarCompact = false;
@@ -206,6 +212,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
           // Wait for apps to be loaded before filtering
           return this.apiService.apps$.pipe(
             filter((apps) => apps.length > 0),
+            take(1),
             switchMap((apiApps) => {
               // Update apps from the observable directly to avoid race condition
               this.apps = apiApps.map((app) =>
@@ -224,8 +231,13 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .subscribe(() => {
         // Scroll to top of page when route changes (browser only)
+        // Skip on initial load to prevent snapping user back to top during loading
         if (isPlatformBrowser(this.platformId)) {
-          window.scrollTo({ top: 0, behavior: "auto" });
+          if (this.isInitialLoad) {
+            this.isInitialLoad = false;
+          } else {
+            window.scrollTo({ top: 0, behavior: "auto" });
+          }
 
           // Scroll selected category into view (horizontally within categories section)
           setTimeout(() => this.scrollSelectedCategoryIntoView(), 100);
@@ -406,6 +418,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /** Fires on button click or Enter key */
   onSearch() {
+    this.suggestedQuery = null;
     const query = this.searchQuery.trim();
 
     // If query is empty, just respect current category filter
@@ -438,6 +451,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
             this.filteredApps = results;
             this.smartSearchTotal = response.count || 0;
             this.smartSearchHasMore = !!response.next;
+            this.suggestedQuery = response.suggested_query || null;
             this.isSmartSearching = false;
             this.searchExecuted = true;
             this.navbarScrollService.updateSearchState({ isSearching: false });
@@ -482,6 +496,20 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
           this.cdr.detectChanges();
         }
       });
+  }
+
+  onCategoryChipClick(slug: string): void {
+    this.selectedCategory = slug;
+    if (slug === 'all') {
+      this.isSmartSearchActive = false;
+      this.filteredApps = this.apps;
+    } else {
+      this.filterByCategory(slug);
+    }
+    const route = slug === 'all'
+      ? ['/', this.currentLang]
+      : ['/', this.currentLang, slug];
+    this.router.navigate(route);
   }
 
   filterByCategory(category: string) {
@@ -567,7 +595,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   startDragging(e: MouseEvent) {
     this.isDragging = true;
     this.categoriesContainer = (e.target as HTMLElement).closest(
-      ".categories-grid",
+      ".categories-chips",
     ) as HTMLElement;
     if (this.categoriesContainer) {
       this.startX = e.pageX - this.categoriesContainer.scrollLeft;
@@ -740,6 +768,14 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  searchWithSuggestion(): void {
+    if (!this.suggestedQuery) return;
+    this.searchQuery = this.suggestedQuery;
+    const query = this.suggestedQuery;
+    this.suggestedQuery = null;
+    this.onSearch();
+  }
+
   switchToSmartSearch(): void {
     this.searchType = 'smart';
     this.onSearch();
@@ -819,6 +855,28 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.starArrayCache.set(safeRating, stars);
 
     return stars;
+  }
+
+  private static readonly NEW_APP_THRESHOLD_DAYS = 30;
+
+  isNewApp(app: QuranApp): boolean {
+    if (this.newAppCache.has(app.id)) {
+      return this.newAppCache.get(app.id)!;
+    }
+    if (!app.created_at) {
+      this.newAppCache.set(app.id, false);
+      return false;
+    }
+    const created = new Date(app.created_at);
+    if (isNaN(created.getTime())) {
+      this.newAppCache.set(app.id, false);
+      return false;
+    }
+    const threshold = new Date();
+    threshold.setDate(threshold.getDate() - AppListComponent.NEW_APP_THRESHOLD_DAYS);
+    const result = created >= threshold;
+    this.newAppCache.set(app.id, result);
+    return result;
   }
 
   /**

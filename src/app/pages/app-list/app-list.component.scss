@@ -777,6 +777,128 @@
   margin-top: 4px;
 }
 
+// ============================================
+// RAMADAN BANNER
+// ============================================
+
+.ramadan-banner {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  position: relative;
+  border-radius: 16px;
+  margin: 24px auto 8px;
+  max-width: 1400px;
+  overflow: hidden;
+
+  .ramadan-banner-bg {
+    width: 100%;
+    display: block;
+  }
+
+  .ramadan-banner-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    padding-inline-start: 30%;
+    padding-inline-end: 48px;
+  }
+
+  .ramadan-banner-text {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ramadan-banner-title {
+    font-size: 40px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.4;
+    font-family: "Expo Arabic", sans-serif;
+
+    .title-muted {
+      color: #8c2121;
+      font-weight: 500;
+    }
+
+    .title-bold {
+      color: #c8ab9d;
+      font-weight: 700;
+    }
+  }
+
+  .ramadan-banner-desc {
+    font-size: 20px;
+    color: #8c2121;
+    margin: 0;
+    line-height: 1.8;
+    font-family: "Expo Arabic", sans-serif;
+  }
+
+  .ramadan-banner-btn {
+    display: inline-block;
+    background: #1f1f1f;
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 13px;
+    width: fit-content;
+    text-decoration: none;
+    transition: background 0.2s ease;
+    font-family: "Expo Arabic", sans-serif;
+
+    &:hover {
+      background: #383838;
+    }
+  }
+
+  // Tablet
+  @media (max-width: 1024px) {
+    .ramadan-banner-overlay {
+      padding-inline-start: 20%;
+      padding-inline-end: 32px;
+    }
+
+    .ramadan-banner-title {
+      font-size: 22px;
+    }
+  }
+
+  // Mobile
+  @media (max-width: 768px) {
+    margin: 16px 12px 8px;
+
+    .ramadan-banner-overlay {
+      padding-inline-start: 38%;
+      padding-inline-end: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .ramadan-banner-overlay {
+      padding-inline-start: 40%;
+      padding-inline-end: 12px;
+    }
+
+    .ramadan-banner-title {
+      font-size: 14px;
+    }
+
+    .ramadan-banner-desc {
+      font-size: 10px;
+      line-height: 1.6;
+    }
+
+    .ramadan-banner-btn {
+      padding: 8px 16px;
+      font-size: 11px;
+    }
+  }
+}
+
 .empty-state {
   display: flex;
   justify-content: center;
@@ -813,6 +935,36 @@
 
     :host-context(.dark-theme) & {
       color: #999;
+    }
+  }
+
+  .smart-search-btn {
+    background: #000;
+    border: none;
+    border-radius: 50px;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 14px 40px;
+    height: auto;
+    line-height: 1;
+    margin-top: 16px;
+
+    &:hover,
+    &:focus {
+      background: #222;
+      color: #fff;
+    }
+
+    :host-context(.dark-theme) & {
+      background: #fff;
+      color: #000;
+
+      &:hover,
+      &:focus {
+        background: #e0e0e0;
+        color: #000;
+      }
     }
   }
 }
@@ -862,6 +1014,44 @@
 
   @media (max-width: 640px) {
     font-size: 0.875rem;
+  }
+}
+
+// ============================================
+// DID YOU MEAN SUGGESTION
+// ============================================
+.did-you-mean {
+  margin-bottom: 16px;
+  font-size: 15px;
+  color: #666;
+
+  :host-context(.dark-theme) & {
+    color: #999;
+  }
+
+  @media (max-width: 640px) {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+}
+
+.did-you-mean-link {
+  color: #1b5e20;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    color: #4caf50;
+  }
+
+  :host-context(.dark-theme) & {
+    color: #81c784;
+
+    &:hover {
+      color: #a5d6a7;
+    }
   }
 }
 
@@ -948,6 +1138,75 @@
     ::ng-deep app-optimized-image img {
       border-radius: 8px;
     }
+  }
+}
+
+// Card Badges (Featured / New)
+.card-badges {
+  position: absolute;
+  top: 20px;
+  inset-inline-start: 20px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+
+  @media (max-width: 640px) {
+    top: 12px;
+    inset-inline-start: 12px;
+    gap: 4px;
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+
+  svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 640px) {
+    padding: 3px 7px;
+    font-size: 10px;
+    border-radius: 4px;
+
+    svg {
+      width: 10px;
+      height: 10px;
+    }
+  }
+}
+
+.badge--featured {
+  background: rgba(255, 193, 7, 0.9);
+  color: #5d4200;
+
+  :host-context(.dark-theme) & {
+    background: rgba(255, 193, 7, 0.85);
+    color: #3e2c00;
+  }
+}
+
+.badge--new {
+  background: rgba(76, 175, 80, 0.9);
+  color: #fff;
+
+  :host-context(.dark-theme) & {
+    background: rgba(76, 175, 80, 0.85);
+    color: #fff;
   }
 }
 
@@ -1199,7 +1458,18 @@
   align-items: center;
   gap: 2px;
   flex: 1;
-  text-align: center;
+
+  &:first-child {
+    align-items: flex-start;
+    text-align: left;
+    padding-inline-start: 16px;
+  }
+
+  &:last-child {
+    align-items: flex-end;
+    text-align: right;
+    padding-inline-end: 16px;
+  }
 
   @media (max-width: 640px) {
     gap: 1px;

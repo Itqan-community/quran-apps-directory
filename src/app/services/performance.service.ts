@@ -24,9 +24,6 @@ export class PerformanceService {
     
     // Preload critical resources
     this.preloadCriticalResources();
-    
-    // Setup service worker for caching
-    this.setupServiceWorker();
   }
 
   /**
@@ -94,21 +91,6 @@ export class PerformanceService {
       }
       document.head.appendChild(link);
     });
-  }
-
-  /**
-   * Setup service worker for caching
-   */
-  private setupServiceWorker(): void {
-    if ('serviceWorker' in navigator && 'caches' in window) {
-      navigator.serviceWorker.register('/sw.js')
-        .then((registration) => {
-          console.log('Service Worker registered:', registration);
-        })
-        .catch((error) => {
-          console.log('Service Worker registration failed:', error);
-        });
-    }
   }
 
   /**

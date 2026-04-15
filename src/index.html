@@ -76,6 +76,9 @@
     <!-- Critical CSS for above-the-fold content -->
     <style>
       /* Critical font fallback to prevent layout shift */
+      html, body {
+        overscroll-behavior-y: contain;
+      }
       body {
         font-family: 'Expo Arabic', 'Expo Arabic Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
         margin: 0;
@@ -350,6 +353,34 @@
     <!-- Google Analytics loaded dynamically after user interaction for better performance -->
 
     <base href="/">
+
+    <!-- Stale deploy recovery: if cached HTML references JS files that no longer exist,
+         clear everything and reload. Uses capture phase to catch script load errors. -->
+    <script>
+      (function() {
+        var errors = 0;
+        var loaded = false;
+        window.addEventListener('load', function() {
+          loaded = true;
+          sessionStorage.removeItem('sw_recovery');
+        });
+        window.addEventListener('error', function(e) {
+          if (e.target && e.target.tagName === 'SCRIPT') {
+            errors++;
+            if (errors >= 3 && !loaded && !sessionStorage.getItem('sw_recovery')) {
+              sessionStorage.setItem('sw_recovery', '1');
+              if ('caches' in window) {
+                caches.keys().then(function(n) { n.forEach(function(k) { caches.delete(k); }); });
+              }
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(r) { r.forEach(function(sw) { sw.unregister(); }); });
+              }
+              setTimeout(function() { location.reload(); }, 300);
+            }
+          }
+        }, true);
+      })();
+    </script>
   </head>
   <body>
     <app-root></app-root>

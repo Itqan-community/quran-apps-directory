@@ -9,3 +9,4 @@ backend/config/logs/staging.log
 docs/review/
 .DS_Store
 dist/
+.env

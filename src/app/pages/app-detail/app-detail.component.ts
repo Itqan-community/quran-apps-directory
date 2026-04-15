@@ -38,6 +38,8 @@ import { environment } from "../../../environments/environment";
 // register Swiper custom elements
 register();
 
+type AppDetailStatus = 'loading' | 'success' | 'not-found' | 'error';
+
 @Component({
   selector: "app-detail",
   standalone: true,
@@ -89,7 +91,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
   };
 
   hideSwiper = true;
-  loading = true;
+  status: AppDetailStatus = 'loading';
 
   constructor(
     private route: ActivatedRoute,
@@ -157,7 +159,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
 
       // Load app data when ID changes (or on initial load)
       if (newId) {
-        this.loading = true;
+        this.status = 'loading';
         // Scroll to top of page when loading new app detail (unless fragment is present)
         if (isPlatformBrowser(this.platformId)) {
           const fragment = this.route.snapshot.fragment;
@@ -192,72 +194,80 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
       }
     }
 
-    this.appService.getAppById(appId).subscribe(
-      (app) => {
-        if (app) {
-          console.log("✅ DEBUG: App data loaded successfully:", app.Name_En);
-          console.log(
-            "📊 DEBUG: Screenshots count (EN):",
-            app.screenshots_en?.length || 0,
-          );
-          console.log(
-            "📊 DEBUG: Screenshots count (AR):",
-            app.screenshots_ar?.length || 0,
-          );
-          console.log("🌐 DEBUG: Current language:", this.currentLang);
-          console.log(
-            "🖼️ DEBUG: First screenshot URL:",
-            app.screenshots_en?.[0] || "No screenshots",
-          );
-
-          this.app = app;
-          this.cdr.detectChanges(); // Trigger immediate change detection
-          console.log(app.categories);
-          if (app.categories.length > 0) {
-            this.appService
-              .getAppsByCategory(app.categories[0])
-              .subscribe((apps) => {
-                this.relevantApps = apps.filter((a) => a.id !== app.id);
-              });
-          }
-
-          // Update SEO data after app is loaded
-          this.updateSeoData();
-          // FIX: Set loading to false immediately since we have the app data
-          // Images will load asynchronously and that's fine
-          this.loading = false;
-          this.cdr.detectChanges(); // Trigger change detection after setting loading = false
-
-          // Reinitialize Swiper after data loads (ensure container is ready)
-          this.swiperInitAttempts = 0;
-          setTimeout(() => {
-            console.log("?? DEBUG: Initializing Swiper after data load...");
-            this.initializeSwiper();
-          }, 0);
-          setTimeout(() => {
-            this.initializeSwiper();
-          }, 150);
-          console.log(
-            "⚙️ DEBUG: Component state after loading - hideSwiper:",
-            this.hideSwiper,
-            "loading:",
-            this.loading,
-          );
-        } else {
+    this.appService.getAppById(appId).subscribe({
+      next: (app) => {
+        if (!app) {
           console.error("❌ DEBUG: No app data returned for:", appParam);
+          this.status = 'not-found';
+          this.handleNotFoundSEO();
+          return;
+        }
+
+        console.log("✅ DEBUG: App data loaded successfully:", app.Name_En);
+        console.log(
+          "📊 DEBUG: Screenshots count (EN):",
+          app.screenshots_en?.length || 0,
+        );
+        console.log(
+          "📊 DEBUG: Screenshots count (AR):",
+          app.screenshots_ar?.length || 0,
+        );
+        console.log("🌐 DEBUG: Current language:", this.currentLang);
+        console.log(
+          "🖼️ DEBUG: First screenshot URL:",
+          app.screenshots_en?.[0] || "No screenshots",
+        );
+
+        this.app = app;
+        this.cdr.detectChanges(); // Trigger immediate change detection
+        console.log(app.categories);
+        if (app.categories.length > 0) {
+          this.appService
+            .getAppsByCategory(app.categories[0])
+            .subscribe((apps) => {
+              this.relevantApps = apps.filter((a) => a.id !== app.id);
+            });
+        }
+
+        // Update SEO data after app is loaded
+        this.updateSeoData();
+        this.status = 'success';
+        this.cdr.detectChanges(); // Trigger change detection after setting status
+
+        // Reinitialize Swiper after data loads (ensure container is ready)
+        this.swiperInitAttempts = 0;
+        setTimeout(() => {
+          console.log("?? DEBUG: Initializing Swiper after data load...");
+          this.initializeSwiper();
+        }, 0);
+        setTimeout(() => {
+          this.initializeSwiper();
+        }, 150);
+        console.log(
+          "⚙️ DEBUG: Component state after loading - hideSwiper:",
+          this.hideSwiper,
+          "status:",
+          this.status,
+        );
+      },
+      error: (error) => {
+        console.error("❌ DEBUG: Error loading app data:", error);
+        if (error.status === 404) {
+          this.status = 'not-found';
+          this.handleNotFoundSEO();
+        } else {
+          this.status = 'error';
+          this.handleGenericErrorSEO();
         }
       },
-      (error) => {
-        console.error("❌ DEBUG: Error loading app data:", error);
-      },
-    );
+    });
   }
 
   // Add a method to handle navigation to a related app
   navigateToApp(lookupId: string) {
     // Clear current app data before navigation to prevent stale data display
     this.app = undefined;
-    this.loading = true;
+    this.status = 'loading';
     this.relevantApps = [];
     this.cdr.detectChanges();
 
@@ -311,7 +321,7 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
 
     // Clear current app data before navigation to prevent stale data display
     this.app = undefined;
-    this.loading = true;
+    this.status = 'loading';
     this.relevantApps = [];
     this.cdr.detectChanges();
 
@@ -564,8 +574,25 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     }
   }
 
+  private handleNotFoundSEO() {
+    this.metaService.updateTag({ name: 'robots', content: 'noindex, nofollow' });
+    this.titleService.setTitle(
+      this.currentLang === 'ar' ? 'التطبيق غير موجود - دليل التطبيقات القرآنية' : 'App Not Found - Quran Apps Directory'
+    );
+  }
+
+  private handleGenericErrorSEO() {
+    this.metaService.updateTag({ name: 'robots', content: 'noindex, nofollow' });
+    this.titleService.setTitle(
+      this.currentLang === 'ar' ? 'خطأ في التحميل - دليل التطبيقات القرآنية' : 'Error Loading App - Quran Apps Directory'
+    );
+  }
+
   private updateSeoData() {
     if (!this.app) return;
+
+    // Remove noindex tag if previously set (e.g. from a prior 404 state)
+    this.metaService.removeTag("name='robots'");
 
     const appName =
       this.currentLang === "ar" ? this.app.Name_Ar : this.app.Name_En;
