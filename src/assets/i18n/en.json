@@ -366,11 +366,18 @@
     }
   },
   "APP": {
-  "NOT_FOUND_TITLE": "App Not Found",
-  "NOT_FOUND_MESSAGE": "The app you are looking for does not exist.",
-  "BACK_HOME": "Back to Home",
-  "ERROR_TITLE": "Something went wrong",
-  "ERROR_MESSAGE": "We couldn’t load this app.",
-  "RETRY": "Retry"
-}
+    "NOT_FOUND_TITLE": "App Not Found",
+    "NOT_FOUND_MESSAGE": "The app you are looking for does not exist.",
+    "BACK_HOME": "Back to Home",
+    "ERROR_TITLE": "Something went wrong",
+    "ERROR_MESSAGE": "We couldn’t load this app.",
+    "RETRY": "Retry"
+  },
+  "support": {
+    "title": "Help",
+    "faq": "Frequently Asked Questions",
+    "back": "Back",
+    "close": "Close",
+    "fab": "Need Help?"
+  }
 }
