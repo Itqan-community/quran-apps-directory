@@ -167,6 +167,9 @@ class App(PublishedModel):
     google_play_link = models.URLField(blank=True, null=True)
     app_store_link = models.URLField(blank=True, null=True)
     app_gallery_link = models.URLField(blank=True, null=True)
+    microsoft_store_link = models.URLField(blank=True, null=True)
+    mac_app_store_link = models.URLField(blank=True, null=True)
+    flathub_link = models.URLField(blank=True, null=True)
 
     # Screenshots (stored as JSON arrays)
     screenshots_en = models.JSONField(default=list, blank=True)

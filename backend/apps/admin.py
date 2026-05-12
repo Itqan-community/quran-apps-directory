@@ -110,6 +110,9 @@ class AppAdmin(admin.ModelAdmin):
                 'google_play_link',
                 'app_store_link',
                 'app_gallery_link',
+                'microsoft_store_link',
+                'mac_app_store_link',
+                'flathub_link',
             ]
         }),
         ('Ratings & Statistics', {

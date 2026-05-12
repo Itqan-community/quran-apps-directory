@@ -51,6 +51,9 @@ class AppSchema(BaseModel):
     google_play_link: Optional[str] = None
     app_store_link: Optional[str] = None
     app_gallery_link: Optional[str] = None
+    microsoft_store_link: Optional[str] = None
+    mac_app_store_link: Optional[str] = None
+    flathub_link: Optional[str] = None
     screenshots_en: List[str] = Field(default_factory=list, alias="screenshots_en")
     screenshots_ar: List[str] = Field(default_factory=list, alias="screenshots_ar")
     avg_rating: float
@@ -118,6 +121,9 @@ class AppCreateSchema(BaseModel):
     google_play_link: Optional[str] = None
     app_store_link: Optional[str] = None
     app_gallery_link: Optional[str] = None
+    microsoft_store_link: Optional[str] = None
+    mac_app_store_link: Optional[str] = None
+    flathub_link: Optional[str] = None
     screenshots_en: List[str] = Field(default_factory=list, alias="screenshots_en")
     screenshots_ar: List[str] = Field(default_factory=list, alias="screenshots_ar")
     platform: str = "cross_platform"
@@ -148,6 +154,9 @@ class AppUpdateSchema(BaseModel):
     google_play_link: Optional[str] = None
     app_store_link: Optional[str] = None
     app_gallery_link: Optional[str] = None
+    microsoft_store_link: Optional[str] = None
+    mac_app_store_link: Optional[str] = None
+    flathub_link: Optional[str] = None
     screenshots_en: Optional[List[str]] = Field(None, alias="screenshots_en")
     screenshots_ar: Optional[List[str]] = Field(None, alias="screenshots_ar")
     platform: Optional[str] = None

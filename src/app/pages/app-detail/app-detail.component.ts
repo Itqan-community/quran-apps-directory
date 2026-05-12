@@ -724,6 +724,9 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     if (app.Google_Play_Link) count++;
     if (app.AppStore_Link) count++;
     if (app.App_Gallery_Link) count++;
+    if (app.Microsoft_Store_Link) count++;
+    if (app.Mac_App_Store_Link) count++;
+    if (app.Flathub_Link) count++;
     return count;
   }
 

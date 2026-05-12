@@ -631,6 +631,45 @@
                     </svg>
                   </a>
                 }
+                <!-- Microsoft Store link -->
+                @if (app.Microsoft_Store_Link) {
+                  <a
+                    [href]="app.Microsoft_Store_Link"
+                    target="_blank"
+                    rel="noopener"
+                    class="desktop-store-button microsoft-store"
+                    aria-label="Download from Microsoft Store"
+                  >
+                    <small>{{ "appDetail.getItFrom" | translate }}</small>
+                    <strong>Microsoft Store</strong>
+                  </a>
+                }
+                <!-- Mac App Store link -->
+                @if (app.Mac_App_Store_Link) {
+                  <a
+                    [href]="app.Mac_App_Store_Link"
+                    target="_blank"
+                    rel="noopener"
+                    class="desktop-store-button mac-app-store"
+                    aria-label="Download from Mac App Store"
+                  >
+                    <small>{{ "appDetail.downloadOnThe" | translate }}</small>
+                    <strong>Mac App Store</strong>
+                  </a>
+                }
+                <!-- Flathub link -->
+                @if (app.Flathub_Link) {
+                  <a
+                    [href]="app.Flathub_Link"
+                    target="_blank"
+                    rel="noopener"
+                    class="desktop-store-button flathub"
+                    aria-label="Download from Flathub"
+                  >
+                    <small>{{ "appDetail.getItOn" | translate }}</small>
+                    <strong>Flathub</strong>
+                  </a>
+                }
               </div>
             </div>
           </aside>

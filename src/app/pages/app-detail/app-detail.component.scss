@@ -899,6 +899,47 @@ html[dir="rtl"] .content-section {
     }
   }
 
+  .desktop-store-button {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    line-height: 1.1;
+    text-align: center;
+    border-radius: 8px;
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 12px;
+    transition: opacity 0.2s ease;
+
+    small {
+      font-size: 10px;
+      opacity: 0.85;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    strong {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    &:hover {
+      opacity: 0.85;
+    }
+
+    &.microsoft-store {
+      background-color: #0078d4;
+    }
+
+    &.mac-app-store {
+      background-color: #000;
+    }
+
+    &.flathub {
+      background-color: #4a86cf;
+    }
+  }
+
   @media screen and (max-width: 768px) {
     flex-wrap: nowrap;
     gap: 8px;

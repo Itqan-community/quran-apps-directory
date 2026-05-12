@@ -38,6 +38,9 @@ interface BackendApp {
   google_play_link?: string | null;
   app_store_link?: string | null;
   app_gallery_link?: string | null;
+  microsoft_store_link?: string | null;
+  mac_app_store_link?: string | null;
+  flathub_link?: string | null;
   screenshots_en?: string[];
   screenshots_ar?: string[];
   avg_rating: string;
@@ -87,6 +90,9 @@ export interface QuranApp {
   AppStore_Link?: string | null;
   Google_Play_Link?: string | null;
   App_Gallery_Link?: string | null;
+  Microsoft_Store_Link?: string | null;
+  Mac_App_Store_Link?: string | null;
+  Flathub_Link?: string | null;
   platform: string;
   featured?: boolean;
   created_at?: string;
@@ -143,6 +149,9 @@ export class AppService {
       AppStore_Link: backendApp.app_store_link || null,
       Google_Play_Link: backendApp.google_play_link || null,
       App_Gallery_Link: backendApp.app_gallery_link || null,
+      Microsoft_Store_Link: backendApp.microsoft_store_link || null,
+      Mac_App_Store_Link: backendApp.mac_app_store_link || null,
+      Flathub_Link: backendApp.flathub_link || null,
       platform: backendApp.platform,
       featured: backendApp.featured,
       created_at: backendApp.created_at,
