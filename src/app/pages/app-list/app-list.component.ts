@@ -81,6 +81,10 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   ramadanMode = RAMADAN_MODE;
   // Track if initial data load has completed (to avoid showing "no apps" before data arrives)
   initialLoadComplete = false;
+  // Infinite scroll state
+  isLoadingMore = false;
+  hasMoreApps = true;
+  totalAppsCount = 0;
   error: string | null = null;
   isDragging = false;
   startX = 0;
@@ -294,22 +298,40 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @HostListener("window:scroll")
   onWindowScroll(): void {
-    if (
-      !isPlatformBrowser(this.platformId) ||
-      !this.navbarScrollService.isDesktopMode()
-    ) {
+    if (!isPlatformBrowser(this.platformId)) {
       return;
     }
 
-    const scrollY = window.scrollY;
-    const shouldBeCompact = scrollY > this.searchSectionTop - this.navbarHeight;
+    // Handle infinite scroll (only when not searching and not in smart search mode)
+    if (
+      !this.searchQuery.trim() &&
+      !this.isSmartSearching &&
+      this.hasMoreApps &&
+      !this.isLoadingMore &&
+      this.navbarScrollService.isDesktopMode()
+    ) {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
 
-    if (shouldBeCompact !== this.isNavbarCompact) {
-      this.isNavbarCompact = shouldBeCompact;
-      this.navbarScrollService.setCompactMode(shouldBeCompact);
+      // Trigger load when user is within 800px of the bottom
+      if (scrollTop + windowHeight >= documentHeight - 800) {
+        this.loadMoreApps();
+      }
+    }
 
-      if (shouldBeCompact) {
-        this.updateNavbarSearchState();
+    // Handle navbar compact mode
+    if (this.navbarScrollService.isDesktopMode()) {
+      const scrollY = window.scrollY;
+      const shouldBeCompact = scrollY > this.searchSectionTop - this.navbarHeight;
+
+      if (shouldBeCompact !== this.isNavbarCompact) {
+        this.isNavbarCompact = shouldBeCompact;
+        this.navbarScrollService.setCompactMode(shouldBeCompact);
+
+        if (shouldBeCompact) {
+          this.updateNavbarSearchState();
+        }
       }
     }
   }
@@ -376,6 +398,8 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
         // Categories are already handled by the service and subject
         // Apps are already handled by the service and subject
         // Just ensure our local state is updated properly
+        // Capture total count for infinite scroll
+        this.totalAppsCount = appsResponse?.count || 0;
         if (!categories || categories.length === 0) {
           this.categories = [];
         }
@@ -421,12 +445,16 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.suggestedQuery = null;
     const query = this.searchQuery.trim();
 
-    // If query is empty, just respect current category filter
+    // If query is empty, reset infinite scroll state and respect current category filter
     if (!query) {
       this.isSmartSearching = false;
       this.searchExecuted = false;
       this.isSmartSearchActive = false;
       this.smartSearchHasMore = false;
+      // Reset infinite scroll state for non-search views
+      this.isLoadingMore = false;
+      this.hasMoreApps = true;
+      this.totalAppsCount = 0;
       this.applyCategoryAndSearchFilters();
       return;
     }
@@ -500,6 +528,10 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onCategoryChipClick(slug: string): void {
     this.selectedCategory = slug;
+    // Reset infinite scroll state on category change
+    this.isLoadingMore = false;
+    this.hasMoreApps = true;
+    this.totalAppsCount = 0;
     if (slug === 'all') {
       this.isSmartSearchActive = false;
       this.filteredApps = this.apps;
@@ -514,6 +546,10 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   filterByCategory(category: string) {
     this.selectedCategory = category.toLowerCase();
+    // Reset infinite scroll state when category changes
+    this.isLoadingMore = false;
+    this.hasMoreApps = true;
+    this.totalAppsCount = 0;
     if (this.isSmartSearchActive && this.searchQuery.trim()) {
       this.onSearch();
     } else {
@@ -525,6 +561,33 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.error = null;
     this.isLoading = true;
     this.loadData();
+  }
+
+  /**
+   * Load the next page of apps via infinite scroll.
+   */
+  loadMoreApps(): void {
+    if (this.isLoadingMore || !this.hasMoreApps) return;
+    this.isLoadingMore = true;
+
+    this.apiService.loadNextPage()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (totalCount) => {
+          this.totalAppsCount = totalCount;
+          // Check if we've loaded all apps
+          if (this.apps.length >= totalCount) {
+            this.hasMoreApps = false;
+          }
+          this.isLoadingMore = false;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.isLoadingMore = false;
+          this.hasMoreApps = false;
+          this.cdr.detectChanges();
+        }
+      });
   }
 
   /**

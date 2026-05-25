@@ -2,7 +2,7 @@ import { Injectable, PLATFORM_ID, Inject, makeStateKey, TransferState } from '@a
 import { isPlatformServer, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
-import { catchError, map, tap, take } from 'rxjs/operators';
+import { catchError, map, tap, take, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 // Transfer state keys for SSR hydration
@@ -144,6 +144,7 @@ export class ApiService {
   /**
    * Get all published applications with optional filtering and search
    * Uses TransferState for SSR hydration and ETag caching
+   * For home page requests (no params), fetches all pages sequentially
    */
   getApps(params?: {
     search?: string;
@@ -179,25 +180,75 @@ export class ApiService {
       });
     }
 
+    // For home page requests, fetch only the first page (infinite scroll handles the rest)
+    if (isHomePageRequest) {
+      return this.http.get<AppListResponse>(`${this.apiUrl}/apps/`, { params: httpParams }).pipe(
+        tap(response => {
+          this.setLoading(false);
+          this.appsSubject.next(response.results);
+
+          // Cache in localStorage for future visits (browser only)
+          if (isPlatformBrowser(this.platformId)) {
+            this.writeCache(APPS_CACHE_KEY, response.results);
+          }
+
+          // On server, store data in TransferState for client hydration
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(APPS_STATE_KEY, response.results);
+          }
+        }),
+        catchError(error => {
+          this.setError('Failed to load applications. Please try again later.');
+          this.setLoading(false);
+          return of({ count: 0, next: null, previous: null, results: [] });
+        })
+      );
+    }
+
+    // For filtered requests (search, category, etc.), return single page
     return this.http.get<AppListResponse>(`${this.apiUrl}/apps/`, { params: httpParams }).pipe(
       tap(response => {
         this.setLoading(false);
         this.appsSubject.next(response.results);
-
-        // Cache in localStorage for future visits (browser only, home page only)
-        if (isPlatformBrowser(this.platformId) && isHomePageRequest) {
-          this.writeCache(APPS_CACHE_KEY, response.results);
-        }
-
-        // On server, store data in TransferState for client hydration (only for home page)
-        if (isPlatformServer(this.platformId) && isHomePageRequest) {
-          this.transferState.set(APPS_STATE_KEY, response.results);
-        }
       }),
       catchError(error => {
         this.setError('Failed to load applications. Please try again later.');
         this.setLoading(false);
         return of({ count: 0, next: null, previous: null, results: [] });
+      })
+    );
+  }
+
+  /**
+   * Load the next page of apps and append to the existing list.
+   * Returns an Observable that emits the updated total count when done.
+   * Used for infinite scroll in the component.
+   */
+  loadNextPage(): Observable<number> {
+    const currentApps = this.appsSubject.value;
+    const currentPage = currentApps.length > 0
+      ? Math.ceil(currentApps.length / 100) + 1
+      : 2;
+
+    let params = new HttpParams().set('page', currentPage.toString());
+
+    return this.http.get<AppListResponse>(`${this.apiUrl}/apps/`, { params }).pipe(
+      tap(response => {
+        const updatedApps = [...currentApps, ...response.results];
+        this.appsSubject.next(updatedApps);
+
+        // Update cache
+        if (isPlatformBrowser(this.platformId)) {
+          this.writeCache(APPS_CACHE_KEY, updatedApps);
+        }
+        if (isPlatformServer(this.platformId)) {
+          this.transferState.set(APPS_STATE_KEY, updatedApps);
+        }
+      }),
+      map(response => response.count ?? currentApps.length),
+      catchError(error => {
+        this.setError('Failed to load more applications.');
+        return of(currentApps.length);
       })
     );
   }

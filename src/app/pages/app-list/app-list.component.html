@@ -504,6 +504,16 @@
       }
     </div>
 
+    <!-- Loading More Indicator for Infinite Scroll -->
+    @if (isLoadingMore && filteredApps.length > 0 && !isSmartSearching) {
+      <div style="text-align: center; margin: 24px 0">
+        <nz-spin nzSimple></nz-spin>
+        <span style="margin-left: 12px; color: var(--nz-text-color-secondary);">
+          {{ currentLang === "ar" ? "جارِ تحميل المزيد..." : "Loading more..." }}
+        </span>
+      </div>
+    }
+
     <!-- Load More Button for Smart Search -->
     @if (smartSearchHasMore && !isSmartSearching) {
       <div
