@@ -11,25 +11,25 @@ export interface SubmissionRequest {
   submitter_organization?: string;
   is_developer: boolean;
 
-  // App Details (Bilingual)
+  // App Details (Bilingual) - only app_name_en is required
   app_name_en: string;
-  app_name_ar: string;
-  short_description_en: string;
-  short_description_ar: string;
+  app_name_ar?: string;
+  short_description_en?: string;
+  short_description_ar?: string;
   description_en?: string;
   description_ar?: string;
 
-  // Store Links
+  // Store Links (at least one valid link required)
   google_play_link?: string;
   app_store_link?: string;
   app_gallery_link?: string;
   website_link?: string;
 
-  // Categories (list of category IDs)
-  categories: number[];
+  // Categories (list of category IDs, optional)
+  categories?: number[];
 
   // Developer Info
-  developer_name_en: string;
+  developer_name_en?: string;
   developer_name_ar?: string;
   developer_website?: string;
   developer_email?: string;

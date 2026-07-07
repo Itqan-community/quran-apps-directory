@@ -83,8 +83,9 @@
 
         <nz-form-item>
           <nz-form-label nzRequired>{{ 'submitApp.fields.appNameEn' | translate }}</nz-form-label>
-          <nz-form-control>
+          <nz-form-control [nzErrorTip]="'submitApp.validation.appNameRequired' | translate">
             <input nz-input
+              #appNameEnCtrl="ngModel"
               [(ngModel)]="formData.app_name_en"
               name="app_name_en"
               [placeholder]="'submitApp.placeholders.appNameEn' | translate"
@@ -93,19 +94,18 @@
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label nzRequired>{{ 'submitApp.fields.appNameAr' | translate }}</nz-form-label>
+          <nz-form-label>{{ 'submitApp.fields.appNameAr' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
               dir="rtl"
               [(ngModel)]="formData.app_name_ar"
               name="app_name_ar"
-              [placeholder]="'submitApp.placeholders.appNameAr' | translate"
-              required />
+              [placeholder]="'submitApp.placeholders.appNameAr' | translate" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label nzRequired>
+          <nz-form-label>
             {{ 'submitApp.fields.shortDescEn' | translate }}
             <span class="char-count" [class.warning]="shortDescEnCount > 150">
               ({{ shortDescEnCount }}/150)
@@ -117,13 +117,12 @@
               [(ngModel)]="formData.short_description_en"
               name="short_description_en"
               [placeholder]="'submitApp.placeholders.shortDescEn' | translate"
-              maxlength="150"
-            required></textarea>
+              maxlength="150"></textarea>
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label nzRequired>
+          <nz-form-label>
             {{ 'submitApp.fields.shortDescAr' | translate }}
             <span class="char-count" [class.warning]="shortDescArCount > 150">
               ({{ shortDescArCount }}/150)
@@ -136,8 +135,7 @@
               [(ngModel)]="formData.short_description_ar"
               name="short_description_ar"
               [placeholder]="'submitApp.placeholders.shortDescAr' | translate"
-              maxlength="150"
-            required></textarea>
+              maxlength="150"></textarea>
           </nz-form-control>
         </nz-form-item>
 
@@ -172,7 +170,7 @@
           {{ 'submitApp.sections.storeLinks' | translate }}
         </h2>
 
-        @if (!hasStoreLink) {
+        @if (!hasStoreLink && (submitForm.submitted || googlePlayCtrl.touched || appStoreCtrl.touched || appGalleryCtrl.touched)) {
           <nz-alert
             nzType="warning"
             [nzMessage]="'submitApp.validation.storeLink' | translate"
@@ -183,30 +181,36 @@
 
         <nz-form-item>
           <nz-form-label>{{ 'submitApp.fields.googlePlay' | translate }}</nz-form-label>
-          <nz-form-control>
+          <nz-form-control [nzErrorTip]="'submitApp.validation.invalidStoreLink' | translate">
             <input nz-input
+              #googlePlayCtrl="ngModel"
               [(ngModel)]="formData.google_play_link"
               name="google_play_link"
+              [pattern]="storeLinkPattern"
               [placeholder]="'submitApp.placeholders.googlePlay' | translate" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
           <nz-form-label>{{ 'submitApp.fields.appStore' | translate }}</nz-form-label>
-          <nz-form-control>
+          <nz-form-control [nzErrorTip]="'submitApp.validation.invalidStoreLink' | translate">
             <input nz-input
+              #appStoreCtrl="ngModel"
               [(ngModel)]="formData.app_store_link"
               name="app_store_link"
+              [pattern]="storeLinkPattern"
               [placeholder]="'submitApp.placeholders.appStore' | translate" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
           <nz-form-label>{{ 'submitApp.fields.appGallery' | translate }}</nz-form-label>
-          <nz-form-control>
+          <nz-form-control [nzErrorTip]="'submitApp.validation.invalidStoreLink' | translate">
             <input nz-input
+              #appGalleryCtrl="ngModel"
               [(ngModel)]="formData.app_gallery_link"
               name="app_gallery_link"
+              [pattern]="storeLinkPattern"
               [placeholder]="'submitApp.placeholders.appGallery' | translate" />
           </nz-form-control>
         </nz-form-item>
@@ -230,7 +234,7 @@
         </h2>
 
         <nz-form-item>
-          <nz-form-label nzRequired>{{ 'submitApp.fields.categories' | translate }}</nz-form-label>
+          <nz-form-label>{{ 'submitApp.fields.categories' | translate }}</nz-form-label>
           <nz-form-control>
             <nz-select
               [(ngModel)]="formData.categories"
@@ -259,13 +263,12 @@
         </h2>
 
         <nz-form-item>
-          <nz-form-label nzRequired>{{ 'submitApp.fields.devNameEn' | translate }}</nz-form-label>
+          <nz-form-label>{{ 'submitApp.fields.devNameEn' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
               [(ngModel)]="formData.developer_name_en"
               name="developer_name_en"
-              [placeholder]="'submitApp.placeholders.devNameEn' | translate"
-              required />
+              [placeholder]="'submitApp.placeholders.devNameEn' | translate" />
           </nz-form-control>
         </nz-form-item>
 
@@ -310,68 +313,29 @@
         </h2>
 
         <nz-form-item>
-          <nz-form-label nzRequired>{{ 'submitApp.iconUpload' | translate }}</nz-form-label>
-          <nz-form-control>
-            <div class="icon-upload-container">
-              <nz-upload
-                nzType="drag"
-                [nzCustomRequest]="customIconUpload"
-                [nzBeforeUpload]="beforeIconUpload"
-                [nzFileList]="iconFileList"
-                [nzRemove]="onIconRemove"
-                nzListType="picture-card"
-                [nzAccept]="'.png,.jpg,.jpeg,.webp'"
-                [nzLimit]="1"
-                [nzDisabled]="iconUploading"
-                class="icon-uploader">
-                @if (iconFileList.length === 0) {
-                  <div class="upload-drag-content">
-                    @if (iconUploading) {
-                      <span nz-icon nzType="loading" class="upload-icon"></span>
-                    } @else {
-                      <span nz-icon nzType="cloud-upload" class="upload-icon"></span>
-                    }
-                    <p class="upload-text">{{ 'submitApp.iconUploadButton' | translate }}</p>
-                    <p class="upload-hint">{{ 'submitApp.iconUploadHint' | translate }}</p>
-                  </div>
-                }
-              </nz-upload>
-              @if (iconUploadError) {
-                <div class="upload-error">{{ iconUploadError }}</div>
-              }
-              @if (!formData.app_icon_url && !iconUploading) {
-                <div class="field-hint upload-required-hint">{{ 'submitApp.iconRequired' | translate }}</div>
-              }
-            </div>
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-label nzRequired>{{ 'submitApp.fields.mainImageEn' | translate }}</nz-form-label>
+          <nz-form-label>{{ 'submitApp.fields.mainImageEn' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
               [(ngModel)]="formData.main_image_en"
               name="main_image_en"
-              [placeholder]="'submitApp.placeholders.mainImageEn' | translate"
-              required />
+              [placeholder]="'submitApp.placeholders.mainImageEn' | translate" />
           </nz-form-control>
           <div class="field-hint">{{ 'submitApp.hints.mainImage' | translate }}</div>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label nzRequired>{{ 'submitApp.fields.mainImageAr' | translate }}</nz-form-label>
+          <nz-form-label>{{ 'submitApp.fields.mainImageAr' | translate }}</nz-form-label>
           <nz-form-control>
             <input nz-input
               dir="rtl"
               [(ngModel)]="formData.main_image_ar"
               name="main_image_ar"
-              [placeholder]="'submitApp.placeholders.mainImageAr' | translate"
-              required />
+              [placeholder]="'submitApp.placeholders.mainImageAr' | translate" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label nzRequired>{{ 'submitApp.fields.screenshotsEn' | translate }}</nz-form-label>
+          <nz-form-label>{{ 'submitApp.fields.screenshotsEn' | translate }}</nz-form-label>
           <nz-form-control>
             <textarea nz-input
               [nzAutosize]="{ minRows: 3, maxRows: 6 }"
@@ -389,7 +353,7 @@
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label nzRequired>{{ 'submitApp.fields.screenshotsAr' | translate }}</nz-form-label>
+          <nz-form-label>{{ 'submitApp.fields.screenshotsAr' | translate }}</nz-form-label>
           <nz-form-control>
             <textarea nz-input
               dir="rtl"

@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Subject, takeUntil, of, Observable, from, Subscription } from 'rxjs';
+import { Subject, takeUntil, of, Observable, from } from 'rxjs';
 import { catchError, map, tap, toArray, mergeMap } from 'rxjs/operators';
 
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -11,7 +11,6 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzUploadModule, NzUploadFile, NzUploadXHRArgs } from 'ng-zorro-antd/upload';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService, NzModalModule } from 'ng-zorro-antd/modal';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -82,7 +81,6 @@ interface FormData {
     NzButtonModule,
     NzCheckboxModule,
     NzSelectModule,
-    NzUploadModule,
     NzModalModule,
     NzIconModule,
     NzSpinModule,
@@ -140,15 +138,7 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
   completedUploads = 0;
   currentLang: 'en' | 'ar' = 'en';
 
-  // Icon upload state
-  iconFileList: NzUploadFile[] = [];
-  iconUploading = false;
-  iconUploadError: string | null = null;
-  private iconUploadSubscription: Subscription | null = null;
-
-  // Icon validation constants
-  readonly MAX_ICON_SIZE = 512 * 1024; // 512 KB
-  readonly ALLOWED_ICON_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
+  readonly storeLinkPattern = '^https?://.+';
 
   constructor(
     private submissionService: SubmissionService,
@@ -190,9 +180,6 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    if (this.iconUploadSubscription) {
-      this.iconUploadSubscription.unsubscribe();
-    }
   }
 
   private loadCategories(): void {
@@ -217,7 +204,18 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
   }
 
   get hasStoreLink(): boolean {
-    return !!(this.formData.google_play_link || this.formData.app_store_link);
+    return [this.formData.google_play_link, this.formData.app_store_link, this.formData.app_gallery_link]
+      .some(link => this.isValidStoreUrl(link));
+  }
+
+  isValidStoreUrl(url: string): boolean {
+    if (!url) return false;
+    try {
+      const parsed = new URL(url);
+      return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+      return false;
+    }
   }
 
   get shortDescEnCount(): number {
@@ -243,97 +241,10 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
     this.formData.screenshots_ar = this.parseScreenshots(this.formData.screenshots_ar_input);
   }
 
-  /**
-   * Client-side validation before icon upload
-   */
-  beforeIconUpload = (file: NzUploadFile): boolean => {
-    this.iconUploadError = null;
-
-    // Check file type
-    const isAllowedType = this.ALLOWED_ICON_TYPES.includes(file.type || '');
-    if (!isAllowedType) {
-      const errorMsg = this.translate.instant('submitApp.iconTypeError');
-      this.iconUploadError = errorMsg;
-      this.message.error(errorMsg);
-      return false;
-    }
-
-    // Check file size
-    const isWithinSize = (file.size || 0) <= this.MAX_ICON_SIZE;
-    if (!isWithinSize) {
-      const errorMsg = this.translate.instant('submitApp.iconSizeError');
-      this.iconUploadError = errorMsg;
-      this.message.error(errorMsg);
-      return false;
-    }
-
-    return true;
-  };
-
-  /**
-   * Custom upload handler for icon file
-   */
-  customIconUpload = (item: NzUploadXHRArgs): Subscription => {
-    this.iconUploading = true;
-    this.iconUploadError = null;
-
-    const file = item.file as unknown as File;
-
-    this.iconUploadSubscription = this.submissionService.uploadMedia(file, 'icon')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.iconUploading = false;
-          this.formData.app_icon_url = response.url;
-          this.iconFileList = [{
-            uid: '-1',
-            name: file.name,
-            status: 'done',
-            url: response.url,
-            thumbUrl: response.url
-          }];
-          this.message.success(this.translate.instant('submitApp.iconUploadSuccess'));
-          if (item.onSuccess) {
-            item.onSuccess(response, item.file, null);
-          }
-        },
-        error: (error) => {
-          this.iconUploading = false;
-          const errorMsg = this.translate.instant('submitApp.iconUploadError');
-          this.iconUploadError = errorMsg;
-          this.message.error(errorMsg);
-          if (item.onError) {
-            item.onError(error, item.file);
-          }
-        }
-      });
-
-    return this.iconUploadSubscription;
-  };
-
-  /**
-   * Handle icon removal
-   */
-  onIconRemove = (): boolean => {
-    this.formData.app_icon_url = '';
-    this.iconFileList = [];
-    this.iconUploadError = null;
-    return true;
-  };
-
   isFormValid(): boolean {
-    // Required fields
-    if (!this.formData.submitter_name || !this.formData.submitter_email) return false;
-    if (!this.formData.app_name_en || !this.formData.app_name_ar) return false;
-    if (!this.formData.short_description_en || !this.formData.short_description_ar) return false;
-    if (!this.formData.developer_name_en) return false;
+    if (!this.formData.app_name_en || !this.formData.app_name_en.trim()) return false;
+    if (!this.formData.submitter_email || !this.formData.submitter_email.includes('@')) return false;
     if (!this.hasStoreLink) return false;
-    if (this.formData.categories.length === 0) return false;
-    if (!this.formData.app_icon_url) return false;
-    if (!this.formData.main_image_en || !this.formData.main_image_ar) return false;
-    if (this.formData.screenshots_en.length === 0) return false;
-    if (this.formData.screenshots_ar.length === 0) return false;
-    if (!this.formData.content_confirmation) return false;
 
     return true;
   }
@@ -375,7 +286,7 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
           developer_name_ar: this.formData.developer_name_ar,
           developer_website: this.formData.developer_website,
           developer_email: this.formData.developer_email,
-          app_icon_url: uploadedUrls.icon_url,
+          app_icon_url: this.formData.app_icon_url,
           main_image_en: uploadedUrls.main_image_en,
           main_image_ar: uploadedUrls.main_image_ar,
           screenshots_en: uploadedUrls.screenshots_en,
@@ -410,7 +321,6 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
   }
 
   private uploadAllImages(): Observable<{
-    icon_url: string;
     main_image_en: string;
     main_image_ar: string;
     screenshots_en: string[];
@@ -426,9 +336,6 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
     const uploadTasks: UploadTask[] = [];
 
     // Collect all upload tasks
-    if (this.formData.app_icon_url && this.isExternalUrl(this.formData.app_icon_url)) {
-      uploadTasks.push({ key: 'icon', url: this.formData.app_icon_url, mediaType: 'icon' });
-    }
     if (this.formData.main_image_en && this.isExternalUrl(this.formData.main_image_en)) {
       uploadTasks.push({ key: 'main_en', url: this.formData.main_image_en, mediaType: 'screenshot_en' });
     }
@@ -449,7 +356,6 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
     // If no uploads needed, return original URLs immediately
     if (uploadTasks.length === 0) {
       return of({
-        icon_url: this.formData.app_icon_url,
         main_image_en: this.formData.main_image_en,
         main_image_ar: this.formData.main_image_ar,
         screenshots_en: this.formData.screenshots_en,
@@ -485,16 +391,13 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
         this.isUploading = false;
       }),
       map((results) => {
-        let iconUrl = this.formData.app_icon_url;
         let mainImageEn = this.formData.main_image_en;
         let mainImageAr = this.formData.main_image_ar;
         const screenshotsEn = [...this.formData.screenshots_en];
         const screenshotsAr = [...this.formData.screenshots_ar];
 
         results.forEach((result) => {
-          if (result.key === 'icon') {
-            iconUrl = result.uploadedUrl;
-          } else if (result.key === 'main_en') {
+          if (result.key === 'main_en') {
             mainImageEn = result.uploadedUrl;
           } else if (result.key === 'main_ar') {
             mainImageAr = result.uploadedUrl;
@@ -506,7 +409,6 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
         });
 
         return {
-          icon_url: iconUrl,
           main_image_en: mainImageEn,
           main_image_ar: mainImageAr,
           screenshots_en: screenshotsEn,
