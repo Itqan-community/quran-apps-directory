@@ -1,15 +1,56 @@
 .submit-app-container {
-  max-width: 640px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 16px;
 }
 
-.page-header {
+.hero-card {
+  position: relative;
+  overflow: hidden;
   text-align: center;
   margin-bottom: 20px;
-  padding: 24px 16px;
-  background: var(--surface-color, #f8f9fa);
-  border-radius: 8px;
+  padding: 120px 16px 32px;
+  background: var(--card-bg, #fff);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-blob {
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.2;
+    pointer-events: none;
+  }
+
+  .hero-blob-teal {
+    top: -80px;
+    inset-inline-end: -60px;
+    background: #12bcac;
+  }
+
+  .hero-blob-gold {
+    bottom: -90px;
+    inset-inline-start: -50px;
+    background: #faaf41;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    padding: 4px 14px;
+    margin-bottom: 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    background: rgba(160, 83, 59, 0.08);
+    color: var(--primary-color, #a0533b);
+  }
 
   h1 {
     margin: 0 0 8px 0;
@@ -56,10 +97,115 @@
   }
 }
 
+.form-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+
+  @media (min-width: 768px) {
+    grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
+  }
+}
+
+.form-main {
+  min-width: 0;
+}
+
+.preview-card {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border-color, #dee2e6);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+
+  @media (min-width: 768px) {
+    position: sticky;
+    top: 20px;
+  }
+}
+
+.preview-label {
+  margin: 0 0 12px 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-secondary, #999);
+}
+
+.preview-app {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.preview-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-color, #f8f9fa);
+  color: var(--primary-color, #a0533b);
+  font-size: 18px;
+}
+
+.preview-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color, #333);
+  word-break: break-word;
+}
+
+.preview-status {
+  font-size: 12px;
+  color: var(--text-secondary, #999);
+}
+
+.preview-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.preview-tags .tag,
+.preview-ready {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  background: var(--surface-color, #f8f9fa);
+  color: var(--text-secondary, #999);
+  width: fit-content;
+}
+
+.preview-tags .tag.tag-done {
+  background: rgba(160, 83, 59, 0.08);
+  color: var(--primary-color, #a0533b);
+}
+
+.preview-ready {
+  width: 100%;
+  justify-content: center;
+  font-weight: 600;
+
+  &.ready {
+    background: rgba(82, 196, 26, 0.12);
+    color: #389e0d;
+  }
+}
+
 .form-section {
   margin-bottom: 16px;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 
   ::ng-deep .ant-card-body {
     padding: 16px;
@@ -127,7 +273,7 @@
 
 ::ng-deep .ant-input,
 ::ng-deep .ant-select-selector {
-  border-radius: 6px !important;
+  border-radius: 8px !important;
 }
 
 ::ng-deep .ant-select {
@@ -161,72 +307,93 @@
   margin-top: 6px;
 }
 
-// Icon upload styles
-.icon-upload-container {
-  width: 100%;
+// Step wizard
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
-.icon-uploader {
-  ::ng-deep .ant-upload-drag {
-    background: var(--surface-color, #fafafa);
-    border: 2px dashed var(--border-color, #d9d9d9);
-    border-radius: 8px;
-    padding: 16px;
-    transition: border-color 0.3s, background 0.3s;
-    min-height: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--surface-color, #f8f9fa);
+  color: var(--text-secondary, #999);
+  border: 1px solid var(--border-color, #dee2e6);
+  transition: all 0.2s ease;
 
-    &:hover {
-      border-color: var(--primary-color, #a0533b);
-    }
+  &.active {
+    background: var(--primary-color, #a0533b);
+    border-color: var(--primary-color, #a0533b);
+    color: #fff;
   }
 
-  ::ng-deep .ant-upload-list-picture-card {
-    margin-top: 12px;
-
-    .ant-upload-list-item {
-      width: 100px;
-      height: 100px;
-      border-radius: 8px;
-    }
+  &.done {
+    background: rgba(160, 83, 59, 0.12);
+    border-color: var(--primary-color, #a0533b);
+    color: var(--primary-color, #a0533b);
   }
 }
 
-.upload-drag-content {
-  text-align: center;
-  padding: 8px;
+.step-line {
+  width: 40px;
+  height: 2px;
+  background: var(--border-color, #dee2e6);
+
+  &.done {
+    background: var(--primary-color, #a0533b);
+  }
 }
 
-.upload-icon {
-  font-size: 32px;
-  color: var(--primary-color, #a0533b);
-  margin-bottom: 8px;
-}
-
-.upload-text {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-color, #333);
-  margin: 0 0 4px 0;
-}
-
-.upload-hint {
+.step-labels {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 20px;
   font-size: 12px;
   color: var(--text-secondary, #999);
-  margin: 0;
+
+  span.active {
+    color: var(--primary-color, #a0533b);
+    font-weight: 600;
+  }
 }
 
-.upload-error {
-  color: #ff4d4f;
-  font-size: 12px;
-  margin-top: 8px;
-}
+.step-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 0 32px;
 
-.upload-required-hint {
-  color: var(--text-secondary, #999);
-  margin-top: 8px;
+  button {
+    min-width: 140px;
+    height: 44px;
+    font-size: 15px;
+    border-radius: 9999px;
+  }
+
+  button[nztype="primary"] {
+    background-color: var(--primary-color, #a0533b);
+    border-color: var(--primary-color, #a0533b);
+
+    &:hover:not(:disabled) {
+      background-color: #8a4632;
+      border-color: #8a4632;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+    }
+  }
 }
 
 .store-link-warning {
@@ -246,29 +413,6 @@
   line-height: 1.5;
 }
 
-.submit-section {
-  text-align: center;
-  padding: 16px 0 32px;
-
-  button {
-    min-width: 180px;
-    height: 44px;
-    font-size: 15px;
-    border-radius: 6px;
-    background-color: var(--primary-color, #a0533b);
-    border-color: var(--primary-color, #a0533b);
-
-    &:hover:not(:disabled) {
-      background-color: #8a4632;
-      border-color: #8a4632;
-    }
-
-    &:disabled {
-      opacity: 0.6;
-    }
-  }
-}
-
 // RTL support
 [dir="rtl"] {
   .section-title [nz-icon] {
@@ -284,8 +428,24 @@
 
 // Dark theme
 :host-context(.dark-theme) {
-  .page-header {
-    background: var(--surface-color, #1a1a1a);
+  .hero-card {
+    background: var(--card-bg, #1f1f1f);
+  }
+
+  .preview-card {
+    background: var(--card-bg, #1f1f1f);
+    border-color: var(--border-color, #333);
+  }
+
+  .preview-icon,
+  .preview-tags .tag,
+  .preview-ready {
+    background: var(--surface-color, #2a2a2a);
+  }
+
+  .step-dot {
+    background: var(--surface-color, #2a2a2a);
+    border-color: var(--border-color, #444);
   }
 
   .track-link-banner {
@@ -314,17 +474,6 @@
   ::ng-deep nz-form-label {
     color: var(--text-color, #e0e0e0);
   }
-
-  .icon-uploader {
-    ::ng-deep .ant-upload-drag {
-      background: var(--surface-color, #2a2a2a);
-      border-color: var(--border-color, #444);
-    }
-  }
-
-  .upload-text {
-    color: var(--text-color, #e0e0e0);
-  }
 }
 
 // Responsive
@@ -333,8 +482,8 @@
     padding: 12px;
   }
 
-  .page-header {
-    padding: 16px 12px;
+  .hero-card {
+    padding: 80px 12px 20px;
 
     h1 {
       font-size: 20px;

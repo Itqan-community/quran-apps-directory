@@ -140,6 +140,8 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
 
   readonly storeLinkPattern = '^https?://.+';
 
+  currentStep = 0;
+
   constructor(
     private submissionService: SubmissionService,
     private translate: TranslateService,
@@ -239,6 +241,17 @@ export class SubmitAppComponent implements OnInit, OnDestroy {
 
   onScreenshotsArChange(): void {
     this.formData.screenshots_ar = this.parseScreenshots(this.formData.screenshots_ar_input);
+  }
+
+  nextStep(): void {
+    if (this.currentStep === 0 && !this.isFormValid()) return;
+    this.currentStep = Math.min(this.currentStep + 1, 2);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  prevStep(): void {
+    this.currentStep = Math.max(this.currentStep - 1, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   isFormValid(): boolean {
