@@ -260,7 +260,9 @@
       "additionalNotes": "Any additional information about your app..."
     },
     "validation": {
-      "storeLink": "At least one store link (Google Play or App Store) is required"
+      "storeLink": "At least one valid store link is required",
+      "appNameRequired": "Please enter an app name",
+      "invalidStoreLink": "Please enter a valid Store Link"
     },
     "hints": {
       "iconUrl": "Recommended: 512x512 PNG or JPG image",

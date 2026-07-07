@@ -260,7 +260,9 @@
       "additionalNotes": "أي معلومات إضافية عن تطبيقك..."
     },
     "validation": {
-      "storeLink": "مطلوب رابط متجر واحد على الأقل (Google Play أو App Store)"
+      "storeLink": "مطلوب رابط متجر واحد صالح على الأقل",
+      "appNameRequired": "يرجى إدخال اسم التطبيق",
+      "invalidStoreLink": "يرجى إدخال رابط متجر صالح"
     },
     "hints": {
       "iconUrl": "يُفضل: صورة PNG أو JPG بحجم 512×512",
