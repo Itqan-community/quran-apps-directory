@@ -1,8 +1,21 @@
-<div class="track-submission-container">
-  <div class="page-header">
-    <h1>{{ 'trackSubmission.title' | translate }}</h1>
-    <p>{{ 'trackSubmission.subtitle' | translate }}</p>
+<div class="track-submission-page">
+  <!-- Page-level backgrounds (same as about-us / contact-us / submit-app) -->
+  <div class="page-background-left">
+    <span class="ellipse-small"></span>
   </div>
+  <div class="page-background-right">
+    <span class="ellipse-small"></span>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1>{{ 'trackSubmission.title' | translate }}</h1>
+      <p class="description">{{ 'trackSubmission.subtitle' | translate }}</p>
+    </div>
+  </section>
+
+  <div class="content-container">
 
   <!-- Search Section -->
   <nz-card class="search-section">
@@ -173,5 +186,7 @@
     <a [routerLink]="['/', currentLang, 'submit-app']" nz-button nzType="default">
       {{ 'trackSubmission.submitNewApp' | translate }}
     </a>
+  </div>
+
   </div>
 </div>
