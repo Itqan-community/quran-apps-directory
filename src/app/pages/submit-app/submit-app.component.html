@@ -1,232 +1,240 @@
-<div class="submit-app-container">
-  <div class="hero-card">
-    <div class="hero-blob hero-blob-teal"></div>
-    <div class="hero-blob hero-blob-gold"></div>
+<div class="submit-app-page">
+  <!-- Page-level backgrounds (same as about-us / contact-us) -->
+  <div class="page-background-left">
+    <span class="ellipse-small"></span>
+  </div>
+  <div class="page-background-right">
+    <span class="ellipse-small"></span>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
     <div class="hero-content">
-      <span class="hero-tag">{{ 'submitApp.heroTag' | translate }}</span>
       <h1>{{ 'submitApp.title' | translate }}</h1>
-      <p>{{ 'submitApp.subtitle' | translate }}</p>
+      <p class="description">{{ 'submitApp.subtitle' | translate }}</p>
     </div>
-  </div>
+  </section>
 
-  <!-- Track existing submission link -->
-  <div class="track-link-banner">
-    <span nz-icon nzType="search" nzTheme="outline"></span>
-    <span>{{ 'submitApp.alreadySubmitted' | translate }}</span>
-    <a [routerLink]="['/', currentLang, 'track-submission']">
-      {{ 'submitApp.trackYourSubmission' | translate }}
-      <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
-    </a>
-  </div>
+  <div class="content-container">
+    <!-- Track existing submission link -->
+    <div class="track-link-banner">
+      <span nz-icon nzType="search" nzTheme="outline"></span>
+      <span>{{ 'submitApp.alreadySubmitted' | translate }}</span>
+      <a [routerLink]="['/', currentLang, 'track-submission']">
+        {{ 'submitApp.trackYourSubmission' | translate }}
+        <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
+      </a>
+    </div>
 
-  <div class="form-layout">
-  <nz-spin [nzSpinning]="isLoading" class="form-main">
-    <form #submitForm="ngForm" (ngSubmit)="onSubmit()">
+    <div class="form-layout">
+    <nz-spin [nzSpinning]="isLoading" class="form-main">
+      <form #submitForm="ngForm" (ngSubmit)="onSubmit()">
 
-      @if (currentStep === 0) {
-        <!-- Step 1: Contact -->
-        <nz-card class="form-section">
-          <h2 class="section-title">
-            <span nz-icon nzType="user" nzTheme="outline"></span>
-            {{ 'submitApp.sections.contact' | translate }}
-          </h2>
+        @if (currentStep === 0) {
+          <!-- Step 1: Contact -->
+          <nz-card class="form-section">
+            <h2 class="section-title">
+              <span nz-icon nzType="user" nzTheme="outline"></span>
+              {{ 'submitApp.sections.contact' | translate }}
+            </h2>
 
-          <nz-form-item>
-            <nz-form-label>{{ 'submitApp.fields.yourName' | translate }}</nz-form-label>
-            <nz-form-control>
-              <input nz-input
-                [(ngModel)]="formData.submitter_name"
-                name="submitter_name"
-                [placeholder]="'submitApp.placeholders.yourName' | translate" />
-            </nz-form-control>
-          </nz-form-item>
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.yourName' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                  [(ngModel)]="formData.submitter_name"
+                  name="submitter_name"
+                  [placeholder]="'submitApp.placeholders.yourName' | translate" />
+              </nz-form-control>
+            </nz-form-item>
 
-          <nz-form-item>
-            <nz-form-label nzRequired>{{ 'submitApp.fields.yourEmail' | translate }}</nz-form-label>
-            <nz-form-control>
-              <input nz-input
-                type="email"
-                [(ngModel)]="formData.submitter_email"
-                name="submitter_email"
-                [placeholder]="'submitApp.placeholders.yourEmail' | translate"
-                required />
-            </nz-form-control>
-          </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzRequired>{{ 'submitApp.fields.yourEmail' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                  type="email"
+                  [(ngModel)]="formData.submitter_email"
+                  name="submitter_email"
+                  [placeholder]="'submitApp.placeholders.yourEmail' | translate"
+                  required />
+              </nz-form-control>
+            </nz-form-item>
 
-          <nz-form-item>
-            <nz-form-label>{{ 'submitApp.fields.phone' | translate }}</nz-form-label>
-            <nz-form-control>
-              <input nz-input
-                [(ngModel)]="formData.submitter_phone"
-                name="submitter_phone"
-                [placeholder]="'submitApp.placeholders.phone' | translate" />
-            </nz-form-control>
-          </nz-form-item>
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.phone' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                  [(ngModel)]="formData.submitter_phone"
+                  name="submitter_phone"
+                  [placeholder]="'submitApp.placeholders.phone' | translate" />
+              </nz-form-control>
+            </nz-form-item>
 
-          <nz-form-item>
-            <nz-form-label>{{ 'submitApp.fields.organization' | translate }}</nz-form-label>
-            <nz-form-control>
-              <input nz-input
-                [(ngModel)]="formData.submitter_organization"
-                name="submitter_organization"
-                [placeholder]="'submitApp.placeholders.organization' | translate" />
-            </nz-form-control>
-          </nz-form-item>
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.organization' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                  [(ngModel)]="formData.submitter_organization"
+                  name="submitter_organization"
+                  [placeholder]="'submitApp.placeholders.organization' | translate" />
+              </nz-form-control>
+            </nz-form-item>
 
-          <div class="checkbox-item">
-            <label nz-checkbox [(ngModel)]="formData.is_developer" name="is_developer">
-              {{ 'submitApp.fields.isDeveloper' | translate }}
+            <div class="checkbox-item">
+              <label nz-checkbox [(ngModel)]="formData.is_developer" name="is_developer">
+                {{ 'submitApp.fields.isDeveloper' | translate }}
+              </label>
+            </div>
+          </nz-card>
+
+          <!-- Step 1: App Name -->
+          <nz-card class="form-section">
+            <h2 class="section-title">
+              <span nz-icon nzType="mobile" nzTheme="outline"></span>
+              {{ 'submitApp.sections.appDetails' | translate }}
+            </h2>
+
+            <nz-form-item>
+              <nz-form-label nzRequired>{{ 'submitApp.fields.appNameEn' | translate }}</nz-form-label>
+              <nz-form-control [nzErrorTip]="'submitApp.validation.appNameRequired' | translate">
+                <input nz-input
+                  #appNameEnCtrl="ngModel"
+                  [(ngModel)]="formData.app_name_en"
+                  name="app_name_en"
+                  [placeholder]="'submitApp.placeholders.appNameEn' | translate"
+                  required />
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.appNameAr' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                  dir="rtl"
+                  [(ngModel)]="formData.app_name_ar"
+                  name="app_name_ar"
+                  [placeholder]="'submitApp.placeholders.appNameAr' | translate" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-card>
+
+          <!-- Step 1: Store Links -->
+          <nz-card class="form-section">
+            <h2 class="section-title">
+              <span nz-icon nzType="link" nzTheme="outline"></span>
+              {{ 'submitApp.sections.storeLinks' | translate }}
+            </h2>
+
+            @if (!hasStoreLink && (submitForm.submitted || googlePlayCtrl.touched || appStoreCtrl.touched || appGalleryCtrl.touched)) {
+              <nz-alert
+                nzType="warning"
+                [nzMessage]="'submitApp.validation.storeLink' | translate"
+                nzShowIcon
+                class="store-link-warning">
+              </nz-alert>
+            }
+
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.googlePlay' | translate }}</nz-form-label>
+              <nz-form-control [nzErrorTip]="'submitApp.validation.invalidStoreLink' | translate">
+                <input nz-input
+                  #googlePlayCtrl="ngModel"
+                  [(ngModel)]="formData.google_play_link"
+                  name="google_play_link"
+                  [pattern]="storeLinkPattern"
+                  [placeholder]="'submitApp.placeholders.googlePlay' | translate" />
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.appStore' | translate }}</nz-form-label>
+              <nz-form-control [nzErrorTip]="'submitApp.validation.invalidStoreLink' | translate">
+                <input nz-input
+                  #appStoreCtrl="ngModel"
+                  [(ngModel)]="formData.app_store_link"
+                  name="app_store_link"
+                  [pattern]="storeLinkPattern"
+                  [placeholder]="'submitApp.placeholders.appStore' | translate" />
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.appGallery' | translate }}</nz-form-label>
+              <nz-form-control [nzErrorTip]="'submitApp.validation.invalidStoreLink' | translate">
+                <input nz-input
+                  #appGalleryCtrl="ngModel"
+                  [(ngModel)]="formData.app_gallery_link"
+                  name="app_gallery_link"
+                  [pattern]="storeLinkPattern"
+                  [placeholder]="'submitApp.placeholders.appGallery' | translate" />
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label>{{ 'submitApp.fields.website' | translate }}</nz-form-label>
+              <nz-form-control>
+                <input nz-input
+                  [(ngModel)]="formData.website_link"
+                  name="website_link"
+                  [placeholder]="'submitApp.placeholders.website' | translate" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-card>
+
+          <!-- Content Confirmation -->
+          <nz-card class="form-section confirmation-section">
+            <label nz-checkbox [(ngModel)]="formData.content_confirmation" name="content_confirmation">
+              <span class="confirmation-text">
+                {{ 'submitApp.fields.contentConfirmation' | translate }}
+              </span>
             </label>
+          </nz-card>
+
+          <div class="step-nav">
+            <span></span>
+            <button nz-button
+              nzType="primary"
+              nzSize="large"
+              [nzLoading]="isSubmitting"
+              [disabled]="!isFormValid()">
+              <span nz-icon nzType="send" nzTheme="outline"></span>
+              {{ 'submitApp.submitButton' | translate }}
+            </button>
           </div>
-        </nz-card>
+        }
 
-        <!-- Step 1: App Name -->
-        <nz-card class="form-section">
-          <h2 class="section-title">
-            <span nz-icon nzType="mobile" nzTheme="outline"></span>
-            {{ 'submitApp.sections.appDetails' | translate }}
-          </h2>
+      </form>
+    </nz-spin>
 
-          <nz-form-item>
-            <nz-form-label nzRequired>{{ 'submitApp.fields.appNameEn' | translate }}</nz-form-label>
-            <nz-form-control [nzErrorTip]="'submitApp.validation.appNameRequired' | translate">
-              <input nz-input
-                #appNameEnCtrl="ngModel"
-                [(ngModel)]="formData.app_name_en"
-                name="app_name_en"
-                [placeholder]="'submitApp.placeholders.appNameEn' | translate"
-                required />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label>{{ 'submitApp.fields.appNameAr' | translate }}</nz-form-label>
-            <nz-form-control>
-              <input nz-input
-                dir="rtl"
-                [(ngModel)]="formData.app_name_ar"
-                name="app_name_ar"
-                [placeholder]="'submitApp.placeholders.appNameAr' | translate" />
-            </nz-form-control>
-          </nz-form-item>
-        </nz-card>
-
-        <!-- Step 1: Store Links -->
-        <nz-card class="form-section">
-          <h2 class="section-title">
-            <span nz-icon nzType="link" nzTheme="outline"></span>
-            {{ 'submitApp.sections.storeLinks' | translate }}
-          </h2>
-
-          @if (!hasStoreLink && (submitForm.submitted || googlePlayCtrl.touched || appStoreCtrl.touched || appGalleryCtrl.touched)) {
-            <nz-alert
-              nzType="warning"
-              [nzMessage]="'submitApp.validation.storeLink' | translate"
-              nzShowIcon
-              class="store-link-warning">
-            </nz-alert>
-          }
-
-          <nz-form-item>
-            <nz-form-label>{{ 'submitApp.fields.googlePlay' | translate }}</nz-form-label>
-            <nz-form-control [nzErrorTip]="'submitApp.validation.invalidStoreLink' | translate">
-              <input nz-input
-                #googlePlayCtrl="ngModel"
-                [(ngModel)]="formData.google_play_link"
-                name="google_play_link"
-                [pattern]="storeLinkPattern"
-                [placeholder]="'submitApp.placeholders.googlePlay' | translate" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label>{{ 'submitApp.fields.appStore' | translate }}</nz-form-label>
-            <nz-form-control [nzErrorTip]="'submitApp.validation.invalidStoreLink' | translate">
-              <input nz-input
-                #appStoreCtrl="ngModel"
-                [(ngModel)]="formData.app_store_link"
-                name="app_store_link"
-                [pattern]="storeLinkPattern"
-                [placeholder]="'submitApp.placeholders.appStore' | translate" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label>{{ 'submitApp.fields.appGallery' | translate }}</nz-form-label>
-            <nz-form-control [nzErrorTip]="'submitApp.validation.invalidStoreLink' | translate">
-              <input nz-input
-                #appGalleryCtrl="ngModel"
-                [(ngModel)]="formData.app_gallery_link"
-                name="app_gallery_link"
-                [pattern]="storeLinkPattern"
-                [placeholder]="'submitApp.placeholders.appGallery' | translate" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label>{{ 'submitApp.fields.website' | translate }}</nz-form-label>
-            <nz-form-control>
-              <input nz-input
-                [(ngModel)]="formData.website_link"
-                name="website_link"
-                [placeholder]="'submitApp.placeholders.website' | translate" />
-            </nz-form-control>
-          </nz-form-item>
-        </nz-card>
-
-        <!-- Content Confirmation -->
-        <nz-card class="form-section confirmation-section">
-          <label nz-checkbox [(ngModel)]="formData.content_confirmation" name="content_confirmation">
-            <span class="confirmation-text">
-              {{ 'submitApp.fields.contentConfirmation' | translate }}
-            </span>
-          </label>
-        </nz-card>
-
-        <div class="step-nav">
-          <span></span>
-          <button nz-button
-            nzType="primary"
-            nzSize="large"
-            [nzLoading]="isSubmitting"
-            [disabled]="!isFormValid()">
-            <span nz-icon nzType="send" nzTheme="outline"></span>
-            {{ 'submitApp.submitButton' | translate }}
-          </button>
+    <!-- Live preview card -->
+    <aside class="preview-card">
+      <h4 class="preview-label">{{ 'submitApp.preview.label' | translate }}</h4>
+      <div class="preview-app">
+        <div class="preview-icon">
+          <span nz-icon nzType="mobile" nzTheme="outline"></span>
         </div>
-      }
-
-    </form>
-  </nz-spin>
-
-  <!-- Live preview card -->
-  <aside class="preview-card">
-    <h4 class="preview-label">{{ 'submitApp.preview.label' | translate }}</h4>
-    <div class="preview-app">
-      <div class="preview-icon">
-        <span nz-icon nzType="mobile" nzTheme="outline"></span>
-      </div>
-      <div>
-        <div class="preview-name">
-          {{ formData.app_name_en || ('submitApp.preview.placeholderName' | translate) }}
+        <div>
+          <div class="preview-name">
+            {{ formData.app_name_en || ('submitApp.preview.placeholderName' | translate) }}
+          </div>
+          <div class="preview-status">{{ 'submitApp.preview.pendingReview' | translate }}</div>
         </div>
-        <div class="preview-status">{{ 'submitApp.preview.pendingReview' | translate }}</div>
       </div>
+      <div class="preview-tags">
+        <span class="tag" [class.tag-done]="hasStoreLink">
+          <span nz-icon [nzType]="hasStoreLink ? 'check-circle' : 'link'" nzTheme="outline"></span>
+          {{ (hasStoreLink ? 'submitApp.preview.storeLinkAdded' : 'submitApp.preview.storeLinkMissing') | translate }}
+        </span>
+        <span class="tag" [class.tag-done]="formData.submitter_email">
+          <span nz-icon [nzType]="formData.submitter_email ? 'check-circle' : 'mail'" nzTheme="outline"></span>
+          {{ (formData.submitter_email ? 'submitApp.preview.emailAdded' : 'submitApp.preview.emailMissing') | translate }}
+        </span>
+      </div>
+      <div class="preview-ready" [class.ready]="isFormValid()">
+        <span nz-icon [nzType]="isFormValid() ? 'check-circle' : 'info-circle'" nzTheme="outline"></span>
+        {{ (isFormValid() ? 'submitApp.preview.readyToSubmit' : 'submitApp.preview.notReadyYet') | translate }}
+      </div>
+    </aside>
     </div>
-    <div class="preview-tags">
-      <span class="tag" [class.tag-done]="hasStoreLink">
-        <span nz-icon [nzType]="hasStoreLink ? 'check-circle' : 'link'" nzTheme="outline"></span>
-        {{ (hasStoreLink ? 'submitApp.preview.storeLinkAdded' : 'submitApp.preview.storeLinkMissing') | translate }}
-      </span>
-      <span class="tag" [class.tag-done]="formData.submitter_email">
-        <span nz-icon [nzType]="formData.submitter_email ? 'check-circle' : 'mail'" nzTheme="outline"></span>
-        {{ (formData.submitter_email ? 'submitApp.preview.emailAdded' : 'submitApp.preview.emailMissing') | translate }}
-      </span>
-    </div>
-    <div class="preview-ready" [class.ready]="isFormValid()">
-      <span nz-icon [nzType]="isFormValid() ? 'check-circle' : 'info-circle'" nzTheme="outline"></span>
-      {{ (isFormValid() ? 'submitApp.preview.readyToSubmit' : 'submitApp.preview.notReadyYet') | translate }}
-    </div>
-  </aside>
   </div>
 </div>
