@@ -1,0 +1,65 @@
+<div class="support-container" [class.open]="isOpen" [dir]="isRtl ? 'rtl' : 'ltr'">
+  <!-- Support Card -->
+  <div class="support-card-wrapper" *ngIf="isOpen">
+    <nz-card class="support-card" [nzTitle]="headerExtra" [nzBordered]="false">
+      <!-- Questions List View -->
+      <div class="questions-list" *ngIf="currentView === 'list'">
+        <div class="questions-content">
+          <div 
+            *ngFor="let q of questions" 
+            class="question-item" 
+            (click)="selectQuestion(q)"
+          >
+            <span class="question-text">{{ currentLang === 'ar' ? q.questionAr : q.questionEn }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail View -->
+      <div class="question-detail" *ngIf="currentView === 'detail' && selectedQuestion">
+        <div class="answer-wrapper">
+          <p class="answer-text">
+            {{ currentLang === 'ar' ? selectedQuestion.answerAr : selectedQuestion.answerEn }}
+          </p>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+
+  <!-- Floating Action Button -->
+  <button 
+    nz-button 
+    class="support-fab" 
+    [class.active]="isOpen"
+    (click)="toggleSupport()"
+    aria-label="Help and Support"
+  >
+    <span class="fab-text">{{ 'support.fab' | translate }}</span>
+    <div class="icon-wrapper">
+       <lucide-icon name="help-circle" [size]="28" strokeWidth="2"></lucide-icon>
+    </div>
+  </button>
+</div>
+
+<ng-template #headerExtra>
+  <div class="card-header" [class.detail-header]="currentView === 'detail'">
+    <h2 class="header-title" *ngIf="currentView === 'list'">
+      {{ 'support.title' | translate }}
+    </h2>
+    
+    <div class="detail-header-content" *ngIf="currentView === 'detail'">
+        <button 
+            nz-button 
+            nzType="text" 
+            class="back-btn" 
+            (click)="goBack()"
+            aria-label="Go back"
+        >
+            <lucide-icon name="chevron-left" [size]="24"></lucide-icon>
+        </button>
+        <h2 class="header-title question-title">
+            {{ currentLang === 'ar' ? selectedQuestion?.questionAr : selectedQuestion?.questionEn }}
+        </h2>
+    </div>
+  </div>
+</ng-template>

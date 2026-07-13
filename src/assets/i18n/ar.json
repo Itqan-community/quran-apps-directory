@@ -194,6 +194,27 @@
   "submitApp": {
     "title": "أضف تطبيقك",
     "subtitle": "شارك تطبيقك القرآني مع المجتمع",
+    "heroTag": "للمطورين",
+    "steps": {
+      "essentials": "الأساسيات",
+      "details": "تفاصيل التطبيق",
+      "developerMedia": "المطور والوسائط"
+    },
+    "stepNav": {
+      "continue": "متابعة",
+      "back": "رجوع"
+    },
+    "preview": {
+      "label": "معاينة",
+      "placeholderName": "اسم تطبيقك",
+      "pendingReview": "قيد المراجعة",
+      "storeLinkAdded": "تمت إضافة رابط المتجر",
+      "storeLinkMissing": "أضف رابط متجر",
+      "emailAdded": "تمت إضافة البريد الإلكتروني",
+      "emailMissing": "أضف بريدك الإلكتروني",
+      "readyToSubmit": "جاهز للإرسال",
+      "notReadyYet": "غير جاهز بعد"
+    },
     "alreadySubmitted": "هل أرسلت تطبيقاً من قبل؟",
     "trackYourSubmission": "تتبع طلبك",
     "sections": {
@@ -260,21 +281,15 @@
       "additionalNotes": "أي معلومات إضافية عن تطبيقك..."
     },
     "validation": {
-      "storeLink": "مطلوب رابط متجر واحد على الأقل (Google Play أو App Store)"
+      "storeLink": "مطلوب رابط متجر واحد صالح على الأقل",
+      "appNameRequired": "يرجى إدخال اسم التطبيق",
+      "invalidStoreLink": "يرجى إدخال رابط متجر صالح"
     },
     "hints": {
       "iconUrl": "يُفضل: صورة PNG أو JPG بحجم 512×512",
       "mainImage": "الصورة المميزة المعروضة على بطاقات التطبيقات. يُفضل: 600×400 PNG أو JPG",
       "screenshots": "أدخل رابطاً واحداً في كل سطر. يُفضل حتى 5 لقطات."
     },
-    "iconUpload": "أيقونة التطبيق",
-    "iconUploadHint": "صيغة PNG أو JPG أو WebP. الحد الأقصى 512 كيلوبايت.",
-    "iconUploadButton": "انقر أو اسحب لرفع الأيقونة",
-    "iconRequired": "أيقونة التطبيق مطلوبة",
-    "iconSizeError": "يجب أن يكون حجم الأيقونة أقل من 512 كيلوبايت",
-    "iconTypeError": "الصيغ المسموحة فقط: PNG و JPG و WebP",
-    "iconUploadSuccess": "تم رفع الأيقونة بنجاح",
-    "iconUploadError": "فشل في رفع الأيقونة",
     "screenshotsDetected": "لقطة شاشة مكتشفة",
     "submitButton": "إرسال التطبيق",
     "success": {
@@ -364,7 +379,7 @@
       "approved": "مقبول",
       "rejected": "مرفوض"
     }
-  }, 
+  },
   "APP": {
     "NOT_FOUND_TITLE": "التطبيق غير موجود",
     "NOT_FOUND_MESSAGE": "التطبيق الذي تبحث عنه غير متوفر أو ربما تم حذفه.",
@@ -372,6 +387,12 @@
     "ERROR_TITLE": "حدث خطأ ما",
     "ERROR_MESSAGE": "تعذر تحميل التطبيق في الوقت الحالي.",
     "RETRY": "إعادة المحاولة"
+  },
+  "support": {
+    "title": "المساعدة",
+    "faq": "الأسئلة الشائعة",
+    "back": "رجوع",
+    "close": "إغلاق",
+    "fab": "تحتاج مساعدة"
   }
-
 }

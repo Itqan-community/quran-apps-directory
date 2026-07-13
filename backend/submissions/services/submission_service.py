@@ -269,6 +269,20 @@ class SubmissionService:
             logger.error(f"Failed to upload images for {submission.tracking_id}: {e}")
             raise ValueError(f"Failed to upload images to R2: {str(e)}")
 
+        # The public submission form no longer collects an icon/main images,
+        # so a submission can reach here without them. Block approval with a
+        # clear message rather than silently publishing a broken listing.
+        if not r2_urls.get('app_icon_url'):
+            raise ValueError(
+                f"Cannot approve {submission.tracking_id}: no app icon on file. "
+                f"Add an icon via Django Admin (AppSubmission.app_icon_url) before approving."
+            )
+        if not r2_urls.get('main_image_en') or not r2_urls.get('main_image_ar'):
+            raise ValueError(
+                f"Cannot approve {submission.tracking_id}: missing main image (en/ar). "
+                f"Add via Django Admin before approving."
+            )
+
         # Create the App with R2 image URLs and default rating of 2.5
         app = App.objects.create(
             name_en=submission.app_name_en,

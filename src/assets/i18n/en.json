@@ -194,6 +194,27 @@
   "submitApp": {
     "title": "Submit Your App",
     "subtitle": "Share your Quran app with the community",
+    "heroTag": "For Developers",
+    "steps": {
+      "essentials": "Essentials",
+      "details": "App Details",
+      "developerMedia": "Developer & Media"
+    },
+    "stepNav": {
+      "continue": "Continue",
+      "back": "Back"
+    },
+    "preview": {
+      "label": "Preview",
+      "placeholderName": "Your App Name",
+      "pendingReview": "Pending review",
+      "storeLinkAdded": "Store link added",
+      "storeLinkMissing": "Add a store link",
+      "emailAdded": "Email added",
+      "emailMissing": "Add your email",
+      "readyToSubmit": "Ready to submit",
+      "notReadyYet": "Not ready yet"
+    },
     "alreadySubmitted": "Already submitted an app?",
     "trackYourSubmission": "Track your submission here",
     "sections": {
@@ -260,21 +281,15 @@
       "additionalNotes": "Any additional information about your app..."
     },
     "validation": {
-      "storeLink": "At least one store link (Google Play or App Store) is required"
+      "storeLink": "At least one valid store link is required",
+      "appNameRequired": "Please enter an app name",
+      "invalidStoreLink": "Please enter a valid Store Link"
     },
     "hints": {
       "iconUrl": "Recommended: 512x512 PNG or JPG image",
       "mainImage": "Featured image shown on app cards. Recommended: 600x400 PNG or JPG",
       "screenshots": "Enter one URL per line. Up to 5 screenshots recommended."
     },
-    "iconUpload": "Application Icon",
-    "iconUploadHint": "PNG, JPG, or WebP format. Maximum 512KB.",
-    "iconUploadButton": "Click or drag to upload icon",
-    "iconRequired": "Application icon is required",
-    "iconSizeError": "Icon must be less than 512KB",
-    "iconTypeError": "Only PNG, JPG, and WebP formats are allowed",
-    "iconUploadSuccess": "Icon uploaded successfully",
-    "iconUploadError": "Failed to upload icon",
     "screenshotsDetected": "screenshots detected",
     "submitButton": "Submit App",
     "success": {
@@ -366,11 +381,18 @@
     }
   },
   "APP": {
-  "NOT_FOUND_TITLE": "App Not Found",
-  "NOT_FOUND_MESSAGE": "The app you are looking for does not exist.",
-  "BACK_HOME": "Back to Home",
-  "ERROR_TITLE": "Something went wrong",
-  "ERROR_MESSAGE": "We couldn’t load this app.",
-  "RETRY": "Retry"
-}
+    "NOT_FOUND_TITLE": "App Not Found",
+    "NOT_FOUND_MESSAGE": "The app you are looking for does not exist.",
+    "BACK_HOME": "Back to Home",
+    "ERROR_TITLE": "Something went wrong",
+    "ERROR_MESSAGE": "We couldn’t load this app.",
+    "RETRY": "Retry"
+  },
+  "support": {
+    "title": "Help",
+    "faq": "Frequently Asked Questions",
+    "back": "Back",
+    "close": "Close",
+    "fab": "Need Help?"
+  }
 }

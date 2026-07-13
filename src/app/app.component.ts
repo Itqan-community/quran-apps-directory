@@ -20,6 +20,7 @@ import { NavbarScrollService, NavbarSearchState } from "./services/navbar-scroll
 import { Category } from "./services/api.service";
 import { filter, Subject, takeUntil } from "rxjs";
 import { LucideAngularModule, Menu, X, Globe, Home, Info, Mail, Users, PlusCircle, ExternalLink, ChevronRight, Search } from 'lucide-angular';
+import { SupportComponent } from "./components/support/support.component";
 import { SafeHtmlPipe } from "./pipes/safe-html.pipe";
 
 
@@ -44,6 +45,7 @@ import { SafeHtmlPipe } from "./pipes/safe-html.pipe";
     // ThemeToggleComponent,
     LucideAngularModule,
     SafeHtmlPipe,
+    SupportComponent,
   ],
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {

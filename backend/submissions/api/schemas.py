@@ -19,31 +19,31 @@ class CategorySchema(Schema):
 class SubmissionCreateSchema(Schema):
     """Schema for creating a new submission."""
     # Contact Information
-    submitter_name: str
+    submitter_name: Optional[str] = ''
     submitter_email: str
     submitter_phone: Optional[str] = ''
     submitter_organization: Optional[str] = ''
     is_developer: bool = False
 
-    # App Details (Bilingual)
+    # App Details (Bilingual) - only app_name_en is required
     app_name_en: str
-    app_name_ar: str
-    short_description_en: str
-    short_description_ar: str
+    app_name_ar: Optional[str] = ''
+    short_description_en: Optional[str] = ''
+    short_description_ar: Optional[str] = ''
     description_en: Optional[str] = ''
     description_ar: Optional[str] = ''
 
-    # Store Links (at least one required)
+    # Store Links (at least one valid link required)
     google_play_link: Optional[str] = ''
     app_store_link: Optional[str] = ''
     app_gallery_link: Optional[str] = ''
     website_link: Optional[str] = ''
 
-    # Categories (list of category IDs)
-    categories: List[int]
+    # Categories (list of category IDs, optional)
+    categories: Optional[List[int]] = []
 
     # Developer Info
-    developer_name_en: str
+    developer_name_en: Optional[str] = ''
     developer_name_ar: Optional[str] = ''
     developer_website: Optional[str] = ''
     developer_email: Optional[str] = ''

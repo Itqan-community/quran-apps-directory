@@ -12,6 +12,7 @@ import logging
 from submissions.models import AppSubmission, SubmissionStatus
 from submissions.services.submission_service import SubmissionService
 from submissions.services.storage_service import get_storage_service, StorageError
+from submissions.validators import is_valid_url
 from .schemas import (
     SubmissionCreateSchema,
     SubmissionResponseSchema,
@@ -48,17 +49,17 @@ def create_submission(request, data: SubmissionCreateSchema):
     Creates a new submission and sends a confirmation email to the submitter.
     Returns a tracking ID that can be used to check the submission status.
     """
-    # Validate at least one store link
-    if not (data.google_play_link or data.app_store_link):
-        raise HttpError(400, "At least one store link (Google Play or App Store) is required")
+    # Validate app name
+    if not data.app_name_en or not data.app_name_en.strip():
+        raise HttpError(400, "Please enter an app name")
 
-    # Validate content confirmation
-    if not data.content_confirmation:
-        raise HttpError(400, "You must confirm that the content doesn't violate guidelines")
-
-    # Validate categories
-    if not data.categories:
-        raise HttpError(400, "Please select at least one category")
+    # Validate at least one well-formed store link
+    store_links = [data.google_play_link, data.app_store_link, data.app_gallery_link]
+    if not any(is_valid_url(link) for link in store_links):
+        raise HttpError(
+            400,
+            "Please enter a valid Store Link (e.g. https://play.google.com/... or https://apps.apple.com/...)"
+        )
 
     try:
         service = SubmissionService()

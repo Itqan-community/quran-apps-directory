@@ -1,0 +1,227 @@
+.support-container {
+  position: fixed;
+  bottom: 24px;
+  inset-inline-end: 24px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.support-fab {
+  height: 52px;
+  padding: 12px 20px;
+  background: #b7710c; // Brownish
+  color: #ffffff;
+  border: none;
+  border-radius: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  cursor: pointer;
+  z-index: 2001;
+
+  .fab-text {
+    font-family: 'Expo Arabic', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: normal;
+  }
+
+  .icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+
+  &.active {
+    background: #061c1a; // Blackish
+  }
+}
+
+.support-card-wrapper {
+  animation: slideUp 0.3s ease-out;
+  width: 382px;
+  max-width: calc(100vw - 48px);
+  margin-bottom: 8px;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.support-card {
+  background: #ffffff;
+  box-shadow: 0px 4px 84px rgba(0, 0, 0, 0.13);
+  border-radius: 30px !important;
+  border: none;
+  overflow: hidden;
+
+  ::ng-deep {
+    .ant-card-head {
+      border: none;
+      padding: 32px 22px 8px;
+      min-height: auto;
+    }
+
+    .ant-card-body {
+      padding: 0px 22px 32px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+  }
+}
+
+.card-header {
+  .header-title {
+    margin: 0;
+    font-family: 'Expo Arabic', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 160%;
+    color: #343434;
+    text-align: right;
+
+    [dir='ltr'] & {
+      text-align: left;
+    }
+  }
+}
+
+.detail-header-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+
+  .back-btn {
+    padding: 0;
+    height: auto;
+    width: auto;
+    color: #061c1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 4px;
+
+    [dir='ltr'] & {
+        transform: rotate(0deg);
+    }
+    
+    [dir='rtl'] & {
+        transform: rotate(180deg);
+    }
+
+    &:hover {
+      background: transparent;
+      opacity: 0.7;
+    }
+  }
+
+  .question-title {
+    font-weight: 600;
+    font-size: 20px;
+    flex: 1;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}
+
+.questions-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.question-item {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 11px 12px;
+  background: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #b7710c;
+    background: #fdfaf5;
+    transform: scale(1.02);
+  }
+
+  .question-text {
+    font-family: 'Expo Arabic', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 160%;
+    text-align: center;
+    color: #343434;
+    word-break: break-word;
+  }
+}
+
+.answer-wrapper {
+  padding: 11px 12px;
+  background: #f3f3f3;
+  border-radius: 15px;
+  animation: fadeIn 0.4s ease-out;
+
+  .answer-text {
+    font-family: 'Expo Arabic', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 160%;
+    text-align: right;
+    color: #343434;
+    margin: 0;
+
+    [dir='ltr'] & {
+      text-align: left;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// Mobile Adjustments
+@media (max-width: 576px) {
+  .support-container {
+    bottom: 16px;
+    inset-inline-end: 16px;
+  }
+
+  .support-card-wrapper {
+    width: calc(100vw - 32px);
+  }
+
+  .support-fab {
+      padding: 10px 16px;
+      .fab-text {
+          font-size: 14px;
+      }
+  }
+}
