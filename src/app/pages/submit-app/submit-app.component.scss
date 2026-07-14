@@ -524,7 +524,11 @@ $spacing-xl: 48px;
     }
 
     &:disabled {
-      opacity: 0.6;
+      opacity: 1;
+      background-color: #d1d1d6;
+      border-color: #d1d1d6;
+      color: #8a8a8e;
+      cursor: not-allowed;
     }
   }
 }
@@ -611,6 +615,12 @@ $spacing-xl: 48px;
 :host-context(.dark-theme) {
   .submit-app-page {
     background: $dark-section-bg;
+  }
+
+  .step-nav button[nztype="primary"]:disabled {
+    background-color: #4a4a4a;
+    border-color: #4a4a4a;
+    color: $dark-text-secondary;
   }
 
   .page-background-left {
