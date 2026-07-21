@@ -1,5 +1,5 @@
 # Django Core
-Django==4.2.*
+Django==6.0.*
 django-ninja==1.2.0  # API framework following Itqan standards (Python 3.9 compatible)
 
 # Database
@@ -16,7 +16,7 @@ python-decouple==3.8
 django-cors-headers==4.9.0
 
 # Images
-Pillow==11.3.0
+Pillow==12.3.0
 
 # Extensions
 django-extensions==4.1
@@ -39,6 +39,6 @@ django-redis==6.0.0  # Redis caching backend
 
 # File Storage & External Services
 boto3==1.35.*  # AWS S3 SDK for Cloudflare R2 uploads
-requests==2.32.*  # HTTP requests for downloading images from URLs
-python-dotenv==1.0.*  # Environment variable management for local development
+requests==2.34.*  # HTTP requests for downloading images from URLs
+python-dotenv==1.2.*  # Environment variable management for local development
 # django-storages[s3]==1.14.*  # Alternative: django-storages for S3-compatible storage
