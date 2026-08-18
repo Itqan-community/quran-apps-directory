@@ -87,6 +87,20 @@
     "badges": {
       "featured": "مميز",
       "new": "جديد"
+    },
+    "filters": {
+      "platform": {
+        "label": "المنصة",
+        "all": "الكل",
+        "ios": "iOS",
+        "android": "أندرويد",
+        "web": "ويب"
+      },
+      "pagination": {
+        "prev": "السابق",
+        "next": "التالي",
+        "page": "صفحة {{current}} من {{total}}"
+      }
     }
   },
   "developer": {

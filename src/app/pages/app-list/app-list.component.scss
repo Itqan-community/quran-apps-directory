@@ -668,6 +668,267 @@
 }
 
 // ============================================
+// PLATFORM FILTER
+// ============================================
+.platform-filter-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+  padding: 0 4px;
+
+  @media (max-width: 768px) {
+    justify-content: flex-start;
+    padding-inline: 8px;
+  }
+
+  @media (max-width: 480px) {
+    padding-inline: 4px;
+  }
+}
+
+.platform-filter-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px 8px 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+
+  :host-context(.dark-theme) & {
+    background: rgba(45, 45, 45, 0.9);
+    border-color: #444;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    padding: 8px 10px 8px 14px;
+    border-radius: 20px;
+    gap: 10px;
+
+    .platform-select {
+      flex: 1;
+      min-width: 0;
+
+      ::ng-deep .ant-select {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.platform-filter-label {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  color: #1a1a1a;
+  white-space: nowrap;
+  margin: 0;
+  flex-shrink: 0;
+
+  :host-context(.dark-theme) & {
+    color: #e8e8e8;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+  }
+}
+
+.platform-select {
+  display: flex;
+  align-items: center;
+  min-width: 120px;
+  flex: 1;
+
+  @media (max-width: 480px) {
+    min-width: 0;
+  }
+
+  ::ng-deep {
+    &.ant-select {
+      width: auto;
+      min-width: 110px;
+      display: flex;
+      align-items: center;
+    }
+
+    &.ant-select:not(.ant-select-disabled):hover .ant-select-selector,
+    &.ant-select-focused:not(.ant-select-disabled) .ant-select-selector {
+      border-color: #4caf50 !important;
+      box-shadow: 0 2px 8px rgba(76, 175, 80, 0.12) !important;
+    }
+
+    .ant-select-selector {
+      border-radius: 20px !important;
+      min-height: 36px !important;
+      height: 36px !important;
+      padding: 0 32px 0 14px !important;
+      background: #fff !important;
+      border: 1px solid rgba(0, 0, 0, 0.15) !important;
+      box-shadow: none !important;
+      transition: all 0.2s ease;
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    .ant-select-selection-wrap,
+    .ant-select-selection-search,
+    .ant-select-selection-item {
+      display: flex !important;
+      align-items: center !important;
+      height: 100% !important;
+    }
+
+    .ant-select-selection-item {
+      font-size: 13px;
+      font-weight: 400;
+      color: #1a1a1a;
+      line-height: 1.2 !important;
+      padding-inline-end: 0 !important;
+    }
+
+    .ant-select-arrow {
+      color: #666;
+      inset-inline-end: 14px !important;
+      top: 0 !important;
+      bottom: 0 !important;
+      height: 100% !important;
+      margin-top: 0 !important;
+      transform: none !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+
+      .anticon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    &.ant-select-disabled .ant-select-selector {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+
+  :host-context(.dark-theme) & ::ng-deep {
+    &.ant-select:not(.ant-select-disabled):hover .ant-select-selector,
+    &.ant-select-focused:not(.ant-select-disabled) .ant-select-selector {
+      border-color: #4caf50 !important;
+      box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2) !important;
+    }
+
+    .ant-select-selector {
+      background: rgba(35, 35, 35, 0.95) !important;
+      border: 1px solid #666 !important;
+    }
+
+    .ant-select-selection-item {
+      color: #e0e0e0;
+    }
+
+    .ant-select-arrow {
+      color: #999;
+    }
+  }
+}
+
+// ============================================
+// PAGINATION
+// ============================================
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 32px 0 16px;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-family: inherit;
+
+  &:hover:not(:disabled) {
+    background: #e8f5e9;
+    border-color: #4caf50;
+    color: #1b5e20;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  :host-context(.dark-theme) & {
+    background: rgba(45, 45, 45, 0.9);
+    border-color: #444;
+    color: #e0e0e0;
+
+    &:hover:not(:disabled) {
+      background: rgba(76, 175, 80, 0.15);
+      border-color: #4caf50;
+      color: #81c784;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 14px;
+    font-size: 12px;
+    border-radius: 20px;
+  }
+}
+
+.pagination-info {
+  font-size: 13px;
+  font-weight: 400;
+  color: #666;
+  min-width: 120px;
+  text-align: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 20px;
+
+  :host-context(.dark-theme) & {
+    color: #aaa;
+    background: rgba(45, 45, 45, 0.6);
+    border-color: #444;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+    min-width: auto;
+    padding: 6px 10px;
+    border-radius: 16px;
+  }
+}
+
+// ============================================
 // MAIN CONTENT
 // ============================================
 .main-content {

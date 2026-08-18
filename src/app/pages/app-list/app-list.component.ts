@@ -11,7 +11,7 @@ import {
   AfterViewInit,
 } from "@angular/core";
 import { CommonModule, isPlatformBrowser, SlicePipe } from "@angular/common";
-import { RouterModule, ActivatedRoute, Router } from "@angular/router";
+import { RouterModule, ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { NzGridModule } from "ng-zorro-antd/grid";
 import { NzCardModule } from "ng-zorro-antd/card";
@@ -21,15 +21,18 @@ import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzSpinModule } from "ng-zorro-antd/spin";
 import { NzAlertModule } from "ng-zorro-antd/alert";
+import { NzSelectModule } from "ng-zorro-antd/select";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import type { QuranApp } from "../../services/app.service";
-import { ApiService, Category } from "../../services/api.service";
+import { ApiService, App, Category } from "../../services/api.service";
 import { Title, Meta } from "@angular/platform-browser";
 import { combineLatest, of, Subject } from "rxjs";
 import {
   catchError,
+  distinctUntilChanged,
   filter,
   finalize,
+  map,
   take,
   takeUntil,
   switchMap,
@@ -40,6 +43,15 @@ import { RAMADAN_MODE } from "../../guards/ramadan-redirect.guard";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
 import { NavbarScrollService } from "../../services/navbar-scroll.service";
+
+type PlatformFilter = "all" | "ios" | "android" | "web";
+
+interface UrlQueryPatch {
+  q?: string | null;
+  category?: string | null;
+  platform?: string | null;
+  page?: number | null;
+}
 
 @Component({
   selector: "app-list",
@@ -56,6 +68,7 @@ import { NavbarScrollService } from "../../services/navbar-scroll.service";
     NzButtonModule,
     NzSpinModule,
     NzAlertModule,
+    NzSelectModule,
     TranslateModule,
     OptimizedImageComponent,
     SafeHtmlPipe,
@@ -93,8 +106,17 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   private categoriesContainer: HTMLElement | null = null;
   currentLang: "en" | "ar" = "en"; // Initialize with browser language
   selectedCategory: string = "all";
+  selectedPlatform: PlatformFilter = "all";
+  currentPage = 1;
+  serverTotalCount = 0;
+  serverHasNext = false;
+  serverHasPrevious = false;
+  isServerFetching = false;
+  readonly platformFilters: PlatformFilter[] = ["all", "ios", "android", "web"];
   isDarkMode = false;
   private destroy$ = new Subject<void>();
+  private readonly searchInput$ = new Subject<string>();
+  private readonly pageSize = 20;
   private isInitialLoad = true;
   // Cache for star arrays to prevent NG0100 errors from creating new references on each change detection
   private starArrayCache = new Map<number, { fillPercent: number }[]>();
@@ -178,6 +200,12 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     // Load categories and apps from API
     this.loadData();
 
+    // Sync filter state from initial URL before subscriptions fire
+    this.syncFilterStateFromUrl(
+      this.route.snapshot.paramMap,
+      this.route.snapshot.queryParamMap,
+    );
+
     // Handle smart_search query param from navbar search
     this.route.queryParamMap
       .pipe(
@@ -193,49 +221,59 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
 
-    // Subscribe to route changes for category filtering
-    // Use debounceTime to prevent race conditions from rapid clicks
-    this.route.paramMap
+    // Debounced traditional search — updates URL q param after 300ms
+    this.searchInput$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$),
+      )
+      .subscribe((value) => {
+        if (this.searchType !== "traditional") {
+          return;
+        }
+        this.updateUrlQueryParams({ q: value.trim() || null, page: 1 });
+      });
+
+    // URL as source of truth for traditional browse/search
+    combineLatest([this.route.paramMap, this.route.queryParamMap])
       .pipe(
         debounceTime(50),
-        switchMap((params) => {
-          const lang = params.get("lang");
-          const category = params.get("category");
+        switchMap(([paramMap, queryMap]) => {
+          if (queryMap.has("smart_search") || this.searchType === "smart") {
+            return of(null);
+          }
 
+          const lang = paramMap.get("lang");
           if (lang && (lang === "ar" || lang === "en")) {
             this.currentLang = lang as "en" | "ar";
-            // Ensure TranslateService uses the correct language
             if (this.translateService.currentLang !== lang) {
               this.translateService.use(lang);
             }
           }
 
-          // Set the selected category
-          this.selectedCategory = category ? category.toLowerCase() : "all";
+          this.syncFilterStateFromUrl(paramMap, queryMap);
 
-          // Wait for apps to be loaded before filtering
+          if (this.isServerDrivenMode()) {
+            return this.fetchServerAppsObservable();
+          }
+
           return this.apiService.apps$.pipe(
-            filter((apps) => apps.length > 0),
+            filter((apps) => apps.length > 0 || this.initialLoadComplete),
             take(1),
-            switchMap((apiApps) => {
-              // Update apps from the observable directly to avoid race condition
+            map((apiApps) => {
               this.apps = apiApps.map((app) =>
                 this.apiService.formatAppForDisplay(app),
               );
-              if (this.selectedCategory === "all") {
-                this.filteredApps = this.apps;
-              } else {
-                this.filterByCategory(this.selectedCategory);
-              }
-              return of(params);
+              this.filteredApps = this.apps;
+              this.hasMoreApps = this.apps.length < this.totalAppsCount;
+              return null;
             }),
           );
         }),
         takeUntil(this.destroy$),
       )
       .subscribe(() => {
-        // Scroll to top of page when route changes (browser only)
-        // Skip on initial load to prevent snapping user back to top during loading
         if (isPlatformBrowser(this.platformId)) {
           if (this.isInitialLoad) {
             this.isInitialLoad = false;
@@ -243,23 +281,21 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
             window.scrollTo({ top: 0, behavior: "auto" });
           }
 
-          // Scroll selected category into view (horizontally within categories section)
           setTimeout(() => this.scrollSelectedCategoryIntoView(), 100);
         }
 
-        // Update SEO data after apps and route parameters are set
+        this.updateNavbarSearchState();
         this.updateSeoData();
       });
 
-    // Subscribe to apps from API service for reactive updates
+    // Subscribe to apps from API service for reactive updates (home browse mode)
     this.apiService.apps$
       .pipe(takeUntil(this.destroy$))
       .subscribe((apiApps) => {
         this.apps = apiApps.map((app) =>
           this.apiService.formatAppForDisplay(app),
         );
-        // If no category is selected, update filtered apps
-        if (this.selectedCategory === "all" && !this.searchQuery.trim()) {
+        if (!this.isServerDrivenMode()) {
           this.filteredApps = this.apps;
         }
       });
@@ -302,8 +338,9 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
-    // Handle infinite scroll (only when not searching and not in smart search mode)
+    // Handle infinite scroll (home browse only — not server-driven or smart search)
     if (
+      !this.isServerDrivenMode() &&
       !this.searchQuery.trim() &&
       !this.isSmartSearching &&
       this.hasMoreApps &&
@@ -426,18 +463,39 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  /** Fires on every keystroke — only does local filtering (no smart search animation) */
+  onSearchTypeChange(type: "traditional" | "smart"): void {
+    this.searchType = type;
+    if (type === "traditional") {
+      this.isSmartSearchActive = false;
+      this.smartSearchHasMore = false;
+      this.isSmartSearching = false;
+      this.suggestedQuery = null;
+      this.syncFilterStateFromUrl(
+        this.route.snapshot.paramMap,
+        this.route.snapshot.queryParamMap,
+      );
+      if (this.isServerDrivenMode()) {
+        this.fetchServerAppsObservable()
+          .pipe(takeUntil(this.destroy$))
+          .subscribe();
+      } else {
+        this.filteredApps = this.apps;
+        this.searchExecuted = false;
+      }
+    }
+    this.updateNavbarSearchState();
+  }
+
+  /** Fires on every keystroke — debounced URL update for traditional search */
   onTypingSearch() {
     if (this.searchType === "traditional") {
       this.isSmartSearchActive = false;
       this.smartSearchHasMore = false;
-      this.applyCategoryAndSearchFilters();
+      this.searchInput$.next(this.searchQuery);
     }
-    // Sync search query with navbar
     this.navbarScrollService.updateSearchState({
       searchQuery: this.searchQuery,
     });
-    // For smart search, do nothing on typing — wait for button click / Enter
   }
 
   /** Fires on button click or Enter key */
@@ -445,27 +503,27 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.suggestedQuery = null;
     const query = this.searchQuery.trim();
 
-    // If query is empty, reset infinite scroll state and respect current category filter
-    if (!query) {
-      this.isSmartSearching = false;
-      this.searchExecuted = false;
-      this.isSmartSearchActive = false;
-      this.smartSearchHasMore = false;
-      // Reset infinite scroll state for non-search views
-      this.isLoadingMore = false;
-      this.hasMoreApps = true;
-      this.totalAppsCount = 0;
-      this.applyCategoryAndSearchFilters();
-      return;
-    }
-
     if (this.searchType === "smart") {
+      if (!query) {
+        this.isSmartSearching = false;
+        this.searchExecuted = false;
+        this.isSmartSearchActive = false;
+        this.smartSearchHasMore = false;
+        this.isLoadingMore = false;
+        this.hasMoreApps = true;
+        this.totalAppsCount = 0;
+        if (!this.isServerDrivenMode()) {
+          this.filteredApps = this.apps;
+        }
+        return;
+      }
+
       this.isSmartSearching = true;
       this.searchExecuted = false;
       this.isSmartSearchActive = true;
       this.smartSearchPage = 1;
       this.filteredApps = [];
-      const filters: any = {};
+      const filters: { category?: string } = {};
       if (this.selectedCategory !== "all") {
         filters.category = this.selectedCategory;
       }
@@ -473,7 +531,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (response) => {
-            const results = (response.results || []).map((app: any) =>
+            const results = (response.results || []).map((app: App) =>
               this.apiService.formatAppForDisplay(app),
             );
             this.filteredApps = results;
@@ -493,16 +551,26 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       return;
     }
 
-    // Local, tolerant search on already-loaded apps (avoids strict backend matching)
+    // Traditional — update URL immediately (server fetch triggered by query param subscription)
+    this.isSmartSearchActive = false;
+    this.smartSearchHasMore = false;
+    this.isSmartSearching = false;
+
+    if (!query) {
+      this.searchExecuted = false;
+      this.updateUrlQueryParams({ q: null, page: 1 });
+      return;
+    }
+
     this.searchExecuted = true;
-    this.applyCategoryAndSearchFilters();
+    this.updateUrlQueryParams({ q: query, page: 1 });
   }
 
   loadMoreSmartResults(): void {
     if (!this.smartSearchHasMore || this.isSmartSearching) return;
     this.isSmartSearching = true;
     this.smartSearchPage++;
-    const filters: any = {};
+    const filters: { category?: string } = {};
     if (this.selectedCategory !== 'all') {
       filters.category = this.selectedCategory;
     }
@@ -510,7 +578,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
-          const results = (response.results || []).map((app: any) =>
+          const results = (response.results || []).map((app: App) =>
             this.apiService.formatAppForDisplay(app)
           );
           this.filteredApps = [...this.filteredApps, ...results];
@@ -527,34 +595,92 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onCategoryChipClick(slug: string): void {
-    this.selectedCategory = slug;
-    // Reset infinite scroll state on category change
+    if (this.searchType === "smart" && this.isSmartSearchActive && this.searchQuery.trim()) {
+      this.selectedCategory = slug;
+      this.onSearch();
+      return;
+    }
+
+    const queryParams: Record<string, string | number | null> = { page: null };
+
+    if (this.searchQuery.trim()) {
+      queryParams["q"] = this.searchQuery.trim();
+    }
+    if (this.selectedPlatform !== "all") {
+      queryParams["platform"] = this.selectedPlatform;
+    }
+
+    const onAppsRoute = this.isAppsListRoute();
+
+    if (slug === "all") {
+      queryParams["category"] = null;
+      const route = onAppsRoute
+        ? ["/", this.currentLang, "apps"]
+        : ["/", this.currentLang];
+      this.router.navigate(route, {
+        queryParams,
+        queryParamsHandling: "merge",
+      });
+    } else if (onAppsRoute) {
+      queryParams["category"] = slug;
+      this.router.navigate(["/", this.currentLang, "apps"], {
+        queryParams,
+        queryParamsHandling: "merge",
+      });
+    } else {
+      queryParams["category"] = null;
+      this.router.navigate(["/", this.currentLang, slug], {
+        queryParams,
+        queryParamsHandling: "merge",
+      });
+    }
+
     this.isLoadingMore = false;
     this.hasMoreApps = true;
-    this.totalAppsCount = 0;
-    if (slug === 'all') {
-      this.isSmartSearchActive = false;
-      this.filteredApps = this.apps;
-    } else {
-      this.filterByCategory(slug);
-    }
-    const route = slug === 'all'
-      ? ['/', this.currentLang]
-      : ['/', this.currentLang, slug];
-    this.router.navigate(route);
   }
 
-  filterByCategory(category: string) {
-    this.selectedCategory = category.toLowerCase();
-    // Reset infinite scroll state when category changes
-    this.isLoadingMore = false;
-    this.hasMoreApps = true;
-    this.totalAppsCount = 0;
-    if (this.isSmartSearchActive && this.searchQuery.trim()) {
-      this.onSearch();
-    } else {
-      this.applyCategoryAndSearchFilters();
+  onPlatformChange(platform: PlatformFilter): void {
+    if (this.searchType === "smart") {
+      return;
     }
+    this.selectedPlatform = platform;
+    this.updateUrlQueryParams({
+      platform: platform === "all" ? null : platform,
+      page: 1,
+    });
+  }
+
+  goToPage(page: number): void {
+    const totalPages = this.getTotalPages();
+    if (page < 1 || page > totalPages) {
+      return;
+    }
+    this.updateUrlQueryParams({ page: page > 1 ? page : null });
+    if (isPlatformBrowser(this.platformId)) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
+  getTotalPages(): number {
+    return Math.max(1, Math.ceil(this.serverTotalCount / this.pageSize));
+  }
+
+  getResultCount(): number {
+    return this.isServerDrivenMode()
+      ? this.serverTotalCount
+      : this.filteredApps.length;
+  }
+
+  isServerDrivenMode(): boolean {
+    if (this.searchType === "smart") {
+      return false;
+    }
+    return (
+      !!this.searchQuery.trim() ||
+      this.selectedCategory !== "all" ||
+      this.selectedPlatform !== "all" ||
+      this.currentPage > 1
+    );
   }
 
   retryLoadData() {
@@ -567,7 +693,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
    * Load the next page of apps via infinite scroll.
    */
   loadMoreApps(): void {
-    if (this.isLoadingMore || !this.hasMoreApps) return;
+    if (this.isServerDrivenMode() || this.isLoadingMore || !this.hasMoreApps) return;
     this.isLoadingMore = true;
 
     this.apiService.loadNextPage()
@@ -575,7 +701,6 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe({
         next: (totalCount) => {
           this.totalAppsCount = totalCount;
-          // Check if we've loaded all apps
           if (this.apps.length >= totalCount) {
             this.hasMoreApps = false;
           }
@@ -590,68 +715,119 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  /**
-   * Apply current category + search query to the in-memory apps list.
-   * This allows us to normalize Arabic text and be tolerant to hamza/diacritics.
-   */
-  private applyCategoryAndSearchFilters(): void {
-    const query = this.searchQuery.trim();
-    const hasQuery = !!query;
+  private syncFilterStateFromUrl(
+    paramMap: ParamMap,
+    queryMap: ParamMap,
+  ): void {
+    this.searchQuery = queryMap.get("q") || "";
+    this.selectedPlatform = this.parsePlatformFilter(queryMap.get("platform"));
 
-    this.filteredApps = this.apps.filter((app) => {
-      // Category filter
-      const inCategory =
-        this.selectedCategory === "all"
-          ? true
-          : (app.categories || [])
-              .map((c) => c.toLowerCase())
-              .includes(this.selectedCategory);
+    const page = parseInt(queryMap.get("page") || "1", 10);
+    this.currentPage = Number.isNaN(page) || page < 1 ? 1 : page;
 
-      if (!inCategory) return false;
+    this.selectedCategory = this.resolveEffectiveCategory(queryMap, paramMap);
+  }
 
-      // Search filter
-      return hasQuery ? this.isAppInSearchResults(app) : true;
+  private resolveEffectiveCategory(
+    queryMap: ParamMap,
+    paramMap: ParamMap,
+  ): string {
+    const queryCategory = queryMap.get("category");
+    if (queryCategory) {
+      return queryCategory.toLowerCase();
+    }
+    const routeCategory = paramMap.get("category");
+    if (routeCategory) {
+      return routeCategory.toLowerCase();
+    }
+    return "all";
+  }
+
+  private parsePlatformFilter(value: string | null): PlatformFilter {
+    const valid: PlatformFilter[] = ["all", "ios", "android", "web"];
+    if (value && valid.includes(value as PlatformFilter)) {
+      return value as PlatformFilter;
+    }
+    return "all";
+  }
+
+  private isAppsListRoute(): boolean {
+    const segments = this.router.url.split("?")[0].split("/").filter(Boolean);
+    return segments.length >= 2 && segments[1] === "apps";
+  }
+
+  private updateUrlQueryParams(
+    patch: UrlQueryPatch,
+    options?: { replaceUrl?: boolean },
+  ): void {
+    const queryParams: Record<string, string | number | null> = {};
+
+    if ("q" in patch) {
+      queryParams["q"] = patch.q?.trim() ? patch.q.trim() : null;
+    }
+    if ("category" in patch) {
+      queryParams["category"] =
+        patch.category && patch.category !== "all" ? patch.category : null;
+    }
+    if ("platform" in patch) {
+      queryParams["platform"] =
+        patch.platform && patch.platform !== "all" ? patch.platform : null;
+    }
+    if ("page" in patch) {
+      queryParams["page"] =
+        patch.page && patch.page > 1 ? patch.page : null;
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      queryParamsHandling: "merge",
+      replaceUrl: options?.replaceUrl ?? false,
     });
   }
 
-  /**
-   * Normalize text to make search tolerant for Arabic spelling variants
-   * (e.g. "القران" vs "القرآن") and case-insensitive in English.
-   */
-  private normalizeText(text: string): string {
-    if (!text) return "";
+  private fetchServerAppsObservable() {
+    this.isServerFetching = true;
 
-    let normalized = text.toLowerCase();
+    const params: {
+      search?: string;
+      category?: string;
+      platform?: string;
+      page: number;
+      page_size: number;
+    } = {
+      page: this.currentPage,
+      page_size: this.pageSize,
+    };
 
-    // Normalize common Arabic variants
-    normalized = normalized
-      // Different forms of alif with hamza/mand
-      .replace(/[أإآ]/g, "ا")
-      // taa marbuta to ha
-      .replace(/ة/g, "ه")
-      // yaa/aleph maqsura
-      .replace(/ى/g, "ي")
-      // remove common Arabic diacritics
-      .replace(/[\u064B-\u0652]/g, "");
+    if (this.searchQuery.trim()) {
+      params.search = this.searchQuery.trim();
+    }
+    if (this.selectedCategory !== "all") {
+      params.category = this.selectedCategory;
+    }
+    if (this.selectedPlatform !== "all") {
+      params.platform = this.selectedPlatform;
+    }
 
-    return normalized;
-  }
-
-  private isAppInSearchResults(app: QuranApp): boolean {
-    const query = this.searchQuery.trim();
-    if (!query) return true;
-
-    const searchNorm = this.normalizeText(query);
-    const nameEn = this.normalizeText(app.Name_En || "");
-    const nameAr = this.normalizeText(app.Name_Ar || "");
-    const descEn = this.normalizeText(app.Short_Description_En || "");
-    const descAr = this.normalizeText(app.Short_Description_Ar || "");
-
-    return (
-      nameEn.includes(searchNorm) ||
-      nameAr.includes(searchNorm) ||
-      descEn.includes(searchNorm) ||
-      descAr.includes(searchNorm)
+    return this.apiService.getApps(params).pipe(
+      catchError(() =>
+        of({ count: 0, next: null, previous: null, results: [] }),
+      ),
+      map((response) => {
+        this.filteredApps = response.results.map((app) =>
+          this.apiService.formatAppForDisplay(app),
+        );
+        this.serverTotalCount = response.count || 0;
+        this.serverHasNext = !!response.next;
+        this.serverHasPrevious = !!response.previous;
+        this.searchExecuted = !!this.searchQuery.trim();
+        return response;
+      }),
+      finalize(() => {
+        this.isServerFetching = false;
+        this.cdr.detectChanges();
+      }),
     );
   }
 

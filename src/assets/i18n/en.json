@@ -87,6 +87,20 @@
     "badges": {
       "featured": "Featured",
       "new": "New"
+    },
+    "filters": {
+      "platform": {
+        "label": "Platform",
+        "all": "All",
+        "ios": "iOS",
+        "android": "Android",
+        "web": "Web"
+      },
+      "pagination": {
+        "prev": "Previous",
+        "next": "Next",
+        "page": "Page {{current}} of {{total}}"
+      }
     }
   },
   "developer": {

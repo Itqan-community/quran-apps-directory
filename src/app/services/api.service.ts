@@ -206,10 +206,10 @@ export class ApiService {
     }
 
     // For filtered requests (search, category, etc.), return single page
+    // without updating the home-page apps cache used by infinite scroll
     return this.http.get<AppListResponse>(`${this.apiUrl}/apps/`, { params: httpParams }).pipe(
-      tap(response => {
+      tap(() => {
         this.setLoading(false);
-        this.appsSubject.next(response.results);
       }),
       catchError(error => {
         this.setError('Failed to load applications. Please try again later.');
