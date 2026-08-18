@@ -201,3 +201,73 @@ nz-layout.app-layout::after {
   margin: 0 !important;
   margin-inline-end: 6px !important;
 }
+
+/* App list — platform select dropdown (CDK overlay on body) */
+.app-list-platform-dropdown.ant-select-dropdown {
+  border-radius: 16px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.app-list-platform-dropdown .rc-virtual-list,
+.app-list-platform-dropdown .rc-virtual-list-holder {
+  max-height: 184px !important;
+  height: 184px !important;
+}
+
+.app-list-platform-dropdown .rc-virtual-list-holder-inner {
+  height: auto !important;
+  max-height: none !important;
+}
+
+.app-list-platform-dropdown .ant-select-dropdown-menu {
+  max-height: none !important;
+  overflow: hidden !important;
+}
+
+.app-list-platform-dropdown .rc-virtual-list-scrollbar,
+.app-list-platform-dropdown .rc-virtual-list-scrollbar-thumb {
+  display: none !important;
+}
+
+.app-list-platform-dropdown .ant-select-item,
+.app-list-platform-dropdown .ant-select-item-option {
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #1a1a1a;
+  min-height: 40px;
+  line-height: 40px;
+  padding: 0 12px;
+}
+
+.app-list-platform-dropdown .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background: rgba(76, 175, 80, 0.08);
+}
+
+.app-list-platform-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background: #e8f5e9;
+  color: #1b5e20;
+  font-weight: 500;
+}
+
+.dark-theme .app-list-platform-dropdown.ant-select-dropdown {
+  background: rgba(45, 45, 45, 0.98);
+  border-color: #444;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.dark-theme .app-list-platform-dropdown .ant-select-item {
+  color: #e0e0e0;
+}
+
+.dark-theme .app-list-platform-dropdown .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.dark-theme .app-list-platform-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background: rgba(76, 175, 80, 0.15);
+  color: #81c784;
+}

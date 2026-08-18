@@ -28,14 +28,14 @@
         <button
           class="search-tab"
           [class.active]="searchType === 'traditional'"
-          (click)="searchType = 'traditional'"
+          (click)="onSearchTypeChange('traditional')"
         >
           {{ "appList.search.traditional" | translate }}
         </button>
         <button
           class="search-tab"
           [class.active]="searchType === 'smart'"
-          (click)="searchType = 'smart'"
+          (click)="onSearchTypeChange('smart')"
         >
           {{ "appList.search.smart" | translate }}
         </button>
@@ -164,6 +164,30 @@
         }
       </div>
     </div>
+
+    <!-- Platform Filter -->
+    <div class="platform-filter-wrapper">
+      <div class="platform-filter-card">
+        <label class="platform-filter-label" for="platform-select">
+          {{ "appList.filters.platform.label" | translate }}
+        </label>
+        <nz-select
+          id="platform-select"
+          class="platform-select"
+          nzDropdownClassName="app-list-platform-dropdown"
+          [ngModel]="selectedPlatform"
+          (ngModelChange)="onPlatformChange($event)"
+          [nzDisabled]="searchType === 'smart'"
+        >
+          @for (platform of platformFilters; track platform) {
+            <nz-option
+              [nzValue]="platform"
+              [nzLabel]="('appList.filters.platform.' + platform) | translate"
+            ></nz-option>
+          }
+        </nz-select>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -222,7 +246,7 @@
   }
 
   <!-- Shimmer Loading State -->
-  @if ((isLoading || isSmartSearching) && filteredApps.length === 0) {
+  @if ((isLoading || isServerFetching || isSmartSearching) && filteredApps.length === 0) {
     <div class="apps-grid">
       @for (item of [1, 2, 3, 4, 5, 6]; track item) {
         <div class="app-card shimmer-card">
@@ -246,16 +270,16 @@
 
   <!-- Search Results Header -->
   @if (
-    searchExecuted && searchQuery.trim() && !isSmartSearching && !isLoading
+    searchExecuted && searchQuery.trim() && !isSmartSearching && !isLoading && !isServerFetching
   ) {
     <div class="search-results-header">
       <h2 class="search-results-title">
         {{ "appList.search.resultsFor" | translate }} "{{ searchQuery }}"
       </h2>
       <span class="search-results-count">
-        {{ filteredApps.length }}
+        {{ getResultCount() }}
         {{
-          filteredApps.length === 1
+          getResultCount() === 1
             ? ("appList.search.result" | translate)
             : ("appList.search.results" | translate)
         }}
@@ -504,13 +528,48 @@
       }
     </div>
 
-    <!-- Loading More Indicator for Infinite Scroll -->
-    @if (isLoadingMore && filteredApps.length > 0 && !isSmartSearching) {
+    <!-- Loading More Indicator for Infinite Scroll (home browse only) -->
+    @if (isLoadingMore && filteredApps.length > 0 && !isSmartSearching && !isServerDrivenMode()) {
       <div style="text-align: center; margin: 24px 0">
         <nz-spin nzSimple></nz-spin>
         <span style="margin-left: 12px; color: var(--nz-text-color-secondary);">
           {{ currentLang === "ar" ? "جارِ تحميل المزيد..." : "Loading more..." }}
         </span>
+      </div>
+    }
+
+    <!-- Pagination for server-driven traditional search -->
+    @if (isServerDrivenMode() && filteredApps.length > 0 && getTotalPages() > 1) {
+      <div class="pagination-controls">
+        <button
+          type="button"
+          class="pagination-btn"
+          [disabled]="!serverHasPrevious || isServerFetching"
+          (click)="goToPage(currentPage - 1)"
+        >
+          {{ "appList.filters.pagination.prev" | translate }}
+        </button>
+        <span class="pagination-info">
+          {{
+            "appList.filters.pagination.page"
+              | translate
+                : { current: currentPage, total: getTotalPages() }
+          }}
+        </span>
+        <button
+          type="button"
+          class="pagination-btn"
+          [disabled]="!serverHasNext || isServerFetching"
+          (click)="goToPage(currentPage + 1)"
+        >
+          {{ "appList.filters.pagination.next" | translate }}
+        </button>
+      </div>
+    }
+
+    @if (isServerFetching && filteredApps.length > 0) {
+      <div style="text-align: center; margin: 24px 0">
+        <nz-spin nzSimple></nz-spin>
       </div>
     }
 
