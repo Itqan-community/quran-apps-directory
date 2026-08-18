@@ -40,6 +40,7 @@ import { RAMADAN_MODE } from "../../guards/ramadan-redirect.guard";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
 import { NavbarScrollService } from "../../services/navbar-scroll.service";
+import { convertKeyboardLayout, isArabicQuery, isLatinQuery } from "../../utils/keyboard-layout.util";
 
 @Component({
   selector: "app-list",
@@ -69,6 +70,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   apps: QuranApp[] = [];
   filteredApps: QuranApp[] = [];
   searchQuery: string = "";
+  activeSearchQuery: string = "";
   searchType: "traditional" | "smart" = "traditional";
   isSmartSearching = false;
   searchExecuted = false;
@@ -469,6 +471,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.selectedCategory !== "all") {
         filters.category = this.selectedCategory;
       }
+      this.activeSearchQuery = query;
       this.apiService.searchHybrid(query, filters, 1, 20)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
@@ -476,6 +479,37 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
             const results = (response.results || []).map((app: any) =>
               this.apiService.formatAppForDisplay(app),
             );
+            
+            // If smart search got 0 results, try keyboard layout conversion
+            if (results.length === 0 && (isArabicQuery(query) || isLatinQuery(query))) {
+              const converted = convertKeyboardLayout(query);
+              if (converted && converted !== query) {
+                this.activeSearchQuery = converted;
+                this.apiService.searchHybrid(converted, filters, 1, 20)
+                  .pipe(takeUntil(this.destroy$))
+                  .subscribe({
+                    next: (correctedResponse) => {
+                      const correctedResults = (correctedResponse.results || []).map((app: any) =>
+                        this.apiService.formatAppForDisplay(app),
+                      );
+                      this.filteredApps = correctedResults;
+                      this.smartSearchTotal = correctedResponse.count || 0;
+                      this.smartSearchHasMore = !!correctedResponse.next;
+                      this.suggestedQuery = correctedResponse.suggested_query || null;
+                      this.isSmartSearching = false;
+                      this.searchExecuted = true;
+                      this.navbarScrollService.updateSearchState({ isSearching: false });
+                      this.cdr.detectChanges();
+                    },
+                    error: () => {
+                      this.isSmartSearching = false;
+                      this.cdr.detectChanges();
+                    }
+                  });
+                return;
+              }
+            }
+
             this.filteredApps = results;
             this.smartSearchTotal = response.count || 0;
             this.smartSearchHasMore = !!response.next;
@@ -506,7 +540,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.selectedCategory !== 'all') {
       filters.category = this.selectedCategory;
     }
-    this.apiService.searchHybrid(this.searchQuery.trim(), filters, this.smartSearchPage, 20)
+    this.apiService.searchHybrid(this.activeSearchQuery || this.searchQuery.trim(), filters, this.smartSearchPage, 20)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -610,8 +644,24 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       if (!inCategory) return false;
 
       // Search filter
-      return hasQuery ? this.isAppInSearchResults(app) : true;
+      return hasQuery ? this.isAppInSearchResults(app, query) : true;
     });
+
+    // If no results and query is purely one script, try keyboard layout conversion
+    if (this.filteredApps.length === 0 && hasQuery && (isArabicQuery(query) || isLatinQuery(query))) {
+      const converted = convertKeyboardLayout(query);
+      if (converted && converted !== query) {
+        this.filteredApps = this.apps.filter((app) => {
+          const inCategory =
+            this.selectedCategory === "all"
+              ? true
+              : (app.categories || [])
+                  .map((c) => c.toLowerCase())
+                  .includes(this.selectedCategory);
+          return inCategory && this.isAppInSearchResults(app, converted);
+        });
+      }
+    }
   }
 
   /**
@@ -637,8 +687,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     return normalized;
   }
 
-  private isAppInSearchResults(app: QuranApp): boolean {
-    const query = this.searchQuery.trim();
+  private isAppInSearchResults(app: QuranApp, query: string): boolean {
     if (!query) return true;
 
     const searchNorm = this.normalizeText(query);
