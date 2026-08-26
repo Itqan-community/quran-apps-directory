@@ -617,7 +617,8 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.selectedCategory !== 'all') {
       filters.category = this.selectedCategory;
     }
-    this.apiService.searchHybrid(this.searchQuery.trim(), filters, this.smartSearchPage, 20)
+    const query = this.layoutCorrectedQuery || this.searchQuery.trim();
+    this.apiService.searchHybrid(query, filters, this.smartSearchPage, 20)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {

@@ -62,7 +62,8 @@
       "loadMore": "تحميل المزيد",
       "aiMatch": "تطابق",
       "aiReasoning": "لماذا هذه النتيجة؟",
-      "didYouMean": "هل تقصد"
+      "didYouMean": "هل تقصد",
+      "keyboardCorrectionBanner": "لم يُعثر على نتائج للاستعلام الأصلي. يتم عرض نتائج الكلمة المصحَّحة:"
     },
     "categories": {
       "all": "التصنيف",

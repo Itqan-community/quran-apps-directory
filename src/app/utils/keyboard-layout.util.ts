@@ -25,6 +25,7 @@ const englishToArabic: Record<string, string> = {
 
   z: 'ئ', x: 'ء', c: 'ؤ', v: 'ر', b: 'لا',
   n: 'ى', m: 'ة', ',': 'و', '.': 'ز', '/': 'ظ',
+  '`': 'ذ',
 };
 
 // ── Arabic character → English key ────────────────────────────────────────────
@@ -42,6 +43,9 @@ const arabicToEnglishRaw: [string, string][] = [
 
   ['ئ', 'z'], ['ء', 'x'], ['ؤ', 'c'], ['ر', 'v'], ['لا', 'b'],
   ['ى', 'n'], ['ة', 'm'], ['و', ','], ['ز', '.'], ['ظ', '/'],
+  ['ذ', '`'],
+  // Common Hamza forms — mapped to their most recognisable Latin phonetic key
+  ['أ', 'h'], ['إ', 'h'], ['آ', 'h'],
 ];
 
 // Sort longest Arabic keys first so 'لا' is processed before 'ل' / 'ا'
@@ -68,7 +72,7 @@ export function isArabicQuery(query: string): boolean {
  * layout: [ ] ; ' , . /
  */
 export function isLatinQuery(query: string): boolean {
-  return /^[a-zA-Z\s\[\];',.\/]+$/.test(query);
+  return /^[a-zA-Z\s\[\];',.\/'`]+$/.test(query);
 }
 
 // ── Guard: skip trivially short or punctuation-only inputs ───────────────────
