@@ -62,7 +62,8 @@
       "loadMore": "Load More Results",
       "aiMatch": "match",
       "aiReasoning": "Why this result?",
-      "didYouMean": "Did you mean"
+      "didYouMean": "Did you mean",
+      "keyboardCorrectionBanner": "No results found for original query. Showing results for:"
     },
     "categories": {
       "all": "Category",

@@ -43,6 +43,7 @@ import { RAMADAN_MODE } from "../../guards/ramadan-redirect.guard";
 import { OptimizedImageComponent } from "../../components/optimized-image/optimized-image.component";
 import { SafeHtmlPipe } from "../../pipes/safe-html.pipe";
 import { NavbarScrollService } from "../../services/navbar-scroll.service";
+import { convertKeyboardLayout, isArabicQuery, isLatinQuery } from "../../utils/keyboard-layout.util";
 
 type PlatformFilter = "all" | "ios" | "android" | "web";
 
@@ -123,6 +124,8 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   private newAppCache = new Map<string, boolean>();
   activeAiInfoId: string | null = null;
   suggestedQuery: string | null = null;
+  /** Non-null when results were found only after auto-correcting the keyboard layout. */
+  layoutCorrectedQuery: string | null = null;
 
   // Scroll-based navbar compact mode
   private isNavbarCompact = false;
@@ -257,6 +260,8 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
           if (this.isServerDrivenMode()) {
             return this.fetchServerAppsObservable();
           }
+
+          this.layoutCorrectedQuery = null;
 
           return this.apiService.apps$.pipe(
             filter((apps) => apps.length > 0 || this.initialLoadComplete),
@@ -465,6 +470,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onSearchTypeChange(type: "traditional" | "smart"): void {
     this.searchType = type;
+    this.layoutCorrectedQuery = null;
     if (type === "traditional") {
       this.isSmartSearchActive = false;
       this.smartSearchHasMore = false;
@@ -488,6 +494,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /** Fires on every keystroke — debounced URL update for traditional search */
   onTypingSearch() {
+    this.layoutCorrectedQuery = null;
     if (this.searchType === "traditional") {
       this.isSmartSearchActive = false;
       this.smartSearchHasMore = false;
@@ -501,6 +508,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   /** Fires on button click or Enter key */
   onSearch() {
     this.suggestedQuery = null;
+    this.layoutCorrectedQuery = null;
     const query = this.searchQuery.trim();
 
     if (this.searchType === "smart") {
@@ -527,10 +535,42 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.selectedCategory !== "all") {
         filters.category = this.selectedCategory;
       }
-      this.apiService.searchHybrid(query, filters, 1, 20)
-        .pipe(takeUntil(this.destroy$))
+
+      // Use switchMap so that a stale corrected-query response can never
+      // overwrite a newer search that has already been dispatched.
+      of(query)
+        .pipe(
+          switchMap((q) => this.apiService.searchHybrid(q, filters, 1, 20)),
+          switchMap((response) => {
+            const results = (response.results || []).map((app: App) =>
+              this.apiService.formatAppForDisplay(app),
+            );
+
+            // If zero results and the query is purely one script, attempt
+            // keyboard-layout correction before giving up.
+            if (
+              results.length === 0 &&
+              (isArabicQuery(query) || isLatinQuery(query))
+            ) {
+              const converted = convertKeyboardLayout(query);
+              if (converted && converted !== query) {
+                return this.apiService
+                  .searchHybrid(converted, filters, 1, 20)
+                  .pipe(
+                    map((correctedResponse) => ({
+                      response: correctedResponse,
+                      correctedFrom: converted,
+                    })),
+                  );
+              }
+            }
+
+            return of({ response, correctedFrom: null as string | null });
+          }),
+          takeUntil(this.destroy$),
+        )
         .subscribe({
-          next: (response) => {
+          next: ({ response, correctedFrom }) => {
             const results = (response.results || []).map((app: App) =>
               this.apiService.formatAppForDisplay(app),
             );
@@ -538,6 +578,9 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
             this.smartSearchTotal = response.count || 0;
             this.smartSearchHasMore = !!response.next;
             this.suggestedQuery = response.suggested_query || null;
+            // Show correction banner only when auto-correction actually yielded results
+            this.layoutCorrectedQuery =
+              correctedFrom && results.length > 0 ? correctedFrom : null;
             this.isSmartSearching = false;
             this.searchExecuted = true;
             this.navbarScrollService.updateSearchState({ isSearching: false });
@@ -546,7 +589,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
           error: () => {
             this.isSmartSearching = false;
             this.cdr.detectChanges();
-          }
+          },
         });
       return;
     }
@@ -574,7 +617,8 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.selectedCategory !== 'all') {
       filters.category = this.selectedCategory;
     }
-    this.apiService.searchHybrid(this.searchQuery.trim(), filters, this.smartSearchPage, 20)
+    const query = this.layoutCorrectedQuery || this.searchQuery.trim();
+    this.apiService.searchHybrid(query, filters, this.smartSearchPage, 20)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
@@ -788,40 +832,71 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private fetchServerAppsObservable() {
     this.isServerFetching = true;
+    this.layoutCorrectedQuery = null;
 
-    const params: {
-      search?: string;
-      category?: string;
-      platform?: string;
-      page: number;
-      page_size: number;
-    } = {
-      page: this.currentPage,
-      page_size: this.pageSize,
+    const query = this.searchQuery.trim();
+
+    const buildParams = (search?: string) => {
+      const p: {
+        search?: string;
+        category?: string;
+        platform?: string;
+        page: number;
+        page_size: number;
+      } = { page: this.currentPage, page_size: this.pageSize };
+
+      if (search) { p.search = search; }
+      if (this.selectedCategory !== "all") { p.category = this.selectedCategory; }
+      if (this.selectedPlatform !== "all") { p.platform = this.selectedPlatform; }
+      return p;
     };
 
-    if (this.searchQuery.trim()) {
-      params.search = this.searchQuery.trim();
-    }
-    if (this.selectedCategory !== "all") {
-      params.category = this.selectedCategory;
-    }
-    if (this.selectedPlatform !== "all") {
-      params.platform = this.selectedPlatform;
-    }
-
-    return this.apiService.getApps(params).pipe(
+    return this.apiService.getApps(buildParams(query || undefined)).pipe(
+      switchMap((response) => {
+        // If the search returned zero results and the query is purely one
+        // script, try the keyboard-layout-converted version automatically.
+        if (
+          query &&
+          response.results.length === 0 &&
+          (isArabicQuery(query) || isLatinQuery(query))
+        ) {
+          const converted = convertKeyboardLayout(query);
+          if (converted && converted !== query) {
+            return this.apiService
+              .getApps(buildParams(converted))
+              .pipe(
+                map((correctedResponse) => ({
+                  response: correctedResponse,
+                  correctedFrom: converted,
+                })),
+                catchError(() =>
+                  of({
+                    response: { count: 0, next: null, previous: null, results: [] },
+                    correctedFrom: null as string | null,
+                  }),
+                ),
+              );
+          }
+        }
+        return of({ response, correctedFrom: null as string | null });
+      }),
       catchError(() =>
-        of({ count: 0, next: null, previous: null, results: [] }),
+        of({
+          response: { count: 0, next: null, previous: null, results: [] },
+          correctedFrom: null as string | null,
+        }),
       ),
-      map((response) => {
+      map(({ response, correctedFrom }) => {
         this.filteredApps = response.results.map((app) =>
           this.apiService.formatAppForDisplay(app),
         );
         this.serverTotalCount = response.count || 0;
         this.serverHasNext = !!response.next;
         this.serverHasPrevious = !!response.previous;
-        this.searchExecuted = !!this.searchQuery.trim();
+        this.searchExecuted = !!query;
+        // Show correction banner only when auto-correction actually yielded results
+        this.layoutCorrectedQuery =
+          correctedFrom && response.results.length > 0 ? correctedFrom : null;
         return response;
       }),
       finalize(() => {
