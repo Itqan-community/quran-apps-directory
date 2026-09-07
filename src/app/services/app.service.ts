@@ -81,6 +81,7 @@ export interface QuranApp {
   Developer_Id?: string; // ID for robust developer page linking
   status: string;
   Apps_Avg_Rating: number;
+  Reviews_Count?: number | null;
   categories: string[];
   screenshots_ar: string[];
   screenshots_en: string[];
@@ -137,6 +138,7 @@ export class AppService {
       Developer_Id: backendApp.developer?.id, // Include developer ID for robust linking
       status: backendApp.status,
       Apps_Avg_Rating: parseFloat(backendApp.avg_rating),
+      Reviews_Count: backendApp.review_count ?? null,
       categories: (backendApp.categories || []).map(cat => typeof cat === 'string' ? cat : cat.slug).filter(Boolean),
       screenshots_ar: backendApp.screenshots_ar || [],
       screenshots_en: backendApp.screenshots_en || [],
