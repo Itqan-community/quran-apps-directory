@@ -119,6 +119,16 @@
                   "appDetail.stats.rating" | translate
                 }}</span>
               </div>
+              @if (app.Reviews_Count) {
+                <div class="stat-item">
+                  <span class="stat-value">{{
+                    app.Reviews_Count | number
+                  }}</span>
+                  <span class="stat-label">{{
+                    "appDetail.stats.reviews" | translate
+                  }}</span>
+                </div>
+              }
               <div class="stat-item">
                 <span class="stat-value">{{ getStoreCount(app) }}</span>
                 <span class="stat-label">{{

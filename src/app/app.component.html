@@ -41,6 +41,14 @@
         >
           {{ "header.contact" | translate }}
         </a>
+        <a
+          nz-button
+          nzType="text"
+          [routerLink]="['/', currentLang, 'submit-app']"
+          class="nav-link"
+        >
+          {{ "header.submitApp" | translate }}
+        </a>
       </nav>
 
       <!-- Action Buttons - Right Side -->
