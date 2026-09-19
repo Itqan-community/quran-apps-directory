@@ -1,9 +1,11 @@
 import {
   Component,
   OnInit,
+  OnDestroy,
   AfterViewInit,
   ViewChild,
   ElementRef,
+  HostListener,
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectorRef,
   Inject,
@@ -27,7 +29,7 @@ import { DomSanitizer, SafeHtml, Title, Meta } from "@angular/platform-browser";
 import { NzDividerModule } from "ng-zorro-antd/divider";
 import { categories } from "../../services/applicationsData";
 import { NzRateModule } from "ng-zorro-antd/rate";
-import { NzImageModule, NzImageService } from "ng-zorro-antd/image";
+import { NzImageModule, NzImageService, NzImagePreviewRef } from "ng-zorro-antd/image";
 import { FormsModule } from "@angular/forms";
 // import function to register Swiper custom elements
 import { register } from "swiper/element/bundle";
@@ -64,7 +66,7 @@ type AppDetailStatus = 'loading' | 'success' | 'not-found' | 'error';
   styleUrls: ["./app-detail.component.scss"],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppDetailComponent implements OnInit, AfterViewInit {
+export class AppDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild("swiperContainer") swiperContainer: any;
   @ViewChild("relatedCarousel") relatedCarousel!: ElementRef<HTMLDivElement>;
 
@@ -92,6 +94,13 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
 
   hideSwiper = true;
   status: AppDetailStatus = 'loading';
+
+  // Active ng-zorro image preview opened from the screenshots carousel.
+  // Keyboard and swipe navigation are handled at document level (see handlers
+  // below) because focus usually stays on the page behind the overlay, where
+  // the preview's own key listener never fires.
+  private lightboxRef: NzImagePreviewRef | null = null;
+  private touchStart: { x: number; y: number; time: number } | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -130,6 +139,11 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
         }, 100);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    // Don't leak the overlay (or its document handlers' target) on navigation.
+    this.closeLightbox();
   }
 
   private getBrowserLanguage(): "en" | "ar" {
@@ -450,11 +464,82 @@ export class AppDetailComponent implements OnInit, AfterViewInit {
     // Reorder images array so clicked image is first, maintaining circular order
     const reorderedImages = [...images.slice(index), ...images.slice(0, index)];
 
-    this.nzImageService.preview(reorderedImages, {
+    // nzKeyboard is disabled in favor of the component's own document-level
+    // handler below: it works regardless of overlay focus and avoids
+    // double-handling with the preview's internal listener.
+    this.lightboxRef = this.nzImageService.preview(reorderedImages, {
       nzZoom: 1,
       nzRotate: 0,
       nzNoAnimation: false,
+      nzKeyboard: false,
     });
+    // Track user-driven closes (mask click, X button) so the document
+    // handlers below stop firing once the preview is gone.
+    const previewRef = this.lightboxRef;
+    const closeSub = previewRef.previewInstance.closeClick.subscribe(() => {
+      if (this.lightboxRef === previewRef) {
+        this.lightboxRef = null;
+      }
+      closeSub.unsubscribe();
+    });
+  }
+
+  /**
+   * Close the lightbox preview if one is open.
+   */
+  closeLightbox(): void {
+    this.lightboxRef?.close();
+    this.lightboxRef = null;
+    this.touchStart = null;
+  }
+
+  /**
+   * Keyboard navigation for the lightbox: arrows switch images, Escape closes.
+   * Document-level because focus stays on the page behind the overlay.
+   */
+  @HostListener("document:keydown", ["$event"])
+  handleLightboxKeydown(event: KeyboardEvent): void {
+    if (!this.lightboxRef) return;
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      this.lightboxRef.prev();
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      this.lightboxRef.next();
+    } else if (event.key === "Escape") {
+      this.closeLightbox();
+    }
+  }
+
+  /**
+   * Touch navigation for the lightbox on mobile: a quick, mostly-horizontal
+   * swipe switches images. Thresholds keep slow drags (image panning) working.
+   */
+  @HostListener("document:touchstart", ["$event"])
+  handleLightboxTouchStart(event: TouchEvent): void {
+    if (!this.lightboxRef || event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    this.touchStart = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+  }
+
+  @HostListener("document:touchend", ["$event"])
+  handleLightboxTouchEnd(event: TouchEvent): void {
+    if (!this.lightboxRef || !this.touchStart || event.changedTouches.length !== 1) {
+      this.touchStart = null;
+      return;
+    }
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - this.touchStart.x;
+    const dy = touch.clientY - this.touchStart.y;
+    const dt = Date.now() - this.touchStart.time;
+    this.touchStart = null;
+    if (dt < 600 && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (dx < 0) {
+        this.lightboxRef.next();
+      } else {
+        this.lightboxRef.prev();
+      }
+    }
   }
 
   // Add a method to handle category click navigation
