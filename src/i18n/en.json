@@ -393,6 +393,14 @@
     "faq": "Frequently Asked Questions",
     "back": "Back",
     "close": "Close",
-    "fab": "Need Help?"
+    "fab": "Need Help?",
+    "q1": "What are the best apps in the directory?",
+    "q1a": "Ayah app is categorized as one of the best, providing word-by-word recitation and tafsir, making it ideal for reading the Quran.",
+    "q2": "How can I download apps from the directory?",
+    "q2a": "You can download apps by clicking on the download links provided on each app's detail page, which will redirect you to the official app stores.",
+    "q3": "Can apps be used without internet?",
+    "q3a": "Many apps offer offline features such as downloading recitations and tafsir for use without an active internet connection.",
+    "q4": "What are the criteria for selecting listed apps?",
+    "q4a": "Apps are selected based on content accuracy, user experience quality, technical reliability, and adherence to Islamic values."
   }
 }

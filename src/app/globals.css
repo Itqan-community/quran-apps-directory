@@ -10,6 +10,7 @@
   --color-primary: var(--primary-color);
   --color-primary-hover: var(--primary-hover);
   --radius-app: 8px;
+  --shadow-app: var(--shadow-app);
   --font-sans: var(--font-expo), Rubik, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -56,3 +57,7 @@ body {
 *, *::before, *::after {
   font-family: inherit;
 }
+
+.compact-search-row { display: none; }
+#site-header[data-header-compact="true"] .compact-search-row { display: block; }
+#site-header[data-header-compact="true"] > div:first-child { height: 3rem; }
