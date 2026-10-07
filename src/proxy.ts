@@ -1,8 +1,6 @@
 import { auth } from "@/lib/auth";
 import { NextResponse, type NextRequest } from "next/server";
 
-const LOCALES = ["ar", "en"];
-
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
@@ -16,10 +14,11 @@ export async function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // locale routing (next-intl middleware replaces this in Plan 2)
+  // locale bootstrap: only the bare root redirects to the default locale.
+  // Unknown first segments (e.g. /fr) fall through so the [lang] layout can
+  // serve a real 404 for invalid locales (next-intl requestLocale handles the rest).
   const segments = pathname.split("/").filter(Boolean);
-  const first = segments[0];
-  if (!first || !LOCALES.includes(first)) {
+  if (segments.length === 0) {
     return NextResponse.redirect(new URL("/ar", req.url));
   }
 
