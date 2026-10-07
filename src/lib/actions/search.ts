@@ -11,9 +11,9 @@ export type Suggestion = {
 };
 
 export async function searchSuggestions(query: string): Promise<Suggestion[]> {
-  const q = query.trim();
+  const q = query.trim().slice(0, 80);
   if (q.length < 2) return [];
-  const { results } = await getApps({ search: q, pageSize: 5 });
+  const { results } = await getApps({ search: q, pageSize: 5, includeCategories: false });
   return results.map((r) => ({
     slug: r.slug,
     id: r.id,

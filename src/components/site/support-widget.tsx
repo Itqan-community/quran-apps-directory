@@ -6,10 +6,18 @@ import { useTranslations } from "next-intl";
 const QUESTIONS = [1, 2, 3, 4] as const;
 
 export function SupportWidget({ lang }: { lang: "ar" | "en" }) {
-  void lang;
   const t = useTranslations("support");
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
+
+  function toggleSupport() {
+    if (open) {
+      setOpen(false);
+      setSelected(null); // reset to list view so reopening starts from the top
+    } else {
+      setOpen(true);
+    }
+  }
 
   return (
     <div className="fixed bottom-5 end-5 z-50">
@@ -38,7 +46,7 @@ export function SupportWidget({ lang }: { lang: "ar" | "en" }) {
           </div>
         </div>
       )}
-      <button onClick={() => setOpen((v) => !v)} aria-label={t("fab")}
+      <button onClick={toggleSupport} aria-label={t("fab")}
         className="flex items-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-bold text-white shadow-app hover:bg-primary-hover">
         <span>{t("fab")}</span>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">

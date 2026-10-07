@@ -95,6 +95,42 @@ describe("getApps", () => {
     expect(res.count).toBe(1);
   });
 
+  it("escapes LIKE metacharacters in search input", async () => {
+    // Draft fixture (published path elsewhere asserts exact counts) whose name
+    // contains '%': without escaping, '%' searches become wildcard-only patterns.
+    await sql`
+      INSERT INTO apps
+        (slug, name_en, name_ar, short_description_en, short_description_ar, description_en, description_ar,
+         application_icon, main_image_en, main_image_ar, avg_rating, sort_order, platform, featured, status, developer_id,
+         riwayah, mushaf_type, features)
+      VALUES
+        ('t-app-pct', '100% Test', 'تجربة', 'has 100% match', 'يرمى 100%', 'desc', 'وصف', 'ip.png', 'cp.png', 'cp.png', '4.00', 99, 'android', false, 'draft', ${devA}, '[]'::jsonb, '[]'::jsonb, '[]'::jsonb)
+    `;
+    try {
+      const published = await getApps({ search: "100" });
+      expect(published.count).toBe(0); // searching "100" doesn't match the draft fixture
+
+      const pct = await getApps({ search: "%" });
+      expect(pct.count).toBe(0); // escaped: literal '%' match; no published app contains one
+
+      const drafts = await getApps({ search: "%", status: "draft" });
+      expect(drafts.count).toBe(1); // without escaping, '%%%' matches every draft
+      expect(drafts.results[0].slug).toBe("t-app-pct");
+
+      const byTerm = await getApps({ search: "100%", status: "draft" });
+      expect(byTerm.count).toBe(1); // without escaping, '%100%%' matches every draft
+      expect(byTerm.results[0].slug).toBe("t-app-pct");
+    } finally {
+      await sql`DELETE FROM apps WHERE slug = 't-app-pct'`;
+    }
+  });
+
+  it("includeCategories: false skips the categories fetch", async () => {
+    const res = await getApps({ search: "alph", includeCategories: false });
+    expect(res.count).toBe(1);
+    expect(res.results[0].categories).toEqual([]);
+  });
+
   it("respects ordering override", async () => {
     const res = await getApps({ ordering: "avg_rating,desc" });
     expect(res.results[0].slug).toBe("t-app-1");

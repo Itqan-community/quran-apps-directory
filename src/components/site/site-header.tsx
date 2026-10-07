@@ -19,7 +19,7 @@ export async function SiteHeader({ lang }: { lang: "ar" | "en" }) {
     <header id="site-header" data-header-compact="false"
       className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur">
       <NavbarScrollConnector />
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4">
+      <div className="header-bar mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4">
         <Link href={`/${lang}`} className="shrink-0" aria-label={t("title")}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/images/logo.svg" alt={t("title")} height={40} width={120} />
@@ -42,7 +42,7 @@ export async function SiteHeader({ lang }: { lang: "ar" | "en" }) {
             </svg>
           </a>
           <LangToggle lang={lang} />
-          <MobileMenu links={links} />
+          <MobileMenu links={links} communityLabel={t("itqan_community")} />
         </div>
       </div>
       <CompactSearch lang={lang} />

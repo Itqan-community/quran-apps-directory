@@ -59,5 +59,16 @@ body {
 }
 
 .compact-search-row { display: none; }
-#site-header[data-header-compact="true"] .compact-search-row { display: block; }
-#site-header[data-header-compact="true"] > div:first-child { height: 3rem; }
+
+@media (min-width: 993px) {
+  /* Overlay below the 64px bar: toggling it must not change the header height (no CLS). */
+  #site-header[data-header-compact="true"] .compact-search-row {
+    display: block;
+    position: absolute;
+    top: 4rem;
+    left: 0;
+    right: 0;
+    z-index: 30;
+  }
+  #site-header[data-header-compact="true"] .header-bar { height: 4rem; }
+}

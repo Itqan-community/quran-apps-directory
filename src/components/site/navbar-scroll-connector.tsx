@@ -7,6 +7,7 @@ export function NavbarScrollConnector() {
     const header = document.getElementById("site-header");
     if (!header) return;
     const onScroll = () => {
+      if (window.innerWidth <= 992) return;
       header.setAttribute("data-header-compact", window.scrollY > 200 ? "true" : "false");
     };
     onScroll();

@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, or, sql } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { db } from "@/db";
 import { apps, appsCategories, categories, developers } from "@/db/schema";
@@ -15,6 +15,7 @@ export type AppsFilters = {
   mushafType?: string[];
   features?: string[];
   ordering?: string; // CSV like "sort_order,name_en" or "avg_rating,desc"
+  includeCategories?: boolean; // default true; false skips the categories fetch
   page?: number;
   pageSize?: number;
 };
@@ -63,6 +64,11 @@ function parseOrdering(ordering?: string) {
   return dir === "desc" ? desc(col) : asc(col);
 }
 
+/** Escape LIKE metacharacters so user input is matched literally (pairs with ESCAPE '\' in SQL). */
+function escapeLike(s: string) {
+  return s.replace(/[%_\\]/g, "\\$&");
+}
+
 /** OR-within-values condition over a jsonb string array (GIN-backed) */
 function jsonbAny(col: AnyPgColumn, values: string[]) {
   const list = sql.join(
@@ -104,15 +110,15 @@ export async function getAppListRows(filters: AppsFilters): Promise<{
     )`);
   }
   if (filters.search) {
-    const raw = `%${filters.search.trim()}%`;
-    const norm = `%${normalizeArabic(filters.search.trim())}%`;
+    const raw = `%${escapeLike(filters.search.trim())}%`;
+    const norm = `%${escapeLike(normalizeArabic(filters.search.trim()))}%`;
     conds.push(
       or(
-        ilike(apps.nameEn, raw),
-        ilike(apps.nameAr, raw),
-        ilike(apps.shortDescriptionEn, raw),
-        ilike(apps.shortDescriptionAr, raw),
-        norm !== raw ? sql`translate(${apps.nameAr}, 'أإآٱةؤئ', 'ااااهوي') ILIKE ${norm}` : sql`false`
+        sql`${apps.nameEn} ILIKE ${raw} ESCAPE '\\'`,
+        sql`${apps.nameAr} ILIKE ${raw} ESCAPE '\\'`,
+        sql`${apps.shortDescriptionEn} ILIKE ${raw} ESCAPE '\\'`,
+        sql`${apps.shortDescriptionAr} ILIKE ${raw} ESCAPE '\\'`,
+        norm !== raw ? sql`translate(${apps.nameAr}, 'أإآٱةؤئ', 'ااااهوي') ILIKE ${norm} ESCAPE '\\'` : sql`false`
       )!
     );
   }
@@ -156,7 +162,7 @@ export async function getAppListRows(filters: AppsFilters): Promise<{
 
   const pageIds = rows.map((r) => r.id);
   const catRows =
-    pageIds.length > 0
+    filters.includeCategories !== false && pageIds.length > 0
       ? await db
           .select({
             appId: appsCategories.appId,
