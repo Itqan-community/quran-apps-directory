@@ -58,7 +58,7 @@ const ORDERABLE = {
 function parseOrdering(ordering?: string) {
   const parts = (ordering ?? "sort_order,name_en").split(",").map((s) => s.trim());
   const dir = parts[parts.length - 1] === "desc" ? "desc" : "asc";
-  const field = parts[0] in ORDERABLE ? (parts[0] as keyof typeof ORDERABLE) : "sort_order";
+  const field = Object.hasOwn(ORDERABLE, parts[0]) ? (parts[0] as keyof typeof ORDERABLE) : "sort_order";
   const col = ORDERABLE[field];
   return dir === "desc" ? desc(col) : asc(col);
 }
@@ -72,12 +72,18 @@ function jsonbAny(col: AnyPgColumn, values: string[]) {
   return sql`${col} ?| array[${list}]::text[]`;
 }
 
+export function parsePageParams(filters: { page?: number; pageSize?: number }) {
+  return {
+    page: Math.max(1, filters.page ?? 1),
+    pageSize: Math.min(200, Math.max(1, filters.pageSize ?? 100)),
+  };
+}
+
 export async function getAppListRows(filters: AppsFilters): Promise<{
   count: number;
   results: AppListItem[];
 }> {
-  const page = Math.max(1, filters.page ?? 1);
-  const pageSize = Math.min(200, Math.max(1, filters.pageSize ?? 100));
+  const { page, pageSize } = parsePageParams(filters);
   const status = filters.status ?? "published";
 
   const conds = [eq(apps.status, status)];
@@ -106,7 +112,7 @@ export async function getAppListRows(filters: AppsFilters): Promise<{
         ilike(apps.nameAr, raw),
         ilike(apps.shortDescriptionEn, raw),
         ilike(apps.shortDescriptionAr, raw),
-        norm !== raw ? sql`translate(${apps.nameAr}, 'أإآٱةؤئ', 'اااااهوي') ILIKE ${norm}` : sql`false`
+        norm !== raw ? sql`translate(${apps.nameAr}, 'أإآٱةؤئ', 'ااااهوي') ILIKE ${norm}` : sql`false`
       )!
     );
   }
