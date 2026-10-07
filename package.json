@@ -9,7 +9,10 @@
     "lint": "eslint",
     "db:push": "drizzle-kit push --force",
     "db:push:test": "DATABASE_URL=postgres://postgres:postgres@localhost:5433/qad_test drizzle-kit push --force",
-    "db:migrate-live": "node --experimental-strip-types --env-file=.env.local db/migrate-live.ts"
+    "db:migrate-live": "node --experimental-strip-types --env-file=.env.local db/migrate-live.ts",
+    "db:seed": "node --experimental-strip-types --env-file=.env.local db/seed.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1147.0",

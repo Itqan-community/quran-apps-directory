@@ -122,16 +122,19 @@ export const apps = pgTable(
   ]
 );
 
-/** M2M through table; names match Django defaults for simple migration */
-export const appsCategories = pgTable("apps_categories", {
-  id: bigserial("id", { mode: "number" }).primaryKey(),
-  appId: bigint("app_id", { mode: "number" })
-    .notNull()
-    .references(() => apps.id, { onDelete: "cascade" }),
-  categoryId: bigint("category_id", { mode: "number" })
-    .notNull()
-    .references(() => categories.id, { onDelete: "cascade" }),
-});
+export const appsCategories = pgTable(
+  "apps_categories",
+  {
+    id: bigserial("id", { mode: "number" }).primaryKey(),
+    appId: bigint("app_id", { mode: "number" })
+      .notNull()
+      .references(() => apps.id, { onDelete: "cascade" }),
+    categoryId: bigint("category_id", { mode: "number" })
+      .notNull()
+      .references(() => categories.id, { onDelete: "cascade" }),
+  },
+  (t) => [uniqueIndex("apps_categories_app_category_unique").on(t.appId, t.categoryId)]
+);
 
 export const appScreenshots = pgTable(
   "app_screenshots",
@@ -253,15 +256,19 @@ export const appSubmissions = pgTable(
   ]
 );
 
-export const appSubmissionsCategories = pgTable("app_submissions_categories", {
-  id: bigserial("id", { mode: "number" }).primaryKey(),
-  appsubmissionId: bigint("appsubmission_id", { mode: "number" })
-    .notNull()
-    .references(() => appSubmissions.id, { onDelete: "cascade" }),
-  categoryId: bigint("category_id", { mode: "number" })
-    .notNull()
-    .references(() => categories.id, { onDelete: "cascade" }),
-});
+export const appSubmissionsCategories = pgTable(
+  "app_submissions_categories",
+  {
+    id: bigserial("id", { mode: "number" }).primaryKey(),
+    appsubmissionId: bigint("appsubmission_id", { mode: "number" })
+      .notNull()
+      .references(() => appSubmissions.id, { onDelete: "cascade" }),
+    categoryId: bigint("category_id", { mode: "number" })
+      .notNull()
+      .references(() => categories.id, { onDelete: "cascade" }),
+  },
+  (t) => [uniqueIndex("app_submissions_categories_pair_unique").on(t.appsubmissionId, t.categoryId)]
+);
 
 export const submissionStatusLogs = pgTable(
   "submission_status_logs",
