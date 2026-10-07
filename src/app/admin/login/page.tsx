@@ -13,13 +13,16 @@ export default function LoginPage() {
     e.preventDefault();
     setBusy(true);
     setError(null);
-    const res = await signIn("credentials", { email, password, redirect: false });
-    setBusy(false);
-    if (res?.error) {
-      setError("بيانات الدخول غير صحيحة");
-      return;
+    try {
+      const res = await signIn("credentials", { email, password, redirect: false });
+      if (!res || res.error || res.code || res.ok === false) {
+        setError("بيانات الدخول غير صحيحة");
+        return;
+      }
+      window.location.href = "/admin";
+    } finally {
+      setBusy(false);
     }
-    window.location.href = "/admin";
   }
 
   return (

@@ -6,7 +6,8 @@ const LOCALES = ["ar", "en"];
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  if (pathname.startsWith("/admin")) {
+  const isAdmin = pathname === "/admin" || pathname.startsWith("/admin/");
+  if (isAdmin) {
     if (pathname === "/admin/login") return NextResponse.next();
     const session = await auth();
     if (!session) {
