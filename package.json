@@ -12,7 +12,8 @@
     "db:migrate-live": "node --experimental-strip-types --env-file=.env.local db/migrate-live.ts",
     "db:seed": "node --experimental-strip-types --env-file=.env.local db/seed.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "db:parity": "node --experimental-strip-types --env-file=.env.local db/parity-check.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1147.0",
