@@ -124,7 +124,7 @@ async function copyTable(spec: CopySpec): Promise<number> {
     });
     await target.unsafe(
       `INSERT INTO ${spec.table} (${spec.columns.join(",")}) VALUES ${tuples.join(",")} ON CONFLICT DO NOTHING`,
-      flat
+      flat as postgres.ParameterOrJSON<never>[]
     );
     inserted += chunk.length;
   }
