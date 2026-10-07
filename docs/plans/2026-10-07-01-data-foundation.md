@@ -34,12 +34,12 @@
 | `src/lib/repo/metadata.ts` | `getActiveMetadataNames`, `getMetadataValues` (bilingual + counts) |
 | `src/lib/auth.ts` | Auth.js v5 config (credentials + JWT) |
 | `src/lib/admin-guard.ts` | `requireAdmin()` used by actions in later plans |
-| `src/middleware.ts` | Locale handling + `/admin/*` session guard |
+| `src/proxy.ts` | Locale handling + `/admin/*` session guard (Next 16 renamed middleware.ts → proxy.ts) |
 | `src/app/layout.tsx` | Fonts, ThemeProvider, metadata defaults |
 | `src/app/globals.css` | Tailwind v4 `@theme` tokens (light/dark) |
 | `src/app/health/route.ts` | Railway liveness probe |
 | `src/app/admin/login/page.tsx` | Credentials login form |
-| `tests/setup.ts`, `tests/fixtures.ts` | Vitest setup, test-DB helpers |
+| `tests/setup.ts` | Vitest setup (env + DB pin); fixtures inlined per test file |
 | `docker-compose.yml`, `docker/init-test-db.sql` | Local Postgres(+pgvector) + test DB |
 | `.env.example` | Full env map |
 | `.github/workflows/ci.yml` | Lint + unit tests on PR |

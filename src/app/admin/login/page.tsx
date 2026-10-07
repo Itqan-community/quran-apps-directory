@@ -19,6 +19,8 @@ export default function LoginPage() {
         setError("بيانات الدخول غير صحيحة");
         return;
       }
+      // Full reload on purpose: middleware must see the fresh session cookie
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.href = "/admin";
     } finally {
       setBusy(false);

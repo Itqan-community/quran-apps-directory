@@ -119,10 +119,7 @@ async function seedCategories() {
 }
 
 async function seedMetadata() {
-  let t = 0;
   for (const [name, def] of Object.entries(METADATA_SEED)) {
-    t += 1;
-    void t;
     const rows = await sql`
       INSERT INTO metadata_types (name, label_en, label_ar, description_en, description_ar, is_multi_select, sort_order, is_active)
       VALUES (${name}, ${def.label_en}, ${def.label_ar}, ${def.description_en}, ${def.description_ar}, true, ${def.sort_order}, true)

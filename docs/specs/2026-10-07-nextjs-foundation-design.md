@@ -113,7 +113,8 @@ quran-apps-directory-next/
 │   │   ├── validation/              # Zod schemas shared by actions + forms
 │   │   └── seo/                     # jsonld.ts (10 generators ported), metadata helpers
 │   ├── i18n/                        # dictionaries (copied verbatim from old src/assets/i18n)
-│   └── middleware.ts                # lang validation, / → /ar redirect, /admin guard
+│   └── proxy.ts                     # lang validation, / → /ar redirect, /admin guard
+│                                     # (Next 16 convention: proxy.ts replaces middleware.ts)
 ├── db/
 │   ├── schema.ts                    # Drizzle tables (phase-1 set only)
 │   ├── seed.ts                      # idempotent seed (upsert by slug)
