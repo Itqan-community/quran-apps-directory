@@ -1,0 +1,2 @@
+CREATE DATABASE qad_test;
+CREATE DATABASE qad_shadow;
