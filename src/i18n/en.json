@@ -252,7 +252,8 @@
       "mainImageAr": "Main Cover Image (Arabic)",
       "screenshotsEn": "Screenshots (English)",
       "screenshotsAr": "Screenshots (Arabic)",
-      "contentConfirmation": "I confirm that the information provided is accurate and I have the right to submit this app. I understand it will be reviewed before publication."
+      "contentConfirmation": "I confirm that the information provided is accurate and I have the right to submit this app. I understand it will be reviewed before publication.",
+      "additionalNotes": "Additional Notes"
     },
     "placeholders": {
       "yourName": "Enter your full name",
@@ -283,7 +284,9 @@
     "validation": {
       "storeLink": "At least one valid store link is required",
       "appNameRequired": "Please enter an app name",
-      "invalidStoreLink": "Please enter a valid Store Link"
+      "invalidStoreLink": "Please enter a valid Store Link",
+      "yourEmailRequired": "Please enter a valid email address",
+      "confirmationRequired": "Please confirm the content statement"
     },
     "hints": {
       "iconUrl": "Recommended: 512x512 PNG or JPG image",
