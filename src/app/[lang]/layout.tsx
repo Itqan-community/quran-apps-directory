@@ -5,9 +5,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { isLocale, LOCALES } from "@/lib/i18n";
 import { ThemeProvider } from "@/components/theme-provider";
-import { SiteHeader } from "@/components/site/site-header";
-import { SiteFooter } from "@/components/site/site-footer";
-import { SupportWidget } from "@/components/site/support-widget";
 import "../globals.css";
 
 const expoArabic = localFont({
@@ -61,14 +58,9 @@ export default async function LangLayout({
     <html lang={lang} dir={dir} suppressHydrationWarning className={expoArabic.variable}>
       <body>
         <ThemeProvider>
-          <NextIntlClientProvider messages={messages}>
-            <div className="min-h-screen bg-bg text-text">
-              <SiteHeader lang={lang} />
-              {children}
-              <SiteFooter lang={lang} />
-              <SupportWidget lang={lang} />
-            </div>
-          </NextIntlClientProvider>
+          {/* Site chrome lives in the `(site)` route group layout so ramadan
+              can ship its own footer (matches old hideFooter behavior). */}
+          <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
         </ThemeProvider>
       </body>
     </html>
