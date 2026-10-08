@@ -56,6 +56,7 @@ export default async function AppOgImage({
           width: "100%",
           height: "100%",
           display: "flex",
+          flexDirection: "row",
           alignItems: "center",
           gap: 40,
           padding: 60,
@@ -63,19 +64,23 @@ export default async function AppOgImage({
           color: "white",
         }}
       >
-        {iconDataUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={iconDataUrl}
-            alt=""
-            width={200}
-            height={200}
-            style={{ borderRadius: 24, objectFit: "cover" }}
-          />
-        )}
+        <div style={{ display: "flex", width: 200, height: 200, flexShrink: 0 }}>
+          {iconDataUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={iconDataUrl}
+              alt=""
+              width={200}
+              height={200}
+              style={{ borderRadius: 24, objectFit: "cover" }}
+            />
+          ) : null}
+        </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <div style={{ fontSize: 56, fontWeight: 700, fontFamily: "Expo" }}>{name}</div>
-          <div style={{ fontSize: 26, opacity: 0.85, fontFamily: "Expo" }}>
+          <div style={{ fontSize: 56, fontWeight: 700, fontFamily: "Expo", display: "flex" }}>
+            {name}
+          </div>
+          <div style={{ fontSize: 26, opacity: 0.85, fontFamily: "Expo", display: "flex" }}>
             {Math.round(Number(app.avgRating) * 10) / 10} ★ · {app.reviewCount} reviews
           </div>
         </div>
