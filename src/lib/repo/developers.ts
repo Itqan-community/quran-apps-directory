@@ -1,8 +1,22 @@
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { developers } from "@/db/schema";
 import type { AppListItem } from "./apps-rows";
 import { getAppListRows } from "./apps-rows";
+
+export function devUrlParam(developer: { nameEn: string; id: number }): string {
+  return `${developer.nameEn.toLowerCase().replace(/\s+/g, "-")}_${developer.id}`;
+}
+
+export async function getDeveloperByNameSlug(slug: string) {
+  const name = slug.replace(/-/g, " ").toLowerCase();
+  const rows = await db
+    .select()
+    .from(developers)
+    .where(sql`lower(${developers.nameEn}) = ${name}`)
+    .limit(1);
+  return rows[0] ?? null;
+}
 
 export async function getDeveloperApps(developerId: number): Promise<{
   count: number;

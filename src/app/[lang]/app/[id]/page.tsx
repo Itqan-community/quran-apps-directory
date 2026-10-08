@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getLang, isLocale } from "@/lib/i18n";
 import { getAppCached } from "@/lib/cache/apps";
-import { appUrlParam } from "@/components/apps/app-card";
+import { devUrlParam } from "@/lib/repo/developers";
 import { StoreButtons } from "@/components/apps/store-buttons";
 import { ScreenshotSwiper } from "@/components/apps/screenshot-swiper";
 import { ViewTracker } from "@/components/apps/view-tracker";
@@ -72,10 +72,7 @@ export default async function AppDetailPage({ params }: Props) {
             <div>
               <h1 className="text-2xl font-bold text-text">{isAr ? app.nameAr : app.nameEn}</h1>
               <Link
-                href={`/${locale}/developer/${appUrlParam({
-                  slug: app.developer.nameEn.toLowerCase().replace(/\s+/g, "-"),
-                  id: app.developer.id,
-                })}`}
+                href={`/${locale}/developer/${devUrlParam(app.developer)}`}
                 className="text-sm text-primary hover:underline"
               >
                 {isAr ? app.developer.nameAr : app.developer.nameEn}

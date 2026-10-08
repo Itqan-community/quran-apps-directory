@@ -6,8 +6,7 @@ export function appUrlParamOf(app: { slug: string; id: number }): string {
   return `${app.slug}_${app.id}`;
 }
 
-export function appJsonLd(app: AppDetail, lang: "ar" | "en") {
-  const isAr = lang === "ar";
+export function appJsonLd(app: AppDetail, lang: "ar" | "en") {  const isAr = lang === "ar";
   return {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -43,5 +42,34 @@ export function appJsonLd(app: AppDetail, lang: "ar" | "en") {
     },
     keywords: app.categories.map((c) => (isAr ? c.nameAr : c.nameEn)).join(", "),
     inLanguage: lang,
+  };
+}
+
+export function developerJsonLd(
+  developer: { nameEn: string; nameAr: string; website: string | null; logo: string | null },
+  lang: "ar" | "en"
+) {
+  const isAr = lang === "ar";
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: isAr ? developer.nameAr : developer.nameEn,
+    url:
+      developer.website ||
+      `${SITE_URL}/${lang}/developer/${developer.nameEn.toLowerCase().replace(/\s+/g, "-")}`,
+    logo: developer.logo
+      ? { "@type": "ImageObject", url: developer.logo }
+      : undefined,
+    description: isAr
+      ? "مطور تطبيقات قرآنية متخصص في تقنيات القرآن الكريم"
+      : "Quran app developer specialized in Islamic mobile applications",
+    specialty: isAr ? "تطبيقات القرآن الكريم" : "Quran Applications",
+    makesOffer: {
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "SoftwareApplication",
+        applicationCategory: "MobileApplication",
+      },
+    },
   };
 }
