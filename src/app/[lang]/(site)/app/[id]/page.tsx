@@ -13,16 +13,9 @@ import { JsonLd } from "@/components/site/jsonld-script";
 import { appJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
 
-type Props = { params: Promise<{ lang: string; id: string }> };
+import { parseAppParam } from "@/lib/app-params";
 
-function parseAppParam(param: string): string {
-  const lastUnderscore = param.lastIndexOf("_");
-  if (lastUnderscore !== -1) {
-    const suffix = param.substring(lastUnderscore + 1);
-    if (/^\d+$/.test(suffix)) return suffix;
-  }
-  return param;
-}
+type Props = { params: Promise<{ lang: string; id: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, id } = await params;
