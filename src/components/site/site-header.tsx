@@ -4,6 +4,7 @@ import { CompactSearch } from "./compact-search";
 import { LangToggle } from "./lang-toggle";
 import { MobileMenu } from "./mobile-menu";
 import { NavbarScrollConnector } from "./navbar-scroll-connector";
+import { ThemeToggle } from "./theme-toggle";
 
 export async function SiteHeader({ lang }: { lang: "ar" | "en" }) {
   const t = await getTranslations({ locale: lang, namespace: "header" });
@@ -42,6 +43,7 @@ export async function SiteHeader({ lang }: { lang: "ar" | "en" }) {
             </svg>
           </a>
           <LangToggle lang={lang} />
+          <ThemeToggle />
           <MobileMenu links={links} communityLabel={t("itqan_community")} />
         </div>
       </div>
