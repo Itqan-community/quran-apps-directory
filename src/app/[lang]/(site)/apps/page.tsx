@@ -4,6 +4,10 @@ import { AppsListing } from "@/components/apps/apps-listing";
 import { getCategoriesCached } from "@/lib/cache/categories";
 import { getMetadataValuesCached } from "@/lib/cache/metadata";
 
+// searchParams-driven listing: no instant prefetch shell (validation cannot
+// resolve URL data inside the static shell)
+export const instant = false;
+
 type SP = Record<string, string | string[] | undefined>;
 
 function csv(sp: SP, key: string): string[] | undefined {
