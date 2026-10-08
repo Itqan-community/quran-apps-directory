@@ -5,6 +5,8 @@ import { getAppsCached } from "@/lib/cache/apps";
 import { getCategories } from "@/lib/repo/categories";
 import { AppCard } from "@/components/apps/app-card";
 import { SearchForm } from "@/components/apps/search-form";
+import { JsonLd } from "@/components/site/jsonld-script";
+import { websiteJsonLd, itemListJsonLd } from "@/lib/seo/jsonld";
 
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
@@ -19,6 +21,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   return (
     <main>
+      <JsonLd data={websiteJsonLd(locale)} />
+      <JsonLd data={itemListJsonLd(all, null, locale)} />
       <section className="relative overflow-hidden px-4 pb-12 pt-16 text-center">
         <div aria-hidden className="pointer-events-none absolute inset-0">
           <div className="absolute -top-24 start-1/4 h-72 w-72 rounded-full bg-[var(--hero-warm-soft)] blur-3xl" />
