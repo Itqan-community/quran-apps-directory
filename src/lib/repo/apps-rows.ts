@@ -37,6 +37,7 @@ export type AppListItem = {
   featured: boolean;
   platform: string;
   status: string;
+  createdAt: Date;
   developer: {
     id: number;
     nameEn: string;
@@ -147,6 +148,7 @@ export async function getAppListRows(filters: AppsFilters): Promise<{
       featured: apps.featured,
       platform: apps.platform,
       status: apps.status,
+      createdAt: apps.createdAt,
       devId: developers.id,
       devNameEn: developers.nameEn,
       devNameAr: developers.nameAr,
@@ -199,6 +201,7 @@ export async function getAppListRows(filters: AppsFilters): Promise<{
     featured: r.featured,
     platform: r.platform,
     status: r.status,
+    createdAt: r.createdAt,
     developer: {
       id: r.devId,
       nameEn: r.devNameEn,

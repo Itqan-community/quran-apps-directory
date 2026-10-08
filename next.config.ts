@@ -6,6 +6,11 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "pub-e11717db663c469fb51c65995892b449.r2.dev" },
+    ],
+  },
   cacheComponents: true,
   partialPrefetching: true,
   experimental: {
