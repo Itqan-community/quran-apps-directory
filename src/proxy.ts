@@ -1,5 +1,9 @@
+import { randomUUID } from "node:crypto";
 import { auth } from "@/lib/auth";
 import { NextResponse, type NextRequest } from "next/server";
+
+const VIEW_COOKIE = "qad_vid";
+const ONE_YEAR = 60 * 60 * 24 * 365;
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -11,7 +15,7 @@ export async function proxy(req: NextRequest) {
     if (!session) {
       return NextResponse.redirect(new URL("/admin/login", req.url));
     }
-    return NextResponse.next();
+    return withViewId(req);
   }
 
   // locale bootstrap: only the bare root redirects to the default locale.
@@ -22,7 +26,20 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/ar", req.url));
   }
 
-  return NextResponse.next();
+  return withViewId(req);
+}
+
+/** Ensure every visitor carries a stable anonymous id for view-event dedupe. */
+function withViewId(req: NextRequest) {
+  if (req.cookies.get(VIEW_COOKIE)?.value) return NextResponse.next();
+  const res = NextResponse.next();
+  res.cookies.set(VIEW_COOKIE, randomUUID(), {
+    httpOnly: false,
+    sameSite: "lax",
+    maxAge: ONE_YEAR,
+    path: "/",
+  });
+  return res;
 }
 
 export default proxy;
