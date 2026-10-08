@@ -1,0 +1,120 @@
+import Image from "next/image";
+import Link from "next/link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getLang } from "@/lib/i18n";
+import { getAppCached } from "@/lib/cache/apps";
+import { devUrlParam } from "@/lib/repo/developers";
+import { StoreButtons } from "@/components/apps/store-buttons";
+import { ScreenshotSwiper } from "@/components/apps/screenshot-swiper";
+import { ViewTracker } from "@/components/apps/view-tracker";
+import { JsonLd } from "@/components/site/jsonld-script";
+import { appJsonLd } from "@/lib/seo/jsonld";
+import { parseAppParam } from "@/lib/app-params";
+
+export default async function AppDetail({
+  params,
+}: {
+  params: Promise<{ lang: string; id: string }>;
+}) {
+  const { lang, id } = await params;
+  const locale = getLang({ lang });
+  setRequestLocale(locale);
+  const app = (await getAppCached(parseAppParam(id))) ?? (await getAppCached(id));
+  const isAr = locale === "ar";
+  const t = await getTranslations({ locale, namespace: "appDetail" });
+
+  if (!app) {
+    // notFound() inside a streamed boundary doesn't paint in Next 16.4 —
+    // render the in-page not-found view instead (matches the category route).
+    const tApp = await getTranslations({ locale, namespace: "APP" });
+    return (
+      <div className="flex min-h-[50vh] flex-col items-center justify-center py-16 text-center">
+        <h1 className="text-3xl font-bold text-text">{tApp("NOT_FOUND_TITLE")}</h1>
+        <p className="mt-3 text-sm text-text-secondary">{tApp("NOT_FOUND_MESSAGE")}</p>
+        <a
+          href={`/${locale}`}
+          className="mt-6 rounded-app bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary-hover"
+        >
+          {tApp("BACK_HOME")}
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <ViewTracker appId={app.id} />
+      <JsonLd data={appJsonLd(app, locale)} />
+      <div className="grid gap-8 md:grid-cols-[1fr_2fr]">
+        <div className="flex flex-col gap-4">
+          <Image
+            src={isAr ? app.mainImageAr : app.mainImageEn}
+            alt={app.nameEn}
+            width={640}
+            height={360}
+            priority
+            className="w-full rounded-app border border-border object-cover"
+          />
+          <StoreButtons links={app} lang={locale} />
+        </div>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-4">
+            <Image
+              src={app.applicationIcon}
+              alt={app.nameEn}
+              width={72}
+              height={72}
+              className="rounded-app border border-border"
+            />
+            <div>
+              <h1 className="text-2xl font-bold text-text">{isAr ? app.nameAr : app.nameEn}</h1>
+              <Link
+                href={`/${locale}/developer/${devUrlParam(app.developer)}`}
+                className="text-sm text-primary hover:underline"
+              >
+                {isAr ? app.developer.nameAr : app.developer.nameEn}
+              </Link>
+            </div>
+            <div className="ms-auto text-center">
+              <div className="flex items-center gap-1">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/images/starr.svg" alt="" width={16} height={16} />
+                <span className="font-bold">{Number(app.avgRating).toFixed(1)}</span>
+              </div>
+              <span className="text-xs text-text-secondary">{t("stats.rating")}</span>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {app.categories.map((c) => (
+              <Link
+                key={c.slug}
+                href={`/${locale}/${c.slug}`}
+                className="rounded-app bg-surface px-2 py-0.5 text-xs text-text-secondary hover:text-primary"
+              >
+                {isAr ? c.nameAr : c.nameEn}
+              </Link>
+            ))}
+          </div>
+          <div className="whitespace-pre-line text-text">
+            <h2 className="mb-2 text-lg font-bold">{t("description")}</h2>
+            {isAr ? app.descriptionAr : app.descriptionEn}
+          </div>
+          {app.developer.website && (
+            <a
+              href={app.developer.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-max rounded-app border border-border px-3 py-2 text-sm text-text-secondary hover:border-primary hover:text-primary"
+            >
+              {isAr ? "زيارة الموقع" : "Visit website"}
+            </a>
+          )}
+        </div>
+      </div>
+      <section className="mt-8">
+        <h2 className="mb-4 text-lg font-bold">{t("screenshots")}</h2>
+        <ScreenshotSwiper images={isAr ? app.screenshotsAr : app.screenshotsEn} alt={app.nameEn} />
+      </section>
+    </div>
+  );
+}
