@@ -7,6 +7,7 @@ import { users } from "@/db/schema";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
+  trustHost: true, // behind Railway proxy / varying ports
   pages: { signIn: "/admin/login" },
   providers: [
     Credentials({
