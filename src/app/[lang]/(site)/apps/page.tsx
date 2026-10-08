@@ -1,8 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getLang } from "@/lib/i18n";
 import { AppsListing } from "@/components/apps/apps-listing";
-import { getCategories } from "@/lib/repo/categories";
-import { getMetadataValues } from "@/lib/repo/metadata";
+import { getCategoriesCached } from "@/lib/cache/categories";
+import { getMetadataValuesCached } from "@/lib/cache/metadata";
 
 type SP = Record<string, string | string[] | undefined>;
 
@@ -27,7 +27,7 @@ export default async function AppsPage({
   const tCat = await getTranslations({ locale, namespace: "appList.categories" });
   const search = (Array.isArray(sp.search) ? sp.search[0] : sp.search)?.trim() || undefined;
   const page = Number((Array.isArray(sp.page) ? sp.page[0] : sp.page) ?? 1) || 1;
-  const [categories, metadata] = await Promise.all([getCategories(), getMetadataValues()]);
+  const [categories, metadata] = await Promise.all([getCategoriesCached(), getMetadataValuesCached()]);
 
   return (
     <AppsListing

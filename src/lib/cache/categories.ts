@@ -1,5 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
-import { getCategoryBySlug } from "@/lib/repo/categories";
+import { getCategories, getCategoryBySlug } from "@/lib/repo/categories";
 
 /** Cached so unknown-category 404s resolve before the shell flushes (real 404 status). */
 export async function getCategoryBySlugCached(slug: string) {
@@ -7,4 +7,11 @@ export async function getCategoryBySlugCached(slug: string) {
   cacheLife("hours");
   cacheTag("categories");
   return getCategoryBySlug(slug);
+}
+
+export async function getCategoriesCached() {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("categories");
+  return getCategories();
 }

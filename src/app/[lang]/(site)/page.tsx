@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getLang } from "@/lib/i18n";
 import { getAppsCached } from "@/lib/cache/apps";
-import { getCategories } from "@/lib/repo/categories";
+import { getCategoriesCached } from "@/lib/cache/categories";
 import { AppCard } from "@/components/apps/app-card";
 import { SearchForm } from "@/components/apps/search-form";
 import { JsonLd } from "@/components/site/jsonld-script";
@@ -16,7 +16,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const [{ results: featured }, { results: all }, categories] = await Promise.all([
     getAppsCached({ featured: true, pageSize: 8 }),
     getAppsCached({ pageSize: 100 }),
-    getCategories(),
+    getCategoriesCached(),
   ]);
 
   return (

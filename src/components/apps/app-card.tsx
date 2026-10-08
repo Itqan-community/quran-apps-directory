@@ -6,13 +6,7 @@ import { Badge } from "./badge";
 import { StatItem } from "./stat-item";
 import { CardActions } from "./card-actions";
 
-const NEW_APP_THRESHOLD_DAYS = 30;
-
-function isNewApp(createdAt: Date): boolean {
-  const threshold = new Date();
-  threshold.setDate(threshold.getDate() - NEW_APP_THRESHOLD_DAYS);
-  return createdAt >= threshold;
-}
+const NEW_APP_THRESHOLD_DAYS = 30; // enforced in getAppListRows (SQL: now() - 30d)
 
 export function appUrlParam(app: { slug: string; id: number }): string {
   return `${app.slug}_${app.id}`;
@@ -32,7 +26,7 @@ export async function AppCard({
   const name = isAr ? app.nameAr : app.nameEn;
   const description = isAr ? app.shortDescriptionAr : app.shortDescriptionEn;
   const cover = (isAr ? app.mainImageAr : app.mainImageEn) || app.applicationIcon;
-  const isNew = isNewApp(app.createdAt);
+  const isNew = app.isNew;
   const eager = index < 4;
   const platformLabel: Record<string, string> = {
     android: isAr ? "أندرويد" : "Android",

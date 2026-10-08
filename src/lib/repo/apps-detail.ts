@@ -75,6 +75,9 @@ export async function getApp(
     featured: a.featured,
     platform: a.platform,
     status: a.status,
+    createdAt: a.createdAt,
+    updatedAt: a.updatedAt,
+    isNew: false, // detail pages don't surface the "new" badge
     developer: {
       id: d.id,
       nameEn: d.nameEn,
@@ -83,7 +86,5 @@ export async function getApp(
       logo: d.logoUrl,
     },
     categories: catRows,
-    createdAt: a.createdAt,
-    updatedAt: a.updatedAt,
   };
 }

@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getLang } from "@/lib/i18n";
-import { getCategories } from "@/lib/repo/categories";
+import { getCategoriesCached } from "@/lib/cache/categories";
 import { getCategoryBySlugCached } from "@/lib/cache/categories";
 import { getMetadataValues } from "@/lib/repo/metadata";
 import { AppsListing } from "@/components/apps/apps-listing";
@@ -21,7 +21,7 @@ export default async function CategoryPage({
   const page = Number((Array.isArray(sp.page) ? sp.page[0] : sp.page) ?? 1) || 1;
   const [metadata, categories] = await Promise.all([
     getMetadataValues(),
-    getCategories(),
+    getCategoriesCached(),
   ]);
 
   // Unknown category: render not-found content in-page (cacheComponents streams

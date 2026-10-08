@@ -38,6 +38,8 @@ export type AppListItem = {
   platform: string;
   status: string;
   createdAt: Date;
+  /** created within the last 30 days — computed in SQL so prerenders stay deterministic */
+  isNew: boolean;
   developer: {
     id: number;
     nameEn: string;
@@ -149,6 +151,7 @@ export async function getAppListRows(filters: AppsFilters): Promise<{
       platform: apps.platform,
       status: apps.status,
       createdAt: apps.createdAt,
+      isNew: sql<boolean>`apps.created_at > now() - interval '30 days'`,
       devId: developers.id,
       devNameEn: developers.nameEn,
       devNameAr: developers.nameAr,
@@ -202,6 +205,7 @@ export async function getAppListRows(filters: AppsFilters): Promise<{
     platform: r.platform,
     status: r.status,
     createdAt: r.createdAt,
+    isNew: r.isNew,
     developer: {
       id: r.devId,
       nameEn: r.devNameEn,
