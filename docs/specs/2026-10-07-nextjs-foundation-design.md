@@ -277,3 +277,41 @@ bookmarks, search, tajweed, dark_mode, memorization, prayer_times, qibla, notifi
 5. Archive old repo to a branch; update docs/CLAUDE.md.
 
 *End of spec.*
+
+---
+
+## 16. Plan 2 Amendments (implemented 2026-10-08)
+
+1. **View analytics beacon**: recorded via internal `POST /view` handler from a client
+   `<ViewTracker/>` on the detail page — not a synchronous RSC write. ISR caching would
+   otherwise record once per revalidation instead of per visit. Session id comes from the
+   `qad_vid` cookie set by `proxy.ts`.
+2. **Category pages are top-level `/{lang}/{category}`** (spec §4 tree updated): sitemap and
+   external links depend on it. Implemented via `(site)/[category]/page.tsx`; static segments
+   (`apps`, `about-us`…) win over the dynamic catch-all naturally.
+3. **next-intl**: custom routing via `src/i18n/request.ts` + `getLang()` per section
+   (`setRequestLocale`); no intl middleware (proxy handles only bare-root redirect + admin).
+4. **cacheComponents interactions** (Next 16.4):
+   - Legacy `export const revalidate` is forbidden; ISR done with `"use cache"` +
+     `cacheLife("hours")` + `cacheTag("apps")` wrappers in `src/lib/cache/*`.
+   - Filter/metadata/category data cached the same way; notFound() before streaming yields a
+     real 404 only for whole-route misses (`global-not-found`); unknown *category* and app
+     params stream a soft-200 in-app not-found view — matches old SPA behavior; invalid
+     *locales* (`/fr`) return true 404.
+5. **Arabic-normalized search**: SQL-side `translate()` fold on `name_ar` + TS-side query
+   normalization (covers tashkeel in the query); description-level folding deferred (unaccent).
+6. **Route groups**: `(site)` carries header/footer/support chrome; `(ramadan)` ships its own
+   footer (old `hideFooter` semantics) — spec §4 tree stays conceptual.
+7. **Sitemap**: DB-driven with hreflang alternates; app URLs by slug; category slugs lowercase
+   (matches live DB; old sitemap's TitleCase entries were legacy); `/request` dropped (D7),
+   `/apps` + `/ramadan` added.
+8. **Developer URL contract**: `/{lang}/developer/{name-slug}_{id}` (or bare `{name-slug}`);
+   shared helper `devUrlParam` in `lib/repo/developers.ts`.
+9. **OG images**: `ImageResponse` with TTF font (satori cannot read woff2; DG-Ghareeb TTF ships
+   for OG text rendering). Legacy `export const runtime` removed (incompatible with
+   cacheComponents).
+10. **Playwright**: standalone server needs `.next/static` + `public` copied into
+    `.next/standalone/` before start; e2e webServer command does that. Auth.js requires
+    `trustHost: true` behind proxies.
+
+*Amendment end.*
