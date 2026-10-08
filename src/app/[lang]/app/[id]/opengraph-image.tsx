@@ -66,7 +66,6 @@ export default async function AppOgImage({
       >
         <div style={{ display: "flex", width: 200, height: 200, flexShrink: 0 }}>
           {iconDataUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={iconDataUrl}
               alt=""

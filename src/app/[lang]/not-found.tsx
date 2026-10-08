@@ -1,5 +1,5 @@
-import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
+import { headers } from "next/headers";
 
 export default async function LangNotFound() {
   const h = await headers();

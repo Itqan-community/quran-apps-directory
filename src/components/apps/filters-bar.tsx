@@ -16,13 +16,6 @@ const FIELD_LABELS: Record<FieldKey, { ar: string; en: string }> = {
   features: { ar: "الميزات", en: "Features" },
 };
 
-const PARAM_NAMES: Record<FieldKey, string> = {
-  platforms: "platform",
-  riwayah: "riwayah",
-  mushafType: "mushaf_type",
-  features: "features",
-};
-
 export function FiltersBar({
   lang,
   current,
