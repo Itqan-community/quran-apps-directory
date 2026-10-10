@@ -23,6 +23,7 @@ beforeAll(async () => {
 afterAll(async () => {
   await sql`DELETE FROM apps WHERE slug LIKE 't-dupe-%'`;
   await sql`DELETE FROM app_submissions WHERE app_name_en = 'Alpha'`;
+  await sql`DELETE FROM app_submissions WHERE app_name_en = 'DevInfo App'`;
   await sql`DELETE FROM developers WHERE name_en = 'T:Dupe Dev'`;
   await sql.end();
 });
@@ -60,5 +61,30 @@ describe("submitApp duplicate gate", () => {
     if (!res.ok && res.error === "validation") {
       expect(res.fieldErrors?.app_name_en).toContain("duplicateName");
     }
+  });
+});
+
+describe("submitApp persists developer info", () => {
+  it("stores submitted developer fields for the review flow", async () => {
+    const res = await submitApp({
+      submitter_email: "devinfo@test.dev",
+      app_name_en: "DevInfo App",
+      google_play_link: "https://play.google.com/store/apps/details?id=test",
+      developer_name_en: "SomeDev",
+      developer_name_ar: "مطور",
+      developer_website: "https://somedev.io",
+      developer_email: "team@somedev.io",
+      content_confirmation: true,
+    });
+    expect(res.ok).toBe(true);
+    const [row] = await sql`
+      SELECT developer_name_en, developer_name_ar, developer_website, developer_email
+      FROM app_submissions WHERE app_name_en = 'DevInfo App'`;
+    expect(row).toEqual({
+      developer_name_en: "SomeDev",
+      developer_name_ar: "مطور",
+      developer_website: "https://somedev.io",
+      developer_email: "team@somedev.io",
+    });
   });
 });
