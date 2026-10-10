@@ -130,7 +130,7 @@ async function sendSubmitEmails(
     submitterPhone: data.submitter_phone,
     submitterOrganization: data.submitter_organization,
     isDeveloper: data.is_developer,
-    createdAppId: submissionId,
+    submissionId,
   };
   try {
     await sendSubmissionReceived(rowData);

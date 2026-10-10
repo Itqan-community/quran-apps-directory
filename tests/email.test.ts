@@ -101,4 +101,27 @@ describe("sendAdminNewSubmission", () => {
     await sendAdminNewSubmission(sub);
     expect(log).not.toHaveBeenCalled();
   });
+
+  it("links the review URL to submissionId when set", async () => {
+    stubConsoleBackend();
+    vi.stubEnv("ADMIN_EMAIL", "admin@itqan.dev");
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    await sendAdminNewSubmission({ ...sub, submissionId: 42 });
+    const out = log.mock.calls.map((c) => String(c[0])).join("\n");
+    expect(out).toContain("http://localhost:3000/admin/submissions/42");
+  });
+
+  it("renders no submission link when submissionId is unset, even with createdAppId", async () => {
+    stubConsoleBackend();
+    vi.stubEnv("ADMIN_EMAIL", "admin@itqan.dev");
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    await sendAdminNewSubmission({ ...sub, createdAppId: 99, createdAppSlug: "some-app" });
+    const out = log.mock.calls.map((c) => String(c[0])).join("\n");
+    expect(out).not.toContain("/admin/submissions/");
+    expect(out).not.toContain("/en/app/some_app_99");
+    expect(out).not.toContain("Review in Admin Panel");
+    expect(out).toContain("View Public Tracking");
+  });
 });

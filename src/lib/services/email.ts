@@ -14,6 +14,8 @@ export type EmailSubmission = {
   isDeveloper?: boolean;
   createdAppSlug?: string | null;
   createdAppId?: number | null;
+  /** app_submissions row id; drives the admin review link only. */
+  submissionId?: number;
 };
 
 export type MailTransport = Transporter;
@@ -580,7 +582,7 @@ function infoRequestedBodyHtml(sub: EmailSubmission, message: string, contact: s
 }
 
 /** Port of email/admin_submission_received.html. */
-function adminReceivedBodyHtml(sub: EmailSubmission, adminUrl: string): string {
+function adminReceivedBodyHtml(sub: EmailSubmission, adminUrl: string | null): string {
   const phone = sub.submitterPhone || "Not provided";
   const organization = sub.submitterOrganization || "Not provided";
   return `
@@ -635,10 +637,12 @@ function adminReceivedBodyHtml(sub: EmailSubmission, adminUrl: string): string {
         <strong>Actions:</strong>
     </p>
 
-    <p>
-        <a href="${adminUrl}" class="button" style="background-color: #1890ff;">Review in Admin Panel</a>
-        <a href="${trackUrl(sub.trackingId)}" class="button" style="background-color: #52c41a; margin-left: 10px;">View Public Tracking</a>
-    </p>
+    ${
+      adminUrl
+        ? `<a href="${adminUrl}" class="button" style="background-color: #1890ff;">Review in Admin Panel</a>
+        <a href="${trackUrl(sub.trackingId)}" class="button" style="background-color: #52c41a; margin-left: 10px;">View Public Tracking</a>`
+        : `<a href="${trackUrl(sub.trackingId)}" class="button" style="background-color: #52c41a;">View Public Tracking</a>`
+    }
 
     <p style="margin-top: 20px; font-size: 14px; color: #666;">
         Log in to the admin panel to review the full submission details, including images and app descriptions.
@@ -724,7 +728,8 @@ export async function sendInfoRequested(sub: EmailSubmission, message: string): 
 
 /** Goes to ADMIN_EMAIL; to = null when unset (no-op). */
 export async function sendAdminNewSubmission(sub: EmailSubmission): Promise<void> {
-  const adminUrl = `${siteUrl()}/admin/submissions${sub.createdAppId ? `/${sub.createdAppId}` : ""}`;
+  // Review link is keyed to the submission row only; createdApp fields are for the created app, never this email.
+  const adminUrl = sub.submissionId != null ? `${siteUrl()}/admin/submissions/${sub.submissionId}` : null;
   const subject = `New Submission: ${sub.appNameEn} (${sub.trackingId})`;
   const html = baseTemplate(`New Submission: ${sub.appNameEn}`, adminReceivedBodyHtml(sub, adminUrl));
   return sendMail({ to: process.env.ADMIN_EMAIL || null, subject, html });
