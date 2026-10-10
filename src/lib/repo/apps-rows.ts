@@ -1,4 +1,5 @@
 import { and, asc, desc, eq, inArray, or, sql } from "drizzle-orm";
+import type { SQL } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { db } from "@/db";
 import { apps, appsCategories, categories, developers } from "@/db/schema";
@@ -10,7 +11,7 @@ export type AppsFilters = {
   categorySlugs?: string[];
   platforms?: string[];
   featured?: boolean;
-  status?: string; // default "published"; "draft" etc. for admin
+  status?: string; // "published" default; "all" disables the filter
   riwayah?: string[];
   mushafType?: string[];
   features?: string[];
@@ -94,8 +95,8 @@ export async function getAppListRows(filters: AppsFilters): Promise<{
 }> {
   const { page, pageSize } = parsePageParams(filters);
   const status = filters.status ?? "published";
-
-  const conds = [eq(apps.status, status)];
+  const conds: SQL[] = [];
+  if (status !== "all") conds.push(eq(apps.status, status));
   if (filters.featured !== undefined) conds.push(eq(apps.featured, filters.featured));
   if (filters.developerId) conds.push(eq(apps.developerId, filters.developerId));
   if (filters.platforms?.length) conds.push(inArray(apps.platform, filters.platforms));
