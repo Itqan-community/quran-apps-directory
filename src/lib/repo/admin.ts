@@ -3,13 +3,20 @@ import type { SQL } from "drizzle-orm";
 import { getTableColumns } from "drizzle-orm";
 import { db } from "@/db";
 import {
+  appMetadataValues,
+  apps,
+  appScreenshots,
   appSubmissions,
   appSubmissionsCategories,
-  apps,
+  appsCategories,
   categories,
+  developers,
+  metadataOptions,
+  metadataTypes,
   submissionStatusLogs,
   users,
 } from "@/db/schema";
+import type { apps as appsTable } from "@/db/schema";
 import type { AppListItem } from "./apps-rows";
 import { getAppListRows, parsePageParams } from "./apps-rows";
 
@@ -327,4 +334,181 @@ export async function getDashboardCounts(): Promise<DashboardCounts> {
     subsRejected: row.subs_rejected,
     views30d: row.views_30d,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Apps CRUD readers (Task 8) — all uncached, fed straight into server actions.
+// ---------------------------------------------------------------------------
+
+/** Full apps row, straight from the schema select (legacy columns included). */
+export type AppRow = typeof appsTable.$inferSelect;
+
+export type AppEditData = {
+  app: AppRow;
+  categoryIds: number[];
+  /** One entry per metadata type the app has values for, already grouped by typeId. */
+  metadataOptionIds: { typeId: number; optionIds: number[] }[];
+  /** app_screenshots rows; order = (language, sortOrder). */
+  screenshots: { language: string; image: string; sortOrder: number }[];
+};
+
+export type { AppListItem } from "./apps-rows";
+
+/** Everything the edit form island needs: row + category ids + metadata option ids + screenshot rows. */
+export async function getAppForEdit(id: number): Promise<AppEditData | null> {
+  const [app] = await db.select().from(apps).where(eq(apps.id, id)).limit(1);
+  if (!app) return null;
+
+  const [categoryIds, shots, metaRows] = await Promise.all([
+    db
+      .select({ categoryId: appsCategories.categoryId })
+      .from(appsCategories)
+      .where(eq(appsCategories.appId, id)),
+    db
+      .select({
+        language: appScreenshots.language,
+        image: appScreenshots.image,
+        sortOrder: appScreenshots.sortOrder,
+      })
+      .from(appScreenshots)
+      .where(eq(appScreenshots.appId, id))
+      .orderBy(asc(appScreenshots.language), asc(appScreenshots.sortOrder), asc(appScreenshots.id)),
+    db
+      .select({
+        metadataTypeId: metadataOptions.metadataTypeId,
+        optionId: appMetadataValues.metadataOptionId,
+      })
+      .from(appMetadataValues)
+      .innerJoin(metadataOptions, eq(metadataOptions.id, appMetadataValues.metadataOptionId))
+      .where(eq(appMetadataValues.appId, id)),
+  ]);
+
+  const byType = new Map<number, number[]>();
+  for (const m of metaRows) {
+    const list = byType.get(m.metadataTypeId) ?? [];
+    list.push(m.optionId);
+    byType.set(m.metadataTypeId, list);
+  }
+
+  return {
+    app,
+    categoryIds: categoryIds.map((c) => c.categoryId),
+    metadataOptionIds: [...byType.entries()]
+      .sort((a, b) => a[0] - b[0])
+      .map(([typeId, optionIds]) => ({ typeId, optionIds: [...new Set(optionIds)] })),
+    screenshots: shots,
+  };
+}
+
+export type AdminDeveloperOption = {
+  id: number;
+  nameEn: string;
+  nameAr: string;
+  website: string | null;
+};
+
+/** Every developer row (active or not) — dropdown options for the app form. */
+export async function getAllDevelopers(): Promise<AdminDeveloperOption[]> {
+  return db
+    .select({
+      id: developers.id,
+      nameEn: developers.nameEn,
+      nameAr: developers.nameAr,
+      website: developers.website,
+    })
+    .from(developers)
+    .orderBy(asc(developers.nameEn));
+}
+
+export type AdminCategoryOption = {
+  id: number;
+  nameEn: string;
+  nameAr: string;
+  isActive: boolean;
+};
+
+/** Every category row (active or not) — checkboxes for the app form. */
+export async function getAllCategories(): Promise<AdminCategoryOption[]> {
+  return db
+    .select({
+      id: categories.id,
+      nameEn: categories.nameEn,
+      nameAr: categories.nameAr,
+      isActive: categories.isActive,
+    })
+    .from(categories)
+    .orderBy(asc(categories.sortOrder), asc(categories.nameEn));
+}
+
+export type AdminMetadataTypeWithOptions = {
+  id: number;
+  name: string;
+  labelEn: string;
+  labelAr: string;
+  isMultiSelect: boolean;
+  sortOrder: number;
+  options: { id: number; value: string; labelEn: string; labelAr: string }[];
+};
+
+/** Active metadata types (ordered) each with its active options (ordered). */
+export async function getAllMetadataTypesWithActiveOptions(): Promise<AdminMetadataTypeWithOptions[]> {
+  const types = await db
+    .select({
+      id: metadataTypes.id,
+      name: metadataTypes.name,
+      labelEn: metadataTypes.labelEn,
+      labelAr: metadataTypes.labelAr,
+      isMultiSelect: metadataTypes.isMultiSelect,
+      sortOrder: metadataTypes.sortOrder,
+    })
+    .from(metadataTypes)
+    .where(eq(metadataTypes.isActive, true))
+    .orderBy(asc(metadataTypes.sortOrder), asc(metadataTypes.id));
+  if (types.length === 0) return [];
+
+  const optionRows = await db
+    .select({
+      id: metadataOptions.id,
+      value: metadataOptions.value,
+      labelEn: metadataOptions.labelEn,
+      labelAr: metadataOptions.labelAr,
+      metadataTypeId: metadataOptions.metadataTypeId,
+    })
+    .from(metadataOptions)
+    .where(
+      and(
+        eq(metadataOptions.isActive, true),
+        inArray(
+          metadataOptions.metadataTypeId,
+          types.map((t) => t.id)
+        )
+      )
+    )
+    .orderBy(asc(metadataOptions.sortOrder), asc(metadataOptions.id));
+
+  const optionsByType = new Map<number, AdminMetadataTypeWithOptions["options"]>();
+  for (const o of optionRows) {
+    const list = optionsByType.get(o.metadataTypeId) ?? [];
+    list.push({ id: o.id, value: o.value, labelEn: o.labelEn, labelAr: o.labelAr });
+    optionsByType.set(o.metadataTypeId, list);
+  }
+
+  return types.map((t) => ({
+    id: t.id,
+    name: t.name,
+    labelEn: t.labelEn,
+    labelAr: t.labelAr,
+    isMultiSelect: t.isMultiSelect,
+    sortOrder: t.sortOrder,
+    options: optionsByType.get(t.id) ?? [],
+  }));
+}
+
+/** All apps (any status) referencing the developer — delete-protection signal. */
+export async function getDeveloperAppCount(developerId: number): Promise<number> {
+  const [row] = await db
+    .select({ n: sql<number>`count(*)::int` })
+    .from(apps)
+    .where(eq(apps.developerId, developerId));
+  return row.n;
 }
