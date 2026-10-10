@@ -243,14 +243,22 @@ export async function saveApp(input: unknown): Promise<SaveAppResult> {
     return { ok: false, error: "validation", fieldErrors: { metadata: [meta.message] } };
   }
 
-  // Write-time name uniqueness (the DB unique indexes are the backstop; 23505 is caught below).
+  // Create path: write-time name uniqueness up front (no stored row to waive against).
+  // The DB unique indexes are the backstop; 23505 is caught below. On edit the check
+  // runs inside the transaction (see the AR-unchanged waiver there).
   const editId = readRawId(input);
-  const dup = await findDuplicateAppName(data.nameEn, data.nameAr, editId);
-  if (dup) {
-    return { ok: false, error: "validation", fieldErrors: { [dup]: [DUP_NAME_MSG] } };
+  if (editId === undefined) {
+    const dup = await findDuplicateAppName(data.nameEn, data.nameAr);
+    if (dup) {
+      return { ok: false, error: "validation", fieldErrors: { [dup]: [DUP_NAME_MSG] } };
+    }
   }
 
-  let outcome: { kind: "ok"; id: number } | { kind: "not_found" } | { kind: "slug_taken" };
+  let outcome:
+    | { kind: "ok"; id: number }
+    | { kind: "not_found" }
+    | { kind: "slug_taken" }
+    | { kind: "dup_name"; field: "app_name_en" | "app_name_ar" };
   try {
     outcome = await db.transaction(async (tx) => {
       if (editId === undefined) {
@@ -265,11 +273,18 @@ export async function saveApp(input: unknown): Promise<SaveAppResult> {
       }
 
       const [existing] = await tx
-        .select({ id: apps.id, nameEn: apps.nameEn, slug: apps.slug })
+        .select({ id: apps.id, nameEn: apps.nameEn, nameAr: apps.nameAr, slug: apps.slug })
         .from(apps)
         .where(eq(apps.id, editId))
         .for("update");
       if (!existing) return { kind: "not_found" as const };
+
+      // AR-unchanged waiver: name_ar has no unique index and live data carries legacy
+      // repeats; an exactly unchanged Arabic name waives the AR check so those rows stay
+      // editable. A NEW colliding nameAr is still rejected. EN keeps the full check.
+      const arForDup = data.nameAr === existing.nameAr ? "" : data.nameAr;
+      const dup = await findDuplicateAppName(data.nameEn, arForDup, existing.id);
+      if (dup) return { kind: "dup_name" as const, field: dup };
 
       const explicitSlug = (data.slug ?? "").trim();
       let finalSlug: string;
@@ -317,6 +332,9 @@ export async function saveApp(input: unknown): Promise<SaveAppResult> {
   if (outcome.kind === "ok") {
     revalidateTag("apps", "max");
     return { ok: true, id: outcome.id };
+  }
+  if (outcome.kind === "dup_name") {
+    return { ok: false, error: "validation", fieldErrors: { [outcome.field]: [DUP_NAME_MSG] } };
   }
   if (outcome.kind === "slug_taken") {
     return { ok: false, error: "validation", fieldErrors: { slug: [SLUG_TAKEN_MSG] } };

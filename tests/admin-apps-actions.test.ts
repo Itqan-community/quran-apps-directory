@@ -41,6 +41,7 @@ let bulkBId = 0;
 let bulkOutId = 0;
 let slugEditAppId = 0; // slug t8-slug-edit, name "T8 Slug Override"
 let keepAppId = 0; // slug t8-keep-name, name "T8 Keep Name"
+let repeatAId = 0; // slug t8-repeat-a, name_ar shared with t8-repeat-b (legacy repeat)
 
 const appSeed = (slug: string, nameEn: string, nameAr: string) =>
   sql`
@@ -128,6 +129,8 @@ beforeAll(async () => {
   await appSeed("t8-bulk-out", "T8 Bulk Out", "ت:خارج");
   await appSeed("t8-slug-edit", "T8 Slug Override", "ت:رابط");
   await appSeed("t8-keep-name", "T8 Keep Name", "ت:بقيت");
+  await appSeed("t8-repeat-a", "T8 Repeat A", "ألفا");
+  await appSeed("t8-repeat-b", "T8 Repeat B", "ألفا"); // legacy repeat: same name_ar as repeat-a
 
   const bySlug = (slug: string) => sql`SELECT id FROM apps WHERE slug = ${slug}`;
   for (const [slug, assign] of [
@@ -140,6 +143,7 @@ beforeAll(async () => {
     ["t8-bulk-out", (v: number) => (bulkOutId = v)],
     ["t8-slug-edit", (v: number) => (slugEditAppId = v)],
     ["t8-keep-name", (v: number) => (keepAppId = v)],
+    ["t8-repeat-a", (v: number) => (repeatAId = v)],
   ] as const) {
     const [row] = await bySlug(slug);
     assign(Number(row!.id));
@@ -292,6 +296,42 @@ describe("saveApp — names & slugs", () => {
       expect(res.error).toBe("validation");
       expect(res.fieldErrors?.app_name_ar).toEqual(["اسم التطبيق مستخدم مسبقًا"]);
     }
+  });
+
+  it("edit leaving name_ar UNCHANGED while it repeats another app's name_ar (legacy row) → ok", async () => {
+    const [row] = await sql`SELECT name_en, name_ar FROM apps WHERE id = ${repeatAId}`;
+    expect(row!.name_ar).toBe("ألفا"); // shared with repeat-b, no unique index
+    const res = await saveApp({
+      ...baseInput,
+      id: repeatAId,
+      nameEn: String(row!.name_en),
+      nameAr: String(row!.name_ar),
+      sortOrder: 11,
+    });
+    expect(res).toEqual({ ok: true, id: repeatAId });
+    const [after] = await sql`SELECT sort_order, name_ar, slug FROM apps WHERE id = ${repeatAId}`;
+    expect(Number(after!.sort_order)).toBe(11); // the save went through
+    expect(after!.name_ar).toBe("ألفا");
+    expect(after!.slug).toBe("t8-repeat-a");
+  });
+
+  it("edit CHANGING name_ar onto a third app's name_ar → app_name_ar validation, no write", async () => {
+    const [before] = await sql`SELECT sort_order, name_ar FROM apps WHERE id = ${repeatAId}`;
+    const res = await saveApp({
+      ...baseInput,
+      id: repeatAId,
+      nameEn: "T8 Repeat A",
+      nameAr: "ت:مؤسّس", // established app's Arabic name
+      sortOrder: 12,
+    });
+    expect(res.ok).toBe(false);
+    if (!res.ok) {
+      expect(res.error).toBe("validation");
+      expect(res.fieldErrors?.app_name_ar).toEqual(["اسم التطبيق مستخدم مسبقًا"]);
+    }
+    const [after] = await sql`SELECT sort_order, name_ar FROM apps WHERE id = ${repeatAId}`;
+    expect(Number(after!.sort_order)).toBe(Number(before!.sort_order)); // failed save wrote nothing
+    expect(after!.name_ar).toBe(before!.name_ar);
   });
 
   it("edit with the row's id (excludeId): unchanged names save fine, columns updated", async () => {
