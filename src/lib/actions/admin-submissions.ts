@@ -13,6 +13,7 @@ import {
 } from "@/db/schema";
 import type { appSubmissions as appSubmissionsTable } from "@/db/schema";
 import { requireAdmin } from "@/lib/admin-guard";
+import { pgDupError } from "@/lib/db-errors";
 import { findDuplicateAppName } from "@/lib/repo/apps";
 import { r2Configured } from "@/lib/services/r2";
 import {
@@ -124,11 +125,6 @@ type TxOutcome =
   | { kind: "invalid_transition" }
   | { kind: "storage"; message: string }
   | { kind: "db"; message: string };
-
-interface PgErrorLike {
-  code?: string;
-  constraint?: string;
-}
 
 /** FOR UPDATE lock + current status, shared by every transition action. */
 async function lockSubmission(tx: Tx, id: number): Promise<AppSubmissionRow | null> {
@@ -276,8 +272,7 @@ export async function approveSubmission(id: number): Promise<ReviewResult> {
       return { kind: "ok", appId: app.id, sub, appSlug: app.slug };
     });
   } catch (e) {
-    const pg = e as PgErrorLike;
-    if (pg?.code === "23505") {
+    if (pgDupError(e)) {
       outcome = {
         kind: "db",
         message: "تعذر إتمام الموافقة: اسم التطبيق مستخدم مسبقًا في الدليل.",

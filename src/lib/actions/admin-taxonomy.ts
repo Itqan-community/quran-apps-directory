@@ -4,6 +4,7 @@ import { revalidateTag } from "next/cache";
 import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/db";
+import { pgDupError } from "@/lib/db-errors";
 import { categories, developers } from "@/db/schema";
 import { requireAdmin } from "@/lib/admin-guard";
 import { categoryFormSchema, developerFormSchema } from "@/lib/validation/admin";
@@ -20,25 +21,6 @@ export type TaxonomyResult =
 type DeleteCategoryResult = { ok: boolean };
 
 type DeleteDeveloperResult = { ok: boolean; message?: string };
-
-interface PgErrorLike {
-  code?: string;
-  constraint?: string;
-  constraint_name?: string;
-  cause?: unknown;
-}
-
-/**
- * Drizzle wraps driver errors (DrizzleQueryError.cause), and postgres.js exposes
- * the violating index as `constraint_name` (not `constraint`) — normalize both.
- */
-function pgDupError(e: unknown): PgErrorLike | undefined {
-  const direct = e as PgErrorLike | undefined;
-  const cause = direct?.cause as PgErrorLike | undefined;
-  const src = direct?.code === "23505" ? direct : cause?.code === "23505" ? cause : undefined;
-  if (!src) return undefined;
-  return { code: "23505", constraint: src.constraint_name ?? src.constraint ?? "" };
-}
 
 const CAT_NAME_MSG = "اسم الفئة مستخدم مسبقًا";
 const CAT_SLUG_MSG = "الرابط (slug) مستخدم مسبقًا";

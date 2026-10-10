@@ -13,6 +13,7 @@ import {
   metadataTypes,
 } from "@/db/schema";
 import { requireAdmin } from "@/lib/admin-guard";
+import { pgDupError } from "@/lib/db-errors";
 import { findDuplicateAppName } from "@/lib/repo/apps";
 import { appFormSchema } from "@/lib/validation/admin";
 
@@ -30,11 +31,6 @@ export type DeleteAppResult = { ok: boolean; message?: string };
 export type BulkSetResult = { ok: boolean; affected?: number };
 
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
-
-interface PgErrorLike {
-  code?: string;
-  constraint?: string;
-}
 
 const DUP_NAME_MSG = "اسم التطبيق مستخدم مسبقًا";
 const SLUG_TAKEN_MSG = "الرابط (slug) مستخدم مسبقًا لعمل تطبيق آخر";
@@ -312,9 +308,9 @@ export async function saveApp(input: unknown): Promise<SaveAppResult> {
       return { kind: "ok" as const, id: existing.id };
     });
   } catch (e) {
-    const pg = e as PgErrorLike;
-    if (pg?.code === "23505") {
-      const constraint = pg.constraint ?? "";
+    const dup = pgDupError(e);
+    if (dup) {
+      const constraint = dup.constraint ?? "";
       const field =
         constraint.includes("slug") || constraint.includes("slug_key")
           ? "slug"
