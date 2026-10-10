@@ -12,9 +12,12 @@ test("admin credentials set session and pass guard", async ({ page }) => {
   await page.waitForURL("**/admin", { timeout: 15_000 });
   const cookies = await page.context().cookies();
   expect(cookies.some((c) => c.name.startsWith("authjs.session-token"))).toBe(true);
-  // guard should NOT bounce back to login (404 is expected — no admin pages yet)
+  // guard should NOT bounce back to login — the dashboard shell renders
   await page.waitForTimeout(1000);
   expect(page.url()).not.toContain("/admin/login");
+  await expect(page.getByRole("heading", { name: "لوحة التحكم" })).toBeVisible({
+    timeout: 15_000,
+  });
 });
 
 test("admin guard redirects anonymous visitors to login", async ({ page }) => {
