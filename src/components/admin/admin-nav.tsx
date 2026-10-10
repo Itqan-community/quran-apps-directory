@@ -14,7 +14,7 @@ const NAV_ITEMS = [
   { label: "التحليلات", href: "/admin/analytics" },
 ];
 
-type NavUser = { name: string; email: string } | null;
+type NavUser = { name: string | null; email: string | null } | null;
 
 export default function AdminNav({ user }: { user: NavUser }) {
   const pathname = usePathname();
@@ -24,7 +24,7 @@ export default function AdminNav({ user }: { user: NavUser }) {
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-l border-border bg-surface p-4 md:flex">
       <div className="mb-6 rounded-app bg-card p-3 shadow-app">
-        <p className="truncate text-sm font-bold text-text">{user?.name ?? user?.email}</p>
+        <p className="truncate text-sm font-bold text-text">{user?.name || user?.email}</p>
         {user?.name && <p className="truncate text-xs text-text-secondary">{user.email}</p>}
         <div className="mt-2">
           <SignOutButton />

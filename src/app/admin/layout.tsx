@@ -27,8 +27,9 @@ async function AdminShellNav() {
   // connection() first: auth() touches Web Crypto, which the prerender pass flags as unstable.
   await connection();
   const session = await auth();
-  const name = session?.user?.name ?? "";
-  const email = session?.user?.email ?? "";
+  // Pass the raw contract through: name may be NULL, the chip falls back to email.
+  const name = session?.user?.name ?? null;
+  const email = session?.user?.email ?? null;
   const user = name || email ? { name, email } : null;
   return <AdminNav user={user} />;
 }

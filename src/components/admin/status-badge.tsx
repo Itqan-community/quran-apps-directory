@@ -20,7 +20,7 @@ export default function StatusBadge({ status, kind }: { status: string; kind: Ki
 
   return (
     <span
-      data-testid="apps-status-badge"
+      data-testid={kind === "app" ? "apps-status-badge" : "submissions-status-badge"}
       className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white ${
         known ? known.color : "bg-gray-400"
       }`}
