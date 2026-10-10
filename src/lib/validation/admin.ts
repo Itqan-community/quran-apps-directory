@@ -121,3 +121,44 @@ export const developerFormSchema = z.object({
 });
 
 export type DeveloperFormInput = z.infer<typeof developerFormSchema>;
+
+/**
+ * Shared by the metadata page island (MetadataTypeForm in metadata-editor.tsx)
+ * and saveMetadataType (src/lib/actions/admin-metadata.ts). `id` is not part of
+ * this schema — the edit path is detected by saveMetadataType from the raw
+ * input (mirrors the category/developer schemas). The unique `name` column is
+ * DB-enforced and surfaced via the pg `23505` catch.
+ */
+export const metadataTypeFormSchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  labelEn: z.string().trim().min(1).max(200),
+  labelAr: z.string().trim().min(1).max(200),
+  descriptionEn: z.string().trim(),
+  descriptionAr: z.string().trim(),
+  isMultiSelect: z.boolean().default(true),
+  sortOrder: z.number().int().min(0).default(0),
+  isActive: z.boolean().default(true),
+  icon: z.string().trim().max(200).default(""),
+});
+
+export type MetadataTypeFormInput = z.infer<typeof metadataTypeFormSchema>;
+
+/**
+ * Shared by the metadata page island (MetadataOptionForm in metadata-editor.tsx)
+ * and saveMetadataOption. Per-type uniqueness of `value` is DB-enforced
+ * (unique_metadata_type_value) and surfaced via the pg `23505` catch. `id`
+ * again rides the raw input.
+ */
+export const metadataOptionFormSchema = z.object({
+  value: z.string().trim().min(1).max(200),
+  labelEn: z.string().trim().min(1).max(200),
+  labelAr: z.string().trim().min(1).max(200),
+  descriptionEn: z.string().trim(),
+  descriptionAr: z.string().trim(),
+  sortOrder: z.number().int().min(0).default(0),
+  isActive: z.boolean().default(true),
+  icon: z.string().trim().max(200).default(""),
+  color: z.string().trim().max(50).default(""),
+});
+
+export type MetadataOptionFormInput = z.infer<typeof metadataOptionFormSchema>;

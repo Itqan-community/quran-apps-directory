@@ -526,6 +526,101 @@ export async function getAllMetadataTypesWithActiveOptions(): Promise<AdminMetad
   }));
 }
 
+export type AdminMetadataOptionRow = {
+  id: number;
+  value: string;
+  labelEn: string;
+  labelAr: string;
+  descriptionEn: string;
+  descriptionAr: string;
+  sortOrder: number;
+  isActive: boolean;
+  icon: string | null;
+  color: string | null;
+  /** Apps using this option (app_metadata_values rows). */
+  appCount: number;
+};
+
+export type AdminMetadataTypeWithAllOptions = {
+  id: number;
+  name: string;
+  labelEn: string;
+  labelAr: string;
+  descriptionEn: string;
+  descriptionAr: string;
+  isMultiSelect: boolean;
+  sortOrder: number;
+  isActive: boolean;
+  icon: string | null;
+  options: AdminMetadataOptionRow[];
+};
+
+/**
+ * Every metadata type (active or not — the admin edits them all) ordered by
+ * sortOrder, each with ALL of its options (incl. inactive) nested ordered by
+ * sortOrder. Each option carries its app usage count (app_metadata_values join).
+ */
+export async function getAllMetadataTypesWithAllOptions(): Promise<AdminMetadataTypeWithAllOptions[]> {
+  const types = await db
+    .select({
+      id: metadataTypes.id,
+      name: metadataTypes.name,
+      labelEn: metadataTypes.labelEn,
+      labelAr: metadataTypes.labelAr,
+      descriptionEn: metadataTypes.descriptionEn,
+      descriptionAr: metadataTypes.descriptionAr,
+      isMultiSelect: metadataTypes.isMultiSelect,
+      sortOrder: metadataTypes.sortOrder,
+      isActive: metadataTypes.isActive,
+      icon: metadataTypes.icon,
+    })
+    .from(metadataTypes)
+    .orderBy(asc(metadataTypes.sortOrder), asc(metadataTypes.id));
+  if (types.length === 0) return [];
+
+  const optionRows = await db
+    .select({
+      id: metadataOptions.id,
+      metadataTypeId: metadataOptions.metadataTypeId,
+      value: metadataOptions.value,
+      labelEn: metadataOptions.labelEn,
+      labelAr: metadataOptions.labelAr,
+      descriptionEn: metadataOptions.descriptionEn,
+      descriptionAr: metadataOptions.descriptionAr,
+      sortOrder: metadataOptions.sortOrder,
+      isActive: metadataOptions.isActive,
+      icon: metadataOptions.icon,
+      color: metadataOptions.color,
+      appCount: sql<number>`count(${appMetadataValues.id})::int`,
+    })
+    .from(metadataOptions)
+    .leftJoin(appMetadataValues, eq(appMetadataValues.metadataOptionId, metadataOptions.id))
+    .where(inArray(metadataOptions.metadataTypeId, types.map((t) => t.id)))
+    .groupBy(metadataOptions.id)
+    .orderBy(asc(metadataOptions.sortOrder), asc(metadataOptions.id));
+
+  const optionsByType = new Map<number, AdminMetadataOptionRow[]>();
+  for (const o of optionRows) {
+    const list = optionsByType.get(o.metadataTypeId) ?? [];
+    list.push({
+      id: o.id,
+      value: o.value,
+      labelEn: o.labelEn,
+      labelAr: o.labelAr,
+      descriptionEn: o.descriptionEn,
+      descriptionAr: o.descriptionAr,
+      sortOrder: o.sortOrder,
+      isActive: o.isActive,
+      icon: o.icon,
+      color: o.color,
+      appCount: Number(o.appCount),
+    });
+    optionsByType.set(o.metadataTypeId, list);
+  }
+
+  return types.map((t) => ({ ...t, options: optionsByType.get(t.id) ?? [] }));
+}
+
 /** All apps (any status) referencing the developer — delete-protection signal. */
 export async function getDeveloperAppCount(developerId: number): Promise<number> {
   const [row] = await db
