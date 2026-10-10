@@ -405,9 +405,10 @@ export type AdminDeveloperOption = {
   nameEn: string;
   nameAr: string;
   website: string | null;
+  isVerified: boolean;
 };
 
-/** Every developer row (active or not) — dropdown options for the app form. */
+/** Every developer row (active or not) — dropdown options for the app form / taxonomy table. */
 export async function getAllDevelopers(): Promise<AdminDeveloperOption[]> {
   return db
     .select({
@@ -415,25 +416,46 @@ export async function getAllDevelopers(): Promise<AdminDeveloperOption[]> {
       nameEn: developers.nameEn,
       nameAr: developers.nameAr,
       website: developers.website,
+      isVerified: developers.isVerified,
     })
     .from(developers)
     .orderBy(asc(developers.nameEn));
+}
+
+export type CategoryEditRow = typeof categories.$inferSelect;
+
+/** Full category row for the `?edit=` prefill; null when the id does not exist. */
+export async function getCategoryForEdit(id: number): Promise<CategoryEditRow | null> {
+  const [row] = await db.select().from(categories).where(eq(categories.id, id)).limit(1);
+  return row ?? null;
+}
+
+export type DeveloperEditRow = typeof developers.$inferSelect;
+
+/** Full developer row for the `?edit=` prefill; null when the id does not exist. */
+export async function getDeveloperForEdit(id: number): Promise<DeveloperEditRow | null> {
+  const [row] = await db.select().from(developers).where(eq(developers.id, id)).limit(1);
+  return row ?? null;
 }
 
 export type AdminCategoryOption = {
   id: number;
   nameEn: string;
   nameAr: string;
+  slug: string;
+  sortOrder: number;
   isActive: boolean;
 };
 
-/** Every category row (active or not) — checkboxes for the app form. */
+/** Every category row (active or not) — checkboxes for the app form / taxonomy table. */
 export async function getAllCategories(): Promise<AdminCategoryOption[]> {
   return db
     .select({
       id: categories.id,
       nameEn: categories.nameEn,
       nameAr: categories.nameAr,
+      slug: categories.slug,
+      sortOrder: categories.sortOrder,
       isActive: categories.isActive,
     })
     .from(categories)
