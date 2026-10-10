@@ -49,7 +49,7 @@ export async function submitApp(input: unknown): Promise<SubmitResult> {
             isDeveloper: data.is_developer,
             developerNameEn: data.developer_name_en,
             developerNameAr: data.developer_name_ar,
-            developerWebsite: data.developer_website.toLowerCase(),
+            developerWebsite: data.developer_website,
             developerEmail: data.developer_email,
             appNameEn: data.app_name_en,
             appNameAr: data.app_name_ar,

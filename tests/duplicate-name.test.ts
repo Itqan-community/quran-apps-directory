@@ -24,6 +24,7 @@ afterAll(async () => {
   await sql`DELETE FROM apps WHERE slug LIKE 't-dupe-%'`;
   await sql`DELETE FROM app_submissions WHERE app_name_en = 'Alpha'`;
   await sql`DELETE FROM app_submissions WHERE app_name_en = 'DevInfo App'`;
+  await sql`DELETE FROM app_submissions WHERE app_name_en = 'Minimal App'`;
   await sql`DELETE FROM developers WHERE name_en = 'T:Dupe Dev'`;
   await sql.end();
 });
@@ -72,7 +73,7 @@ describe("submitApp persists developer info", () => {
       google_play_link: "https://play.google.com/store/apps/details?id=test",
       developer_name_en: "SomeDev",
       developer_name_ar: "مطور",
-      developer_website: "https://somedev.io",
+      developer_website: "https://SomeDev.io/About?Lang=EN",
       developer_email: "team@somedev.io",
       content_confirmation: true,
     });
@@ -83,8 +84,27 @@ describe("submitApp persists developer info", () => {
     expect(row).toEqual({
       developer_name_en: "SomeDev",
       developer_name_ar: "مطور",
-      developer_website: "https://somedev.io",
+      developer_website: "https://SomeDev.io/About?Lang=EN",
       developer_email: "team@somedev.io",
+    });
+  });
+
+  it("persists the column defaults when developer fields are omitted", async () => {
+    const res = await submitApp({
+      submitter_email: "minimal@test.dev",
+      app_name_en: "Minimal App",
+      google_play_link: "https://play.google.com/store/apps/details?id=test",
+      content_confirmation: true,
+    });
+    expect(res.ok).toBe(true);
+    const [row] = await sql`
+      SELECT developer_name_en, developer_name_ar, developer_website, developer_email
+      FROM app_submissions WHERE app_name_en = 'Minimal App'`;
+    expect(row).toEqual({
+      developer_name_en: "",
+      developer_name_ar: "",
+      developer_website: "",
+      developer_email: "",
     });
   });
 });
