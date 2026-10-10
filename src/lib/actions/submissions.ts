@@ -8,8 +8,10 @@ import {
   categories,
   submissionStatusLogs,
 } from "@/db/schema";
-import { submissionSchema, generateTrackingId } from "@/lib/validation/submission";
+import { submissionSchema, generateTrackingId, type SubmissionInput } from "@/lib/validation/submission";
 import { findDuplicateAppName } from "@/lib/repo/apps";
+import { sendAdminNewSubmission, sendSubmissionReceived } from "@/lib/services/email";
+import type { EmailSubmission } from "@/lib/services/email";
 
 export type SubmitResult =
   | { ok: true; trackingId: string }
@@ -36,7 +38,7 @@ export async function submitApp(input: unknown): Promise<SubmitResult> {
   for (let attempt = 0; attempt < 5; attempt++) {
     const trackingId = generateTrackingId();
     try {
-      return await db.transaction(async (tx) => {
+      const result = await db.transaction(async (tx) => {
         const inserted = await tx
           .insert(appSubmissions)
           .values({
@@ -97,8 +99,11 @@ export async function submitApp(input: unknown): Promise<SubmitResult> {
           toStatus: "pending",
         });
 
-        return { ok: true as const, trackingId };
+        return { ok: true as const, trackingId, submissionId };
       });
+
+      await sendSubmitEmails(data, result.trackingId, result.submissionId);
+      return { ok: true as const, trackingId: result.trackingId };
     } catch (e) {
       const message = e instanceof Error ? e.message : String(e);
       if (message.includes("app_submissions_tracking_id_unique")) {
@@ -109,4 +114,28 @@ export async function submitApp(input: unknown): Promise<SubmitResult> {
     }
   }
   return { ok: false, error: "server", message: "Failed to generate tracking ID. Please try again." };
+}
+
+async function sendSubmitEmails(
+  data: SubmissionInput,
+  trackingId: string,
+  submissionId: number
+): Promise<void> {
+  const rowData: EmailSubmission = {
+    trackingId,
+    appNameEn: data.app_name_en,
+    appNameAr: data.app_name_ar,
+    submitterName: data.submitter_name,
+    submitterEmail: data.submitter_email.toLowerCase(),
+    submitterPhone: data.submitter_phone,
+    submitterOrganization: data.submitter_organization,
+    isDeveloper: data.is_developer,
+    createdAppId: submissionId,
+  };
+  try {
+    await sendSubmissionReceived(rowData);
+    await sendAdminNewSubmission(rowData);
+  } catch (e) {
+    console.error("submit email failed", e);
+  }
 }
