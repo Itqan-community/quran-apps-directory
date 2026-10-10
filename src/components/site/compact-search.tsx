@@ -1,108 +1,116 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { searchSuggestions, type Suggestion } from "@/lib/actions/search";
+import type { CategoryItem } from "@/lib/repo/categories";
+import { CategoryIcon } from "@/components/apps/category-icon";
 
-export function CompactSearch({ lang }: { lang: "ar" | "en" }) {
+const VISIBLE_CHIPS = 5;
+
+export function CompactSearch({
+  lang,
+  categories,
+}: {
+  lang: "ar" | "en";
+  categories: CategoryItem[];
+}) {
   const t = useTranslations("appList.search");
   const router = useRouter();
   const pathname = usePathname();
   const [query, setQuery] = useState("");
-  const [items, setItems] = useState<Suggestion[]>([]);
-  const [open, setOpen] = useState(false);
-  const [pending, startTransition] = useTransition();
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const requestId = useRef(0);
-  const [prevPathname, setPrevPathname] = useState(pathname);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  // Reset search state whenever the route changes (e.g. after picking a suggestion).
-  if (prevPathname !== pathname) {
-    setPrevPathname(pathname);
-    setQuery("");
-    setItems([]);
-    setOpen(false);
-  }
+  const rest = pathname.replace(/^\/(ar|en)\//, "");
+  const activeSlug = (categories.map((c) => c.slug).find((slug) => rest === slug)) ?? null;
 
-  useEffect(() => {
-    if (timer.current) clearTimeout(timer.current);
-    if (query.trim().length < 2) return;
-    timer.current = setTimeout(() => {
-      startTransition(async () => {
-        const id = ++requestId.current;
-        try {
-          const results = await searchSuggestions(query);
-          if (requestId.current !== id) return; // stale response
-          setItems(results);
-          setOpen(results.length > 0);
-        } catch (err) {
-          console.error("searchSuggestions failed", err);
-          if (requestId.current !== id) return; // stale response
-          setItems([]);
-          setOpen(false);
-        }
-      });
-    }, 300);
-    return () => { if (timer.current) clearTimeout(timer.current); };
-  }, [query]);
-
-  function onQueryChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value;
-    setQuery(value);
-    if (value.trim().length < 2) { setItems([]); setOpen(false); }
-  }
-
-  function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter" && query.trim()) {
-      router.push(`/${lang}/apps?search=${encodeURIComponent(query.trim())}`);
-    }
-    if (e.key === "Escape") setOpen(false);
+  function submit() {
+    router.push(`/${lang}/apps${query.trim() ? `?search=${encodeURIComponent(query.trim())}` : ""}`);
   }
 
   return (
-    <div className="compact-search-row border-t border-border bg-card/95">
-      <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-2">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/searchLogo.svg" alt="" width={24} height={24} />
-        <div className="relative flex-1">
-          {/* Arrow-key navigation between options is deferred (not in this pass). */}
+    <>
+      <div className="flex flex-1 items-center gap-2.5">
+        <Link href={`/${lang}`} className="compact-logo" aria-label="Home">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/searchLogo.svg" alt="" width={30} height={30} />
+        </Link>
+        <div className="compact-search-container">
+          <span className="compact-search-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </span>
           <input
-            role="combobox"
-            aria-expanded={open}
-            aria-controls="compact-suggestions"
-            aria-autocomplete="list"
+            type="text"
+            className="compact-search-input"
+            placeholder={lang === "ar" ? "ابحث عن التطبيقات..." : "Search apps..."}
             value={query}
-            onChange={onQueryChange}
-            onKeyDown={onKeyDown}
-            onFocus={() => items.length > 0 && setOpen(true)}
-            onBlur={() => setOpen(false)}
-            placeholder={t("traditionalPlaceholder")}
-            aria-label={t("traditional")}
-            className="w-full rounded-app border border-border bg-surface px-3 py-1.5 text-sm outline-none focus:border-primary"
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") submit();
+            }}
           />
-          {open && (
-            <div id="compact-suggestions" role="listbox"
-              className="absolute inset-x-0 top-full z-50 mt-1 overflow-hidden rounded-app border border-border bg-card shadow-app">
-              {pending && items.length === 0 ? (
-                <div className="px-3 py-2 text-sm text-text-secondary">{t("button")}…</div>
-              ) : (
-                items.map((s) => (
-                  <Link key={s.id} href={`/${lang}/app/${s.slug}_${s.id}`}
-                    role="option"
-                    onMouseDown={(e) => e.preventDefault()}
-                    className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-surface">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={s.icon} alt="" width={24} height={24} className="rounded-app" />
-                    <span>{lang === "ar" ? s.nameAr : s.nameEn}</span>
-                  </Link>
-                ))
-              )}
-            </div>
-          )}
         </div>
       </div>
-    </div>
+
+      {categories.slice(0, VISIBLE_CHIPS).map((c) => (
+        <Link
+          key={c.id}
+          href={`/${lang}/${c.slug}`}
+          className={`compact-category-chip ${activeSlug === c.slug ? "active" : ""}`}
+        >
+          <CategoryIcon svg={c.icon} size={16} />
+          <span className="compact-chip-text">{lang === "ar" ? c.nameAr : c.nameEn}</span>
+        </Link>
+      ))}
+
+      <div className="compact-category-dropdown" onClick={(e) => e.stopPropagation()}>
+        <button
+          type="button"
+          className={`compact-category-trigger ${activeSlug ? "active" : ""}`}
+          onClick={() => setDropdownOpen((v) => !v)}
+          aria-expanded={dropdownOpen}
+        >
+          <CategoryIcon svg={GRID_ICON} size={16} />
+          <span className="compact-chip-text">
+            {activeSlug
+              ? lang === "ar"
+                ? `التصنيف: ${categories.find((c) => c.slug === activeSlug)?.nameAr ?? ""}`
+                : `Category: ${categories.find((c) => c.slug === activeSlug)?.nameEn ?? ""}`
+              : lang === "ar"
+                ? "المزيد"
+                : "More"}
+          </span>
+          <svg className={`compact-chevron ${dropdownOpen ? "open" : ""}`} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </button>
+        {dropdownOpen && (
+          <div className="compact-category-panel">
+            {categories.slice(VISIBLE_CHIPS).map((c) => (
+              <Link
+                key={c.id}
+                href={`/${lang}/${c.slug}`}
+                onClick={() => setDropdownOpen(false)}
+                className={`compact-category-option ${activeSlug === c.slug ? "active" : ""}`}
+              >
+                <CategoryIcon svg={c.icon} size={16} />
+                {lang === "ar" ? c.nameAr : c.nameEn}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <button type="button" className="compact-search-btn" onClick={submit}>
+        {t("button")}
+      </button>
+    </>
   );
 }
+
+const GRID_ICON =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M3.75 3.75v4.5h4.5v-4.5zm-2.25 0A2.25 2.25 0 0 1 3.75 1.5h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5A2.25 2.25 0 0 1 1.5 8.25zm2.25 12v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25zm18.75-12h-4.5v4.5h4.5zm-4.5-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25v-4.5a2.25 2.25 0 0 1 2.25-2.25m0 14.25v4.5h4.5v-4.5zm-2.25 0a2.25 2.25 0 0 1 2.25-2.25h4.5a2.25 2.25 0 0 1 2.25 2.25v4.5a2.25 2.25 0 0 1-2.25 2.25h-4.5a2.25 2.25 0 0 1-2.25-2.25z"/></svg>';

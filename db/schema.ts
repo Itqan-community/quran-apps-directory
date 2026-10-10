@@ -34,7 +34,8 @@ export const developers = pgTable(
   {
     id: bigserial("id", { mode: "number" }).primaryKey(),
     nameEn: text("name_en").notNull().unique(),
-    nameAr: text("name_ar").notNull().unique(),
+    // Only name_en is unique — live prod data contains repeated name_ar values
+    nameAr: text("name_ar").notNull(),
     website: text("website"),
     email: text("email"),
     logoUrl: text("logo_url"),
@@ -108,6 +109,7 @@ export const apps = pgTable(
     index("apps_name_ar_idx").on(t.nameAr),
     index("apps_slug_idx").on(t.slug),
     index("apps_status_idx").on(t.status),
+    uniqueIndex("apps_name_en_unique").on(t.nameEn),
     index("apps_featured_idx").on(t.featured),
     index("apps_status_featured_idx").on(t.status, t.featured),
     index("apps_avg_rating_idx").on(t.avgRating),

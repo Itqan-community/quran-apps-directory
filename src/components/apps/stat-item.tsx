@@ -1,21 +1,26 @@
-import type { ReactNode } from "react";
-
 export function StatItem({
   value,
   label,
-  icon,
+  iconSrc,
 }: {
   value: string;
   label: string;
-  icon?: ReactNode;
+  iconSrc?: string;
 }) {
   return (
-    <div className="flex flex-col items-center">
-      <div className="flex items-center gap-1">
-        {icon}
-        <span className="text-sm font-bold text-text">{value}</span>
+    <div className="stat-item">
+      <div>
+        {iconSrc && (
+          <span className="stat-icon">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={iconSrc} alt="" />
+          </span>
+        )}
+        <span className="stat-value">
+          {value}
+        </span>
       </div>
-      <span className="text-xs text-text-secondary">{label}</span>
+      <span className="stat-label">{label}</span>
     </div>
   );
 }

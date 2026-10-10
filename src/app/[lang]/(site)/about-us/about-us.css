@@ -1,0 +1,475 @@
+/* About us page — ported from Angular about-us.component.scss (redesign) */
+
+.about-us-page {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-bottom: 24px;
+}
+
+.page-background-left,
+.page-background-right {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-background-left::before {
+  content: "";
+  position: absolute;
+  width: 800px;
+  height: 990px;
+  left: -686px;
+  top: 350px;
+  background: #12bcac;
+  filter: blur(1500px);
+  transform: rotate(30deg);
+  border-radius: 50%;
+}
+
+.page-background-left::after {
+  content: "";
+  position: absolute;
+  width: 584px;
+  height: 583px;
+  left: -428px;
+  top: 880px;
+  background: #12bcac;
+  opacity: 0.4;
+  transform: rotate(30deg);
+  border-radius: 50%;
+  filter: blur(200px);
+}
+
+.page-background-left .ellipse-small {
+  position: absolute;
+  width: 302px;
+  height: 301px;
+  left: -235px;
+  top: 1100px;
+  background: #186861;
+  transform: rotate(30deg);
+  border-radius: 50%;
+  filter: blur(50px);
+}
+
+.page-background-right::before {
+  content: "";
+  position: absolute;
+  width: 990px;
+  height: 990px;
+  right: -700px;
+  top: -160px;
+  background: #f5eedb;
+  filter: blur(200px);
+  transform: rotate(-135deg);
+  border-radius: 50%;
+  opacity: 0.78;
+}
+
+.page-background-right::after {
+  content: "";
+  position: absolute;
+  width: 584px;
+  height: 583px;
+  right: -400px;
+  top: 101px;
+  background: #faaf41;
+  opacity: 0.4;
+  filter: blur(80px);
+  transform: rotate(-135deg);
+  border-radius: 50%;
+}
+
+.page-background-right .ellipse-small {
+  position: absolute;
+  width: 302px;
+  height: 301px;
+  right: -150px;
+  top: 301px;
+  background: #faaf41;
+  filter: blur(40px);
+  transform: rotate(-135deg);
+  border-radius: 50%;
+}
+
+.dark .page-background-left::before {
+  background: #0d8a7d;
+}
+
+.dark .page-background-left::after {
+  background: #107a6e;
+}
+
+.dark .page-background-left .ellipse-small {
+  background: #bad2d0;
+}
+
+.dark .page-background-right::before {
+  background: #3d3626;
+}
+
+.dark .page-background-right::after,
+.dark .page-background-right .ellipse-small {
+  background: #b87a2e;
+}
+
+.about-hero {
+  position: relative;
+  z-index: 1;
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 180px 24px 0;
+  overflow: hidden;
+}
+
+.about-hero .hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 900px;
+  padding: 0 24px;
+}
+
+.about-hero .logo-container {
+  margin-bottom: 32px;
+}
+
+.about-hero .logo {
+  max-width: 280px;
+  height: auto;
+  margin-inline: auto;
+}
+
+.about-us-page h1.about-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+
+.dark .about-us-page h1.about-title {
+  color: #f0f0f0;
+}
+
+.about-hero .subtitle {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+.about-hero .intro {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.about-content {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px 64px;
+}
+
+.card-section {
+  background: transparent;
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.card-section h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 24px;
+}
+
+.card-section p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin: 0;
+}
+
+.about-section {
+  margin-bottom: 48px;
+}
+
+.about-section > h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.features-grid,
+.benefits-grid,
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.about-plain-card {
+  background: var(--card-bg);
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark .about-plain-card {
+  border-color: #3a3a3a;
+  background: #2a2a2a;
+}
+
+.about-plain-card h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-color);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.dark .about-plain-card h3 {
+  color: #f0f0f0;
+}
+
+.about-plain-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.benefit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: var(--card-bg);
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 24px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.benefit-item .check-icon {
+  color: #12bcac;
+  font-weight: bold;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.benefit-item span:last-child {
+  font-size: 0.95rem;
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+.dark .benefit-item {
+  border-color: #3a3a3a;
+  background: #2a2a2a;
+}
+
+.dark .benefit-item span:last-child {
+  color: #f0f0f0;
+}
+
+.benefit-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.categories-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+
+.category-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #e0e0e0;
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  cursor: default;
+}
+
+.dark .category-pill {
+  background: #333;
+  border-color: #444;
+  color: #f0f0f0;
+}
+
+.category-pill:hover {
+  background: #ededed;
+  border-color: #d0d0d0;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  background: var(--card-bg);
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 32px 24px;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark .project-card {
+  border-color: #3a3a3a;
+  background: #2a2a2a;
+}
+
+.project-card .project-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.project-card span {
+  font-size: 0.9rem;
+  color: var(--text-color);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.dark .project-card span {
+  color: #f0f0f0;
+}
+
+.project-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.acknowledgments-section {
+  padding: 32px;
+  text-align: center;
+}
+
+.acknowledgments-section h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 24px;
+}
+
+.acknowledgments-section p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .about-us-page h1.about-title {
+    font-size: 2.2rem;
+  }
+
+  .features-grid,
+  .benefits-grid,
+  .values-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .projects-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .page-background-left::before {
+    width: 700px;
+    height: 700px;
+    left: -500px;
+    top: 100px;
+    filter: blur(10px);
+  }
+
+  .page-background-left::after {
+    width: 450px;
+    height: 450px;
+    left: -350px;
+    top: 350px;
+  }
+
+  .page-background-left .ellipse-small {
+    width: 220px;
+    height: 220px;
+    left: -180px;
+    top: 500px;
+  }
+
+  .page-background-right::before {
+    width: 700px;
+    height: 700px;
+    right: -500px;
+    top: -120px;
+    filter: blur(150px);
+  }
+
+  .page-background-right::after {
+    width: 450px;
+    height: 450px;
+    right: -300px;
+    top: 70px;
+    filter: blur(60px);
+  }
+
+  .page-background-right .ellipse-small {
+    width: 220px;
+    height: 220px;
+    right: -100px;
+    top: 210px;
+    filter: blur(30px);
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .about-hero {
+    min-height: auto;
+    padding: 80px 16px 24px;
+  }
+
+  .features-grid,
+  .benefits-grid,
+  .values-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -2,7 +2,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getLang } from "@/lib/i18n";
 import { AppsListing } from "@/components/apps/apps-listing";
 import { getCategoriesCached } from "@/lib/cache/categories";
-import { getMetadataValuesCached } from "@/lib/cache/metadata";
 
 // searchParams-driven listing: no instant prefetch shell (validation cannot
 // resolve URL data inside the static shell)
@@ -27,16 +26,15 @@ export default async function AppsPage({
   const [{ lang }, sp] = await Promise.all([params, searchParams]);
   const locale = getLang({ lang });
   setRequestLocale(locale);
-  const t = await getTranslations({ locale, namespace: "appList" });
-  const tCat = await getTranslations({ locale, namespace: "appList.categories" });
   const search = (Array.isArray(sp.search) ? sp.search[0] : sp.search)?.trim() || undefined;
   const page = Number((Array.isArray(sp.page) ? sp.page[0] : sp.page) ?? 1) || 1;
-  const [categories, metadata] = await Promise.all([getCategoriesCached(), getMetadataValuesCached()]);
+  const categories = await getCategoriesCached();
 
   return (
     <AppsListing
       lang={locale}
-      title={search ? `${t("search.resultsFor")} "${search}"` : tCat("main-title")}
+      search={search}
+      selectedCategory={undefined}
       filters={{
         search,
         categorySlugs: csv(sp, "category"),
@@ -48,7 +46,6 @@ export default async function AppsPage({
         page,
       }}
       categories={categories}
-      metadata={metadata}
     />
   );
 }

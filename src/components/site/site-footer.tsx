@@ -8,28 +8,28 @@ export async function SiteFooter({ lang }: { lang: "ar" | "en" }) {
     { href: "https://itqan.dev/resources", label: t("resources") },
   ];
   return (
-    <footer className="border-t border-border bg-surface">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8">
-        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <p className="text-sm text-text-secondary">{t("copyright")}</p>
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-text-secondary">{t("sponsored_by")}</span>
+    <footer className="main-footer">
+      <div className="footer-content">
+        <div className="footer-info-row">
+          <p className="footer-open-source">{t("copyright")}</p>
+          <div className="footer-sponsor">
+            <span className="footer-sponsor-label">{t("sponsored_by")}</span>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/charity.svg" alt="" width={28} height={28} />
+            <img src="/images/charity.svg" alt="" />
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/maknon.png" alt="" width={72} height={28} />
+            <img className="footer-sponsor-maknon" src="/images/maknon.png" alt="" />
           </div>
         </div>
-        <div>
-          <h4 className="mb-2 text-sm font-bold">{t("itqan_projects")}</h4>
-          <ul className="flex flex-col gap-2">
+        <div className="footer-links-row">
+          <h4 className="footer-links-title">{t("itqan_projects")}</h4>
+          <ul className="footer-links-list">
             {links.map((l) => (
-              <li key={l.href} className="flex items-center gap-2 text-sm">
-                <a href={l.href} target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-primary">
+              <li key={l.href}>
+                <a href={l.href} target="_blank" rel="noopener noreferrer">
                   {l.label}
                 </a>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/images/link-square.svg" alt="" width={12} height={12} />
+                <img src="/images/link-square.svg" alt="" />
               </li>
             ))}
           </ul>

@@ -9,6 +9,7 @@ import {
   submissionStatusLogs,
 } from "@/db/schema";
 import { submissionSchema, generateTrackingId } from "@/lib/validation/submission";
+import { findDuplicateAppName } from "@/lib/repo/apps";
 
 export type SubmitResult =
   | { ok: true; trackingId: string }
@@ -25,6 +26,12 @@ export async function submitApp(input: unknown): Promise<SubmitResult> {
     return { ok: false, error: "validation", fieldErrors };
   }
   const data = parsed.data;
+
+  // Names must be unique across the directory (reference: live data).
+  const dupField = await findDuplicateAppName(data.app_name_en, data.app_name_ar);
+  if (dupField) {
+    return { ok: false, error: "validation", fieldErrors: { [dupField]: ["duplicateName"] } };
+  }
 
   for (let attempt = 0; attempt < 5; attempt++) {
     const trackingId = generateTrackingId();

@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-// From the seeded dev DB (qad): 44 published apps, first by sort order
-const FIRST_APP = { slug: "1_Wahy", id: 133 };
+// From the synced dev DB (live parity): first app by sort order
+const FIRST_APP = { slug: "1-wahy", id: 1 };
 
 test.describe("public smoke", () => {
   test("bare root redirects to /ar", async ({ page }) => {
@@ -31,12 +31,12 @@ test.describe("public smoke", () => {
     await expect(page.locator("article").first()).toBeVisible();
   });
 
-  test("unknown category shows not-found UI", async ({ page }) => {
+  test("unknown category shows hero with empty state (old SPA soft 404)", async ({ page }) => {
     await page.goto("/en/not-a-real-category");
-    // cacheComponents streams (soft 404, like the old SPA); invalid locales
-    // (/fr) get a real 404 status via global-not-found. The streamed shell can
-    // duplicate the not-found block, hence .first().
-    await expect(page.getByRole("heading", { name: "App Not Found" }).first()).toBeVisible();
+    // Live parity: the old SPA renders the listing hero with the empty state
+    // (200, no hard 404). Invalid locales (/fr) get a real 404 via global-not-found.
+    await expect(page.getByRole("heading", { name: "Light in your hands.." })).toBeVisible();
+    await expect(page.getByText("No applications found")).toBeVisible();
   });
 
   test("app detail renders name and JSON-LD", async ({ page }) => {

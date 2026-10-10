@@ -21,18 +21,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 function DetailSkeleton() {
   return (
-    <div className="grid gap-8 md:grid-cols-[1fr_2fr]">
-      <div className="aspect-[16/9] w-full animate-pulse rounded-app border border-border bg-surface md:h-80" />
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-4">
-          <div className="h-[72px] w-[72px] animate-pulse rounded-app border border-border bg-surface" />
-          <div className="flex flex-col gap-2">
-            <div className="h-7 w-40 animate-pulse rounded-app bg-surface" />
-            <div className="h-4 w-52 animate-pulse rounded-app bg-surface" />
+    <div>
+      <section className="app-hero-section">
+        <div className="hero-background" aria-hidden />
+        <div className="hero-container shimmer-card">
+          <div className="shimmer-icon" style={{ width: 130, height: 130, borderRadius: 16 }} />
+          <div className="shimmer-text-group">
+            <div className="shimmer-line shimmer-title" />
+            <div className="shimmer-line shimmer-desc" />
+            <div className="shimmer-line shimmer-btn" style={{ width: 140, height: 42 }} />
           </div>
         </div>
-        <div className="h-5 w-64 animate-pulse rounded-app bg-surface" />
-        <div className="h-40 w-full animate-pulse rounded-app bg-surface" />
+      </section>
+      <div className="content-section">
+        <div className="site-container">
+          <div className="details-grid">
+            <div className="details-main">
+              <div className="shimmer-line" style={{ width: "30%", height: 20, marginBottom: 16 }} />
+              <div className="shimmer-line" />
+              <div className="shimmer-line" style={{ width: "95%" }} />
+              <div className="shimmer-line" style={{ width: "88%" }} />
+            </div>
+            <aside className="details-side">
+              <div className="shimmer-line" style={{ width: "60%" }} />
+            </aside>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -40,7 +54,7 @@ function DetailSkeleton() {
 
 export default function AppDetailPage({ params }: Props) {
   return (
-    <main className="mx-auto max-w-5xl px-4 py-8">
+    <main>
       <Suspense fallback={<DetailSkeleton />}>
         <AppDetail params={params} />
       </Suspense>

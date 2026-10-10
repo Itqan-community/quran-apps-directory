@@ -18,7 +18,7 @@ export default async function SiteGroupLayout({
       <SiteHeader lang={locale} />
       <div className="flex-1">{children}</div>
       <SiteFooter lang={locale} />
-      <SupportWidget lang={locale} />
+      <SupportWidget />
     </div>
   );
 }

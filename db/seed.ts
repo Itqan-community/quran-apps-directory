@@ -107,6 +107,24 @@ type AppRow = {
 };
 
 async function seedCategories() {
+  // Live snapshot (names/icons/order) — fallback to static labels if absent.
+  const catPath = resolve("db/seed-data/live-categories.json");
+  let cats: { slug: string; name_en: string; name_ar: string; description_en: string; description_ar: string; icon: string | null; sort_order: number }[] = [];
+  try {
+    cats = JSON.parse(readFileSync(catPath, "utf8")) as typeof cats;
+  } catch {
+    /* snapshot missing — seed from static labels */
+  }
+  if (cats.length > 0) {
+    for (const c of cats) {
+      await sql`
+        INSERT INTO categories (name_en, name_ar, slug, description_en, description_ar, icon, sort_order, is_active)
+        VALUES (${c.name_en}, ${c.name_ar}, ${c.slug}, ${c.description_en}, ${c.description_ar}, ${c.icon}, ${c.sort_order}, true)
+        ON CONFLICT (slug) DO NOTHING
+      `;
+    }
+    return;
+  }
   let i = 0;
   for (const [slug, labels] of Object.entries(CATEGORY_LABELS)) {
     i += 1;

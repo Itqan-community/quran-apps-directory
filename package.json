@@ -11,6 +11,7 @@
     "db:push:test": "DATABASE_URL=postgres://postgres:postgres@localhost:5433/qad_test drizzle-kit push --force",
     "db:migrate-live": "node --experimental-strip-types --env-file=.env.local db/migrate-live.ts",
     "db:seed": "node --experimental-strip-types --env-file=.env.local db/seed.ts",
+    "db:sync-live-json": "node --experimental-strip-types --env-file=.env.local db/sync-live-json.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "db:parity": "node --experimental-strip-types --env-file=.env.local db/parity-check.ts",

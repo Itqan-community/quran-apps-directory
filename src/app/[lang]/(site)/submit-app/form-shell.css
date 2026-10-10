@@ -1,0 +1,172 @@
+/* Submit-app / track-submission shared page shell — ported from the Angular redesign */
+
+.form-shell-page {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.form-shell-page .page-background-left,
+.form-shell-page .page-background-right {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.form-shell-page .page-background-left::before {
+  content: "";
+  position: absolute;
+  width: 800px;
+  height: 990px;
+  left: -686px;
+  top: 100px;
+  background: #12bcac;
+  filter: blur(1500px);
+  transform: rotate(30deg);
+  border-radius: 50%;
+}
+
+.form-shell-page .page-background-left::after {
+  content: "";
+  position: absolute;
+  width: 584px;
+  height: 583px;
+  left: -428px;
+  top: 380px;
+  background: #12bcac;
+  opacity: 0.4;
+  transform: rotate(30deg);
+  border-radius: 50%;
+  filter: blur(200px);
+}
+
+.form-shell-page .page-background-left .ellipse-small {
+  position: absolute;
+  width: 302px;
+  height: 301px;
+  left: -235px;
+  top: 660px;
+  background: #186861;
+  transform: rotate(30deg);
+  border-radius: 50%;
+  filter: blur(50px);
+}
+
+.form-shell-page .page-background-right::before {
+  content: "";
+  position: absolute;
+  width: 990px;
+  height: 990px;
+  right: -700px;
+  top: -160px;
+  background: #f5eedb;
+  filter: blur(200px);
+  transform: rotate(-135deg);
+  border-radius: 50%;
+  opacity: 0.78;
+}
+
+.form-shell-page .page-background-right::after {
+  content: "";
+  position: absolute;
+  width: 584px;
+  height: 583px;
+  right: -400px;
+  top: 101px;
+  background: #faaf41;
+  opacity: 0.4;
+  filter: blur(80px);
+  transform: rotate(-135deg);
+  border-radius: 50%;
+}
+
+.form-shell-page .page-background-right .ellipse-small {
+  position: absolute;
+  width: 302px;
+  height: 301px;
+  right: -150px;
+  top: 301px;
+  background: #faaf41;
+  filter: blur(40px);
+  transform: rotate(-135deg);
+  border-radius: 50%;
+}
+
+.dark .form-shell-page .page-background-left::before {
+  background: #0d8a7d;
+}
+
+.dark .form-shell-page .page-background-left::after {
+  background: #107a6e;
+}
+
+.dark .form-shell-page .page-background-left .ellipse-small {
+  background: #bad2d0;
+}
+
+.dark .form-shell-page .page-background-right::before {
+  background: #3d3626;
+}
+
+.dark .form-shell-page .page-background-right::after,
+.dark .form-shell-page .page-background-right .ellipse-small {
+  background: #b87a2e;
+}
+
+.form-shell-hero {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 120px 24px 40px;
+}
+
+.form-shell-hero .hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 800px;
+  padding: 0 24px;
+}
+
+.form-shell-page h1.form-shell-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 24px;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.dark .form-shell-page h1.form-shell-title {
+  color: #f0f0f0;
+}
+
+.form-shell-hero .description {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.form-shell-container {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+}
+
+@media (max-width: 768px) {
+  .form-shell-hero {
+    padding: 80px 16px 24px;
+  }
+
+  .form-shell-page h1.form-shell-title {
+    font-size: 2rem;
+  }
+}

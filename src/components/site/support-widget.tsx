@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 
 const QUESTIONS = [1, 2, 3, 4] as const;
 
-export function SupportWidget({ lang }: { lang: "ar" | "en" }) {
+export function SupportWidget() {
   const t = useTranslations("support");
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
@@ -13,43 +13,60 @@ export function SupportWidget({ lang }: { lang: "ar" | "en" }) {
   function toggleSupport() {
     if (open) {
       setOpen(false);
-      setSelected(null); // reset to list view so reopening starts from the top
+      setSelected(null);
     } else {
       setOpen(true);
     }
   }
 
   return (
-    <div className="fixed bottom-5 end-5 z-50">
+    <div className="support-container">
       {open && (
-        <div className="mb-3 w-80 overflow-hidden rounded-app border border-border bg-card shadow-app">
-          <div className="flex items-center gap-2 border-b border-border bg-surface px-4 py-3">
-            {selected !== null && (
-              <button onClick={() => setSelected(null)} aria-label={t("back")}
-                className="text-text-secondary hover:text-text">
-                {lang === "ar" ? "→" : "←"}
-              </button>
-            )}
-            <h2 className="text-sm font-bold">{selected === null ? t("title") : t(`q${selected}`)}</h2>
-          </div>
-          <div className="p-2">
-            {selected === null ? (
-              QUESTIONS.map((q) => (
-                <button key={q} onClick={() => setSelected(q)}
-                  className="block w-full rounded-app px-3 py-2 text-start text-sm text-text hover:bg-surface">
-                  {t(`q${q}`)}
-                </button>
-              ))
-            ) : (
-              <p className="px-3 py-2 text-sm text-text-secondary">{t(`q${selected}a`)}</p>
-            )}
+        <div className="support-card-wrapper">
+          <div className="support-card">
+            <div className="support-card-header">
+              {selected !== null ? (
+                <div className="flex items-start justify-between gap-4">
+                  <button
+                    onClick={() => setSelected(null)}
+                    aria-label={t("back")}
+                    className="support-back-btn"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <span className="support-question-title">{t(`q${selected}`)}</span>
+                </div>
+              ) : (
+                <h3 className="support-title">{t("faq")}</h3>
+              )}
+            </div>
+            <div className="support-card-body">
+              {selected === null ? (
+                <div className="questions-content">
+                  {QUESTIONS.map((q) => (
+                    <button key={q} onClick={() => setSelected(q)} className="question-item">
+                      <span className="question-text">{t(`q${q}`)}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="answer-wrapper">
+                  <p className="answer-text">{t(`q${selected}a`)}</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
-      <button onClick={toggleSupport} aria-label={t("fab")}
-        className="flex items-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-bold text-white shadow-app hover:bg-primary-hover">
-        <span>{t("fab")}</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <button
+        onClick={toggleSupport}
+        aria-label={t("fab")}
+        className={`support-fab ${open ? "active" : ""}`}
+      >
+        <span className="fab-text">{t("fab")}</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
           <circle cx="12" cy="12" r="10" />
           <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
           <path d="M12 17h.01" />

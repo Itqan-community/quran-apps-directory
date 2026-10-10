@@ -286,7 +286,8 @@
       "appNameRequired": "Please enter an app name",
       "invalidStoreLink": "Please enter a valid Store Link",
       "yourEmailRequired": "Please enter a valid email address",
-      "confirmationRequired": "Please confirm the content statement"
+      "confirmationRequired": "Please confirm the content statement",
+      "duplicateName": "An app with this name already exists in the directory."
     },
     "hints": {
       "iconUrl": "Recommended: 512x512 PNG or JPG image",

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getLang, isLocale, type Locale } from "@/lib/i18n";
 import { pageMetadata } from "@/lib/seo/metadata";
+import "./contact-us.css";
 
 type Props = { params: Promise<{ lang: string }> };
 
@@ -41,38 +42,50 @@ export default async function ContactUsPage({ params }: Props) {
   ];
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-10">
-      <h1 className="text-center text-3xl font-bold text-text">{t("title")}</h1>
-      <p className="mx-auto mt-4 max-w-xl text-center text-sm leading-relaxed text-text-secondary">
-        {t("message")}
-      </p>
-      <div className="mt-10 flex flex-col gap-4">
-        {cards.map((c) => {
-          const className =
-            "flex items-center justify-between rounded-app border border-border bg-card p-5 transition-colors hover:border-primary";
-          const content = (
-            <>
-              <span className="text-lg text-primary" aria-hidden>
-                ›
-              </span>
-              <div className="flex-1 mx-3">
-                <h3 className="font-bold text-text">{c.title}</h3>
-                <p className="text-sm text-text-secondary">{c.sub}</p>
-              </div>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/mail-02.svg" alt="" width={22} height={22} />
-            </>
-          );
-          return c.external ? (
-            <a key={c.href} href={c.href} target="_blank" rel="noopener noreferrer" className={className}>
-              {content}
-            </a>
-          ) : (
-            <Link key={c.href} href={c.href} className={className}>
-              {content}
-            </Link>
-          );
-        })}
+    <main className="contact-us-page">
+      <div className="page-background-left" aria-hidden>
+        <span className="ellipse-small" />
+      </div>
+      <div className="page-background-right" aria-hidden>
+        <span className="ellipse-small" />
+      </div>
+
+      <section className="contact-hero">
+        <div className="hero-content">
+          <h1 className="contact-title">{t("title")}</h1>
+          <p className="description">{t("message")}</p>
+        </div>
+      </section>
+
+      <div className="cards-container">
+        <div className="contact-cards">
+          {cards.map((c) => {
+            const content = (
+              <>
+                <span className="card-arrow" aria-hidden>
+                  &#x203a;
+                </span>
+                <div className="card-content">
+                  <h3>{c.title}</h3>
+                  <p>{c.sub}</p>
+                </div>
+                <span className="card-icon">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/images/mail-02.svg" alt="" />
+                </span>
+              </>
+            );
+            return c.external ? (
+              <a key={c.href} href={c.href} target="_blank" rel="noopener noreferrer" className="contact-card">
+                {content}
+              </a>
+            ) : (
+              <Link key={c.href} href={c.href} className="contact-card">
+                {content}
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </main>
   );

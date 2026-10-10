@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import type { AppListItem } from "@/lib/repo/apps-rows";
-import { Badge } from "./badge";
+import { formatRating } from "@/lib/services/arabic";
 import { StatItem } from "./stat-item";
 import { CardActions } from "./card-actions";
 
@@ -32,75 +32,114 @@ export async function AppCard({
     android: isAr ? "أندرويد" : "Android",
     ios: isAr ? "آيفون" : "iOS",
     web: isAr ? "ويب" : "Web",
-    cross_platform: isAr ? "متعدد المنصات" : "Cross Platform",
+    cross_platform: isAr ? "متعدد المنصات" : "All",
   };
+  const detailHref = `/${lang}/app/${appUrlParam(app)}`;
+  const visibleTags = app.categories.slice(0, 3);
+  const extraTags = app.categories.slice(3);
+  const allTags = [...visibleTags, ...extraTags];
 
   return (
-    <article className="overflow-hidden rounded-app border border-border bg-card shadow-app transition-shadow hover:shadow-lg">
-      <Link href={`/${lang}/app/${appUrlParam(app)}`} className="block">
-        <div className="relative aspect-[5/3] bg-surface">
-          {(app.featured || isNew) && (
-            <div className="absolute start-2 top-2 z-10 flex gap-1.5">
-              {app.featured && (
-                <Badge variant="featured">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                  </svg>
-                  {t("badges.featured")}
-                </Badge>
-              )}
-              {isNew && <Badge variant="new">{t("badges.new")}</Badge>}
-            </div>
-          )}
-          <Image
-            src={cover}
-            alt={`${app.nameEn} cover`}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            priority={index === 0}
-            loading={eager ? "eager" : "lazy"}
-            className="object-cover"
-          />
+    <article
+      className="app-card"
+      itemScope
+      itemType="https://schema.org/SoftwareApplication"
+      data-app-id={app.id}
+    >
+      {/* Cover */}
+      <div className="card-cover">
+        {(app.featured || isNew) && (
+          <div className="card-badges">
+            {app.featured && (
+              <span className="badge badge--featured">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                {t("badges.featured")}
+              </span>
+            )}
+            {isNew && <span className="badge badge--new">{t("badges.new")}</span>}
+          </div>
+        )}
+        <Link href={detailHref} className="absolute inset-0 z-[1]" aria-label={name} />
+        <Image
+          src={cover}
+          alt={`${app.nameEn} screenshot`}
+          width={400}
+          height={240}
+          priority={eager}
+          loading={eager ? "eager" : "lazy"}
+          fetchPriority={index === 0 ? "high" : "low"}
+          sizes="(max-width: 640px) 50vw, 33vw"
+          className="cover-image"
+        />
+      </div>
+
+      {/* Body */}
+      <div className="card-body">
+        <div className="app-info">
+          <Link href={detailHref} className="app-icon-wrapper" aria-label={name}>
+            <Image
+              src={app.applicationIcon}
+              alt={`${app.nameEn} icon`}
+              width={56}
+              height={56}
+              loading="lazy"
+              className="app-icon"
+            />
+          </Link>
+          <Link href={detailHref} className="app-details">
+            <h3 className="app-name" itemProp="name">
+              {name}
+            </h3>
+            <p className="app-description" itemProp="description">
+              {description}
+            </p>
+          </Link>
         </div>
-      </Link>
-      <div className="flex flex-col gap-3 p-4">
-        <Link href={`/${lang}/app/${appUrlParam(app)}`} className="flex items-center gap-3">
-          <Image
-            src={app.applicationIcon}
-            alt={`${app.nameEn} icon`}
-            width={56}
-            height={56}
-            loading="lazy"
-            className="rounded-app border border-border object-cover"
+
+        {/* Category tags */}
+        {allTags.length > 0 && (
+          <div className="category-tags">
+            {visibleTags.map((c) => (
+              <span key={c.slug} className="category-tag">
+                {isAr ? c.nameAr : c.nameEn}
+              </span>
+            ))}
+            {extraTags.length > 0 && (
+              <span className="category-tag category-more">
+                +{extraTags.length}
+                <span className="category-tooltip">
+                  {extraTags.map((c) => (
+                    <span key={c.slug} className="tooltip-tag">
+                      {isAr ? c.nameAr : c.nameEn}
+                    </span>
+                  ))}
+                </span>
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Stats row */}
+        <div className="stats-row">
+          <StatItem
+            value={formatRating(Number(app.avgRating || 0), lang)}
+            label={isAr ? "التقييم" : "Rating"}
+            iconSrc="/images/starr.svg"
           />
-          <div className="min-w-0">
-            <h3 className="truncate font-bold text-text">{name}</h3>
-            <p className="line-clamp-2 text-sm text-text-secondary">{description}</p>
-          </div>
-        </Link>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/starr.svg" alt="" width={14} height={14} />
-            <span className="text-sm font-bold">{Number(app.avgRating).toFixed(1)}</span>
-          </div>
           <StatItem
             value={platformLabel[app.platform] ?? app.platform}
             label={isAr ? "المنصة" : "Platform"}
           />
         </div>
-        <div className="flex flex-wrap gap-1.5">
-          {app.categories.map((c) => (
-            <span
-              key={c.slug}
-              className="rounded-app bg-surface px-2 py-0.5 text-xs text-text-secondary"
-            >
-              {isAr ? c.nameAr : c.nameEn}
-            </span>
-          ))}
-        </div>
+
+        {/* Actions */}
         <CardActions urlParam={appUrlParam(app)} lang={lang} />
       </div>
+
+      <meta itemProp="applicationCategory" content="Islamic Application" />
+      <meta itemProp="operatingSystem" content="Mobile App" />
     </article>
   );
 }

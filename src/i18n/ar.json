@@ -286,7 +286,8 @@
       "appNameRequired": "يرجى إدخال اسم التطبيق",
       "invalidStoreLink": "يرجى إدخال رابط متجر صالح",
       "yourEmailRequired": "يرجى إدخال بريد إلكتروني صحيح",
-      "confirmationRequired": "يرجى تأكيد صحة المحتوى"
+      "confirmationRequired": "يرجى تأكيد صحة المحتوى",
+      "duplicateName": "يوجد تطبيق بنفس الاسم في الدليل بالفعل."
     },
     "hints": {
       "iconUrl": "يُفضل: صورة PNG أو JPG بحجم 512×512",

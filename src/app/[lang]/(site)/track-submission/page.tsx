@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getLang, isLocale, type Locale } from "@/lib/i18n";
 import { pageMetadata } from "@/lib/seo/metadata";
 import TrackResults from "./track-results";
+import "../submit-app/form-shell.css";
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -30,28 +31,40 @@ function TrackSkeleton() {
 export default async function TrackSubmissionPage({ params, searchParams }: Props) {
   const { lang } = await params;
   const locale: Locale = getLang({ lang });
+  if (!isLocale(lang)) return null as never;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "trackSubmission" });
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-10">
-      <section className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-text">{t("title")}</h1>
-        <p className="mt-3 text-text-secondary">{t("subtitle")}</p>
+    <main className="form-shell-page">
+      <div className="page-background-left" aria-hidden>
+        <span className="ellipse-small" />
+      </div>
+      <div className="page-background-right" aria-hidden>
+        <span className="ellipse-small" />
+      </div>
+
+      <section className="form-shell-hero">
+        <div className="hero-content">
+          <h1 className="form-shell-title">{t("title")}</h1>
+          <p className="description">{t("subtitle")}</p>
+        </div>
       </section>
 
-      <Suspense fallback={<TrackSkeleton />}>
-        <TrackResults searchParams={searchParams} locale={locale} />
-      </Suspense>
+      <div className="form-shell-container mx-auto max-w-2xl">
+        <Suspense fallback={<TrackSkeleton />}>
+          <TrackResults searchParams={searchParams} locale={locale} />
+        </Suspense>
 
-      <div className="rounded-app bg-surface p-5 text-center">
-        <p className="text-sm text-text-secondary">{t("wantToSubmit")}</p>
-        <Link
-          href={`/${locale}/submit-app`}
-          className="mt-3 inline-block rounded-app border border-primary px-4 py-2 text-sm font-bold text-primary hover:bg-primary hover:text-white"
-        >
-          {t("submitNewApp")}
-        </Link>
+        <div className="mt-6 rounded-app border border-border bg-card p-5 text-center shadow-app">
+          <p className="text-sm">{t("wantToSubmit")}</p>
+          <Link
+            href={`/${locale}/submit-app`}
+            className="mt-3 inline-block rounded-full bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-85 dark:bg-white dark:text-black"
+          >
+            {t("submitNewApp")}
+          </Link>
+        </div>
       </div>
     </main>
   );
