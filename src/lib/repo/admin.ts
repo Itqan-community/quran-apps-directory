@@ -447,7 +447,7 @@ export async function getAllDevelopers(f?: DeveloperFilters): Promise<AdminDevel
 
 export type CategoryEditRow = typeof categories.$inferSelect;
 
-/** Full category row for the `?edit=` prefill; null when the id does not exist. */
+/** Full category row for the `[id]` edit page prefill; null when the id does not exist. */
 export async function getCategoryForEdit(id: number): Promise<CategoryEditRow | null> {
   const [row] = await db.select().from(categories).where(eq(categories.id, id)).limit(1);
   return row ?? null;
@@ -455,7 +455,7 @@ export async function getCategoryForEdit(id: number): Promise<CategoryEditRow | 
 
 export type DeveloperEditRow = typeof developers.$inferSelect;
 
-/** Full developer row for the `?edit=` prefill; null when the id does not exist. */
+/** Full developer row for the `[id]` edit page prefill; null when the id does not exist. */
 export async function getDeveloperForEdit(id: number): Promise<DeveloperEditRow | null> {
   const [row] = await db.select().from(developers).where(eq(developers.id, id)).limit(1);
   return row ?? null;

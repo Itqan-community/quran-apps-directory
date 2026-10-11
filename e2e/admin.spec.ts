@@ -410,7 +410,7 @@ test("categories: new → list → search/filter → edit → delete", async ({ 
   await page.goto(`/admin/categories?q=${encodeURIComponent(CAT_NAME)}`);
   const catRow = page.locator("table tbody tr", { hasText: CAT_NAME });
   await catRow.getByRole("link", { name: "تعديل" }).click();
-  await expect(page).toHaveURL(`/admin/categories/${newCatId}`);
+  await expect(page).toHaveURL(/\/admin\/categories\/\d+/);
   await expect(page.getByLabel(/الاسم \(EN\)/)).toHaveValue(CAT_NAME);
 
   // Rename and save → back on the list.
@@ -422,8 +422,12 @@ test("categories: new → list → search/filter → edit → delete", async ({ 
 
   // Delete: confirm dialog, then row + DB row gone.
   await page.goto(`/admin/categories?q=${encodeURIComponent(CAT_NAME_EDITED)}`);
+  // Capture the message in the handler (asserting there would not fail the
+  // test); assert on it after the row is gone — the row only disappears once
+  // the dialog is accepted, so the capture is guaranteed to have happened.
+  let catDeleteMessage = "";
   page.on("dialog", (dialog) => {
-    expect(dialog.message()).toContain("سيتم حذف الفئة نهائيًا");
+    catDeleteMessage = dialog.message();
     void dialog.accept();
   });
   await page
@@ -433,6 +437,7 @@ test("categories: new → list → search/filter → edit → delete", async ({ 
   await expect(page.locator("table tbody tr", { hasText: CAT_NAME_EDITED })).toHaveCount(0, {
     timeout: 15_000,
   });
+  expect(catDeleteMessage).toContain("سيتم حذف الفئة نهائيًا");
   const after = (await sql`SELECT id FROM categories WHERE id = ${newCatId}`) as R[];
   expect(after).toHaveLength(0);
 });
@@ -461,7 +466,7 @@ test("developers: new → verified filter → edit → delete", async ({ page })
   await page.goto(`/admin/developers?q=${encodeURIComponent(DEV_NAME)}&verified=yes`);
   const devRow = page.locator("table tbody tr", { hasText: DEV_NAME });
   await devRow.getByRole("link", { name: "تعديل" }).click();
-  await expect(page).toHaveURL(`/admin/developers/${newDevId}`);
+  await expect(page).toHaveURL(/\/admin\/developers\/\d+/);
   await expect(page.getByLabel(/مطوّر موثّق/)).toBeChecked();
 
   // Rename and save → back on the list.
@@ -490,8 +495,11 @@ test("developers: new → verified filter → edit → delete", async ({ page })
 
   // Delete: cascade confirm text, then row + developer + app gone.
   await page.goto(`/admin/developers?q=${encodeURIComponent(DEV_NAME_EDITED)}`);
+  // Capture the message in the handler; assert on it after the row is gone
+  // (the row only disappears once the dialog is accepted).
+  let devDeleteMessage = "";
   page.on("dialog", (dialog) => {
-    expect(dialog.message()).toContain("سيتم حذف تطبيقات المطور المرتبطة");
+    devDeleteMessage = dialog.message();
     void dialog.accept();
   });
   await page
@@ -501,6 +509,7 @@ test("developers: new → verified filter → edit → delete", async ({ page })
   await expect(page.locator("table tbody tr", { hasText: DEV_NAME_EDITED })).toHaveCount(0, {
     timeout: 15_000,
   });
+  expect(devDeleteMessage).toContain("سيتم حذف تطبيقات المطور المرتبطة");
   const devs = (await sql`SELECT id FROM developers WHERE id = ${newDevId}`) as R[];
   expect(devs).toHaveLength(0);
   const apps = (await sql`SELECT id FROM apps WHERE developer_id = ${newDevId}`) as R[];

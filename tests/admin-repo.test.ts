@@ -47,9 +47,12 @@ beforeAll(async () => {
   await sql`DELETE FROM categories WHERE slug LIKE 't-acat-%'`;
   await sql`DELETE FROM users WHERE email = ${USER_EMAIL}`;
   await sql`DELETE FROM developers WHERE name_en = 'T:Admin Dev'`;
+  await sql`DELETE FROM developers WHERE name_en = 'T:Admin Verified Dev'`;
 
   const dev = await sql`INSERT INTO developers (name_en, name_ar) VALUES ('T:Admin Dev', 'ت:مطور') RETURNING id`;
   devId = Number(dev[0].id);
+  // Verified fixture: keeps the `verified: true` filter test non-vacuous.
+  await sql`INSERT INTO developers (name_en, name_ar, is_verified) VALUES ('T:Admin Verified Dev', 'ت:مطور موثّق', true)`;
   const user = await sql`
     INSERT INTO users (email, password_hash, name, is_staff)
     VALUES (${USER_EMAIL}, 'not-a-real-hash', 'T:Admin Admin', true)
@@ -61,6 +64,8 @@ beforeAll(async () => {
       ('T:Acat Two', 'ت:فئة ب', 't-acat-two')
     RETURNING id, slug`;
   const catBySlug = Object.fromEntries(cats.map((c) => [c.slug as string, Number(c.id)]));
+  // Inactive fixture: keeps the `active: false` filter test non-vacuous.
+  await sql`INSERT INTO categories (name_en, name_ar, slug, is_active) VALUES ('T:Acat Inactive', 'ت:فئة غير نشطة', 't-acat-inactive', false)`;
 
   const apps = await sql`
     INSERT INTO apps
@@ -169,6 +174,7 @@ afterAll(async () => {
   await sql`DELETE FROM users WHERE email = ${USER_EMAIL}`;
   await sql`DELETE FROM categories WHERE slug LIKE 't-acat-%'`;
   await sql`DELETE FROM developers WHERE name_en = 'T:Admin Dev'`;
+  await sql`DELETE FROM developers WHERE name_en = 'T:Admin Verified Dev'`;
   await sql.end();
 });
 
@@ -409,11 +415,29 @@ describe("taxonomy filters", () => {
   it("categories: search matches nameEn/nameAr/slug, active filter ANDs", async () => {
     expect((await getAllCategories({ search: "T:Acat One" })).length).toBe(1);
     expect((await getAllCategories({ search: "  " })).length).toBeGreaterThanOrEqual(2);
-    expect((await getAllCategories({ active: false })).every((c) => c.isActive === false)).toBe(true);
+    // Non-vacuous: the seeded inactive fixture guarantees a non-empty set, so
+    // the every() predicate below is actually exercised.
+    const inactive = await getAllCategories({ active: false });
+    expect(inactive.length).toBeGreaterThanOrEqual(1);
+    expect(inactive.every((c) => c.isActive === false)).toBe(true);
+    // search + active AND: the inactive fixture matches only under active=false.
+    const andMatch = await getAllCategories({ search: "T:Acat Inactive", active: false });
+    expect(andMatch.length).toBeGreaterThanOrEqual(1);
+    expect(andMatch.every((c) => c.isActive === false)).toBe(true);
+    expect((await getAllCategories({ search: "T:Acat Inactive", active: true })).length).toBe(0);
   });
 
   it("developers: search matches nameEn/website/email, verified filter ANDs", async () => {
     expect((await getAllDevelopers({ search: "T:Admin Dev" })).length).toBeGreaterThanOrEqual(1);
-    expect((await getAllDevelopers({ verified: true })).every((d) => d.isVerified === true)).toBe(true);
+    // Non-vacuous: the seeded verified fixture guarantees a non-empty set, so
+    // the every() predicate below is actually exercised.
+    const verified = await getAllDevelopers({ verified: true });
+    expect(verified.length).toBeGreaterThanOrEqual(1);
+    expect(verified.every((d) => d.isVerified === true)).toBe(true);
+    // search + verified AND: the verified fixture matches only under verified=true.
+    const andMatch = await getAllDevelopers({ search: "T:Admin Verified Dev", verified: true });
+    expect(andMatch.length).toBeGreaterThanOrEqual(1);
+    expect(andMatch.every((d) => d.isVerified === true)).toBe(true);
+    expect((await getAllDevelopers({ search: "T:Admin Verified Dev", verified: false })).length).toBe(0);
   });
 });
