@@ -408,8 +408,30 @@ export type AdminDeveloperOption = {
   isVerified: boolean;
 };
 
-/** Every developer row (active or not) — dropdown options for the app form / taxonomy table. */
-export async function getAllDevelopers(): Promise<AdminDeveloperOption[]> {
+export type DeveloperFilters = { search?: string; verified?: boolean };
+
+/**
+ * Developer rows for the app form / taxonomy table. Optional filters:
+ * `search` matches nameEn/nameAr/website/email (empty/whitespace = no filter);
+ * `verified` applies only when defined. Ordering: nameEn asc.
+ */
+export async function getAllDevelopers(f?: DeveloperFilters): Promise<AdminDeveloperOption[]> {
+  const conds: SQL[] = [];
+  const search = f?.search?.trim();
+  if (search) {
+    const raw = `%${escapeLike(search)}%`;
+    conds.push(
+      or(
+        sql`${developers.nameEn} ILIKE ${raw} ESCAPE '\\'`,
+        sql`${developers.nameAr} ILIKE ${raw} ESCAPE '\\'`,
+        sql`${developers.website} ILIKE ${raw} ESCAPE '\\'`,
+        sql`${developers.email} ILIKE ${raw} ESCAPE '\\'`
+      )!
+    );
+  }
+  if (f?.verified !== undefined) conds.push(eq(developers.isVerified, f.verified));
+  const where = conds.length > 0 ? and(...conds) : undefined;
+
   return db
     .select({
       id: developers.id,
@@ -419,6 +441,7 @@ export async function getAllDevelopers(): Promise<AdminDeveloperOption[]> {
       isVerified: developers.isVerified,
     })
     .from(developers)
+    .where(where)
     .orderBy(asc(developers.nameEn));
 }
 
@@ -447,8 +470,29 @@ export type AdminCategoryOption = {
   isActive: boolean;
 };
 
-/** Every category row (active or not) — checkboxes for the app form / taxonomy table. */
-export async function getAllCategories(): Promise<AdminCategoryOption[]> {
+export type CategoryFilters = { search?: string; active?: boolean };
+
+/**
+ * Category rows for the app form / taxonomy table. Optional filters:
+ * `search` matches nameEn/nameAr/slug (empty/whitespace = no filter);
+ * `active` applies only when defined. Ordering: sortOrder, nameEn asc.
+ */
+export async function getAllCategories(f?: CategoryFilters): Promise<AdminCategoryOption[]> {
+  const conds: SQL[] = [];
+  const search = f?.search?.trim();
+  if (search) {
+    const raw = `%${escapeLike(search)}%`;
+    conds.push(
+      or(
+        sql`${categories.nameEn} ILIKE ${raw} ESCAPE '\\'`,
+        sql`${categories.nameAr} ILIKE ${raw} ESCAPE '\\'`,
+        sql`${categories.slug} ILIKE ${raw} ESCAPE '\\'`
+      )!
+    );
+  }
+  if (f?.active !== undefined) conds.push(eq(categories.isActive, f.active));
+  const where = conds.length > 0 ? and(...conds) : undefined;
+
   return db
     .select({
       id: categories.id,
@@ -459,6 +503,7 @@ export async function getAllCategories(): Promise<AdminCategoryOption[]> {
       isActive: categories.isActive,
     })
     .from(categories)
+    .where(where)
     .orderBy(asc(categories.sortOrder), asc(categories.nameEn));
 }
 

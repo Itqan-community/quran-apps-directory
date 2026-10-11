@@ -5,6 +5,8 @@ import {
   getAdminSubmissions,
   getSubmissionDetail,
   getDashboardCounts,
+  getAllCategories,
+  getAllDevelopers,
 } from "@/lib/repo/admin";
 import {
   getViewsPerDay30d,
@@ -400,5 +402,18 @@ describe("analytics", () => {
       { deviceType: "desktop", views: 2 },
       { deviceType: "tablet", views: 1 },
     ]);
+  });
+});
+
+describe("taxonomy filters", () => {
+  it("categories: search matches nameEn/nameAr/slug, active filter ANDs", async () => {
+    expect((await getAllCategories({ search: "T:Acat One" })).length).toBe(1);
+    expect((await getAllCategories({ search: "  " })).length).toBeGreaterThanOrEqual(2);
+    expect((await getAllCategories({ active: false })).every((c) => c.isActive === false)).toBe(true);
+  });
+
+  it("developers: search matches nameEn/website/email, verified filter ANDs", async () => {
+    expect((await getAllDevelopers({ search: "T:Admin Dev" })).length).toBeGreaterThanOrEqual(1);
+    expect((await getAllDevelopers({ verified: true })).every((d) => d.isVerified === true)).toBe(true);
   });
 });
