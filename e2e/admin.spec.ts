@@ -30,6 +30,11 @@ const CRUD_RENAMED_NAME = `T:E2E CRUD App v2 ${RUN}`;
 const CRUD_DEV_NAME = `T:E2E CRUD Dev ${RUN}`;
 const CAT_NAME = `T:E2E Cat ${RUN}`;
 const CAT_NAME_AR = `T:E2E فئة ${RUN}`;
+const CAT_NAME_EDITED = `T:E2E Cat ${RUN} v2`;
+const DEV_NAME = `T:E2E Dev ${RUN}`;
+const DEV_NAME_AR = `T:E2E مطوّر ${RUN}`;
+const DEV_NAME_EDITED = `T:E2E Dev ${RUN} v2`;
+const DEV_APP_NAME = `T:E2E Dev App ${RUN}`;
 const TYPE_NAME = `T:E2E type ${RUN}`;
 const TYPE_NAME_AR = `T:E2E نوع ${RUN}`;
 const ANALYTICS_APP_NAME = `T:E2E Analytics App ${RUN}`;
@@ -378,29 +383,128 @@ test("apps CRUD: create with upload, list-scan, rename, archive, delete", async 
   await expect(page.getByText("لا توجد تطبيقات مطابقة")).toBeVisible();
 });
 
-test("categories: add → shows in table → delete via confirm", async ({ page }) => {
+test("categories: new → list → search/filter → edit → delete", async ({ page }) => {
   await login(page);
-  await page.goto("/admin/categories");
+  await page.goto("/admin/categories/new");
 
-  const form = page.locator("form").first();
-  await form.locator('label:has-text("الاسم (EN)") input').fill(CAT_NAME);
-  await form.locator('label:has-text("الاسم (AR)") input').fill(CAT_NAME_AR);
+  // Create from the dedicated new page; save lands back on the list.
+  await page.getByLabel(/الاسم \(EN\)/).fill(CAT_NAME);
+  await page.getByLabel(/الاسم \(AR\)/).fill(CAT_NAME_AR);
   await page.getByRole("button", { name: "إضافة الفئة" }).click();
-  await expect(page.getByText("تم حفظ الفئة بنجاح")).toBeVisible({ timeout: 15_000 });
-  await expect(page.locator("table tbody tr", { hasText: CAT_NAME })).toBeVisible();
+  await expect(page).toHaveURL(/\/admin\/categories$/, { timeout: 15_000 });
   const rows = (await sql`SELECT id FROM categories WHERE name_en = ${CAT_NAME}`) as R[];
   expect(rows).toHaveLength(1);
+  const newCatId = Number(rows[0]!.id);
 
-  page.on("dialog", (dialog) => void dialog.accept());
+  // Search finds the new category by name.
+  await page.goto(`/admin/categories?q=${encodeURIComponent(CAT_NAME)}`);
+  await expect(page.getByRole("table")).toContainText(CAT_NAME);
+
+  // Active filter: created active by default → yes includes, no excludes.
+  await page.goto(`/admin/categories?q=${encodeURIComponent(CAT_NAME)}&active=yes`);
+  await expect(page.getByRole("table")).toContainText(CAT_NAME);
+  await page.goto(`/admin/categories?q=${encodeURIComponent(CAT_NAME)}&active=no`);
+  await expect(page.getByText("لا توجد فئات مطابقة")).toBeVisible();
+
+  // Edit: row link → dedicated edit page prefilled with the row.
+  await page.goto(`/admin/categories?q=${encodeURIComponent(CAT_NAME)}`);
+  const catRow = page.locator("table tbody tr", { hasText: CAT_NAME });
+  await catRow.getByRole("link", { name: "تعديل" }).click();
+  await expect(page).toHaveURL(`/admin/categories/${newCatId}`);
+  await expect(page.getByLabel(/الاسم \(EN\)/)).toHaveValue(CAT_NAME);
+
+  // Rename and save → back on the list.
+  await page.getByLabel(/الاسم \(EN\)/).fill(CAT_NAME_EDITED);
+  await page.getByRole("button", { name: "حفظ التعديلات" }).click();
+  await expect(page).toHaveURL(/\/admin\/categories$/, { timeout: 15_000 });
+  const renamed = (await sql`SELECT name_en FROM categories WHERE id = ${newCatId}`) as R[];
+  expect(renamed[0]!.name_en).toBe(CAT_NAME_EDITED);
+
+  // Delete: confirm dialog, then row + DB row gone.
+  await page.goto(`/admin/categories?q=${encodeURIComponent(CAT_NAME_EDITED)}`);
+  page.on("dialog", (dialog) => {
+    expect(dialog.message()).toContain("سيتم حذف الفئة نهائيًا");
+    void dialog.accept();
+  });
   await page
-    .locator("table tbody tr", { hasText: CAT_NAME })
+    .locator("table tbody tr", { hasText: CAT_NAME_EDITED })
     .getByRole("button", { name: "حذف" })
     .click();
-  await expect(page.locator("table tbody tr", { hasText: CAT_NAME })).toHaveCount(0, {
+  await expect(page.locator("table tbody tr", { hasText: CAT_NAME_EDITED })).toHaveCount(0, {
     timeout: 15_000,
   });
-  const after = (await sql`SELECT id FROM categories WHERE name_en = ${CAT_NAME}`) as R[];
+  const after = (await sql`SELECT id FROM categories WHERE id = ${newCatId}`) as R[];
   expect(after).toHaveLength(0);
+});
+
+test("developers: new → verified filter → edit → delete", async ({ page }) => {
+  await login(page);
+  await page.goto("/admin/developers/new");
+
+  // Create a verified developer from the dedicated new page.
+  await page.getByLabel(/الاسم \(EN\)/).fill(DEV_NAME);
+  await page.getByLabel(/الاسم \(AR\)/).fill(DEV_NAME_AR);
+  await page.getByLabel(/مطوّر موثّق/).check();
+  await page.getByRole("button", { name: "إضافة المطوّر" }).click();
+  await expect(page).toHaveURL(/\/admin\/developers$/, { timeout: 15_000 });
+  const rows = (await sql`SELECT id FROM developers WHERE name_en = ${DEV_NAME}`) as R[];
+  expect(rows).toHaveLength(1);
+  const newDevId = Number(rows[0]!.id);
+
+  // Verified filter: found under verified=yes, absent under verified=no.
+  await page.goto(`/admin/developers?q=${encodeURIComponent(DEV_NAME)}&verified=yes`);
+  await expect(page.getByRole("table")).toContainText(DEV_NAME);
+  await page.goto(`/admin/developers?q=${encodeURIComponent(DEV_NAME)}&verified=no`);
+  await expect(page.getByText("لا يوجد مطورون مطابقون")).toBeVisible();
+
+  // Edit: row link → dedicated edit page, verified checkbox prefilled.
+  await page.goto(`/admin/developers?q=${encodeURIComponent(DEV_NAME)}&verified=yes`);
+  const devRow = page.locator("table tbody tr", { hasText: DEV_NAME });
+  await devRow.getByRole("link", { name: "تعديل" }).click();
+  await expect(page).toHaveURL(`/admin/developers/${newDevId}`);
+  await expect(page.getByLabel(/مطوّر موثّق/)).toBeChecked();
+
+  // Rename and save → back on the list.
+  await page.getByLabel(/الاسم \(EN\)/).fill(DEV_NAME_EDITED);
+  await page.getByRole("button", { name: "حفظ التعديلات" }).click();
+  await expect(page).toHaveURL(/\/admin\/developers$/, { timeout: 15_000 });
+  const renamed = (await sql`SELECT name_en FROM developers WHERE id = ${newDevId}`) as R[];
+  expect(renamed[0]!.name_en).toBe(DEV_NAME_EDITED);
+
+  // Give the developer an app so the delete warning is the cascade variant
+  // (the FK cascade then removes the app with the developer).
+  await sql`
+    INSERT INTO apps (
+      name_en, name_ar, slug,
+      short_description_en, short_description_ar, description_en, description_ar,
+      application_icon, main_image_en, main_image_ar, google_play_link,
+      developer_id, status, platform, sort_order, featured
+    ) VALUES (
+      ${DEV_APP_NAME}, 'T:E2E تطبيق مطوّر', 't-e2e-dev-app-' || ${RUN.toLowerCase()},
+      'Short', 'وصف مختصر', 'Description', 'وصف كامل',
+      ${FAKE_UPLOAD_URL}, ${FAKE_UPLOAD_URL}, ${FAKE_UPLOAD_URL},
+      'https://play.google.com/store/apps/details?id=' || ${RUN.toLowerCase()},
+      ${newDevId}, 'draft', 'cross_platform', 99999, FALSE
+    )
+  `;
+
+  // Delete: cascade confirm text, then row + developer + app gone.
+  await page.goto(`/admin/developers?q=${encodeURIComponent(DEV_NAME_EDITED)}`);
+  page.on("dialog", (dialog) => {
+    expect(dialog.message()).toContain("سيتم حذف تطبيقات المطور المرتبطة");
+    void dialog.accept();
+  });
+  await page
+    .locator("table tbody tr", { hasText: DEV_NAME_EDITED })
+    .getByRole("button", { name: "حذف" })
+    .click();
+  await expect(page.locator("table tbody tr", { hasText: DEV_NAME_EDITED })).toHaveCount(0, {
+    timeout: 15_000,
+  });
+  const devs = (await sql`SELECT id FROM developers WHERE id = ${newDevId}`) as R[];
+  expect(devs).toHaveLength(0);
+  const apps = (await sql`SELECT id FROM apps WHERE developer_id = ${newDevId}`) as R[];
+  expect(apps).toHaveLength(0);
 });
 
 test("metadata: add type → add option → shows → delete type via confirm", async ({ page }) => {
