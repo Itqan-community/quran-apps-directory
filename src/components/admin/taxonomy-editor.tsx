@@ -56,7 +56,7 @@ export const CATEGORY_CREATE_DEFAULT: CategoryInitial = {
   isActive: true,
 };
 
-/** Add/edit form for one category (prefilled when the page resolves ?edit=<id>). */
+/** Add/edit form for one category (prefilled by the [id] edit page). */
 export function CategoryForm({ editing }: { editing: CategoryInitial | null }) {
   const router = useRouter();
   const initial = editing ?? CATEGORY_CREATE_DEFAULT;
@@ -72,23 +72,15 @@ export function CategoryForm({ editing }: { editing: CategoryInitial | null }) {
   const [sortOrder, setSortOrder] = useState(String(initial.sortOrder));
   const [isActive, setIsActive] = useState(initial.isActive);
   const [busy, setBusy] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [topError, setTopError] = useState<string | null>(null);
   const [serverErrors, setServerErrors] = useState<ServerErrors>({});
 
   const field = (key: keyof typeof f) => (v: string) => setF((cur) => ({ ...cur, [key]: v }));
 
-  function reset() {
-    setF({ ...CategoryFormDefaults });
-    setSortOrder("0");
-    setIsActive(true);
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (busy) return;
     setBusy(true);
-    setSaved(false);
     setTopError(null);
     setServerErrors({});
 
@@ -102,13 +94,8 @@ export function CategoryForm({ editing }: { editing: CategoryInitial | null }) {
     try {
       const res = await saveCategory(payload);
       if (res.ok) {
-        if (editing) {
-          router.push("/admin/categories");
-        } else {
-          setSaved(true);
-          reset();
-          router.refresh();
-        }
+        router.push("/admin/categories");
+        router.refresh();
       } else {
         setServerErrors(res.fieldErrors ?? {});
         setTopError(res.message ?? null);
@@ -236,7 +223,6 @@ export function CategoryForm({ editing }: { editing: CategoryInitial | null }) {
         <button type="submit" disabled={busy} className={btnPrimary}>
           {busy ? "جارٍ الحفظ…" : editing ? "حفظ التعديلات" : "إضافة الفئة"}
         </button>
-        {saved && <span className="text-sm font-medium text-green-600">تم حفظ الفئة بنجاح.</span>}
         {topError && <span className="text-sm text-red-600">{topError}</span>}
         {editing && (
           <Link href="/admin/categories" className="text-sm text-primary hover:underline">
@@ -247,16 +233,6 @@ export function CategoryForm({ editing }: { editing: CategoryInitial | null }) {
     </form>
   );
 }
-
-const CategoryFormDefaults = {
-  nameEn: "",
-  nameAr: "",
-  slug: "",
-  descriptionEn: "",
-  descriptionAr: "",
-  icon: "",
-  color: "",
-};
 
 // ---------------------------------------------------------------------------
 // Developers
@@ -288,7 +264,7 @@ export const DEVELOPER_CREATE_DEFAULT: DeveloperInitial = {
   isVerified: false,
 };
 
-/** Add/edit form for one developer (prefilled when the page resolves ?edit=<id>). */
+/** Add/edit form for one developer (prefilled by the [id] edit page). */
 export function DeveloperForm({ editing }: { editing: DeveloperInitial | null }) {
   const router = useRouter();
   const initial = editing ?? DEVELOPER_CREATE_DEFAULT;
@@ -304,7 +280,6 @@ export function DeveloperForm({ editing }: { editing: DeveloperInitial | null })
   const [socialUrls, setSocialUrls] = useState<string[]>(initial.socialUrls);
   const [isVerified, setIsVerified] = useState(initial.isVerified);
   const [busy, setBusy] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [topError, setTopError] = useState<string | null>(null);
   const [serverErrors, setServerErrors] = useState<ServerErrors>({});
 
@@ -318,17 +293,10 @@ export function DeveloperForm({ editing }: { editing: DeveloperInitial | null })
     setSocialUrls((cur) => cur.filter((_, idx) => idx !== i));
   }
 
-  function reset() {
-    setF({ nameEn: "", nameAr: "", website: "", email: "", logoUrl: "", descriptionEn: "", descriptionAr: "" });
-    setSocialUrls([]);
-    setIsVerified(false);
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (busy) return;
     setBusy(true);
-    setSaved(false);
     setTopError(null);
     setServerErrors({});
 
@@ -343,13 +311,8 @@ export function DeveloperForm({ editing }: { editing: DeveloperInitial | null })
     try {
       const res = await saveDeveloper(payload);
       if (res.ok) {
-        if (editing) {
-          router.push("/admin/developers");
-        } else {
-          setSaved(true);
-          reset();
-          router.refresh();
-        }
+        router.push("/admin/developers");
+        router.refresh();
       } else {
         setServerErrors(res.fieldErrors ?? {});
         setTopError(res.message ?? null);
@@ -494,7 +457,6 @@ export function DeveloperForm({ editing }: { editing: DeveloperInitial | null })
         <button type="submit" disabled={busy} className={btnPrimary}>
           {busy ? "جارٍ الحفظ…" : editing ? "حفظ التعديلات" : "إضافة المطوّر"}
         </button>
-        {saved && <span className="text-sm font-medium text-green-600">تم حفظ المطور بنجاح.</span>}
         {topError && <span className="text-sm text-red-600">{topError}</span>}
         {editing && (
           <Link href="/admin/developers" className="text-sm text-primary hover:underline">
