@@ -17,7 +17,9 @@ export function createGeminiProvider(): EmbeddingProvider {
 }
 
 async function embed(taskType: TaskType, text: string): Promise<number[]> {
-  const apiKey = process.env.AI_API_KEY ?? process.env.GEMINI_API_KEY;
+  // `||` (not `??`): a blank AI_API_KEY (e.g. the shipped `.env.example` line)
+  // must fall through to GEMINI_API_KEY.
+  const apiKey = process.env.AI_API_KEY || process.env.GEMINI_API_KEY;
   if (!apiKey) {
     throw new EmbeddingUnavailableError(
       "gemini provider not configured: set AI_API_KEY (or GEMINI_API_KEY)"

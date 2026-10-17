@@ -7,11 +7,15 @@ const env = (v: Record<string, string | undefined>) =>
   vi.stubEnv("AI_SEARCH_PROVIDER", v.p!) && vi.stubEnv("AI_API_KEY", v.key ?? "");
 
 // Isolate env per test: baseline is the safe, network-free mock provider.
+// GEMINI_API_KEY must be stubbed too: with `AI_API_KEY || GEMINI_API_KEY`
+// resolution, an ambient GEMINI_API_KEY would leak into the unconfigured-gemini
+// test, which never stubs fetch (it would become a live request).
 beforeEach(() => {
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();
   vi.stubEnv("AI_SEARCH_PROVIDER", "mock");
   vi.stubEnv("AI_API_KEY", "");
+  vi.stubEnv("GEMINI_API_KEY", "");
 });
 
 describe("smart search embedding providers", () => {
@@ -43,6 +47,16 @@ describe("smart search embedding providers", () => {
     expect(body).toMatchObject({ taskType: "retrieval_query", outputDimensionality: 768 });
     fetchMock.mockResolvedValue(new Response("{}", { status: 200 })); // malformed
     await expect(p.embedQuery("q")).rejects.toBeInstanceOf(EmbeddingUnavailableError);
+  });
+
+  it("gemini: blank AI_API_KEY falls through to GEMINI_API_KEY (shipped .env.example shape)", async () => {
+    env({ p: "gemini", key: "" }); // AI_API_KEY= as shipped in .env.example
+    vi.stubEnv("GEMINI_API_KEY", "G");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(
+      JSON.stringify({ embedding: { values: Array.from({ length: 768 }, () => 0.1) } }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    await getEmbeddingProvider().embedQuery("q");
+    expect(fetchMock.mock.calls[0][1].headers["x-goog-api-key"]).toBe("G");
   });
 
   it("openai: Bearer key, dimensions 768, AI_BASE_URL honored", async () => {
