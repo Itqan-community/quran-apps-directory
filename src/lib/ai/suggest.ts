@@ -56,10 +56,19 @@ const RAW_ALIASES: Record<string, string> = {
   "ورييش": "ورش",
 };
 
-/** Alias map: latin keys lowercase, arabic keys normalized; values are canonical forms. */
-export const QUERY_ALIASES: Record<string, string> = Object.fromEntries(
-  Object.entries(RAW_ALIASES).map(([key, value]) => [normalizeArabic(key).toLowerCase(), value]),
-);
+/**
+ * Alias map: latin keys lowercase, arabic keys normalized; values are
+ * canonical forms. Built on a null prototype so indexing it with a user token
+ * can never resolve inherited Object.prototype properties (constructor,
+ * toString, valueOf, ...) as if they were alias entries.
+ */
+export const QUERY_ALIASES: Record<string, string> = (() => {
+  const aliases = Object.create(null) as Record<string, string>;
+  for (const [key, value] of Object.entries(RAW_ALIASES)) {
+    aliases[normalizeArabic(key).toLowerCase()] = value;
+  }
+  return aliases;
+})();
 
 // ---------------------------------------------------------------------------
 // Tuning constants

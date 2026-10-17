@@ -43,4 +43,15 @@ describe("suggestQuery", () => {
     expect(suggestQuery("quran", ["quran", "warsh"])).toBeNull();
     expect(suggestQuery("ab", ["ab"])).toBeNull(); // token <4 chars: no levenshtein guessing
   });
+
+  it("does not leak Object.prototype inherited names as aliases", () => {
+    // Regression: a token colliding with an inherited property name must fall
+    // through to the fuzzy path, not resolve QUERY_ALIASES[token] to
+    // Object.prototype's function/prototype value.
+    // "constructor" is 3 edits from "constructive" (> 2) -> nothing changes.
+    expect(suggestQuery("constructor", ["constructive"])).toBeNull();
+    // The fuzzy path still corrects a prototype-name token within distance 2.
+    expect(suggestQuery("constructor", ["constructors"])).toBe("constructors");
+    expect(suggestQuery("toString", [])).toBeNull();
+  });
 });
