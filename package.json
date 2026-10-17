@@ -9,6 +9,7 @@
     "lint": "eslint",
     "db:push": "drizzle-kit push --force",
     "db:push:test": "DATABASE_URL=postgres://postgres:postgres@localhost:5433/qad_test drizzle-kit push --force",
+    "db:pgvector": "node --experimental-strip-types --env-file=.env.local db/enable-pgvector.ts",
     "db:migrate-live": "node --experimental-strip-types --env-file=.env.local db/migrate-live.ts",
     "db:seed": "node --experimental-strip-types --env-file=.env.local db/seed.ts",
     "db:sync-live-json": "node --experimental-strip-types --env-file=.env.local db/sync-live-json.ts",

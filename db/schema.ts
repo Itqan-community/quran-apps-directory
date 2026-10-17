@@ -10,6 +10,7 @@ import {
   jsonb,
   index,
   uniqueIndex,
+  vector,
 } from "drizzle-orm/pg-core";
 
 /** Mirrors old core.BaseModel: id + created_at + updated_at */
@@ -102,6 +103,9 @@ export const apps = pgTable(
       .notNull()
       .references(() => developers.id, { onDelete: "cascade" }),
     status: text("status").default("draft").notNull(),
+    embedding: vector("embedding", { dimensions: 768 }),
+    docHash: text("doc_hash"),
+    embeddedAt: timestamp("embedded_at", { withTimezone: true }),
     ...baseColumns(),
   },
   (t) => [
@@ -121,6 +125,7 @@ export const apps = pgTable(
     index("apps_riwayah_gin").using("gin", t.riwayah),
     index("apps_mushaf_type_gin").using("gin", t.mushafType),
     index("apps_features_gin").using("gin", t.features),
+    index("apps_embedding_hnsw").using("hnsw", t.embedding.op("vector_cosine_ops")),
   ]
 );
 
@@ -209,6 +214,13 @@ export const appMetadataValues = pgTable(
   },
   (t) => [uniqueIndex("unique_app_metadata_option").on(t.appId, t.metadataOptionId)]
 );
+
+export const searchEmbeddingCache = pgTable("search_embedding_cache", {
+  querySha256: text("query_sha256").primaryKey(),
+  embedding: vector("embedding", { dimensions: 768 }).notNull(),
+  model: text("model").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
 
 export const appSubmissions = pgTable(
   "app_submissions",

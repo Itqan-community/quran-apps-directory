@@ -50,3 +50,21 @@ describe("schema", () => {
     expect(one[0].one).toBe(1);
   });
 });
+
+describe("smart-search schema", () => {
+  it("apps.embedding columns exist and cache table holds 768-dim vectors", async () => {
+    const sql = postgres(process.env.TEST_DATABASE_URL!);
+    // column presence: select reads must not raise
+    await expect(sql`
+      SELECT doc_hash, embedded_at FROM apps WHERE embedding IS NULL AND status='published' LIMIT 1
+    `).resolves.toBeDefined();
+    // dimension proof: insert a real 768-dim vector, read it back
+    const vec = `[${Array.from({ length: 768 }, (_, i) => (i % 2 ? 0 : 1)).join(",")}]`;
+    const ins = await sql`
+      INSERT INTO search_embedding_cache (query_sha256, embedding, model)
+      VALUES ('t-cache-1', ${vec}::vector, 'test') RETURNING embedding::text`;
+    expect(ins[0].embedding.split(",").length).toBe(768);
+    await sql`DELETE FROM search_embedding_cache WHERE query_sha256='t-cache-1'`;
+    await sql.end();
+  });
+});
