@@ -212,7 +212,10 @@ function sha256Hex(text: string): string {
  * augmented); entries older than 7 days count as a miss. Misses embed via the
  * given provider (or the deployment default) and upsert
  * ON CONFLICT (query_sha256) DO UPDATE SET embedding, model, created_at = now(),
- * so concurrent misses converge to one row.
+ * so concurrent misses converge to one row. A miss also opportunistically
+ * prunes rows older than 8 days (spec §5); that prune is best-effort — its
+ * own try/catch swallows failures so a prune error can never break the query
+ * (the upsert above is separate and its failure still propagates to fallback).
  */
 async function getQueryEmbedding(augmented: string, provider?: EmbeddingProvider): Promise<number[]> {
   const version = aiSearchVersion();
@@ -244,6 +247,14 @@ async function getQueryEmbedding(augmented: string, provider?: EmbeddingProvider
       target: searchEmbeddingCache.querySha256,
       set: { embedding: values, model: version, createdAt: sql`now()` },
     });
+
+  // Opportunistic prune of stale rows (spec §5): best-effort, so a failure
+  // here is swallowed and must not break the search query.
+  try {
+    await db.execute(sql`DELETE FROM search_embedding_cache WHERE created_at < now() - interval '8 days'`);
+  } catch {
+    // best-effort prune; ignore failures
+  }
   return values;
 }
 
@@ -485,10 +496,33 @@ async function runSmartSearch(
 
   const { page, pageSize } = parsePageParams(filters);
   const start = (page - 1) * pageSize;
+  // Explicit pick at the return boundary: the internal Candidate carries wide
+  // scoring fields (full descriptions, merged labels) that must not leak into
+  // the declared SmartAppItem shape (it is serialized into the "use cache"
+  // wrapper's cache entry).
   const results: SmartAppItem[] = kept
     .slice(start, start + pageSize)
     .map(({ item, reasons, score }) => ({
-      ...item,
+      id: item.id,
+      slug: item.slug,
+      nameEn: item.nameEn,
+      nameAr: item.nameAr,
+      shortDescriptionEn: item.shortDescriptionEn,
+      shortDescriptionAr: item.shortDescriptionAr,
+      applicationIcon: item.applicationIcon,
+      mainImageEn: item.mainImageEn,
+      mainImageAr: item.mainImageAr,
+      avgRating: item.avgRating,
+      reviewCount: item.reviewCount,
+      viewCount: item.viewCount,
+      sortOrder: item.sortOrder,
+      featured: item.featured,
+      platform: item.platform,
+      status: item.status,
+      createdAt: item.createdAt,
+      isNew: item.isNew,
+      developer: item.developer,
+      categories: item.categories,
       matchReasons: reasons,
       relevanceScore: score,
     }));
@@ -539,7 +573,11 @@ export async function searchAppsSmart(
   let smart: SmartSearchResult | null = null;
   try {
     smart = await runSmartSearch(filters, search, opts?.provider);
-  } catch {
+  } catch (e) {
+    // Logged (repo convention; no manual Sentry capture in this codebase) so
+    // provider/cache/DB failures are visible; the keyword fallback below is
+    // unchanged.
+    console.error("smart search pipeline failed; keyword fallback", e);
     smart = null;
   }
   return smart ?? runFallback(filters, search);

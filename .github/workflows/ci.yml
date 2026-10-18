@@ -32,5 +32,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      # drizzle-kit push creates columns/tables but not extensions; the fresh
+      # pgvector image needs the extension enabled or the push fails with
+      # `type "vector" does not exist` (SQLSTATE 42704).
+      - run: DATABASE_URL=$TEST_DATABASE_URL node --experimental-strip-types db/enable-pgvector.ts
       - run: npx drizzle-kit push --force
       - run: npm test

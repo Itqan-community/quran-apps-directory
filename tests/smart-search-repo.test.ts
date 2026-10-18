@@ -174,11 +174,18 @@ describe("searchAppsSmart", () => {
     expect(calls()).toBe(1);
 
     await sql`UPDATE search_embedding_cache SET created_at = now() - interval '8 days'`;
+    // A backdated stale row from another query: the miss-upsert prunes it.
+    await sql`
+      INSERT INTO search_embedding_cache (query_sha256, embedding, model, created_at)
+      VALUES ('stale-prune-probe', ${vectorLiteral(await mock.embedQuery("prune probe"))}::vector, 'old', now() - interval '9 days')
+    `;
     await searchAppsSmart(f, { provider });
     expect(calls()).toBe(2);
 
-    const fresh = await sql`SELECT created_at > now() - interval '1 day' AS fresh FROM search_embedding_cache LIMIT 1`;
+    const fresh = await sql`SELECT created_at > now() - interval '1 day' AS fresh FROM search_embedding_cache WHERE model = ${aiSearchVersion()} LIMIT 1`;
     expect(fresh[0].fresh).toBe(true);
+    const pruned = await sql`SELECT count(*)::int AS c FROM search_embedding_cache WHERE query_sha256 = 'stale-prune-probe'`;
+    expect(pruned[0].c).toBe(0);
   });
 
   it("unreachable provider -> fallbackMode + keyword results still returned", async () => {
