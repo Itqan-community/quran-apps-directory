@@ -6,6 +6,10 @@ node_modules
 .github
 .env*
 !.env.example
+# Certs written by the certbot container as root (mode 700). Unreadable by the
+# build user, so leaving them in the context fails the build with
+# "error from sender: open …/certbot/letsencrypt/accounts: permission denied".
+certbot/letsencrypt
 e2e
 docs
 *.md

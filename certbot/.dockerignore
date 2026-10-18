@@ -1,0 +1,7 @@
+# Build context is ./certbot (see docker-compose.prod.yml). Both of these are
+# runtime material written on the host, never image content:
+#   letsencrypt/   certs created by the running container as root (mode 700) —
+#                  unreadable by the build user, which fails the context send
+#   cloudflare.ini a real DNS-01 token (git-ignored) — never bake into an image
+letsencrypt
+cloudflare.ini
