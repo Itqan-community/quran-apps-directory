@@ -1,7 +1,8 @@
 # Production stack: app + nginx (TLS) + certbot (Cloudflare DNS-01).
-# The database is a MANAGED Postgres (must have the pgvector extension
-# available) — there is deliberately no db/minio service here; production
-# media goes straight to Cloudflare R2.
+# The database and object storage live OUTSIDE this stack — in production a
+# MANAGED Postgres (must have the pgvector extension available) and Cloudflare
+# R2. To test the setup locally, run those two as plain docker containers and
+# point .env.prod at them — see docs/deploy-docker.md "Local dry-run".
 #
 # Usage (from the repo root):
 #   cp .env.prod.example .env.prod   # fill everything in
@@ -9,6 +10,12 @@
 #
 # The --env-file is needed twice over: it feeds compose-level interpolation
 # (DOMAIN, build args) AND, via env_file, the app container's runtime env.
+#
+# Top-level name gives the prod stack its own compose project (containers
+# qad-prod-*, volumes qad-prod_*) so it can never recreate/conflict with the
+# dev stack (docker-compose.yml), which keeps the directory-name project.
+
+name: qad-prod
 
 services:
   app:
@@ -17,7 +24,11 @@ services:
       dockerfile: Dockerfile
       args:
         # Build-time only: prerendering touches the DB from the build stage.
-        DATABASE_URL: ${DATABASE_URL}
+        # BUILD_DATABASE_URL lets a machine that cannot resolve DATABASE_URL's
+        # host at build time (e.g. a dev box, where that host is a container on
+        # the compose network) point the prerender at the db's host-mapped
+        # port. On the VPS it stays unset and DATABASE_URL is used directly.
+        DATABASE_URL: ${BUILD_DATABASE_URL:-${DATABASE_URL}}
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
         NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN:-}
     env_file: .env.prod
@@ -34,25 +45,28 @@ services:
       retries: 3
 
   nginx:
-    image: nginx:alpine
+    image: nginx:bookworm
     depends_on:
       app:
         condition: service_started
     ports:
-      - "80:80"
-      - "443:443"
-    environment:
-      DOMAIN: ${DOMAIN}
+      # Defaults are the real ports; overridable for a local dry-run when
+      # something else already owns 80/443 on the machine.
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
     volumes:
-      - ./docker/nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
-      # First-boot dummy certificate (sourced by nginx's own entrypoint).
-      - ./docker/nginx/10-dummy-cert.sh:/docker-entrypoint.d/10-dummy-cert.sh:ro
-      - letsencrypt:/etc/letsencrypt
+      # Static config — no envsubst/template processing.
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      # First-boot self-signed certificate (sourced by nginx's own entrypoint).
+      - ./nginx/self-signed-cert.sh:/docker-entrypoint.d/self-signed-cert.sh:ro
+      # Certs persist on the host in ./certbot/letsencrypt (git-ignored); nginx
+      # needs write access because self-signed-cert.sh drops the initial pair.
+      - ./certbot/letsencrypt:/etc/letsencrypt
     restart: unless-stopped
 
   certbot:
     build:
-      context: ./docker/certbot
+      context: ./certbot
     depends_on:
       nginx:
         condition: service_started
@@ -60,9 +74,6 @@ services:
     environment:
       NGINX_CONTAINER: nginx
     volumes:
-      - letsencrypt:/etc/letsencrypt
+      - ./certbot/letsencrypt:/etc/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
-
-volumes:
-  letsencrypt:

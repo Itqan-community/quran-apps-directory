@@ -24,9 +24,10 @@ The database is a **managed Postgres** — it is *not* part of the compose stack
 |---|---|
 | `Dockerfile` | Multi-stage build → Next.js standalone runner (non-root, `/health` healthcheck) |
 | `docker-compose.prod.yml` | `app` + `nginx` (80/443) + `certbot` (issue + renew loop) |
-| `docker/nginx/default.conf.template` | Rendered by nginx's envsubst; `$DOMAIN` comes from `.env.prod` |
-| `docker/nginx/10-dummy-cert.sh` | First-boot self-signed pair so 443 binds before the real cert exists |
-| `docker/certbot/Dockerfile` + `entrypoint.sh` | `certbot/dns-cloudflare` + docker CLI; generates `cloudflare.ini` from `CF_DNS_API_TOKEN`, issues, reloads nginx, renews every 12 h |
+| `nginx/default.conf` | Static config (`server_name _`, no templating); upstream `app:3000`, TLS from `certbot/letsencrypt` |
+| `nginx/self-signed-cert.sh` | First-boot self-signed pair (fixed cert name `app`) so 443 binds before the real cert exists |
+| `certbot/Dockerfile` + `entrypoint.sh` | `certbot/dns-cloudflare` + docker CLI; generates `cloudflare.ini` from `CF_DNS_API_TOKEN`, issues (cert name `app`), reloads nginx, renews every 12 h |
+| `certbot/letsencrypt/` | Generated certificate store, bind-mounted into nginx + certbot (git-ignored — delete to force a fresh issue) |
 | `.env.prod.example` | Copy to `.env.prod` and fill in (git-ignored) |
 
 ## Deploy
@@ -44,8 +45,8 @@ What happens on first boot:
 
 1. `app` builds (the build stage prerenders pages that read the DB, so the build
    machine must reach the managed `DATABASE_URL` — true on the VPS itself).
-2. `nginx` starts; `10-dummy-cert.sh` writes a 7-day **self-signed** cert at
-   `/etc/letsencrypt/live/<domain>/` because no real cert exists yet — HTTPS is up
+2. `nginx` starts; `self-signed-cert.sh` writes a 7-day **self-signed** cert at
+   `/etc/letsencrypt/live/app/` (cert name `app`) because no real cert exists yet — HTTPS is up
    (browser warning until step 3).
 3. `certbot` sees the `.dummy` marker, clears the pair, issues the real certificate
    via DNS-01, and runs `docker exec nginx nginx -t && nginx -s reload`.
@@ -59,12 +60,101 @@ Notes:
 - `STAGING=1` in `.env.prod` switches issuance to the Let's Encrypt **staging CA**
   (no rate limits) — recommended for the very first dry run; then set it back to `0`
   and remove the staging cert: `docker compose --env-file .env.prod -f docker-compose.prod.yml \
-  run --rm certbot certbot delete --cert-name <domain>` before re-issuing.
+  run --rm certbot certbot delete --cert-name app` (or just `rm -rf
+  certbot/letsencrypt`) before re-issuing.
 - `ADDITIONAL_DOMAINS` (space-separated) adds extra `-d` SANs, provided their DNS
   records already exist in the same Cloudflare zone.
 - Only the `certbot` container mounts the docker socket (to `docker exec` into nginx).
 - `client_max_body_size` is 20 MB (submission media uploads).
 - The dev compose (`docker-compose.yml`) is untouched; use `-f` explicitly for prod.
+
+## Local dry-run of the production stack
+
+Production's two external dependencies — a managed Postgres and R2 — are simply run as
+plain `docker run` containers here, then `.env.prod` points at them (the compose stack
+itself is unchanged). The certbot controller degrades gracefully: with an empty
+`CF_DNS_API_TOKEN` (or failed issuance) it logs and retries every 12 h instead of
+crash-looping, while nginx keeps serving the first-boot self-signed pair — HTTPS never
+drops.
+
+```bash
+cp .env.prod.example .env.prod
+# change the "Local dry-run" block at the bottom of .env.prod (all values listed there)
+
+# 1. Stand-ins for the external services (host ports 5434/9010/9011, so the dev
+#    stack on 5433/9000 can stay up). Re-runnable: reuse the named volumes.
+docker run -d --name qad-db -p 5434:5432 \
+  -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=qad \
+  -v qad-db-data:/var/lib/postgresql/data pgvector/pgvector:pg16
+docker run -d --name qad-minio -p 9010:9000 -p 9011:9001 \
+  -e MINIO_ROOT_USER=minioadmin -e MINIO_ROOT_PASSWORD=minioadmin \
+  -e MINIO_DEFAULT_BUCKETS=qad \
+  -v qad-minio-data:/bitnami/minio/data bitnamilegacy/minio:latest
+
+# 2. Schema into that db; optional seed for realistic pages
+DATABASE_URL=postgres://postgres:postgres@localhost:5434/qad node --experimental-strip-types db/enable-pgvector.ts
+DATABASE_URL=postgres://postgres:postgres@localhost:5434/qad npx drizzle-kit push --force
+DATABASE_URL=postgres://postgres:postgres@localhost:5434/qad npm run db:seed        # optional
+
+# 3. Build the images (prerender hits the db; see the host-network note below)
+docker build --network host \
+  --build-arg DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5434/qad \
+  --build-arg NEXT_PUBLIC_SITE_URL=https://localhost \
+  -t qad-prod-app .
+docker build -t qad-prod-certbot certbot/   # + --add-host dl-cdn… pin on this box
+
+# If the machine's containers are DNS-blind (Tailscale MagicDNS — the same
+# reason certbot can't reach Let's Encrypt above), `docker build` can't run
+# `npm ci`. Run the identical steps with an explicit resolver instead, then
+# package the output with a COPY-only Dockerfile (same node:22 base + CMD):
+#   docker run --rm --dns 1.1.1.1 --add-host=host.docker.internal:host-gateway \
+#     -v /tmp/qad-build:/app -w /app \
+#     -e DATABASE_URL=postgres://postgres:postgres@host.docker.internal:5434/qad \
+#     -e NEXT_PUBLIC_SITE_URL=https://localhost \
+#     node:22-bookworm-slim sh -c 'npm ci --no-audit --no-fund && npm run build'
+
+# 4. Raise the stack, then hook the stand-ins onto its network so the app
+#    resolves them by name (DATABASE_URL=@qad-db, R2_ENDPOINT=http://qad-minio:9000)
+docker compose --env-file .env.prod -f docker-compose.prod.yml up -d
+docker network connect qad-prod_default qad-db
+docker network connect qad-prod_default qad-minio
+
+# 5. Validate
+curl -sk https://localhost:8443/health                            # → {"status":"ok"}
+curl -sk https://localhost:8443/ar | head -c 200                  # → Arabic home HTML
+docker compose --env-file .env.prod -f docker-compose.prod.yml exec nginx \
+  curl -sI http://localhost/ar                                    # → 301 → https
+docker compose --env-file .env.prod -f docker-compose.prod.yml ps # app (healthy)
+```
+
+Notes:
+
+- Why the two steps (run, then `docker network connect`): the db has to be up
+  *before* the image is built (the prerender reads it) — and it can't be created on
+  the stack network first, because compose only creates `qad-prod_default` at `up`
+  (and refuses a foreign network of that name). Attaching afterwards gives the app
+  plain DNS names, exactly like the managed DB's hostname in production.
+- Ports: `HTTP_PORT=8080`/`HTTPS_PORT=8443` in the local dry-run (the box's 80/443 may
+  be owned by something else — e.g. an unrelated reverse proxy). With the 8443 default
+  the host-side port-80 redirect targets the wrong port, hence the redirect check from
+  inside the compose network above.
+- The build stage prerenders DB-backed pages → the db must be up with schema pushed
+  *before* the build (step 2 before 3). `BUILD_DATABASE_URL` points the prerender at
+  the db's host-mapped port; on the VPS it stays unset and `DATABASE_URL` is used.
+- Builds on this dev machine need host networking (containers can't use the
+  Tailscale-overridden DNS) — that is why the images are built with plain
+  `docker build --network host` rather than `docker compose … --build`.
+- MinIO note: MinIO removed the free community images from Docker Hub in 2025 (repo
+  404s, quay.io needs auth), so the stand-in is the archived
+  `bitnamilegacy/minio:latest` (local-testing only — production media always goes to
+  real R2). `MINIO_DEFAULT_BUCKETS` creates the `qad` bucket; to also test public
+  image URLs, make it readable:
+  `docker run --rm --network host bitnamilegacy/mc sh -c "mc alias set local http://localhost:9010 minioadmin minioadmin && mc anonymous set download local/qad"`
+- Teardown: `docker rm -f qad-db qad-minio` (volumes `qad-db-data` / `qad-minio-data`
+  survive; add `-v` to drop them).
+- Everything else in the prod path is exercised: multi-stage build, standalone runtime
+  + `/health`, nginx TLS/config/self-signed-cert wiring, security headers, healthchecks.
+  Not covered: real DNS-01 issuance/renewal (empty token locally), real R2/SMTP.
 
 ## Smart Search on prod
 
@@ -106,7 +196,7 @@ the runtime steps assume a machine with Docker and (for step 4+) a reachable man
 **0. Static checks (no Docker needed)**
 
 ```bash
-bash -n docker/nginx/10-dummy-cert.sh && bash -n docker/certbot/entrypoint.sh
+bash -n nginx/self-signed-cert.sh && bash -n certbot/entrypoint.sh
 # → no output = shell syntax OK
 
 cp .env.prod.example .env.prod   # temporarily, for config validation only
@@ -118,7 +208,7 @@ rm .env.prod                     # (recreate for real later, filled in)
 **1. Build the images (individually, so failures are attributable)**
 
 ```bash
-docker build -t qad-certbot-check docker/certbot/
+docker build -t qad-certbot-check certbot/
 # → "Successfully built" — proves the certbot toolchain (apk/docker-cli) installs
 
 docker build --network host \
@@ -128,9 +218,13 @@ docker build --network host \
 # → "Successfully built"; ~5-10 min (npm ci + next build with DB-backed prerender)
 ```
 
-- On your VPS plain `docker build` works (normal DNS). On this dev machine, containers
-  can't use the Tailscale-overridden DNS — hence `--network host` (and, for the certbot
-  image, an `--add-host dl-cdn.alpinelinux.org:<IPv4>` pin).
+- On your VPS plain `docker build` works (normal DNS). On this dev machine
+  containers resolve via the host's Tailscale MagicDNS, which ignores
+  container-sourced queries — and `--network host` inherits the same
+  `resolv.conf`, so it does **not** help. Either fix the machine's Docker
+  resolver (`/etc/docker/daemon.json`: `{"dns": ["1.1.1.1","8.8.8.8"]}`) or
+  build the artifacts via `docker run --dns 1.1.1.1` (see "Local dry-run"
+  step 3 below).
 - ⚠️ The build stage runs `next build`, which prerenders DB-backed pages: the
   `DATABASE_URL` build-arg must resolve from the build machine. On the VPS use the
   managed DB's network-reachable host (private link or public endpoint).
@@ -194,16 +288,17 @@ docker compose … logs certbot | grep reload
 
 ```bash
 docker compose --env-file .env.prod -f docker-compose.prod.yml run --rm certbot \
-  certbot delete --cert-name <domain>       # drop the staging cert
+  certbot delete --cert-name app            # drop the staging cert
 docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --force-recreate certbot
 # → re-issues a PRODUCTION certificate via DNS-01
 docker compose … exec certbot certbot certificates   # → no "INVALID: STAGING" line
 ```
 
-**7. Teardown (leaves volumes intact)**
+**7. Teardown (certs persist on disk)**
 
 ```bash
 docker compose --env-file .env.prod -f docker-compose.prod.yml down
-# volumes (letsencrypt) survive; add --volumes to also drop certs
+# ./certbot/letsencrypt survives (git-ignored, written as root — use sudo to
+# delete it and force a fresh issue)
 ```
 

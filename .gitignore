@@ -44,3 +44,7 @@ next-env.d.ts
 
 # worktrees
 .worktrees/
+
+# docker runtime material — never commit credentials or certificates
+certbot/cloudflare.ini
+certbot/letsencrypt/

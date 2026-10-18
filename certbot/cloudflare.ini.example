@@ -4,7 +4,7 @@
 # Kept here for manual/offline use:
 #
 #   docker run --rm -v letsencrypt:/etc/letsencrypt \
-#     -v ./docker/certbot/cloudflare.ini:/etc/cloudflare/cloudflare.ini:ro \
+#     -v ./certbot/cloudflare.ini:/etc/cloudflare/cloudflare.ini:ro \
 #     certbot/dns-cloudflare certonly --dns-cloudflare …
 #
 # Token profile: API Token (not Global Key) scoped to
