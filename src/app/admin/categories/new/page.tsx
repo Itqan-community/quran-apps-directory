@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import Link from "next/link";
+import { BackLink } from "@/components/admin/ui";
 import { CategoryForm } from "@/components/admin/taxonomy-editor";
 
 function FormSkeleton() {
@@ -11,9 +11,7 @@ export default function NewCategoryPage() {
     <main className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-text">إضافة فئة جديدة</h1>
-        <Link href="/admin/categories" className="text-sm text-primary hover:underline">
-          ← العودة إلى القائمة
-        </Link>
+        <BackLink href="/admin/categories">العودة إلى القائمة</BackLink>
       </div>
       <Suspense fallback={<FormSkeleton />}>
         <CategoryForm editing={null} />

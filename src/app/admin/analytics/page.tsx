@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { ChartColumn } from "lucide-react";
 import {
   getCountryBreakdown30d,
   getDeviceBreakdown30d,
@@ -24,7 +25,10 @@ function AnalyticsSkeleton() {
 export default function AdminAnalyticsPage() {
   return (
     <main className="flex flex-col gap-6">
-      <h1 className="text-2xl font-bold text-text">التحليلات</h1>
+      <h1 className="flex items-center gap-2 text-2xl font-bold text-text">
+        <ChartColumn aria-hidden className="size-6 text-primary" />
+        التحليلات
+      </h1>
       <Suspense fallback={<AnalyticsSkeleton />}>
         <AnalyticsContent />
       </Suspense>

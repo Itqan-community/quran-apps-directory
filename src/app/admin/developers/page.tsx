@@ -1,15 +1,26 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { Funnel, Pencil, Users } from "lucide-react";
 import { getAllDevelopers, getDeveloperAppCount } from "@/lib/repo/admin";
 import { deleteDeveloper } from "@/lib/actions/admin-taxonomy";
 import ConfirmSubmit from "@/components/admin/confirm-submit";
+import {
+  AddButtonLink,
+  EmptyState,
+  StatusPill,
+  adminBodyRow,
+  adminHeadRow,
+  adminIconAction,
+  adminTable,
+  adminTableWrap,
+  adminTh,
+} from "@/components/admin/ui";
 
 // FK CASCADE warns loudly: deleting a developer deletes their apps.
 const DEV_DELETE_CONFIRM_APPS =
   "سيتم حذف المطور نهائيًا. سيتم حذف تطبيقات المطور المرتبطة. هل تريد المتابعة؟";
 const DEV_DELETE_CONFIRM_EMPTY = "سيتم حذف المطور نهائيًا. هل تريد المتابعة؟";
 
-const thCls = "px-3 py-2 text-start font-medium";
 const selectCls =
   "rounded-app border border-border bg-surface px-2 py-2 text-sm text-text";
 
@@ -30,12 +41,7 @@ export default function DevelopersPage({ searchParams }: { searchParams: Promise
     <main className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-text">المطورون</h1>
-        <Link
-          href="/admin/developers/new"
-          className="rounded-app bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-hover"
-        >
-          + إضافة مطوّر
-        </Link>
+        <AddButtonLink href="/admin/developers/new">إضافة مطوّر</AddButtonLink>
       </div>
       <Suspense fallback={<ContentSkeleton />}>
         <DevelopersContent searchParams={searchParams} />
@@ -84,8 +90,9 @@ async function DevelopersContent({ searchParams }: { searchParams: Promise<RawSe
         </select>
         <button
           type="submit"
-          className="rounded-app bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-hover"
+          className="inline-flex items-center gap-1.5 rounded-app bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-hover"
         >
+          <Funnel aria-hidden className="size-4" />
           تصفية
         </button>
         {(q || verified !== "all") && (
@@ -96,46 +103,43 @@ async function DevelopersContent({ searchParams }: { searchParams: Promise<RawSe
       </form>
 
       {developers.length === 0 ? (
-        <p className="rounded-app bg-card p-6 text-center text-sm text-text-secondary shadow-app">
-          لا يوجد مطورون مطابقون
-        </p>
+        <EmptyState
+          icon={<Users aria-hidden className="size-5" />}
+          message="لا يوجد مطورون مطابقون"
+        />
       ) : (
-        <div className="overflow-x-auto rounded-app bg-card shadow-app">
-          <table className="w-full text-start text-sm">
+        <div className={adminTableWrap}>
+          <table className={adminTable}>
             <thead>
-              <tr className="border-b border-border text-xs text-text-secondary">
-                <th className={thCls}>الاسم (EN)</th>
-                <th className={thCls}>الاسم (AR)</th>
-                <th className={thCls}>الموقع</th>
-                <th className={thCls}>موثّق</th>
-                <th className={thCls}>التطبيقات</th>
-                <th className={thCls}>إجراءات</th>
+              <tr className={adminHeadRow}>
+                <th className={adminTh}>الاسم (EN)</th>
+                <th className={adminTh}>الاسم (AR)</th>
+                <th className={adminTh}>الموقع</th>
+                <th className={adminTh}>الحالة</th>
+                <th className={adminTh}>التطبيقات</th>
+                <th className={adminTh}>إجراءات</th>
               </tr>
             </thead>
             <tbody>
               {developers.map((d, i) => {
                 const count = counts[i] ?? 0;
                 return (
-                  <tr key={d.id} className="border-b border-border last:border-b-0">
+                  <tr key={d.id} className={adminBodyRow}>
                     <td className="px-3 py-2 text-text">{d.nameEn}</td>
                     <td className="px-3 py-2 text-text">{d.nameAr}</td>
                     <td className="max-w-48 truncate px-3 py-2 text-xs text-text-secondary" dir="ltr">
                       {d.website || "—"}
                     </td>
                     <td className="px-3 py-2">
-                      <span className={d.isVerified ? "text-green-600" : "text-text-secondary"}>
-                        {d.isVerified ? "✓" : "—"}
-                      </span>
+                      <StatusPill active={d.isVerified} on="موثّق" off="غير موثّق" />
                     </td>
                     <td className="px-3 py-2 text-text">
-                      {count > 0 ? <span className="font-bold">{count}</span> : <span className="text-text-secondary">0</span>}
+                      {count > 0 ? <span className="font-bold tabular-nums">{count}</span> : <span className="text-text-secondary">0</span>}
                     </td>
                     <td className="px-3 py-2">
                       <div className="flex items-center gap-2">
-                        <Link
-                          href={`/admin/developers/${d.id}`}
-                          className="rounded-app border border-border bg-surface px-3 py-1.5 text-xs text-text transition hover:bg-primary/10"
-                        >
+                        <Link href={`/admin/developers/${d.id}`} className={adminIconAction}>
+                          <Pencil aria-hidden className="size-3.5" />
                           تعديل
                         </Link>
                         <ConfirmSubmit

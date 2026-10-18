@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { BackLink } from "@/components/admin/ui";
 import { notFound } from "next/navigation";
 import type { SubmissionDetail } from "@/lib/repo/admin";
 import { getSubmissionDetail } from "@/lib/repo/admin";
@@ -26,9 +27,7 @@ export default function SubmissionDetailPage({
     <main className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-text">مراجعة طلب إضافة تطبيق</h1>
-        <Link href="/admin/submissions" className="text-sm text-primary hover:underline">
-          ← العودة إلى القائمة
-        </Link>
+        <BackLink href="/admin/submissions">العودة إلى القائمة</BackLink>
       </div>
       <Suspense fallback={<DetailSkeleton />}>
         <DetailContent params={params} />

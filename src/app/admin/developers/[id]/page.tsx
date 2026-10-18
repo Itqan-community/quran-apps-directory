@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import Link from "next/link";
+import { BackLink } from "@/components/admin/ui";
 import { notFound } from "next/navigation";
 import { DeveloperForm, type DeveloperInitial } from "@/components/admin/taxonomy-editor";
 import { getDeveloperForEdit, type DeveloperEditRow } from "@/lib/repo/admin";
@@ -13,9 +13,7 @@ export default function EditDeveloperPage({ params }: { params: Promise<{ id: st
     <main className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-text">تعديل مطوّر</h1>
-        <Link href="/admin/developers" className="text-sm text-primary hover:underline">
-          ← العودة إلى القائمة
-        </Link>
+        <BackLink href="/admin/developers">العودة إلى القائمة</BackLink>
       </div>
       <Suspense fallback={<EditSkeleton />}>
         <EditContent params={params} />

@@ -1,4 +1,5 @@
 import type { DayCount } from "@/lib/repo/analytics";
+import { adminBodyRow, adminHeadRow, adminTable, adminTableWrap, adminTh } from "@/components/admin/ui";
 
 /** Normalized row for <RankTable>: label (+ optional LTR sub) and its view count. */
 export type RankRow = {
@@ -76,24 +77,24 @@ export function RankTable({
 }) {
   const max = Math.max(...rows.map((r) => r.views), 1);
   return (
-    <div className="overflow-x-auto rounded-app bg-card shadow-app">
-      <table className="w-full text-start text-sm">
+    <div className={adminTableWrap}>
+      <table className={adminTable}>
         <thead>
-          <tr className="border-b border-border text-xs text-text-secondary">
+          <tr className={adminHeadRow}>
             <th scope="col" className="w-8 px-2 py-2 text-start font-medium">
               #
             </th>
-            <th scope="col" className="px-3 py-2 text-start font-medium">
+            <th scope="col" className={adminTh}>
               {labelHeader}
             </th>
-            <th scope="col" className="px-3 py-2 text-start font-medium">
+            <th scope="col" className={adminTh}>
               {viewsHeader}
             </th>
           </tr>
         </thead>
         <tbody>
           {rows.map((row, i) => (
-            <tr key={`${i}-${row.label}`} className="border-b border-border last:border-b-0">
+            <tr key={`${i}-${row.label}`} className={adminBodyRow}>
               <td className="px-2 py-2 tabular-nums text-text-secondary">{i + 1}</td>
               <td className="px-3 py-2">
                 <span dir={row.code ? "ltr" : undefined} className="block text-text">

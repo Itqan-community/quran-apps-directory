@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Trash2 } from "lucide-react";
 
 type ActionResult = { ok: boolean; message?: string };
 
@@ -14,11 +15,14 @@ export default function ConfirmSubmit({
   label,
   action,
   className = confirmBtnCls,
+  redirectTo,
 }: {
   confirmMessage: string;
   label: string;
   action: () => Promise<ActionResult>;
   className?: string;
+  /** When provided, navigate here on success instead of refreshing in place. */
+  redirectTo?: string;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -30,8 +34,14 @@ export default function ConfirmSubmit({
     setError(null);
     try {
       const res = await action();
-      if (res.ok) router.refresh();
-      else setError(res.message ?? "تعذر تنفيذ الإجراء.");
+      if (res.ok) {
+        // redirectTo follows a destructive action (e.g. hub deleted its own
+        // type): a full load guarantees fresh page + layout (the sidebar
+        // submenu is layout data). Client push() reuses the cached layout and
+        // races refresh(), repainting stale payloads over the target URL.
+        if (redirectTo) window.location.href = redirectTo;
+        else router.refresh();
+      } else setError(res.message ?? "تعذر تنفيذ الإجراء.");
     } catch {
       setError("حدث خطأ غير متوقع. حاول مرة أخرى.");
     } finally {
@@ -47,8 +57,9 @@ export default function ConfirmSubmit({
         void run();
       }}
     >
-      <button type="submit" disabled={busy} className={className}>
-        {busy ? "…" : label}
+      <button type="submit" disabled={busy} className={`inline-flex items-center gap-1.5 ${className}`}>
+        {busy ? "…" : <Trash2 aria-hidden className="size-3.5" />}
+        {busy ? null : label}
       </button>
       {error && (
         <span className="text-xs text-red-600" role="alert">

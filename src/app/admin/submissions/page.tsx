@@ -1,8 +1,17 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { Check, ChevronLeft, ChevronRight, Inbox, Search, X } from "lucide-react";
 import type { AdminSubmissionRow, DashboardCounts } from "@/lib/repo/admin";
 import { getAdminSubmissions, getDashboardCounts } from "@/lib/repo/admin";
 import StatusBadge from "@/components/admin/status-badge";
+import {
+  EmptyState,
+  adminBodyRow,
+  adminHeadRow,
+  adminTable,
+  adminTableWrap,
+  adminTh,
+} from "@/components/admin/ui";
 
 const PAGE_SIZE = 25; // mirrors getAdminSubmissions' fixed page size
 
@@ -124,8 +133,9 @@ async function SubmissionsContent({ searchParams }: { searchParams: Promise<RawS
         />
         <button
           type="submit"
-          className="rounded-app bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-hover"
+          className="inline-flex items-center gap-1.5 rounded-app bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-hover"
         >
+          <Search aria-hidden className="size-4" />
           بحث
         </button>
         {q && (
@@ -136,22 +146,23 @@ async function SubmissionsContent({ searchParams }: { searchParams: Promise<RawS
       </form>
 
       {data.results.length === 0 ? (
-        <p className="rounded-app bg-card p-6 text-center text-sm text-text-secondary shadow-app">
-          لا توجد طلبات مطابقة
-        </p>
+        <EmptyState
+          icon={<Inbox aria-hidden className="size-5" />}
+          message="لا توجد طلبات مطابقة"
+        />
       ) : (
-        <div className="overflow-x-auto rounded-app bg-card shadow-app">
-          <table className="w-full text-start text-sm">
+        <div className={adminTableWrap}>
+          <table className={adminTable}>
             <thead>
-              <tr className="border-b border-border text-xs text-text-secondary">
-                <th className="px-3 py-2 text-start font-medium">رقم التتبع</th>
-                <th className="px-3 py-2 text-start font-medium">الأيقونة</th>
-                <th className="px-3 py-2 text-start font-medium">التطبيق</th>
-                <th className="px-3 py-2 text-start font-medium">البريد الإلكتروني</th>
-                <th className="px-3 py-2 text-start font-medium">الحالة</th>
-                <th className="px-3 py-2 text-start font-medium">الفئات</th>
-                <th className="px-3 py-2 text-start font-medium">روابط المتجر</th>
-                <th className="px-3 py-2 text-start font-medium">تاريخ الطلب</th>
+              <tr className={adminHeadRow}>
+                <th className={adminTh}>رقم التتبع</th>
+                <th className={adminTh}>الأيقونة</th>
+                <th className={adminTh}>التطبيق</th>
+                <th className={adminTh}>البريد الإلكتروني</th>
+                <th className={adminTh}>الحالة</th>
+                <th className={adminTh}>الفئات</th>
+                <th className={adminTh}>روابط المتجر</th>
+                <th className={adminTh}>تاريخ الطلب</th>
               </tr>
             </thead>
             <tbody>
@@ -172,20 +183,32 @@ async function SubmissionsContent({ searchParams }: { searchParams: Promise<RawS
           <div className="flex gap-2">
             {page > 1 ? (
               <Link href={listHref(status, q, page - 1)} className={tabIdleCls}>
-                السابق
+                <span className="inline-flex items-center gap-1">
+                  <ChevronRight aria-hidden className="size-4" />
+                  السابق
+                </span>
               </Link>
             ) : (
               <span className="rounded-app border border-border px-3 py-1.5 text-text-secondary opacity-50">
-                السابق
+                <span className="inline-flex items-center gap-1">
+                  <ChevronRight aria-hidden className="size-4" />
+                  السابق
+                </span>
               </span>
             )}
             {page < totalPages ? (
               <Link href={listHref(status, q, page + 1)} className={tabIdleCls}>
-                التالي
+                <span className="inline-flex items-center gap-1">
+                  التالي
+                  <ChevronLeft aria-hidden className="size-4" />
+                </span>
               </Link>
             ) : (
               <span className="rounded-app border border-border px-3 py-1.5 text-text-secondary opacity-50">
-                التالي
+                <span className="inline-flex items-center gap-1">
+                  التالي
+                  <ChevronLeft aria-hidden className="size-4" />
+                </span>
               </span>
             )}
           </div>
@@ -198,7 +221,7 @@ async function SubmissionsContent({ searchParams }: { searchParams: Promise<RawS
 function SubmissionRow({ row }: { row: AdminSubmissionRow }) {
   const extraCats = Math.max(0, row.categories.length - 3);
   return (
-    <tr className="border-b border-border last:border-b-0">
+    <tr className={adminBodyRow}>
       <td className="px-3 py-2">
         <Link
           href={`/admin/submissions/${row.id}`}
@@ -243,9 +266,11 @@ function SubmissionRow({ row }: { row: AdminSubmissionRow }) {
         )}
       </td>
       <td className="px-3 py-2">
-        <span className={row.hasStoreLink ? "text-green-600" : "text-red-500"}>
-          {row.hasStoreLink ? "✓" : "✗"}
-        </span>
+        {row.hasStoreLink ? (
+          <Check aria-label="يوجد رابط متجر" className="size-4 text-green-600" />
+        ) : (
+          <X aria-label="لا يوجد رابط متجر" className="size-4 text-red-500" />
+        )}
       </td>
       <td className="px-3 py-2 text-text-secondary">{dateFmt.format(row.createdAt)}</td>
     </tr>

@@ -166,7 +166,8 @@ describe("saveMetadataType — validation", () => {
 describe("saveMetadataType — create", () => {
   it("happy path: all columns written, empty icon → null, revalidates metadata", async () => {
     const res = await saveMetadataType(baseType);
-    expect(res).toEqual({ ok: true });
+    expect(res.ok).toBe(true);
+    if (res.ok) expect(res.id).toEqual(expect.any(Number));
 
     const [row] = await sql`SELECT * FROM metadata_types WHERE name = 'T10 Type Alpha'`;
     expect(row).not.toBeUndefined();
@@ -190,7 +191,8 @@ describe("saveMetadataType — create", () => {
       descriptionEn: "",
       descriptionAr: "",
     });
-    expect(res).toEqual({ ok: true });
+    expect(res.ok).toBe(true);
+    if (res.ok) expect(res.id).toEqual(expect.any(Number));
 
     const [row] = await sql`SELECT * FROM metadata_types WHERE name = 'T10 Type Minimal'`;
     expect(row).not.toBeUndefined();
@@ -202,7 +204,8 @@ describe("saveMetadataType — create", () => {
 
   it("icon string written", async () => {
     const res = await saveMetadataType({ ...baseType, name: "T10 Type Icon", icon: "book" });
-    expect(res).toEqual({ ok: true });
+    expect(res.ok).toBe(true);
+    if (res.ok) expect(res.id).toEqual(expect.any(Number));
     const [row] = await sql`SELECT icon FROM metadata_types WHERE name = 'T10 Type Icon'`;
     expect(row.icon).toBe("book");
   });
@@ -230,7 +233,8 @@ describe("saveMetadataType — uniqueness (pg 23505 → validation)", () => {
       labelAr: "ت:تسميةثاني",
       descriptionAr: "نفس الاسم لا مشكلة",
     });
-    expect(res).toEqual({ ok: true });
+    expect(res.ok).toBe(true);
+    if (res.ok) expect(res.id).toBe(typeBravoId);
     const [row] = await sql`SELECT description_ar FROM metadata_types WHERE id = ${typeBravoId}`;
     expect(row.description_ar).toBe("نفس الاسم لا مشكلة");
   });
@@ -278,7 +282,8 @@ describe("saveMetadataType — edit", () => {
       isActive: true,
       icon: "layers",
     });
-    expect(res).toEqual({ ok: true });
+    expect(res.ok).toBe(true);
+    if (res.ok) expect(res.id).toBe(typeBravoId);
 
     const [row] = await sql`
       SELECT description_en, description_ar, is_multi_select, sort_order, is_active, icon

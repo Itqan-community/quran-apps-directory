@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import { BookOpenText, LogIn } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -30,7 +31,11 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg p-4">
       <form onSubmit={onSubmit} className="w-full max-w-sm rounded-app bg-card p-6 shadow-app">
-        <h1 className="mb-6 text-xl font-bold text-text">تسجيل دخول المشرف</h1>
+        <span className="mb-4 flex size-11 items-center justify-center rounded-app bg-primary text-white">
+          <BookOpenText aria-hidden className="size-6" />
+        </span>
+        <h1 className="mb-1 text-xl font-bold text-text">تسجيل دخول المشرف</h1>
+        <p className="mb-6 text-sm text-text-secondary">دليل تطبيقات القرآن — لوحة الإدارة</p>
         <input
           type="email"
           required
@@ -51,8 +56,9 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-app bg-primary px-3 py-2 font-bold text-white disabled:opacity-50"
+          className="inline-flex w-full items-center justify-center gap-1.5 rounded-app bg-primary px-3 py-2 font-bold text-white disabled:opacity-50"
         >
+          <LogIn aria-hidden className="size-4" />
           {busy ? "..." : "دخول"}
         </button>
       </form>

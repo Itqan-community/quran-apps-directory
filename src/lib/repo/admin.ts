@@ -666,6 +666,135 @@ export async function getAllMetadataTypesWithAllOptions(): Promise<AdminMetadata
   return types.map((t) => ({ ...t, options: optionsByType.get(t.id) ?? [] }));
 }
 
+/** Light rows for the admin sidebar submenu: every type ordered, no options. */
+export type MetadataNavRow = {
+  id: number;
+  name: string;
+  labelEn: string;
+  labelAr: string;
+  isActive: boolean;
+};
+
+export async function getMetadataTypesNav(): Promise<MetadataNavRow[]> {
+  return db
+    .select({
+      id: metadataTypes.id,
+      name: metadataTypes.name,
+      labelEn: metadataTypes.labelEn,
+      labelAr: metadataTypes.labelAr,
+      isActive: metadataTypes.isActive,
+    })
+    .from(metadataTypes)
+    .orderBy(asc(metadataTypes.sortOrder), asc(metadataTypes.id));
+}
+
+export type MetadataTypeSummary = {
+  id: number;
+  name: string;
+  labelEn: string;
+  labelAr: string;
+  descriptionEn: string;
+  descriptionAr: string;
+  isMultiSelect: boolean;
+  sortOrder: number;
+  isActive: boolean;
+  icon: string | null;
+  /** Options on this type. */
+  optionsCount: number;
+  /** app_metadata_values rows reached through this type's options. */
+  appsTotal: number;
+};
+
+/**
+ * Every metadata type (active or not) with option + app-usage counts — the
+ * list page query. No option rows are loaded, so Riwayah-style types with
+ * many options stay cheap.
+ */
+export async function getMetadataTypesSummary(): Promise<MetadataTypeSummary[]> {
+  const rows = await db
+    .select({
+      id: metadataTypes.id,
+      name: metadataTypes.name,
+      labelEn: metadataTypes.labelEn,
+      labelAr: metadataTypes.labelAr,
+      descriptionEn: metadataTypes.descriptionEn,
+      descriptionAr: metadataTypes.descriptionAr,
+      isMultiSelect: metadataTypes.isMultiSelect,
+      sortOrder: metadataTypes.sortOrder,
+      isActive: metadataTypes.isActive,
+      icon: metadataTypes.icon,
+      optionsCount: sql<number>`count(distinct ${metadataOptions.id})::int`,
+      appsTotal: sql<number>`count(${appMetadataValues.id})::int`,
+    })
+    .from(metadataTypes)
+    .leftJoin(metadataOptions, eq(metadataOptions.metadataTypeId, metadataTypes.id))
+    .leftJoin(appMetadataValues, eq(appMetadataValues.metadataOptionId, metadataOptions.id))
+    .groupBy(metadataTypes.id)
+    .orderBy(asc(metadataTypes.sortOrder), asc(metadataTypes.id));
+
+  return rows.map((r) => ({
+    ...r,
+    optionsCount: Number(r.optionsCount),
+    appsTotal: Number(r.appsTotal),
+  }));
+}
+
+/** One metadata type with ALL of its options + per-option app counts; null when missing. */
+export async function getMetadataTypeWithOptions(
+  id: number
+): Promise<AdminMetadataTypeWithAllOptions | null> {
+  const [t] = await db
+    .select({
+      id: metadataTypes.id,
+      name: metadataTypes.name,
+      labelEn: metadataTypes.labelEn,
+      labelAr: metadataTypes.labelAr,
+      descriptionEn: metadataTypes.descriptionEn,
+      descriptionAr: metadataTypes.descriptionAr,
+      isMultiSelect: metadataTypes.isMultiSelect,
+      sortOrder: metadataTypes.sortOrder,
+      isActive: metadataTypes.isActive,
+      icon: metadataTypes.icon,
+    })
+    .from(metadataTypes)
+    .where(eq(metadataTypes.id, id))
+    .limit(1);
+  if (!t) return null;
+
+  const optionRows = await db
+    .select({
+      id: metadataOptions.id,
+      value: metadataOptions.value,
+      labelEn: metadataOptions.labelEn,
+      labelAr: metadataOptions.labelAr,
+      descriptionEn: metadataOptions.descriptionEn,
+      descriptionAr: metadataOptions.descriptionAr,
+      sortOrder: metadataOptions.sortOrder,
+      isActive: metadataOptions.isActive,
+      icon: metadataOptions.icon,
+      color: metadataOptions.color,
+      appCount: sql<number>`count(${appMetadataValues.id})::int`,
+    })
+    .from(metadataOptions)
+    .leftJoin(appMetadataValues, eq(appMetadataValues.metadataOptionId, metadataOptions.id))
+    .where(eq(metadataOptions.metadataTypeId, id))
+    .groupBy(metadataOptions.id)
+    .orderBy(asc(metadataOptions.sortOrder), asc(metadataOptions.id));
+
+  return {
+    ...t,
+    options: optionRows.map((o) => ({ ...o, appCount: Number(o.appCount) })),
+  };
+}
+
+export type MetadataOptionEditRow = typeof metadataOptions.$inferSelect;
+
+/** Full option row for the `[id]/options/[optionId]` edit page; null when missing. */
+export async function getMetadataOptionForEdit(id: number): Promise<MetadataOptionEditRow | null> {
+  const [row] = await db.select().from(metadataOptions).where(eq(metadataOptions.id, id)).limit(1);
+  return row ?? null;
+}
+
 /** All apps (any status) referencing the developer — delete-protection signal. */
 export async function getDeveloperAppCount(developerId: number): Promise<number> {
   const [row] = await db

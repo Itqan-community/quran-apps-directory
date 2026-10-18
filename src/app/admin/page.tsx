@@ -1,7 +1,20 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import {
+  Archive,
+  CircleCheck,
+  CircleX,
+  Clock,
+  Eye,
+  FileText,
+  Inbox,
+  MessageSquare,
+  Search,
+  Smartphone,
+} from "lucide-react";
 import type { AdminSubmissionRow, DashboardCounts } from "@/lib/repo/admin";
 import { getAdminSubmissions, getDashboardCounts } from "@/lib/repo/admin";
+import { adminBodyRow, adminHeadRow, adminTable, adminTableWrap, adminTh } from "@/components/admin/ui";
 
 function DashboardSkeleton() {
   return (
@@ -25,18 +38,18 @@ export default function AdminDashboardPage() {
 
 const dateFmt = new Intl.DateTimeFormat("ar", { dateStyle: "medium" });
 
-const APP_CARDS: { key: keyof DashboardCounts; label: string }[] = [
-  { key: "appsDraft", label: "مسودة" },
-  { key: "appsPublished", label: "منشور" },
-  { key: "appsArchived", label: "مؤرشف" },
+const APP_CARDS: { key: keyof DashboardCounts; label: string; icon: typeof Smartphone }[] = [
+  { key: "appsDraft", label: "مسودة", icon: FileText },
+  { key: "appsPublished", label: "منشور", icon: CircleCheck },
+  { key: "appsArchived", label: "مؤرشف", icon: Archive },
 ];
 
-const SUB_CARDS: { key: keyof DashboardCounts; label: string }[] = [
-  { key: "subsPending", label: "قيد الانتظار" },
-  { key: "subsUnderReview", label: "قيد المراجعة" },
-  { key: "subsInfoRequested", label: "طلب معلومات" },
-  { key: "subsApproved", label: "تمت الموافقة" },
-  { key: "subsRejected", label: "مرفوض" },
+const SUB_CARDS: { key: keyof DashboardCounts; label: string; icon: typeof Smartphone }[] = [
+  { key: "subsPending", label: "قيد الانتظار", icon: Clock },
+  { key: "subsUnderReview", label: "قيد المراجعة", icon: Search },
+  { key: "subsInfoRequested", label: "طلب معلومات", icon: MessageSquare },
+  { key: "subsApproved", label: "تمت الموافقة", icon: CircleCheck },
+  { key: "subsRejected", label: "مرفوض", icon: CircleX },
 ];
 
 async function AdminDashboardContent() {
@@ -50,27 +63,25 @@ async function AdminDashboardContent() {
     <>
       <div className="flex flex-col gap-4">
         <section>
-          <h2 className="mb-3 text-sm font-bold text-text-secondary">التطبيقات</h2>
+          <h2 className="mb-3 flex items-center gap-1.5 text-sm font-bold text-text-secondary">
+            <Smartphone aria-hidden className="size-4" />
+            التطبيقات
+          </h2>
           <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
             {APP_CARDS.map((card) => (
-              <div key={card.key} className="rounded-app bg-card p-4 shadow-app">
-                <p className="text-xs text-text-secondary">{card.label}</p>
-                <p className="text-2xl font-bold text-text">{counts[card.key]}</p>
-              </div>
+              <StatCard key={card.key} icon={card.icon} label={card.label} value={counts[card.key]} />
             ))}
           </div>
         </section>
 
         <section>
-          <h2 className="mb-3 text-sm font-bold text-text-secondary">طلبات إضافة التطبيقات</h2>
+          <h2 className="mb-3 flex items-center gap-1.5 text-sm font-bold text-text-secondary">
+            <Inbox aria-hidden className="size-4" />
+            طلبات إضافة التطبيقات
+          </h2>
           <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-5">
             {SUB_CARDS.map((card) => {
-              const body = (
-                <>
-                  <p className="text-xs text-text-secondary">{card.label}</p>
-                  <p className="text-2xl font-bold text-text">{counts[card.key]}</p>
-                </>
-              );
+              const body = <StatCard icon={card.icon} label={card.label} value={counts[card.key]} plain />;
               if (card.key === "subsPending") {
                 return (
                   <Link
@@ -91,9 +102,14 @@ async function AdminDashboardContent() {
           </div>
         </section>
 
-        <section className="rounded-app bg-card p-4 shadow-app">
-          <p className="text-xs text-text-secondary">إجمالي الزيارات (آخر 30 يومًا)</p>
-          <p className="text-2xl font-bold text-text">{counts.views30d}</p>
+        <section className="flex items-center gap-3 rounded-app bg-card p-4 shadow-app">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-app bg-primary/10 text-primary">
+            <Eye aria-hidden className="size-5" />
+          </span>
+          <span>
+            <span className="block text-xs text-text-secondary">إجمالي الزيارات (آخر 30 يومًا)</span>
+            <span className="block text-2xl font-bold tabular-nums text-text">{counts.views30d}</span>
+          </span>
         </section>
       </div>
 
@@ -109,21 +125,45 @@ async function AdminDashboardContent() {
   );
 }
 
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  plain = false,
+}: {
+  icon: typeof Smartphone;
+  label: string;
+  value: number;
+  plain?: boolean;
+}) {
+  const inner = (
+    <>
+      <span className="mb-2 flex size-9 items-center justify-center rounded-app bg-primary/10 text-primary">
+        <Icon aria-hidden className="size-4.5" />
+      </span>
+      <p className="text-xs text-text-secondary">{label}</p>
+      <p className="text-2xl font-bold tabular-nums text-text">{value}</p>
+    </>
+  );
+  if (plain) return inner;
+  return <div className="rounded-app bg-card p-4 shadow-app">{inner}</div>;
+}
+
 function LatestPendingTable({ rows }: { rows: AdminSubmissionRow[] }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-start text-sm">
+    <div className={adminTableWrap}>
+      <table className={adminTable}>
         <thead>
-          <tr className="border-b border-border text-xs text-text-secondary">
-            <th className="px-2 py-2 text-start font-medium">رقم التتبع</th>
-            <th className="px-2 py-2 text-start font-medium">التطبيق</th>
-            <th className="px-2 py-2 text-start font-medium">البريد الإلكتروني</th>
-            <th className="px-2 py-2 text-start font-medium">تاريخ الطلب</th>
+          <tr className={adminHeadRow}>
+            <th className={adminTh}>رقم التتبع</th>
+            <th className={adminTh}>التطبيق</th>
+            <th className={adminTh}>البريد الإلكتروني</th>
+            <th className={adminTh}>تاريخ الطلب</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row.id} className="border-b border-border last:border-b-0">
+            <tr key={row.id} className={adminBodyRow}>
               <td className="px-2 py-2">
                 <Link
                   href={`/admin/submissions/${row.id}`}

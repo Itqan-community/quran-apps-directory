@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import Link from "next/link";
+import { BackLink } from "@/components/admin/ui";
 import { notFound } from "next/navigation";
 import { CategoryForm, type CategoryInitial } from "@/components/admin/taxonomy-editor";
 import { getCategoryForEdit, type CategoryEditRow } from "@/lib/repo/admin";
@@ -13,9 +13,7 @@ export default function EditCategoryPage({ params }: { params: Promise<{ id: str
     <main className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-text">تعديل فئة</h1>
-        <Link href="/admin/categories" className="text-sm text-primary hover:underline">
-          ← العودة إلى القائمة
-        </Link>
+        <BackLink href="/admin/categories">العودة إلى القائمة</BackLink>
       </div>
       <Suspense fallback={<EditSkeleton />}>
         <EditContent params={params} />

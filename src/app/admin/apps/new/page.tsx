@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import Link from "next/link";
+import { BackLink } from "@/components/admin/ui";
 import AppForm, { CREATE_DEFAULT } from "@/components/admin/app-form";
 import { getAllCategories, getAllDevelopers, getAllMetadataTypesWithActiveOptions } from "@/lib/repo/admin";
 
@@ -12,9 +12,7 @@ export default function NewAppPage() {
     <main className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-text">إضافة تطبيق جديد</h1>
-        <Link href="/admin/apps" className="text-sm text-primary hover:underline">
-          ← العودة إلى القائمة
-        </Link>
+        <BackLink href="/admin/apps">العودة إلى القائمة</BackLink>
       </div>
       <Suspense fallback={<FormSkeleton />}>
         <NewContent />

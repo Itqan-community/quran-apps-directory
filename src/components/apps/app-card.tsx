@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
+import { type ComponentType } from "react";
+import { AppleMark, GooglePlayMark, HuaweiMark, WebMark } from "@/components/brand-marks";
 import { getTranslations } from "next-intl/server";
 import type { MatchReason } from "@/lib/ai/rank";
 import type { AppListItem } from "@/lib/repo/apps-rows";
@@ -8,6 +10,31 @@ import { StatItem } from "./stat-item";
 import { CardActions } from "./card-actions";
 
 const NEW_APP_THRESHOLD_DAYS = 30; // enforced in getAppListRows (SQL: now() - 30d)
+
+/** Neutral tile letting full-color brand marks show true colors. */
+const brandChip = "bg-white ring-1 ring-black/10 dark:ring-white/25";
+
+/**
+ * Authentic brand marks (see `brand-marks.tsx`). Each platform value expands
+ * to every OS mark it covers, so `cross_platform` reads as Play + Apple +
+ * Globe instead of one abstract glyph.
+ */
+const platformMarks: Record<string, { Icon: ComponentType<{ className?: string }>; chip: string; label: Record<"ar" | "en", string> }[]> = {
+  android: [
+    { Icon: GooglePlayMark, chip: brandChip, label: { ar: "أندرويد", en: "Android" } },
+  ],
+  ios: [
+    { Icon: AppleMark, chip: "bg-slate-500/10 text-slate-800 dark:bg-white/10 dark:text-slate-100", label: { ar: "آيفون", en: "iOS" } },
+  ],
+  web: [
+    { Icon: WebMark, chip: brandChip, label: { ar: "ويب", en: "Web" } },
+  ],
+  cross_platform: [
+    { Icon: GooglePlayMark, chip: brandChip, label: { ar: "أندرويد", en: "Android" } },
+    { Icon: AppleMark, chip: "bg-slate-500/10 text-slate-800 dark:bg-white/10 dark:text-slate-100", label: { ar: "آيفون", en: "iOS" } },
+    { Icon: WebMark, chip: brandChip, label: { ar: "ويب", en: "Web" } },
+  ],
+};
 
 export function appUrlParam(app: { slug: string; id: number }): string {
   return `${app.slug}_${app.id}`;
@@ -31,12 +58,15 @@ export async function AppCard({
   const cover = (isAr ? app.mainImageAr : app.mainImageEn) || app.applicationIcon;
   const isNew = app.isNew;
   const eager = index < 4;
-  const platformLabel: Record<string, string> = {
-    android: isAr ? "أندرويد" : "Android",
-    ios: isAr ? "آيفون" : "iOS",
-    web: isAr ? "ويب" : "Web",
-    cross_platform: isAr ? "متعدد المنصات" : "All",
-  };
+  const baseMarks = platformMarks[app.platform] ?? [];
+  // TEMP PREVIEW (remove once the Huawei mark is approved): sprinkle the Huawei
+  // store mark on every 4th app so it can be judged on real cards.
+  const marks =
+    app.id % 4 === 0
+      ? [...baseMarks, { Icon: HuaweiMark, chip: brandChip, label: { ar: "هواوي", en: "Huawei" } }]
+      : baseMarks;
+  const platformLabel =
+    marks.length > 0 ? marks.map((m) => m.label[lang]).join(lang === "ar" ? "، " : ", ") : app.platform;
   const detailHref = `/${lang}/app/${appUrlParam(app)}`;
   const visibleTags = app.categories.slice(0, 3);
   const extraTags = app.categories.slice(3);
@@ -73,7 +103,7 @@ export async function AppCard({
           priority={eager}
           loading={eager ? "eager" : "lazy"}
           fetchPriority={index === 0 ? "high" : "low"}
-          sizes="(max-width: 640px) 50vw, 33vw"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
           className="cover-image"
         />
       </div>
@@ -147,8 +177,21 @@ export async function AppCard({
             iconSrc="/images/starr.svg"
           />
           <StatItem
-            value={platformLabel[app.platform] ?? app.platform}
+            icon={
+              marks.length > 0 ? (
+                marks.map(({ Icon, chip }, i) => (
+                  <span
+                    key={i}
+                    className={`flex size-6 items-center justify-center rounded-lg ${chip}`}
+                  >
+                    <Icon className="size-3.5" />
+                  </span>
+                ))
+              ) : undefined
+            }
+            value={<span className="sr-only">{platformLabel}</span>}
             label={isAr ? "المنصة" : "Platform"}
+            title={platformLabel}
           />
         </div>
 

@@ -10,7 +10,7 @@ import { requireAdmin } from "@/lib/admin-guard";
 import { categoryFormSchema, developerFormSchema } from "@/lib/validation/admin";
 
 export type TaxonomyResult =
-  | { ok: true }
+  | { ok: true; id?: number }
   | {
       ok: false;
       error: "validation" | "server";

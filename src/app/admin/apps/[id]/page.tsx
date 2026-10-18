@@ -1,6 +1,7 @@
 import { Suspense } from "react";
-import Link from "next/link";
+import { BackLink } from "@/components/admin/ui";
 import { notFound } from "next/navigation";
+import { TriangleAlert } from "lucide-react";
 import AppForm, { DeleteAppButton, type AppFormInitial } from "@/components/admin/app-form";
 import {
   getAppForEdit,
@@ -18,9 +19,7 @@ export default function EditAppPage({ params }: { params: Promise<{ id: string }
     <main className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-text">تعديل تطبيق</h1>
-        <Link href="/admin/apps" className="text-sm text-primary hover:underline">
-          ← العودة إلى القائمة
-        </Link>
+        <BackLink href="/admin/apps">العودة إلى القائمة</BackLink>
       </div>
       <Suspense fallback={<EditSkeleton />}>
         <EditContent params={params} />
@@ -82,9 +81,12 @@ async function EditContent({ params }: { params: Promise<{ id: string }> }) {
         metadataTypes={metadataTypes}
         initial={initial}
       />
-      <section className="rounded-app border border-red-300 bg-red-50 p-4">
-        <h2 className="mb-2 text-sm font-bold text-red-700">منطقة الخطر</h2>
-        <p className="mb-3 text-xs text-red-700">
+      <section className="rounded-app border border-red-300 bg-red-50 p-4 dark:bg-red-500/10">
+        <h2 className="mb-2 flex items-center gap-1.5 text-sm font-bold text-red-700 dark:text-red-400">
+          <TriangleAlert aria-hidden className="size-4" />
+          منطقة الخطر
+        </h2>
+        <p className="mb-3 text-xs text-red-700 dark:text-red-400">
           الحذف نهائي ويشمل الفئات ولقطات الشاشة والبيانات الوصفية المرتبطة بالتطبيق.
         </p>
         <DeleteAppButton appId={numId} appName={a.nameEn} />

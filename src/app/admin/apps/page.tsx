@@ -1,10 +1,20 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { ChevronLeft, ChevronRight, Funnel, Smartphone, Star } from "lucide-react";
 import type { AppListItem } from "@/lib/repo/admin";
 import { getAdminApps } from "@/lib/repo/admin";
 import StatusBadge from "@/components/admin/status-badge";
 import BulkBar, { BulkSelectionProvider, BulkCheckbox } from "@/components/admin/bulk-bar";
 import ReindexEmbeddingsButton from "@/components/admin/reindex-embeddings-button";
+import {
+  AddButtonLink,
+  EmptyState,
+  adminBodyRow,
+  adminHeadRow,
+  adminTable,
+  adminTableWrap,
+  adminTh,
+} from "@/components/admin/ui";
 
 const PAGE_SIZE = 25;
 
@@ -57,13 +67,8 @@ export default function AdminAppsPage({ searchParams }: { searchParams: Promise<
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-text">التطبيقات</h1>
         <div className="flex items-center gap-2">
+          <AddButtonLink href="/admin/apps/new">إضافة تطبيق</AddButtonLink>
           <ReindexEmbeddingsButton />
-          <Link
-            href="/admin/apps/new"
-            className="rounded-app bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-hover"
-          >
-            + إضافة تطبيق
-          </Link>
         </div>
       </div>
       <Suspense fallback={<AppsSkeleton />}>
@@ -155,8 +160,9 @@ async function AppsContent({ searchParams }: { searchParams: Promise<RawSearchPa
         </select>
         <button
           type="submit"
-          className="rounded-app bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-hover"
+          className="inline-flex items-center gap-1.5 rounded-app bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-hover"
         >
+          <Funnel aria-hidden className="size-4" />
           تصفية
         </button>
         {(q || status !== "all" || featured !== "all" || platform !== "all") && (
@@ -169,25 +175,26 @@ async function AppsContent({ searchParams }: { searchParams: Promise<RawSearchPa
       <BulkSelectionProvider>
         <BulkBar />
         {apps.results.length === 0 ? (
-          <p className="rounded-app bg-card p-6 text-center text-sm text-text-secondary shadow-app">
-            لا توجد تطبيقات مطابقة
-          </p>
+          <EmptyState
+            icon={<Smartphone aria-hidden className="size-5" />}
+            message="لا توجد تطبيقات مطابقة"
+          />
         ) : (
-          <div className="overflow-x-auto rounded-app bg-card shadow-app">
-            <table className="w-full text-start text-sm">
+          <div className={adminTableWrap}>
+            <table className={adminTable}>
               <thead>
-                <tr className="border-b border-border text-xs text-text-secondary">
+                <tr className={adminHeadRow}>
                   <th className="px-2 py-2 text-start font-medium"> </th>
-                  <th className="px-3 py-2 text-start font-medium">الأيقونة</th>
-                  <th className="px-3 py-2 text-start font-medium">التطبيق</th>
-                  <th className="px-3 py-2 text-start font-medium">المنصة</th>
-                  <th className="px-3 py-2 text-start font-medium">التقييم</th>
-                  <th className="px-3 py-2 text-start font-medium">المراجعات</th>
-                  <th className="px-3 py-2 text-start font-medium">المشاهدات</th>
-                  <th className="px-3 py-2 text-start font-medium">مميز</th>
-                  <th className="px-3 py-2 text-start font-medium">الحالة</th>
-                  <th className="px-3 py-2 text-start font-medium">المطور</th>
-                  <th className="px-3 py-2 text-start font-medium">أضيف</th>
+                  <th className={adminTh}>الأيقونة</th>
+                  <th className={adminTh}>التطبيق</th>
+                  <th className={adminTh}>المنصة</th>
+                  <th className={adminTh}>التقييم</th>
+                  <th className={adminTh}>المراجعات</th>
+                  <th className={adminTh}>المشاهدات</th>
+                  <th className={adminTh}>مميز</th>
+                  <th className={adminTh}>الحالة</th>
+                  <th className={adminTh}>المطور</th>
+                  <th className={adminTh}>أضيف</th>
                 </tr>
               </thead>
               <tbody>
@@ -214,25 +221,29 @@ async function AppsContent({ searchParams }: { searchParams: Promise<RawSearchPa
             {page > 1 ? (
               <Link
                 href={listHref({ q, status, featured, platform, page: page - 1 })}
-                className="rounded-app border border-border bg-surface px-3 py-1.5 transition hover:bg-primary/10"
+                className="inline-flex items-center gap-1 rounded-app border border-border bg-surface px-3 py-1.5 transition hover:bg-primary/10"
               >
+                <ChevronRight aria-hidden className="size-4" />
                 السابق
               </Link>
             ) : (
-              <span className="rounded-app border border-border px-3 py-1.5 text-text-secondary opacity-50">
+              <span className="inline-flex items-center gap-1 rounded-app border border-border px-3 py-1.5 text-text-secondary opacity-50">
+                <ChevronRight aria-hidden className="size-4" />
                 السابق
               </span>
             )}
             {page < totalPages ? (
               <Link
                 href={listHref({ q, status, featured, platform, page: page + 1 })}
-                className="rounded-app border border-border bg-surface px-3 py-1.5 transition hover:bg-primary/10"
+                className="inline-flex items-center gap-1 rounded-app border border-border bg-surface px-3 py-1.5 transition hover:bg-primary/10"
               >
                 التالي
+                <ChevronLeft aria-hidden className="size-4" />
               </Link>
             ) : (
-              <span className="rounded-app border border-border px-3 py-1.5 text-text-secondary opacity-50">
+              <span className="inline-flex items-center gap-1 rounded-app border border-border px-3 py-1.5 text-text-secondary opacity-50">
                 التالي
+                <ChevronLeft aria-hidden className="size-4" />
               </span>
             )}
           </div>
@@ -244,7 +255,7 @@ async function AppsContent({ searchParams }: { searchParams: Promise<RawSearchPa
 
 function AppRow({ row }: { row: AppListItem }) {
   return (
-    <tr className="border-b border-border last:border-b-0">
+    <tr className={adminBodyRow}>
       <BulkCheckbox id={row.id} />
       <td className="px-3 py-2">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -263,13 +274,14 @@ function AppRow({ row }: { row: AppListItem }) {
         <span className="block text-xs text-text-secondary">{row.nameAr}</span>
       </td>
       <td className="px-3 py-2 text-text">{PLATFORM_LABEL[row.platform] ?? row.platform}</td>
-      <td className="px-3 py-2 text-text">{row.avgRating}</td>
-      <td className="px-3 py-2 text-text">{row.reviewCount}</td>
-      <td className="px-3 py-2 text-text">{row.viewCount}</td>
+      <td className="px-3 py-2 tabular-nums text-text">{row.avgRating}</td>
+      <td className="px-3 py-2 tabular-nums text-text">{row.reviewCount}</td>
+      <td className="px-3 py-2 tabular-nums text-text">{row.viewCount}</td>
       <td className="px-3 py-2">
-        <span className={row.featured ? "text-green-600" : "text-text-secondary"}>
-          {row.featured ? "✓" : "—"}
-        </span>
+        <Star
+          aria-label={row.featured ? "مميز" : "غير مميز"}
+          className={`size-4 ${row.featured ? "fill-amber-400 text-amber-400" : "text-text-secondary opacity-40"}`}
+        />
       </td>
       <td className="px-3 py-2">
         <StatusBadge status={row.status} kind="app" />

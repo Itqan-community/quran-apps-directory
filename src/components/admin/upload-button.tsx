@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { UploadCloud } from "lucide-react";
 
 /**
  * Upload island for the admin app form: label wraps a hidden file input;
@@ -72,6 +73,7 @@ export default function UploadButton({
           busy ? "opacity-50" : ""
         } ${className}`}
       >
+        <UploadCloud aria-hidden className="size-3.5 text-text-secondary" />
         <span>{busy ? `جارٍ الرفع… ${progress}%` : label}</span>
         <input
           ref={inputRef}

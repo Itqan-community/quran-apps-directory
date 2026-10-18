@@ -2,10 +2,14 @@ export function StatItem({
   value,
   label,
   iconSrc,
+  icon,
+  title,
 }: {
-  value: string;
+  value: React.ReactNode;
   label: string;
   iconSrc?: string;
+  icon?: React.ReactNode;
+  title?: string;
 }) {
   return (
     <div className="stat-item">
@@ -16,7 +20,8 @@ export function StatItem({
             <img src={iconSrc} alt="" />
           </span>
         )}
-        <span className="stat-value">
+        {icon && <span className="stat-icon">{icon}</span>}
+        <span className="stat-value" title={title}>
           {value}
         </span>
       </div>

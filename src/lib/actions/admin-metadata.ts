@@ -47,7 +47,7 @@ export async function saveMetadataType(input: unknown): Promise<TaxonomyResult> 
     return { ok: false, error: "validation", fieldErrors: zodFieldErrors(parsed.error) };
   }
   const data = parsed.data;
-  const editId = readRawId(input);
+  let editId = readRawId(input);
 
   const values = {
     name: data.name,
@@ -63,7 +63,8 @@ export async function saveMetadataType(input: unknown): Promise<TaxonomyResult> 
 
   try {
     if (editId === undefined) {
-      await db.insert(metadataTypes).values(values);
+      const [inserted] = await db.insert(metadataTypes).values(values).returning({ id: metadataTypes.id });
+      editId = inserted?.id;
     } else {
       const updated = await db
         .update(metadataTypes)
@@ -86,7 +87,7 @@ export async function saveMetadataType(input: unknown): Promise<TaxonomyResult> 
 
   // Public filter chips / submit form read cached metadata values.
   revalidateTag("metadata", "max");
-  return { ok: true };
+  return { ok: true, id: editId };
 }
 
 /** FK cascade removes the type's options and, with them, the per-app values (apps untouched). */

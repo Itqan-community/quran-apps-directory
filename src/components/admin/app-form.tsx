@@ -2,14 +2,34 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  Check,
+  Database,
+  FileText,
+  ImagePlus,
+  Plus,
+  Settings2,
+  Star,
+  Store,
+  Tags,
+  Trash2,
+} from "lucide-react";
+import { AppleMark, GooglePlayMark, HuaweiMark } from "@/components/brand-marks";
 import { saveApp, deleteApp } from "@/lib/actions/admin-apps";
 import {
+  DeveloperCombobox,
+  LangTag,
   MetadataTypeControl,
+  PlatformPicker,
   ScreenshotsEditor,
+  SectionHeader,
+  StoreUrlField,
   UrlUploadField,
   btnPrimary,
+  checkChipCls,
   inputCls,
   labelCls,
+  toneBarCls,
   type FormMetadataType,
 } from "@/components/admin/app-form-sections";
 
@@ -66,20 +86,15 @@ export const CREATE_DEFAULT: AppFormInitial = {
   sortOrder: 0,
 };
 
-const PLATFORMS: { value: string; label: string }[] = [
-  { value: "android", label: "أندرويد" },
-  { value: "ios", label: "آي أو إس" },
-  { value: "web", label: "ويب" },
-  { value: "cross_platform", label: "متعدد المنصات" },
-];
-
 const STATUSES: { value: string; label: string }[] = [
   { value: "draft", label: "مسودة" },
   { value: "published", label: "منشور" },
   { value: "archived", label: "مؤرشف" },
 ];
 
-const sectionCls = "rounded-app bg-card p-4 shadow-app";
+const sectionCls = "relative overflow-hidden rounded-app bg-card p-5 shadow-app md:p-6";
+const countPillCls =
+  "rounded-full bg-surface px-2 py-0.5 text-[11px] font-bold tabular-nums text-text-secondary ring-1 ring-border/60";
 type ServerErrors = Record<string, string[]>;
 
 /** Field errors under the matching input; the mirrored public-form keys land on the right name field. */
@@ -225,44 +240,82 @@ export default function AppForm({
     }
   }
 
+  const mediaCount =
+    (applicationIcon.trim() ? 1 : 0) +
+    (mainImageEn.trim() ? 1 : 0) +
+    (mainImageAr.trim() ? 1 : 0) +
+    screenshotsEn.filter((s) => s.trim()).length +
+    screenshotsAr.filter((s) => s.trim()).length;
+  const storeConnected = [f.googlePlayLink, f.appStoreLink, f.appGalleryLink].filter((u) =>
+    /^https?:\/\//i.test(u.trim())
+  ).length;
+  const metadataSelected = metadataTypes.reduce(
+    (n, t) => n + (metadata[String(t.id)] ?? []).length,
+    0
+  );
+
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <section className={sectionCls}>
-        <h2 className="mb-3 text-sm font-bold text-text-secondary">الأساسيات</h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          <label className="flex flex-col gap-1">
-            <span className={labelCls}>الاسم (EN) *</span>
-            <input value={f.nameEn} onChange={(e) => field("nameEn")(e.target.value)} className={inputCls} dir="ltr" required maxLength={200} />
-            <ErrorList messages={errorFor(serverErrors, "nameEn", "app_name_en")} />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className={labelCls}>الاسم (AR) *</span>
-            <input value={f.nameAr} onChange={(e) => field("nameAr")(e.target.value)} className={inputCls} required maxLength={200} />
-            <ErrorList messages={errorFor(serverErrors, "nameAr", "app_name_ar")} />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className={labelCls}>الوصف المختصر (EN) *</span>
-            <textarea rows={2} value={f.shortDescriptionEn} onChange={(e) => field("shortDescriptionEn")(e.target.value)} className={inputCls} dir="ltr" maxLength={500} required />
-            <ErrorList messages={errorFor(serverErrors, "shortDescriptionEn")} />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className={labelCls}>الوصف المختصر (AR) *</span>
-            <textarea rows={2} value={f.shortDescriptionAr} onChange={(e) => field("shortDescriptionAr")(e.target.value)} className={inputCls} maxLength={500} required />
-            <ErrorList messages={errorFor(serverErrors, "shortDescriptionAr")} />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className={labelCls}>الوصف الكامل (EN) *</span>
-            <textarea rows={6} value={f.descriptionEn} onChange={(e) => field("descriptionEn")(e.target.value)} className={inputCls} dir="ltr" required />
-            <ErrorList messages={errorFor(serverErrors, "descriptionEn")} />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className={labelCls}>الوصف الكامل (AR) *</span>
-            <textarea rows={6} value={f.descriptionAr} onChange={(e) => field("descriptionAr")(e.target.value)} className={inputCls} required />
-            <ErrorList messages={errorFor(serverErrors, "descriptionAr")} />
-          </label>
+        <span aria-hidden className={`absolute inset-x-0 top-0 h-1 ${toneBarCls.basics}`} />
+        <SectionHeader
+          icon={<FileText aria-hidden className="size-4" />}
+          title="الأساسيات"
+          hint="الاسم والأوصاف كما تظهر في الموقع بكلتا اللغتين"
+          tone="basics"
+        />
+        <div className="flex flex-col divide-y divide-border/60">
+          <div className="grid gap-4 pb-4 md:grid-cols-2">
+            <label className="flex min-w-0 flex-col gap-1">
+              <span className={labelCls}>
+                الاسم <LangTag lang="EN" /> *
+              </span>
+              <input value={f.nameEn} onChange={(e) => field("nameEn")(e.target.value)} className={inputCls} dir="ltr" required maxLength={200} />
+              <ErrorList messages={errorFor(serverErrors, "nameEn", "app_name_en")} />
+            </label>
+            <label className="flex min-w-0 flex-col gap-1">
+              <span className={labelCls}>
+                الاسم <LangTag lang="AR" /> *
+              </span>
+              <input value={f.nameAr} onChange={(e) => field("nameAr")(e.target.value)} className={inputCls} required maxLength={200} />
+              <ErrorList messages={errorFor(serverErrors, "nameAr", "app_name_ar")} />
+            </label>
+          </div>
+          <div className="grid gap-4 py-4 md:grid-cols-2">
+            <label className="flex min-w-0 flex-col gap-1">
+              <span className={labelCls}>
+                الوصف المختصر <LangTag lang="EN" /> *
+              </span>
+              <textarea rows={2} value={f.shortDescriptionEn} onChange={(e) => field("shortDescriptionEn")(e.target.value)} className={inputCls} dir="ltr" maxLength={500} required />
+              <ErrorList messages={errorFor(serverErrors, "shortDescriptionEn")} />
+            </label>
+            <label className="flex min-w-0 flex-col gap-1">
+              <span className={labelCls}>
+                الوصف المختصر <LangTag lang="AR" /> *
+              </span>
+              <textarea rows={2} value={f.shortDescriptionAr} onChange={(e) => field("shortDescriptionAr")(e.target.value)} className={inputCls} maxLength={500} required />
+              <ErrorList messages={errorFor(serverErrors, "shortDescriptionAr")} />
+            </label>
+          </div>
+          <div className="grid gap-4 pt-4 md:grid-cols-2">
+            <label className="flex min-w-0 flex-col gap-1">
+              <span className={labelCls}>
+                الوصف الكامل <LangTag lang="EN" /> *
+              </span>
+              <textarea rows={6} value={f.descriptionEn} onChange={(e) => field("descriptionEn")(e.target.value)} className={inputCls} dir="ltr" required />
+              <ErrorList messages={errorFor(serverErrors, "descriptionEn")} />
+            </label>
+            <label className="flex min-w-0 flex-col gap-1">
+              <span className={labelCls}>
+                الوصف الكامل <LangTag lang="AR" /> *
+              </span>
+              <textarea rows={6} value={f.descriptionAr} onChange={(e) => field("descriptionAr")(e.target.value)} className={inputCls} required />
+              <ErrorList messages={errorFor(serverErrors, "descriptionAr")} />
+            </label>
+          </div>
         </div>
         {mode === "edit" && (
-          <label className="mt-4 flex flex-col gap-1">
+          <label className="mt-4 flex flex-col gap-1 border-t border-border/60 pt-4">
             <span className={labelCls}>الرابط (slug) — يُترك فارغًا لإعادة التوليد عند تغيير الاسم</span>
             <input
               type="text"
@@ -270,7 +323,7 @@ export default function AppForm({
               value={slugOverride}
               placeholder={initial.slug || "…"}
               onChange={(e) => setSlugOverride(e.target.value)}
-              className={inputCls}
+              className={`${inputCls} font-mono text-xs`}
             />
             <ErrorList messages={errorFor(serverErrors, "slug")} />
           </label>
@@ -278,19 +331,27 @@ export default function AppForm({
       </section>
 
       <section className={sectionCls}>
-        <h2 className="mb-3 text-sm font-bold text-text-secondary">الصور الأساسية</h2>
+        <span aria-hidden className={`absolute inset-x-0 top-0 h-1 ${toneBarCls.media}`} />
+        <SectionHeader
+          icon={<ImagePlus aria-hidden className="size-4" />}
+          title="الصور الأساسية"
+          hint="المعاينة أولًا — الأيقونة والرئيسيتان بطاقات متجاورة، ثم لقطات كل لغة في لوحتها"
+          tone="media"
+          action={<span className={countPillCls}>{mediaCount} صورة</span>}
+        />
         <div className="flex flex-col gap-4">
-          <UrlUploadField
-            label="أيقونة التطبيق *"
-            kind="icon"
-            value={applicationIcon}
-            onChange={setApplicationIcon}
-            imgAlt="أيقونة التطبيق"
-            error={errorFor(serverErrors, "applicationIcon")[0]}
-          />
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <UrlUploadField
-              label="الصورة الرئيسية (EN) *"
+              label="أيقونة التطبيق *"
+              kind="icon"
+              value={applicationIcon}
+              onChange={setApplicationIcon}
+              imgAlt="أيقونة التطبيق"
+              error={errorFor(serverErrors, "applicationIcon")[0]}
+            />
+            <UrlUploadField
+              label="الصورة الرئيسية *"
+              lang="EN"
               kind="main"
               value={mainImageEn}
               onChange={setMainImageEn}
@@ -298,7 +359,8 @@ export default function AppForm({
               error={errorFor(serverErrors, "mainImageEn")[0]}
             />
             <UrlUploadField
-              label="الصورة الرئيسية (AR) *"
+              label="الصورة الرئيسية *"
+              lang="AR"
               kind="main"
               value={mainImageAr}
               onChange={setMainImageAr}
@@ -306,140 +368,227 @@ export default function AppForm({
               error={errorFor(serverErrors, "mainImageAr")[0]}
             />
           </div>
-          <ScreenshotsEditor title="لقطات الشاشة (EN)" urls={screenshotsEn} onChange={setScreenshotsEn} onError={setScreenshotsError} />
+          <hr className="border-border/60" />
+          <div className="grid min-w-0 gap-4 xl:grid-cols-2">
+            <ScreenshotsEditor title="لقطات الشاشة" lang="EN" urls={screenshotsEn} onChange={setScreenshotsEn} onError={setScreenshotsError} />
+            <ScreenshotsEditor title="لقطات الشاشة" lang="AR" urls={screenshotsAr} onChange={setScreenshotsAr} onError={setScreenshotsError} />
+          </div>
           <ErrorList messages={errorFor(serverErrors, "screenshotsEn")} />
-          <ScreenshotsEditor title="لقطات الشاشة (AR)" urls={screenshotsAr} onChange={setScreenshotsAr} onError={setScreenshotsError} />
           <ErrorList messages={errorFor(serverErrors, "screenshotsAr")} />
           {screenshotsError && <ErrorList messages={[screenshotsError]} />}
         </div>
       </section>
 
       <section className={sectionCls}>
-        <h2 className="mb-3 text-sm font-bold text-text-secondary">روابط المتاجر *</h2>
-        <div className="grid gap-4 md:grid-cols-3">
-          {(
-            [
-              ["googlePlayLink", "Google Play"],
-              ["appStoreLink", "App Store"],
-              ["appGalleryLink", "AppGallery"],
-            ] as const
-          ).map(([key, label]) => (
-            <label key={key} className="flex flex-col gap-1">
-              <span className={labelCls}>{label}</span>
-              <input type="url" dir="ltr" value={f[key]} onChange={(e) => field(key)(e.target.value)} className={inputCls} />
-            </label>
-          ))}
+        <span aria-hidden className={`absolute inset-x-0 top-0 h-1 ${toneBarCls.stores}`} />
+        <SectionHeader
+          icon={<Store aria-hidden className="size-4" />}
+          title="المنصات والمتاجر"
+          hint="المنصة تحدد أين يعمل التطبيق، والروابط تحدد من أين يُحمّل — اختر المنصة ثم الصق روابطها"
+          tone="stores"
+          action={<span className={countPillCls}>{storeConnected}/3 مرتبط</span>}
+        />
+        <div className="flex min-w-0 flex-col gap-2">
+          <span className={labelCls}>المنصة</span>
+          <PlatformPicker value={platform} onChange={setPlatform} />
         </div>
-        <ErrorList messages={errorFor(serverErrors, "googlePlayLink", "appStoreLink", "appGalleryLink")} />
-        <p className="mt-1 text-xs text-text-secondary">يلزم إدخال رابط واحد على الأقل.</p>
+        <div className="mt-4 border-t border-border/60 pt-4">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <span className={labelCls}>روابط المتاجر</span>
+            {platform === "web" && (
+              <span className="text-[11px] text-text-secondary">تطبيق ويب — يكفي رابط واحد للوصول إليه</span>
+            )}
+          </div>
+          <div className="grid min-w-0 gap-3 md:grid-cols-3">
+            <StoreUrlField
+              label="Google Play"
+              hint="رابط play.google.com"
+              icon={<GooglePlayMark className="size-4" />}
+              value={f.googlePlayLink}
+              onChange={field("googlePlayLink")}
+              suggested={platform === "android"}
+              dimmed={platform === "ios"}
+            />
+            <StoreUrlField
+              label="App Store"
+              hint="رابط apps.apple.com"
+              icon={<AppleMark className="size-4" />}
+              value={f.appStoreLink}
+              onChange={field("appStoreLink")}
+              suggested={platform === "ios"}
+              dimmed={platform === "android"}
+            />
+            <StoreUrlField
+              label="AppGallery"
+              hint="رابط consumer.huawei.com"
+              icon={<HuaweiMark className="size-4" />}
+              value={f.appGalleryLink}
+              onChange={field("appGalleryLink")}
+              dimmed={platform === "ios"}
+            />
+          </div>
+        </div>
+        <div className="mt-3 border-t border-border/60 pt-3">
+          <ErrorList messages={errorFor(serverErrors, "googlePlayLink", "appStoreLink", "appGalleryLink")} />
+          <p className="mt-1 text-xs text-text-secondary">يلزم إدخال رابط واحد على الأقل — تُعرض أزرار التحميل منه.</p>
+        </div>
       </section>
 
       <section className={sectionCls}>
-        <h2 className="mb-3 text-sm font-bold text-text-secondary">الفئات</h2>
-        <div className="flex flex-wrap gap-x-4 gap-y-2">
+        <span aria-hidden className={`absolute inset-x-0 top-0 h-1 ${toneBarCls.cats}`} />
+        <SectionHeader
+          icon={<Tags aria-hidden className="size-4" />}
+          title="الفئات"
+          hint="اختر كل الفئات المناسبة — تظهر شاراتها على بطاقة التطبيق"
+          tone="cats"
+          action={<span className={countPillCls}>{categoryIds.length} مختارة</span>}
+        />
+        <div className="flex flex-wrap gap-2">
           {categories.length === 0 && <p className="text-sm text-text-secondary">لا توجد فئات</p>}
           {categories.map((c) => {
             const checked = categoryIds.includes(c.id);
             return (
-              <label key={c.id} className={`flex items-center gap-1.5 text-sm ${c.isActive ? "text-text" : "text-text-secondary"}`}>
+              <label key={c.id} className={checkChipCls(checked)}>
                 <input
                   type="checkbox"
                   checked={checked}
                   onChange={(e) => toggleCategory(c.id, e.target.checked)}
-                  className="size-4 cursor-pointer"
+                  className="sr-only"
                 />
                 {c.nameAr || c.nameEn}
-                {!c.isActive && <span className="text-xs">(غير مفعلة)</span>}
+                {!c.isActive && <span className="text-[11px] opacity-80">(غير مفعلة)</span>}
               </label>
             );
           })}
         </div>
-        <ErrorList messages={errorFor(serverErrors, "categoryIds")} />
-      </section>
-
-      <section className={sectionCls}>
-        <h2 className="mb-3 text-sm font-bold text-text-secondary">البيانات الوصفية</h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          {metadataTypes.map((t) => (
-            <MetadataTypeControl
-              key={t.id}
-              type={t}
-              selected={metadata[String(t.id)] ?? []}
-              onSelect={(id) => setMetadataSelection(t.id, id === null ? [] : [id])}
-              onToggle={(id, checked) => {
-                const cur = metadata[String(t.id)] ?? [];
-                setMetadataSelection(
-                  t.id,
-                  checked ? [...cur, id] : cur.filter((o) => o !== id)
-                );
-              }}
-            />
-          ))}
+        <div className="mt-3 border-t border-border/60 pt-3">
+          <ErrorList messages={errorFor(serverErrors, "categoryIds")} />
         </div>
-        <ErrorList messages={errorFor(serverErrors, "metadata")} />
       </section>
 
       <section className={sectionCls}>
-        <h2 className="mb-3 text-sm font-bold text-text-secondary">المطور والحالة</h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <label className="flex flex-col gap-1">
+        <span aria-hidden className={`absolute inset-x-0 top-0 h-1 ${toneBarCls.meta}`} />
+        <SectionHeader
+          icon={<Database aria-hidden className="size-4" />}
+          title="البيانات الوصفية"
+          hint="كل نوع في بطاقته — النوع الأحادي اختيار واحد، والمتعدد شارات بعدّاد"
+          tone="meta"
+          action={<span className={countPillCls}>{metadataSelected} محددة</span>}
+        />
+        {metadataTypes.length === 0 ? (
+          <p className="rounded-xl border border-dashed border-border px-3 py-6 text-center text-sm text-text-secondary">
+            لا توجد أنواع بيانات بعد.
+          </p>
+        ) : (
+          <div className="flex min-w-0 flex-col gap-3">
+            {metadataTypes.map((t) => (
+              <div key={t.id} className="min-w-0">
+                <MetadataTypeControl
+                  type={t}
+                  selected={metadata[String(t.id)] ?? []}
+                  onSelect={(id) => setMetadataSelection(t.id, id === null ? [] : [id])}
+                  onToggle={(id, checked) => {
+                    const cur = metadata[String(t.id)] ?? [];
+                    setMetadataSelection(
+                      t.id,
+                      checked ? [...cur, id] : cur.filter((o) => o !== id)
+                    );
+                  }}
+                  onClear={() => setMetadataSelection(t.id, [])}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="mt-3 border-t border-border/60 pt-3">
+          <ErrorList messages={errorFor(serverErrors, "metadata")} />
+        </div>
+      </section>
+
+      <section className={sectionCls}>
+        <span aria-hidden className={`absolute inset-x-0 top-0 h-1 ${toneBarCls.status}`} />
+        <SectionHeader
+          icon={<Settings2 aria-hidden className="size-4" />}
+          title="المطور والحالة"
+          hint="النشر والتمييز والترتيب — مسودة حتى المراجعة"
+          tone="status"
+        />
+        <div className="flex min-w-0 flex-col gap-4">
+          <div className="flex min-w-0 flex-col gap-1">
             <span className={labelCls}>المطور *</span>
-            <select value={developerId} onChange={(e) => setDeveloperId(Number(e.target.value))} className={inputCls}>
-              {developers.length === 0 && <option value={0}>لا يوجد مطورون</option>}
-              {developers.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.nameEn} {d.nameAr ? `— ${d.nameAr}` : ""}
-                </option>
-              ))}
-            </select>
+            <DeveloperCombobox developers={developers} value={developerId} onChange={setDeveloperId} />
             <ErrorList messages={errorFor(serverErrors, "developerId")} />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className={labelCls}>المنصة</span>
-            <select value={platform} onChange={(e) => setPlatform(e.target.value)} className={inputCls}>
-              {PLATFORMS.map((p) => (
-                <option key={p.value} value={p.value}>
-                  {p.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className={labelCls}>الحالة</span>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className={inputCls}>
-              {STATUSES.map((s) => (
-                <option key={s.value} value={s.value}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
-            <ErrorList messages={errorFor(serverErrors, "status")} />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className={labelCls}>ترتيب العرض</span>
-            <input
-              type="number"
-              min={0}
-              step={1}
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
-              className={inputCls}
-            />
-            <ErrorList messages={errorFor(serverErrors, "sortOrder")} />
-          </label>
-          <label className="flex items-center gap-2 self-end text-sm text-text">
-            <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} className="size-4 cursor-pointer" />
+          </div>
+          <div className="grid gap-4 border-t border-border/60 pt-4 sm:grid-cols-2">
+            <label className="flex min-w-0 flex-col gap-1">
+              <span className={labelCls}>الحالة</span>
+              <select value={status} onChange={(e) => setStatus(e.target.value)} className={inputCls}>
+                {STATUSES.map((s) => (
+                  <option key={s.value} value={s.value}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
+              <ErrorList messages={errorFor(serverErrors, "status")} />
+            </label>
+            <label className="flex min-w-0 flex-col gap-1">
+              <span className={labelCls}>ترتيب العرض</span>
+              <input
+                type="number"
+                min={0}
+                step={1}
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+                className={inputCls}
+              />
+              <ErrorList messages={errorFor(serverErrors, "sortOrder")} />
+            </label>
+          </div>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-4">
+          <label
+            className={`flex cursor-pointer items-center gap-2 rounded-app border px-3 py-2 text-sm transition ${
+              featured
+                ? "border-amber-400 bg-amber-50 font-bold text-amber-700 dark:bg-amber-400/10 dark:text-amber-300"
+                : "border-border bg-surface text-text hover:border-amber-400/60"
+            }`}
+          >
+            <input type="checkbox" checked={featured} onChange={(e) => setFeatured(e.target.checked)} className="sr-only" />
+            <Star aria-hidden className={`size-4 ${featured ? "fill-amber-400 text-amber-400" : "text-text-secondary"}`} />
             تطبيق مميز
           </label>
+          <span className="text-xs text-text-secondary">المميز يظهر بشارة أعلى البطاقة.</span>
         </div>
       </section>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <button type="submit" disabled={busy} className={btnPrimary}>
-          {busy ? "جارٍ الحفظ…" : mode === "create" ? "إنشاء التطبيق" : "حفظ التعديلات"}
+      <div className="sticky bottom-4 z-10 flex flex-wrap items-center gap-3 rounded-app border border-border bg-card/95 p-3 shadow-app backdrop-blur">
+        <button type="submit" disabled={busy} className={`${btnPrimary} inline-flex items-center gap-1.5`}>
+          {busy ? (
+            "جارٍ الحفظ…"
+          ) : mode === "create" ? (
+            <>
+              <Plus aria-hidden className="size-4" />
+              إنشاء التطبيق
+            </>
+          ) : (
+            <>
+              <Check aria-hidden className="size-4" />
+              حفظ التعديلات
+            </>
+          )}
         </button>
-        {saved && <span className="text-sm font-medium text-green-600">تم حفظ التطبيق بنجاح.</span>}
+        {saved && (
+          <span className="inline-flex items-center gap-1 text-sm font-medium text-green-600">
+            <Check aria-hidden className="size-4" />
+            تم حفظ التطبيق بنجاح.
+          </span>
+        )}
         {topError && <span className="text-sm text-red-600">{topError}</span>}
+        {!saved && !topError && (
+          <span className="text-xs text-text-secondary">
+            {mode === "create" ? "املأ الحقول الإلزامية ثم أنشئ التطبيق" : "التعديلات غير محفوظة بعد"}
+          </span>
+        )}
       </div>
     </form>
   );
@@ -480,9 +629,10 @@ export function DeleteAppButton({ appId, appName }: { appId: number; appName: st
         <button
           type="submit"
           disabled={busy}
-          className="rounded-app border border-red-300 bg-red-50 px-4 py-2 text-sm font-bold text-red-600 transition hover:bg-red-100 disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-app border border-red-300 bg-red-50 px-4 py-2 text-sm font-bold text-red-600 transition hover:bg-red-100 disabled:opacity-50"
         >
-          {busy ? "جارٍ الحذف…" : "حذف التطبيق"}
+          {busy ? "جارٍ الحذف…" : <Trash2 aria-hidden className="size-4" />}
+          {busy ? null : "حذف التطبيق"}
         </button>
         {error && <span className="text-sm text-red-600">{error}</span>}
       </div>

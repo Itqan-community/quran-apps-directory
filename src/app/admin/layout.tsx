@@ -3,8 +3,9 @@ import { connection } from "next/server";
 import localFont from "next/font/local";
 import { Suspense } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
-import AdminNav from "@/components/admin/admin-nav";
+import AdminNav, { AdminMobileBar } from "@/components/admin/admin-nav";
 import { auth } from "@/lib/auth";
+import { getMetadataTypesNav } from "@/lib/repo/admin";
 import "../globals.css";
 
 const expoArabic = localFont({
@@ -31,7 +32,19 @@ async function AdminShellNav() {
   const name = session?.user?.name ?? null;
   const email = session?.user?.email ?? null;
   const user = name || email ? { name, email } : null;
-  return <AdminNav user={user} />;
+  const metadataTypes = await getMetadataTypesNav();
+  return <AdminNav user={user} metadataTypes={metadataTypes} />;
+}
+
+/** Mobile bar shares the same data; it renders atop the content column. */
+async function AdminShellMobileBar() {
+  await connection();
+  const session = await auth();
+  const name = session?.user?.name ?? null;
+  const email = session?.user?.email ?? null;
+  const user = name || email ? { name, email } : null;
+  const metadataTypes = await getMetadataTypesNav();
+  return <AdminMobileBar user={user} metadataTypes={metadataTypes} />;
 }
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -47,7 +60,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             >
               <AdminShellNav />
             </Suspense>
-            <div className="min-w-0 flex-1 p-4 md:p-8">{children}</div>
+            <div className="min-w-0 flex-1 p-4 md:p-8">
+              <Suspense fallback={null}>
+                <AdminShellMobileBar />
+              </Suspense>
+              {children}
+            </div>
           </div>
         </ThemeProvider>
       </body>

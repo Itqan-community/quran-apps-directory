@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Check, Plus } from "lucide-react";
 import { saveCategory, saveDeveloper } from "@/lib/actions/admin-taxonomy";
 import { btnGhost, btnPrimary, inputCls, labelCls } from "@/components/admin/app-form-sections";
 
@@ -220,8 +221,20 @@ export function CategoryForm({ editing }: { editing: CategoryInitial | null }) {
       </section>
 
       <div className="flex flex-wrap items-center gap-3">
-        <button type="submit" disabled={busy} className={btnPrimary}>
-          {busy ? "جارٍ الحفظ…" : editing ? "حفظ التعديلات" : "إضافة الفئة"}
+        <button type="submit" disabled={busy} className={`${btnPrimary} inline-flex items-center gap-1.5`}>
+          {busy ? (
+            "جارٍ الحفظ…"
+          ) : editing ? (
+            <>
+              <Check aria-hidden className="size-4" />
+              حفظ التعديلات
+            </>
+          ) : (
+            <>
+              <Plus aria-hidden className="size-4" />
+              إضافة الفئة
+            </>
+          )}
         </button>
         {topError && <span className="text-sm text-red-600">{topError}</span>}
         {editing && (
@@ -454,8 +467,20 @@ export function DeveloperForm({ editing }: { editing: DeveloperInitial | null })
       </section>
 
       <div className="flex flex-wrap items-center gap-3">
-        <button type="submit" disabled={busy} className={btnPrimary}>
-          {busy ? "جارٍ الحفظ…" : editing ? "حفظ التعديلات" : "إضافة المطوّر"}
+        <button type="submit" disabled={busy} className={`${btnPrimary} inline-flex items-center gap-1.5`}>
+          {busy ? (
+            "جارٍ الحفظ…"
+          ) : editing ? (
+            <>
+              <Check aria-hidden className="size-4" />
+              حفظ التعديلات
+            </>
+          ) : (
+            <>
+              <Plus aria-hidden className="size-4" />
+              إضافة المطوّر
+            </>
+          )}
         </button>
         {topError && <span className="text-sm text-red-600">{topError}</span>}
         {editing && (

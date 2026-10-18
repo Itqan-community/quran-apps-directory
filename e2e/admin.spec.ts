@@ -516,27 +516,48 @@ test("developers: new → verified filter → edit → delete", async ({ page })
   expect(apps).toHaveLength(0);
 });
 
-test("metadata: add type → add option → shows → delete type via confirm", async ({ page }) => {
+test("metadata: modal add type → modal edit → option sub-page → delete type redirects", async ({
+  page,
+}) => {
   await login(page);
   await page.goto("/admin/metadata");
 
-  const typeForm = page.locator("form").first();
-  await typeForm.locator('label:has-text("الاسم التقني") input').fill(TYPE_NAME);
-  await typeForm.locator('label:has-text("التسمية (EN)") input').fill(TYPE_NAME);
-  await typeForm.locator('label:has-text("التسمية (AR)") input').fill(TYPE_NAME_AR);
-  await page.getByRole("button", { name: "إضافة النوع" }).click();
-  await expect(page.getByText("تم حفظ نوع البيانات بنجاح")).toBeVisible({ timeout: 15_000 });
+  // Add opens the shared modal (header button in main; the sidebar twin stays shut).
+  await page.getByRole("main").getByRole("button", { name: "إضافة نوع بيانات", exact: true }).click();
+  const modal = page.getByRole("dialog");
+  await expect(modal).toBeVisible();
+  await modal.locator('label:has-text("الاسم التقني") input').fill(TYPE_NAME);
+  await modal.locator('label:has-text("التسمية (EN)") input').fill(TYPE_NAME);
+  await modal.locator('label:has-text("التسمية (AR)") input').fill(TYPE_NAME_AR);
+  await modal.getByRole("button", { name: "إضافة النوع", exact: true }).click();
 
-  const card = page.locator("section", { has: page.locator(`h2:has-text("${TYPE_NAME_AR}")`) });
-  await expect(card).toBeVisible();
+  // Add jumps straight to the new type hub.
+  await expect(page).toHaveURL(/\/admin\/metadata\/\d+$/, { timeout: 15_000 });
+  await expect(page.getByRole("heading", { name: TYPE_NAME_AR })).toBeVisible();
+  const hubUrl = page.url();
+  const hubId = Number(hubUrl.split("/").pop());
 
-  // Options form inside the new type card
-  await card.locator('label:has-text("القيمة") input').fill(TYPE_NAME.toLowerCase().replace(/\s+/g, "-"));
-  await card.locator('label:has-text("التسمية (EN)") input').fill(`${TYPE_NAME}-opt`);
-  await card.locator('label:has-text("التسمية (AR)") input').fill(`${TYPE_NAME_AR} خيار`);
-  await card.getByRole("button", { name: "إضافة الخيار" }).click();
-  const optionRow = card.locator("table tbody tr", { hasText: `${TYPE_NAME}-opt` });
-  await expect(optionRow).toBeVisible({ timeout: 15_000 });
+  // Edit reuses the same modal on the hub (description-only so locators keep matching).
+  await page.getByRole("button", { name: "تعديل النوع", exact: true }).click();
+  await expect(modal).toBeVisible();
+  await modal.locator('label:has-text("الوصف (AR)") textarea').fill("وصف معدل e2e");
+  await modal.getByRole("button", { name: "حفظ التعديلات", exact: true }).click();
+  await expect(modal).toHaveCount(0, { timeout: 15_000 });
+  const [edited] = (await sql`SELECT description_ar FROM metadata_types WHERE id = ${hubId}`) as R[];
+  expect(edited!.description_ar).toBe("وصف معدل e2e");
+
+  // Options live on sub-pages now: hub → new → back to hub.
+  await page.getByRole("link", { name: "إضافة خيار", exact: true }).click();
+  await expect(page).toHaveURL(/\/admin\/metadata\/\d+\/options\/new$/, { timeout: 15_000 });
+  const optionForm = page.locator("form").first();
+  await optionForm.locator('label:has-text("القيمة") input').fill(TYPE_NAME.toLowerCase().replace(/\s+/g, "-"));
+  await optionForm.locator('label:has-text("التسمية (EN)") input').fill(`${TYPE_NAME}-opt`);
+  await optionForm.locator('label:has-text("التسمية (AR)") input').fill(`${TYPE_NAME_AR} خيار`);
+  await page.getByRole("button", { name: "إضافة الخيار", exact: true }).click();
+  await expect(page).toHaveURL(hubUrl, { timeout: 15_000 });
+  await expect(page.locator("table tbody tr", { hasText: `${TYPE_NAME}-opt` })).toBeVisible({
+    timeout: 15_000,
+  });
 
   const rows = (await sql`
     SELECT o.value FROM metadata_options o
@@ -547,8 +568,9 @@ test("metadata: add type → add option → shows → delete type via confirm", 
   expect(rows[0]!.value).toBe(TYPE_NAME.toLowerCase().replace(/\s+/g, "-"));
 
   page.on("dialog", (dialog) => void dialog.accept());
-  await card.getByRole("button", { name: "حذف النوع" }).click();
-  await expect(card).toHaveCount(0, { timeout: 15_000 });
+  await page.getByRole("button", { name: "حذف النوع", exact: true }).click();
+  await expect(page).toHaveURL(/\/admin\/metadata$/, { timeout: 15_000 });
+  await expect(page.getByText(TYPE_NAME_AR)).toHaveCount(0);
   const types = (await sql`SELECT id FROM metadata_types WHERE name = ${TYPE_NAME}`) as R[];
   expect(types).toHaveLength(0);
 });

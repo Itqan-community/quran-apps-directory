@@ -1,13 +1,24 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { Funnel, Pencil, Tags } from "lucide-react";
 import { getAllCategories } from "@/lib/repo/admin";
 import { deleteCategory } from "@/lib/actions/admin-taxonomy";
 import ConfirmSubmit from "@/components/admin/confirm-submit";
+import {
+  AddButtonLink,
+  EmptyState,
+  StatusPill,
+  adminBodyRow,
+  adminHeadRow,
+  adminTable,
+  adminTableWrap,
+  adminTh,
+  adminIconAction,
+} from "@/components/admin/ui";
 
 const CAT_DELETE_CONFIRM =
   "سيتم حذف الفئة نهائيًا مع ارتباطاتها بالتطبيقات. هل تريد المتابعة؟";
 
-const thCls = "px-3 py-2 text-start font-medium";
 const selectCls =
   "rounded-app border border-border bg-surface px-2 py-2 text-sm text-text";
 
@@ -28,12 +39,7 @@ export default function CategoriesPage({ searchParams }: { searchParams: Promise
     <main className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-text">الفئات</h1>
-        <Link
-          href="/admin/categories/new"
-          className="rounded-app bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-hover"
-        >
-          + إضافة فئة
-        </Link>
+        <AddButtonLink href="/admin/categories/new">إضافة فئة</AddButtonLink>
       </div>
       <Suspense fallback={<ContentSkeleton />}>
         <CategoriesContent searchParams={searchParams} />
@@ -79,8 +85,9 @@ async function CategoriesContent({ searchParams }: { searchParams: Promise<RawSe
         </select>
         <button
           type="submit"
-          className="rounded-app bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-hover"
+          className="inline-flex items-center gap-1.5 rounded-app bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-hover"
         >
+          <Funnel aria-hidden className="size-4" />
           تصفية
         </button>
         {(q || active !== "all") && (
@@ -91,42 +98,39 @@ async function CategoriesContent({ searchParams }: { searchParams: Promise<RawSe
       </form>
 
       {categories.length === 0 ? (
-        <p className="rounded-app bg-card p-6 text-center text-sm text-text-secondary shadow-app">
-          لا توجد فئات مطابقة
-        </p>
+        <EmptyState
+          icon={<Tags aria-hidden className="size-5" />}
+          message="لا توجد فئات مطابقة"
+        />
       ) : (
-        <div className="overflow-x-auto rounded-app bg-card shadow-app">
-          <table className="w-full text-start text-sm">
+        <div className={adminTableWrap}>
+          <table className={adminTable}>
             <thead>
-              <tr className="border-b border-border text-xs text-text-secondary">
-                <th className={thCls}>الاسم (EN)</th>
-                <th className={thCls}>الاسم (AR)</th>
-                <th className={thCls}>الرابط</th>
-                <th className={thCls}>مفعلة</th>
-                <th className={thCls}>الترتيب</th>
-                <th className={thCls}>إجراءات</th>
+              <tr className={adminHeadRow}>
+                <th className={adminTh}>الاسم (EN)</th>
+                <th className={adminTh}>الاسم (AR)</th>
+                <th className={adminTh}>الرابط</th>
+                <th className={adminTh}>الحالة</th>
+                <th className={adminTh}>الترتيب</th>
+                <th className={adminTh}>إجراءات</th>
               </tr>
             </thead>
             <tbody>
               {categories.map((c) => (
-                <tr key={c.id} className="border-b border-border last:border-b-0">
+                <tr key={c.id} className={adminBodyRow}>
                   <td className="px-3 py-2 text-text">{c.nameEn}</td>
                   <td className="px-3 py-2 text-text">{c.nameAr}</td>
                   <td className="px-3 py-2 font-mono text-xs text-text-secondary" dir="ltr">
                     {c.slug}
                   </td>
                   <td className="px-3 py-2">
-                    <span className={c.isActive ? "text-green-600" : "text-text-secondary"}>
-                      {c.isActive ? "✓" : "—"}
-                    </span>
+                    <StatusPill active={c.isActive} />
                   </td>
-                  <td className="px-3 py-2 text-text">{c.sortOrder}</td>
+                  <td className="px-3 py-2 tabular-nums text-text">{c.sortOrder}</td>
                   <td className="px-3 py-2">
                     <div className="flex items-center gap-2">
-                      <Link
-                        href={`/admin/categories/${c.id}`}
-                        className="rounded-app border border-border bg-surface px-3 py-1.5 text-xs text-text transition hover:bg-primary/10"
-                      >
+                      <Link href={`/admin/categories/${c.id}`} className={adminIconAction}>
+                        <Pencil aria-hidden className="size-3.5" />
                         تعديل
                       </Link>
                       <ConfirmSubmit

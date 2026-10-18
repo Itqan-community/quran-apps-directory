@@ -1,12 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { saveMetadataType, saveMetadataOption, deleteMetadataType, deleteMetadataOption } from "@/lib/actions/admin-metadata";
+import { Check, Pencil, Plus, Search, Settings2, X } from "lucide-react";
+import { saveMetadataType, saveMetadataOption, deleteMetadataType } from "@/lib/actions/admin-metadata";
 import ConfirmSubmit from "@/components/admin/confirm-submit";
 import { btnGhost, btnPrimary, inputCls, labelCls } from "@/components/admin/app-form-sections";
-import type { AdminMetadataOptionRow, AdminMetadataTypeWithAllOptions } from "@/lib/repo/admin";
+import {
+  StatusPill,
+  adminBodyRow,
+  adminCount,
+  adminHeadRow,
+  adminTable,
+  adminTableWrap,
+  adminTh,
+} from "@/components/admin/ui";
+import type { AdminMetadataOptionRow, MetadataTypeSummary } from "@/lib/repo/admin";
 
 const sectionCls = "rounded-app bg-card p-4 shadow-app";
 type ServerErrors = Record<string, string[]>;
@@ -58,8 +68,15 @@ export const METADATA_TYPE_CREATE_DEFAULT: MetadataTypeInitial = {
   icon: "",
 };
 
-/** Add/edit form for one metadata type (prefilled when the page resolves ?edit=<id>). */
-export function MetadataTypeForm({ editing }: { editing: MetadataTypeInitial | null }) {
+/** Add/edit form for one metadata type (prefilled when editing). */
+export function MetadataTypeForm({
+  editing,
+  onSaved,
+}: {
+  editing: MetadataTypeInitial | null;
+  /** When provided (modal use), replaces the default post-save navigation. */
+  onSaved?: (id?: number) => void;
+}) {
   const router = useRouter();
   const initial = editing ?? METADATA_TYPE_CREATE_DEFAULT;
   const [f, setF] = useState(() => ({
@@ -106,6 +123,10 @@ export function MetadataTypeForm({ editing }: { editing: MetadataTypeInitial | n
     try {
       const res = await saveMetadataType(payload);
       if (res.ok) {
+        if (onSaved) {
+          onSaved(res.id);
+          return;
+        }
         if (editing) {
           router.push("/admin/metadata");
         } else {
@@ -236,12 +257,24 @@ export function MetadataTypeForm({ editing }: { editing: MetadataTypeInitial | n
       </section>
 
       <div className="flex flex-wrap items-center gap-3">
-        <button type="submit" disabled={busy} className={btnPrimary}>
-          {busy ? "جارٍ الحفظ…" : editing ? "حفظ التعديلات" : "إضافة النوع"}
+        <button type="submit" disabled={busy} className={`${btnPrimary} inline-flex items-center gap-1.5`}>
+          {busy ? (
+            "جارٍ الحفظ…"
+          ) : editing ? (
+            <>
+              <Check aria-hidden className="size-4" />
+              حفظ التعديلات
+            </>
+          ) : (
+            <>
+              <Plus aria-hidden className="size-4" />
+              إضافة النوع
+            </>
+          )}
         </button>
         {saved && <span className="text-sm font-medium text-green-600">تم حفظ نوع البيانات بنجاح.</span>}
         {topError && <span className="text-sm text-red-600">{topError}</span>}
-        {editing && (
+        {editing && !onSaved && (
           <Link href="/admin/metadata" className="text-sm text-primary hover:underline">
             إلغاء التعديل
           </Link>
@@ -252,7 +285,73 @@ export function MetadataTypeForm({ editing }: { editing: MetadataTypeInitial | n
 }
 
 // ---------------------------------------------------------------------------
-// Metadata options (inline add/edit form within a type card)
+// Shared add/edit modal for a metadata type (sidebar add + list/hub edit)
+// ---------------------------------------------------------------------------
+
+export function MetadataTypeModal({
+  open,
+  editing,
+  onClose,
+  onSaved,
+}: {
+  open: boolean;
+  editing: MetadataTypeInitial | null;
+  onClose: () => void;
+  onSaved: (id?: number) => void;
+}) {
+  useEffect(() => {
+    if (!open) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="admin-modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      onClick={onClose}
+      role="presentation"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={editing ? "تعديل نوع البيانات" : "إضافة نوع بيانات"}
+        className="admin-modal-panel max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-app bg-card p-4 shadow-app"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <h2 className="text-base font-bold text-text">
+            {editing ? "تعديل نوع البيانات" : "إضافة نوع بيانات"}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className={`${btnGhost} inline-flex items-center gap-1`}
+            aria-label="إغلاق"
+          >
+            <X aria-hidden className="size-4" />
+          </button>
+        </div>
+        {/* key: fresh state per open + per edited row */}
+        <MetadataTypeForm
+          key={editing?.id ?? "new"}
+          editing={editing}
+          onSaved={(id) => {
+            onSaved(id);
+            onClose();
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Metadata options (standalone form for the option sub-pages)
 // ---------------------------------------------------------------------------
 
 type OptionFormState = {
@@ -275,14 +374,17 @@ const OPTION_CREATE_DEFAULT: OptionFormState = {
   color: "",
 };
 
-function OptionForm({
+export function OptionForm({
   typeId,
   editing,
   onDone,
+  onSaved,
 }: {
   typeId: number;
   editing: AdminMetadataOptionRow | null;
-  onDone: () => void;
+  onDone?: () => void;
+  /** When provided (sub-page use), replaces the default inline post-save behavior. */
+  onSaved?: () => void;
 }) {
   const router = useRouter();
   const [f, setF] = useState(() =>
@@ -331,9 +433,13 @@ function OptionForm({
     try {
       const res = await saveMetadataOption(typeId, payload);
       if (res.ok) {
+        if (onSaved) {
+          onSaved();
+          return;
+        }
         router.refresh();
         if (editing) {
-          onDone(); // back to add mode (the card remounts this form fresh)
+          onDone?.(); // back to add mode (the card remounts this form fresh)
         } else {
           setSaved(true);
           reset();
@@ -457,12 +563,24 @@ function OptionForm({
       </label>
 
       <div className="flex flex-wrap items-center gap-3">
-        <button type="submit" disabled={busy} className={btnPrimary}>
-          {busy ? "جارٍ الحفظ…" : editing ? "حفظ التعديلات" : "إضافة الخيار"}
+        <button type="submit" disabled={busy} className={`${btnPrimary} inline-flex items-center gap-1.5`}>
+          {busy ? (
+            "جارٍ الحفظ…"
+          ) : editing ? (
+            <>
+              <Check aria-hidden className="size-4" />
+              حفظ التعديلات
+            </>
+          ) : (
+            <>
+              <Plus aria-hidden className="size-4" />
+              إضافة الخيار
+            </>
+          )}
         </button>
         {saved && <span className="text-sm font-medium text-green-600">تم حفظ الخيار بنجاح.</span>}
         {topError && <span className="text-sm text-red-600">{topError}</span>}
-        {editing && (
+        {editing && !onSaved && (
           <button type="button" onClick={onDone} disabled={busy} className={btnGhost}>
             إلغاء التعديل
           </button>
@@ -473,128 +591,179 @@ function OptionForm({
 }
 
 // ---------------------------------------------------------------------------
-// One metadata type card: header + options table + inline option form
+// Page islands: list / hub / option sub-pages (modal state lives here)
 // ---------------------------------------------------------------------------
 
 const TYPE_DELETE_CONFIRM_APPS =
   "سيتم حذف نوع البيانات نهائيًا مع جميع خياراته وارتباطات التطبيقات بها. هل تريد المتابعة؟";
 const TYPE_DELETE_CONFIRM_EMPTY =
   "سيتم حذف نوع البيانات نهائيًا مع جميع خياراته. هل تريد المتابعة؟";
-const OPT_DELETE_CONFIRM_APPS =
-  "سيتم حذف الخيار نهائيًا مع ارتباطات التطبيقات به. هل تريد المتابعة؟";
-const OPT_DELETE_CONFIRM_EMPTY = "سيتم حذف الخيار نهائيًا. هل تريد المتابعة؟";
 
-const thCls = "px-3 py-2 text-start font-medium";
+const rowActionCls =
+  "inline-flex items-center gap-1.5 rounded-app border border-border bg-surface px-3 py-1.5 text-xs text-text transition hover:bg-primary/10";
 
-export function MetadataTypeCard({
-  type,
-  highlighted,
-}: {
-  type: AdminMetadataTypeWithAllOptions;
-  highlighted?: boolean;
-}) {
-  const [editingOption, setEditingOption] = useState<AdminMetadataOptionRow | null>(null);
-  const appsTotal = type.options.reduce((sum, o) => sum + o.appCount, 0);
-
-  function clearEditing() {
-    setEditingOption(null);
-  }
+/** Header button on the list page: opens the add-type modal, jumps to the new hub. */
+export function AddMetadataTypeButton() {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
 
   return (
-    <section className={`rounded-app bg-card p-4 shadow-app ${highlighted ? "bg-primary/5" : ""}`}>
-      <header className="flex flex-wrap items-center gap-2 border-b border-border pb-3">
-        <h2 className="text-base font-bold text-text">{type.labelAr}</h2>
-        <span className="text-xs text-text-secondary" dir="ltr">
-          {type.labelEn}
-        </span>
-        <span className="font-mono text-xs text-text-secondary" dir="ltr">
-          {type.name}
-        </span>
-        <span className="text-xs text-text-secondary">
-          {type.isMultiSelect ? "اختيار متعدد" : "اختيار واحد"}
-        </span>
-        <span className={type.isActive ? "text-xs text-green-600" : "text-xs text-text-secondary"}>
-          {type.isActive ? "مفعّل" : "موقوف"}
-        </span>
-        <div className="ms-auto flex items-center gap-2">
-          <Link
-            href={`/admin/metadata?edit=${type.id}`}
-            aria-current={highlighted ? "true" : undefined}
-            className="rounded-app border border-border bg-surface px-3 py-1.5 text-xs text-text transition hover:bg-primary/10"
-          >
-            تعديل النوع
-          </Link>
-          <ConfirmSubmit
-            confirmMessage={appsTotal > 0 ? TYPE_DELETE_CONFIRM_APPS : TYPE_DELETE_CONFIRM_EMPTY}
-            label="حذف النوع"
-            action={() => deleteMetadataType(type.id)}
-          />
-        </div>
-      </header>
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center gap-1.5 rounded-app bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-hover"
+      >
+        <Plus aria-hidden className="size-4" />
+        إضافة نوع بيانات
+      </button>
+      <MetadataTypeModal
+        open={open}
+        editing={null}
+        onClose={() => setOpen(false)}
+        onSaved={(id) => {
+          router.refresh();
+          if (id !== undefined) router.push(`/admin/metadata/${id}`);
+        }}
+      />
+    </>
+  );
+}
 
-      {type.options.length === 0 ? (
-        <p className="py-4 text-center text-xs text-text-secondary">
-          لا توجد خيارات بعد — أضف الخيار الأول من النموذج أدناه.
+/** Per-row actions on the list page: manage hub, edit in modal, delete in place. */
+export function MetadataTypeRowActions({
+  initial,
+  appsTotal,
+}: {
+  initial: MetadataTypeInitial & { id: number };
+  appsTotal: number;
+}) {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="flex items-center gap-2">
+      <Link href={`/admin/metadata/${initial.id}`} className={rowActionCls}>
+        <Settings2 aria-hidden className="size-3.5" />
+        إدارة
+      </Link>
+      <button type="button" onClick={() => setOpen(true)} className={rowActionCls}>
+        <Pencil aria-hidden className="size-3.5" />
+        تعديل
+      </button>
+      <ConfirmSubmit
+        confirmMessage={appsTotal > 0 ? TYPE_DELETE_CONFIRM_APPS : TYPE_DELETE_CONFIRM_EMPTY}
+        label="حذف"
+        action={() => deleteMetadataType(initial.id)}
+      />
+      <MetadataTypeModal
+        open={open}
+        editing={initial}
+        onClose={() => setOpen(false)}
+        onSaved={() => router.refresh()}
+      />
+    </div>
+  );
+}
+
+function toRowInitial(t: MetadataTypeSummary): MetadataTypeInitial & { id: number } {
+  return {
+    id: t.id,
+    name: t.name,
+    labelEn: t.labelEn,
+    labelAr: t.labelAr,
+    descriptionEn: t.descriptionEn,
+    descriptionAr: t.descriptionAr,
+    isMultiSelect: t.isMultiSelect,
+    sortOrder: t.sortOrder,
+    isActive: t.isActive,
+    icon: t.icon ?? "",
+  };
+}
+
+/** List-page table with a search box filtering by either label or technical name. */
+export function MetadataTypesTable({ types }: { types: MetadataTypeSummary[] }) {
+  const [query, setQuery] = useState("");
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return types;
+    return types.filter((t) =>
+      `${t.labelAr} ${t.labelEn} ${t.name}`.toLowerCase().includes(q)
+    );
+  }, [types, query]);
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-2 rounded-app border border-border bg-card px-3 py-2 shadow-app transition focus-within:border-primary">
+        <Search aria-hidden className="size-4 shrink-0 text-text-secondary" />
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="ابحث بالتسمية العربية أو الإنجليزية أو الاسم التقني…"
+          aria-label="البحث في أنواع البيانات"
+          className="w-full bg-transparent text-sm text-text outline-none placeholder:text-text-secondary"
+        />
+        {query && (
+          <button
+            type="button"
+            aria-label="مسح البحث"
+            onClick={() => setQuery("")}
+            className="shrink-0 text-text-secondary hover:text-text"
+          >
+            <X aria-hidden className="size-3.5" />
+          </button>
+        )}
+        <span className="shrink-0 rounded-full bg-surface px-2 py-0.5 text-[11px] font-bold tabular-nums text-text-secondary ring-1 ring-border/60">
+          {filtered.length} من {types.length}
+        </span>
+      </div>
+      {filtered.length === 0 ? (
+        <p className="rounded-app border border-dashed border-border bg-card px-3 py-8 text-center text-sm text-text-secondary shadow-app">
+          لا نتائج لـ «{query.trim()}» — جرّب تسمية أو اسمًا تقنيًا آخر.
         </p>
       ) : (
-        <div className="mt-3 overflow-x-auto">
-          <table className="w-full text-start text-sm">
+        <div className={adminTableWrap}>
+          <table className={adminTable}>
             <thead>
-              <tr className="border-b border-border text-xs text-text-secondary">
-                <th className={thCls}>القيمة</th>
-                <th className={thCls}>التسمية (EN)</th>
-                <th className={thCls}>التسمية (AR)</th>
-                <th className={thCls}>الاستخدام</th>
-                <th className={thCls}>مفعلة</th>
-                <th className={thCls}>الترتيب</th>
-                <th className={thCls}>إجراءات</th>
+              <tr className={adminHeadRow}>
+                <th className={adminTh}>التسمية (AR)</th>
+                <th className={adminTh}>التسمية (EN)</th>
+                <th className={adminTh}>الاسم التقني</th>
+                <th className={adminTh}>النوع</th>
+                <th className={adminTh}>الخيارات</th>
+                <th className={adminTh}>الاستخدام</th>
+                <th className={adminTh}>الحالة</th>
+                <th className={adminTh}>إجراءات</th>
               </tr>
             </thead>
             <tbody>
-              {type.options.map((o) => (
-                <tr
-                  key={o.id}
-                  className={`border-b border-border last:border-b-0 ${
-                    o.id === editingOption?.id ? "bg-primary/5" : ""
-                  }`}
-                >
-                  <td className="px-3 py-2 font-mono text-xs text-text" dir="ltr">
-                    {o.value}
-                  </td>
+              {filtered.map((t) => (
+                <tr key={t.id} className={adminBodyRow}>
+                  <td className="px-3 py-2 font-bold text-text">{t.labelAr}</td>
                   <td className="px-3 py-2 text-text" dir="ltr">
-                    {o.labelEn}
+                    {t.labelEn}
                   </td>
-                  <td className="px-3 py-2 text-text">{o.labelAr}</td>
+                  <td className="px-3 py-2 font-mono text-xs text-text-secondary" dir="ltr">
+                    {t.name}
+                  </td>
+                  <td className="px-3 py-2 text-xs text-text-secondary">
+                    {t.isMultiSelect ? "اختيار متعدد" : "اختيار واحد"}
+                  </td>
+                  <td className="px-3 py-2">
+                    <span className={adminCount}>{t.optionsCount}</span>
+                  </td>
                   <td className="px-3 py-2 text-text">
-                    {o.appCount > 0 ? (
-                      <span className="font-bold">
-                        {o.appCount} تطبيقات
-                      </span>
+                    {t.appsTotal > 0 ? (
+                      <span className="font-bold tabular-nums">{t.appsTotal} تطبيقات</span>
                     ) : (
                       <span className="text-text-secondary">0 تطبيقات</span>
                     )}
                   </td>
                   <td className="px-3 py-2">
-                    <span className={o.isActive ? "text-green-600" : "text-text-secondary"}>
-                      {o.isActive ? "✓" : "—"}
-                    </span>
+                    <StatusPill active={t.isActive} />
                   </td>
-                  <td className="px-3 py-2 text-text">{o.sortOrder}</td>
                   <td className="px-3 py-2">
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setEditingOption(o)}
-                        className="rounded-app border border-border bg-surface px-3 py-1.5 text-xs text-text transition hover:bg-primary/10"
-                      >
-                        تعديل
-                      </button>
-                      <ConfirmSubmit
-                        confirmMessage={o.appCount > 0 ? OPT_DELETE_CONFIRM_APPS : OPT_DELETE_CONFIRM_EMPTY}
-                        label="حذف"
-                        action={() => deleteMetadataOption(o.id)}
-                      />
-                    </div>
+                    <MetadataTypeRowActions initial={toRowInitial(t)} appsTotal={t.appsTotal} />
                   </td>
                 </tr>
               ))}
@@ -602,16 +771,46 @@ export function MetadataTypeCard({
           </table>
         </div>
       )}
+      <p className="text-xs text-text-secondary">الإجمالي: {types.length}</p>
+    </div>
+  );
+}
 
-      <div className="mt-4 border-t border-border pt-4">
-        {/* key: remount so a switched option re-reads its prefill */}
-        <OptionForm
-          key={editingOption?.id ?? "new"}
-          typeId={type.id}
-          editing={editingOption}
-          onDone={clearEditing}
-        />
-      </div>
-    </section>
+/** Hub header edit button: the type form lives only in this modal (option C). */
+export function EditMetadataTypeButton({ initial }: { initial: MetadataTypeInitial }) {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <button type="button" onClick={() => setOpen(true)} className={rowActionCls}>
+        <Pencil aria-hidden className="size-3.5" />
+        تعديل النوع
+      </button>
+      <MetadataTypeModal
+        open={open}
+        editing={initial}
+        onClose={() => setOpen(false)}
+        onSaved={() => router.refresh()}
+      />
+    </>
+  );
+}
+
+/** Option sub-page body: standalone form, back to the hub on save. */
+export function OptionFormPage({
+  typeId,
+  editing,
+}: {
+  typeId: number;
+  editing: AdminMetadataOptionRow | null;
+}) {
+  const router = useRouter();
+  return (
+    <OptionForm
+      typeId={typeId}
+      editing={editing}
+      onSaved={() => router.push(`/admin/metadata/${typeId}`)}
+    />
   );
 }
