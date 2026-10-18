@@ -13,5 +13,8 @@ export default defineConfig({
     url: "http://127.0.0.1:3210/health",
     reuseExistingServer: !process.env.CI,
     timeout: 300_000,
+    // Deterministic e2e: the mock embedding provider must win over any ambient
+    // AI_SEARCH_PROVIDER so no external API calls happen during tests.
+    env: { ...process.env, AI_SEARCH_PROVIDER: "mock" },
   },
 });

@@ -62,3 +62,26 @@ test.describe("public smoke", () => {
     await expect(page.getByRole("heading", { name: "رمضان فرصة للمشاركة" })).toBeVisible();
   });
 });
+
+test.describe("smart search", () => {
+  test("smart tab navigates to mode=smart and renders results/chips", async ({ page }) => {
+    await page.goto("/ar/apps");
+    await page.getByRole("tab", { name: "البحث الذكي" }).click();
+    await page.getByRole("textbox", { name: "البحث الذكي" }).fill("قارئ قران");
+    await page.getByRole("button", { name: "إرسال" }).click();
+    await expect(page).toHaveURL(/\/ar\/apps\?.*mode=smart/);
+    // did-you-mean chip when suggestion exists (alias 'قران'→'قرآن'); must be encoded href:
+    await expect(page.locator("a.did-you-mean")).toHaveAttribute("href", /search=[^&]*%D9%82%D8%B1%D8%A2%D9%86/);
+    // page still lists apps or shows fallback notice — both are valid UI; assert it rendered (no 500):
+    await expect(page.getByRole("heading", { name: /نتائج البحث عن/ })).toBeVisible();
+  });
+
+  test("traditional tab stays modeless", async ({ page }) => {
+    await page.goto("/en/apps");
+    await page.getByRole("tab", { name: /Traditional/ }).click();
+    await page.getByRole("textbox", { name: "Traditional Search" }).fill("alpha");
+    await page.getByRole("button", { name: "Search Now" }).click();
+    await expect(page).toHaveURL(/\/en\/apps\?search=alpha/);
+    await expect(page).not.toHaveURL(/mode=smart/);
+  });
+});

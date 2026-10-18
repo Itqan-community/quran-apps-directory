@@ -1,26 +1,24 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 export function HeroSearch({ lang }: { lang: "ar" | "en" }) {
   const t = useTranslations("appList.search");
+  const router = useRouter();
   const [searchType, setSearchType] = useState<"traditional" | "smart">("traditional");
   const [q, setQ] = useState("");
-  const [searching, setSearching] = useState(false);
-  const recentTimer = useRef(0);
+  const [isPending, startTransition] = useTransition();
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const query = q.trim();
-    if (searchType === "smart") {
-      recentTimer.current += 1;
-      setSearching(true);
-      setTimeout(() => recentTimer.current > 0 && setSearching(false), 900);
-    }
-    window.location.assign(
-      query ? `/${lang}/apps?search=${encodeURIComponent(query)}` : `/${lang}/apps`
-    );
+    const mode = searchType === "smart" ? "&mode=smart" : "";
+    const url = query ? `/${lang}/apps?search=${encodeURIComponent(query)}${mode}` : `/${lang}/apps`;
+    startTransition(() => {
+      router.push(url);
+    });
   }
 
   const isSmart = searchType === "smart";
@@ -56,7 +54,7 @@ export function HeroSearch({ lang }: { lang: "ar" | "en" }) {
               <img
                 src="/images/searchLogo.svg"
                 alt=""
-                className={`search-logo-img ${searching ? "spinning" : ""}`}
+                className={`search-logo-img ${isPending ? "spinning" : ""}`}
                 width={20}
                 height={20}
               />
