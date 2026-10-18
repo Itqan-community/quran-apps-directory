@@ -1,0 +1,68 @@
+# Production stack: app + nginx (TLS) + certbot (Cloudflare DNS-01).
+# The database is a MANAGED Postgres (must have the pgvector extension
+# available) — there is deliberately no db/minio service here; production
+# media goes straight to Cloudflare R2.
+#
+# Usage (from the repo root):
+#   cp .env.prod.example .env.prod   # fill everything in
+#   docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
+#
+# The --env-file is needed twice over: it feeds compose-level interpolation
+# (DOMAIN, build args) AND, via env_file, the app container's runtime env.
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Build-time only: prerendering touches the DB from the build stage.
+        DATABASE_URL: ${DATABASE_URL}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+        NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN:-}
+    env_file: .env.prod
+    environment:
+      NODE_ENV: production
+    expose:
+      - "3000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 25s
+      retries: 3
+
+  nginx:
+    image: nginx:alpine
+    depends_on:
+      app:
+        condition: service_started
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./docker/nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+      # First-boot dummy certificate (sourced by nginx's own entrypoint).
+      - ./docker/nginx/10-dummy-cert.sh:/docker-entrypoint.d/10-dummy-cert.sh:ro
+      - letsencrypt:/etc/letsencrypt
+    restart: unless-stopped
+
+  certbot:
+    build:
+      context: ./docker/certbot
+    depends_on:
+      nginx:
+        condition: service_started
+    env_file: .env.prod
+    environment:
+      NGINX_CONTAINER: nginx
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+volumes:
+  letsencrypt:
