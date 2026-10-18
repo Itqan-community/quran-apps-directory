@@ -1,4 +1,4 @@
-import { EmbeddingProvider, EmbeddingUnavailableError } from "../types";
+import { type EmbeddingProvider, EmbeddingUnavailableError } from "../types";
 
 const DIMENSIONS = 768;
 const DEFAULT_MODEL = "models/gemini-embedding-001";

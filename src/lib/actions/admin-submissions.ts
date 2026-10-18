@@ -12,6 +12,7 @@ import {
   submissionStatusLogs,
 } from "@/db/schema";
 import type { appSubmissions as appSubmissionsTable } from "@/db/schema";
+import { reindexAppEmbedding } from "@/lib/ai/reindex";
 import { requireAdmin } from "@/lib/admin-guard";
 import { pgDupError } from "@/lib/db-errors";
 import { findDuplicateAppName } from "@/lib/repo/apps";
@@ -296,6 +297,11 @@ export async function approveSubmission(id: number): Promise<ReviewResult> {
     }
     revalidateTag("apps", "max");
     revalidateTag("submissions", "max");
+    try {
+      await reindexAppEmbedding(outcome.appId);
+    } catch (e) {
+      console.error("approval embedding failed", e);
+    }
     return { ok: true, appId: outcome.appId };
   }
   if (outcome.kind === "storage") return { ok: false, error: "storage", message: outcome.message };

@@ -12,6 +12,7 @@ import {
   metadataOptions,
   metadataTypes,
 } from "@/db/schema";
+import { reindexAllEmbeddings, type ReindexReport } from "@/lib/ai/reindex";
 import { requireAdmin } from "@/lib/admin-guard";
 import { pgDupError } from "@/lib/db-errors";
 import { findDuplicateAppName } from "@/lib/repo/apps";
@@ -386,4 +387,12 @@ export async function bulkSetApps(
     console.error("bulkSetApps error", e);
     return { ok: false };
   }
+}
+
+/** Re-embed every published app (admin toolbar; same core as the CLI script). */
+export async function reindexAllEmbeddingsAction(): Promise<ReindexReport> {
+  await requireAdmin();
+  const report = await reindexAllEmbeddings();
+  revalidateTag("apps", "max");
+  return report;
 }

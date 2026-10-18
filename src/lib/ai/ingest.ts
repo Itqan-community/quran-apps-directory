@@ -21,7 +21,7 @@ import {
   metadataTypes,
 } from "@/db/schema";
 import { getEmbeddingProvider } from "./provider";
-import { EmbeddingProvider, EmbeddingUnavailableError } from "./types";
+import { type EmbeddingProvider, EmbeddingUnavailableError } from "./types";
 
 // ---------------------------------------------------------------------------
 // Types

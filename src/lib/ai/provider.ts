@@ -1,4 +1,4 @@
-import { EmbeddingProvider, EmbeddingUnavailableError } from "./types";
+import { type EmbeddingProvider, EmbeddingUnavailableError } from "./types";
 import { MockProvider } from "./providers/mock";
 import { createGeminiProvider } from "./providers/gemini";
 import { createOpenAIProvider } from "./providers/openai";

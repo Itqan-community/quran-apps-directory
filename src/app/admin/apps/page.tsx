@@ -4,6 +4,7 @@ import type { AppListItem } from "@/lib/repo/admin";
 import { getAdminApps } from "@/lib/repo/admin";
 import StatusBadge from "@/components/admin/status-badge";
 import BulkBar, { BulkSelectionProvider, BulkCheckbox } from "@/components/admin/bulk-bar";
+import ReindexEmbeddingsButton from "@/components/admin/reindex-embeddings-button";
 
 const PAGE_SIZE = 25;
 
@@ -55,12 +56,15 @@ export default function AdminAppsPage({ searchParams }: { searchParams: Promise<
     <main className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-text">التطبيقات</h1>
-        <Link
-          href="/admin/apps/new"
-          className="rounded-app bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-hover"
-        >
-          + إضافة تطبيق
-        </Link>
+        <div className="flex items-center gap-2">
+          <ReindexEmbeddingsButton />
+          <Link
+            href="/admin/apps/new"
+            className="rounded-app bg-primary px-4 py-2 text-sm font-bold text-white transition hover:bg-primary-hover"
+          >
+            + إضافة تطبيق
+          </Link>
+        </div>
       </div>
       <Suspense fallback={<AppsSkeleton />}>
         <AppsContent searchParams={searchParams} />

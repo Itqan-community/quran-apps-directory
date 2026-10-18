@@ -1,4 +1,4 @@
-import { EmbeddingProvider, EmbeddingUnavailableError } from "../types";
+import { type EmbeddingProvider, EmbeddingUnavailableError } from "../types";
 
 const DIMENSIONS = 768;
 const DEFAULT_MODEL = "text-embedding-3-small";
