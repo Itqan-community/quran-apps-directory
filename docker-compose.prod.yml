@@ -29,6 +29,11 @@ services:
         # the compose network) point the prerender at the db's host-mapped
         # port. On the VPS it stays unset and DATABASE_URL is used directly.
         DATABASE_URL: ${BUILD_DATABASE_URL:-${DATABASE_URL}}
+        # Opt-in schema provisioning: 1 applies the pgvector extension +
+        # `drizzle-kit push` (db/schema.ts) before `next build`, which is
+        # required on the first deploy — the prerender reads the DB. Set it back
+        # to 0 afterwards; see docs/deploy-docker.md.
+        PROVISION_DB: ${PROVISION_DB:-0}
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
         NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN:-}
     env_file: .env.prod

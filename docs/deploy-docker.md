@@ -37,14 +37,65 @@ cp .env.prod.example .env.prod
 # … fill .env.prod (see the comments in the file):
 #   DOMAIN, CF_DNS_API_TOKEN, ACME_EMAIL, DATABASE_URL (managed, pgvector!),
 #   NEXT_PUBLIC_SITE_URL/AUTH_URL (https://<your-domain>), auth, R2, SMTP, AI vars.
+#   PROVISION_DB=1 for the FIRST deploy — see below, then set it back to 0.
 
 docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
 ```
 
+### First deploy: the database needs its schema first
+
+The build prerenders DB-backed pages (`cacheComponents`), so `DATABASE_URL` must
+point at a database that already has the Drizzle schema. Against an empty
+database the build fails with `relation "categories" does not exist` (pg error
+`42P01`), which looks like a code bug but is a missing provisioning step.
+
+Set this in `.env.prod` for the first deploy:
+
+```bash
+PROVISION_DB=1
+```
+
+The builder then runs `scripts/provision-db.sh` before `next build`:
+
+- `node --experimental-strip-types db/enable-pgvector.ts` — `CREATE EXTENSION vector`
+- `npx --no-install drizzle-kit push --force` — `db/schema.ts` → tables
+
+Then set `PROVISION_DB=0` again and redeploy. Two reasons not to leave it on:
+
+- ⚠ `drizzle-kit push` applies a **blind diff**. Against a database that already
+  holds data and has drifted, it can alter or drop columns. It is the right tool
+  for an empty database; for later schema changes prefer generated migrations.
+- While it is `1`, provisioning re-runs on **every** rebuild (any source change
+  invalidates the layer). That is not a no-op: one auto-generated foreign-key
+  name exceeds Postgres's 63-character limit
+  (`app_submissions_categories_appsubmission_id_app_submissions_id_fk`), so
+  `push` drops and re-adds that constraint on every run — an `ACCESS EXCLUSIVE`
+  lock plus a full revalidation. Invisible on an empty database; on a populated
+  one, turn the flag back off.
+
+`drizzle-kit` is a devDependency, which is why this runs in the builder stage:
+the runner image only has the pruned standalone output and could not run it.
+
+**Seeding is a separate, manual step.** `db/seed.ts` needs `ADMIN_EMAIL` /
+`ADMIN_PASSWORD` to create the admin user (`db/seed.ts:163`), and those are
+runtime-only values — making them build args would bake the password into image
+history. Run it on the VPS after provisioning, or from any machine that can
+reach the database:
+
+```bash
+export DATABASE_URL="$(sed -n 's/^DATABASE_URL=//p' .env.prod)"
+npm ci --no-audit --no-fund
+node --experimental-strip-types db/seed.ts     # idempotent: all inserts ON CONFLICT DO NOTHING
+```
+
+Seed **before** the deploy build if you want the first build's prerendered pages
+to contain content.
+
 What happens on first boot:
 
 1. `app` builds (the build stage prerenders pages that read the DB, so the build
-   machine must reach the managed `DATABASE_URL` — true on the VPS itself).
+   machine must reach the managed `DATABASE_URL` — true on the VPS itself — and
+   with `PROVISION_DB=1` the schema is applied first).
 2. `nginx` starts; `self-signed-cert.sh` writes a 7-day **self-signed** cert at
    `/etc/letsencrypt/live/app/` (cert name `app`) because no real cert exists yet — HTTPS is up
    (browser warning until step 3).

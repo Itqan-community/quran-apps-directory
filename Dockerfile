@@ -17,10 +17,19 @@ COPY . .
 ARG NEXT_PUBLIC_SITE_URL
 ARG NEXT_PUBLIC_SENTRY_DSN
 ARG DATABASE_URL
+# Opt-in schema provisioning (PROVISION_DB=1 in .env.prod). Needed on the first
+# deploy: the prerender below reads the DB, so a schema-less DATABASE_URL fails
+# the build. See scripts/provision-db.sh and docs/deploy-docker.md.
+ARG PROVISION_DB=0
 ENV NEXT_TELEMETRY_DISABLED=1 \
     NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
     NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN \
     DATABASE_URL=$DATABASE_URL
+RUN if [ "$PROVISION_DB" = "1" ]; then \
+      sh scripts/provision-db.sh; \
+    else \
+      echo "PROVISION_DB=0 — skipping schema provisioning (set PROVISION_DB=1 in .env.prod for the first deploy)"; \
+    fi
 RUN npm run build
 
 FROM node:22-bookworm-slim AS runner
