@@ -28,12 +28,14 @@ export default async function AppsPage({
   setRequestLocale(locale);
   const search = (Array.isArray(sp.search) ? sp.search[0] : sp.search)?.trim() || undefined;
   const page = Number((Array.isArray(sp.page) ? sp.page[0] : sp.page) ?? 1) || 1;
+  const mode = sp.mode === "smart" ? "smart" : undefined;
   const categories = await getCategoriesCached();
 
   return (
     <AppsListing
       lang={locale}
       search={search}
+      mode={mode}
       selectedCategory={undefined}
       filters={{
         search,

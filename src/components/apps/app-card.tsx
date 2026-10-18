@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import type { MatchReason } from "@/lib/ai/rank";
 import type { AppListItem } from "@/lib/repo/apps-rows";
 import { formatRating } from "@/lib/services/arabic";
 import { StatItem } from "./stat-item";
@@ -16,10 +17,12 @@ export async function AppCard({
   app,
   lang,
   index,
+  matchReasons,
 }: {
   app: AppListItem;
   lang: "ar" | "en";
   index: number;
+  matchReasons?: MatchReason[];
 }) {
   const t = await getTranslations({ locale: lang, namespace: "appList" });
   const isAr = lang === "ar";
@@ -118,6 +121,21 @@ export async function AppCard({
                 </span>
               </span>
             )}
+          </div>
+        )}
+
+        {/* Match reasons (smart search only) — up to 3 chips, localized by lang */}
+        {matchReasons && matchReasons.length > 0 && (
+          <div className="match-reasons category-tags">
+            {matchReasons.slice(0, 3).map((mr, i) => (
+              <span
+                key={`${mr.type}:${mr.value}:${i}`}
+                className="match-reason-chip category-tag"
+                title={t("search.aiReasoning")}
+              >
+                {isAr ? mr.labelAr : mr.labelEn}
+              </span>
+            ))}
           </div>
         )}
 

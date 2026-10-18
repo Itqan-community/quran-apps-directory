@@ -1,7 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import { aiSearchVersion } from "@/lib/ai/provider";
 import { getAppsCached } from "@/lib/cache/apps";
+import { getSmartAppsCached } from "@/lib/cache/smart-search";
 import type { AppsFilters } from "@/lib/repo/apps-rows";
+import type { SmartAppItem } from "@/lib/repo/smart-search";
 import type { CategoryItem } from "@/lib/repo/categories";
 import { AppCard } from "./app-card";
 import { NoResults } from "./no-results";
@@ -16,15 +19,26 @@ export async function AppsListing({
   categories,
   search,
   selectedCategory,
+  mode,
 }: {
   lang: "ar" | "en";
   filters: AppsFilters;
   categories: CategoryItem[];
   search?: string;
   selectedCategory?: string;
+  mode?: "smart";
 }) {
   const t = await getTranslations({ locale: lang, namespace: "appList" });
-  const { count, results } = await getAppsCached(filters);
+  // Smart mode uses the hybrid AI ranking; traditional keeps the legacy path.
+  // Both are unified into one result shape for rendering (suggestedQuery /
+  // fallbackMode default to null / false in traditional).
+  const smart = mode === "smart" ? await getSmartAppsCached(filters, aiSearchVersion()) : null;
+  const { count, results, suggestedQuery, fallbackMode }: {
+    count: number;
+    results: SmartAppItem[];
+    suggestedQuery: string | null;
+    fallbackMode: boolean;
+  } = smart ?? { ...(await getAppsCached(filters)), suggestedQuery: null, fallbackMode: false };
   const pageSize = filters.pageSize ?? 100;
   const totalPages = Math.max(1, Math.ceil(count / pageSize));
   const showResultsHeader = !!search?.trim();
@@ -82,12 +96,32 @@ export async function AppsListing({
           </div>
         )}
 
+        {smart && suggestedQuery && suggestedQuery !== search && (
+          <div className="mb-4">
+            <Link
+              className="did-you-mean inline-block rounded-app border border-border bg-surface px-3 py-1.5 text-sm text-text-secondary hover:border-primary"
+              href={`/${lang}/apps?search=${encodeURIComponent(suggestedQuery)}&mode=smart`}
+            >
+              {t("search.didYouMean")} &ldquo;{suggestedQuery}&rdquo;
+            </Link>
+          </div>
+        )}
+
+        {smart && fallbackMode && (
+          <div
+            role="status"
+            className="mb-4 rounded-app border border-border bg-surface px-4 py-3 text-sm text-text-secondary"
+          >
+            {t("search.fallbackNotice")}
+          </div>
+        )}
+
         {results.length === 0 ? (
-          <NoResults lang={lang} searching={showResultsHeader} />
+          <NoResults lang={lang} searching={showResultsHeader} query={search} mode={mode} />
         ) : (
           <div className="apps-grid">
             {results.map((app, i) => (
-              <AppCard key={app.id} app={app} lang={lang} index={i} />
+              <AppCard key={app.id} app={app} lang={lang} index={i} matchReasons={app.matchReasons} />
             ))}
           </div>
         )}
@@ -97,7 +131,7 @@ export async function AppsListing({
             lang={lang}
             page={filters.page ?? 1}
             totalPages={totalPages}
-            searchParams={filters as unknown as Record<string, unknown>}
+            searchParams={{ ...(filters as unknown as Record<string, unknown>), ...(mode ? { mode } : {}) }}
           />
         )}
       </div>

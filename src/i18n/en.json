@@ -8,6 +8,7 @@
       "title": "No applications found",
       "message": "Try adjusting your search criteria or browse all categories.",
       "trySmartSearch": "Try Smart Search",
+      "tryTraditional": "Try Traditional Search",
       "smartSearchHint": "Smart Search uses AI to find apps by meaning, not just keywords."
     }
   },
@@ -62,7 +63,8 @@
       "loadMore": "Load More Results",
       "aiMatch": "match",
       "aiReasoning": "Why this result?",
-      "didYouMean": "Did you mean"
+      "didYouMean": "Did you mean",
+      "fallbackNotice": "AI search temporarily unavailable — showing keyword results"
     },
     "categories": {
       "all": "Category",
