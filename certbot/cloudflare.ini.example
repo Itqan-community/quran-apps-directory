@@ -1,0 +1,15 @@
+# Reference for the Cloudflare DNS-01 credentials file.
+# The certbot entrypoint GENERATES /etc/cloudflare/cloudflare.ini itself from
+# CF_DNS_API_TOKEN in .env.prod — you normally do NOT need to mount this file.
+# Kept here for manual/offline use (a real copy at certbot/cloudflare.ini is
+# git-ignored, so a token never lands in git):
+#
+#   docker run --rm \
+#     -v ./certbot/letsencrypt:/etc/letsencrypt \
+#     -v ./certbot/cloudflare.ini:/etc/cloudflare/cloudflare.ini:ro \
+#     certbot/dns-cloudflare certonly --dns-cloudflare --cert-name app …
+#
+# Token profile: API Token (not Global Key) scoped to
+#   Zone → DNS → Edit  for the target zone.
+
+dns_cloudflare_api_token = YOUR_CLOUDFLARE_API_TOKEN
