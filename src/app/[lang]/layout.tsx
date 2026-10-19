@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { isLocale, LOCALES } from "@/lib/i18n";
+import { defaultOgImages, defaultTwitterImages } from "@/lib/seo/metadata";
 import { ThemeProvider } from "@/components/theme-provider";
 import "../globals.css";
 
@@ -28,6 +29,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "./",
     languages: { ar: "/ar", en: "/en", "x-default": "/en" },
+  },
+  openGraph: {
+    images: defaultOgImages,
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: defaultTwitterImages,
   },
 };
 
