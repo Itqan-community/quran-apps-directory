@@ -31,6 +31,12 @@ describe("keywordScore", () => {
     expect(hit).toBe(1); // name is the strongest field: a complete hit scores 1.0
     expect(part).toBeCloseTo(0.5, 5); // full-desc priority is half of name's
   });
+
+  it("matches the bare form of an Arabic definite-article token", () => {
+    const idf = computeIdf(["وحي wahy"], ["الوحي"]);
+    expect(keywordScore({ name: "وحي wahy", full: "", short: "", category: "" }, ["الوحي"], idf)).toBe(1);
+    expect(keywordScore({ name: "قرآن", full: "", short: "", category: "" }, ["الوحي"], idf)).toBe(0);
+  });
 });
 
 describe("metadataBoost", () => {

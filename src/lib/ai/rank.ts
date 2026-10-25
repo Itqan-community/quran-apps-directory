@@ -69,6 +69,15 @@ export function computeIdf(docs: string[], tokens: string[]): Map<string, number
 }
 
 /**
+ * Arabic definite-article variants for keyword matching: users type "الوحي"
+ * while an app may be named "وحي" (and vice versa). Tokens of at least 4 chars
+ * with the "ال" prefix also match their bare form.
+ */
+function tokenVariants(token: string): string[] {
+  return token.length > 3 && token.startsWith("ال") ? [token, token.slice(2)] : [token];
+}
+
+/**
  * Keyword relevance in [0, 1]. Each field contributes its priority — normalized
  * by the strongest field so a complete name hit scores 1.0 — times the share of
  * total query IDF weight present in that field.
@@ -82,7 +91,7 @@ export function keywordScore(fields: DocFields, tokens: string[], idf: Map<strin
   for (const field of Object.keys(FIELD_PRIORITIES) as (keyof DocFields)[]) {
     const text = fields[field];
     const fieldIdf = tokens.reduce(
-      (sum, t) => (text.includes(t) ? sum + (idf.get(t) ?? 0) : sum),
+      (sum, t) => (tokenVariants(t).some((v) => text.includes(v)) ? sum + (idf.get(t) ?? 0) : sum),
       0,
     );
     score += (FIELD_PRIORITIES[field] / topPriority) * (fieldIdf / totalIdf);

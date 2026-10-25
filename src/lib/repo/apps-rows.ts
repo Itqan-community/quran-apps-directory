@@ -114,17 +114,31 @@ export async function getAppListRows(filters: AppsFilters): Promise<{
     )`);
   }
   if (filters.search) {
-    const raw = `%${escapeLike(filters.search.trim())}%`;
-    const norm = `%${escapeLike(normalizeArabic(filters.search.trim()))}%`;
-    conds.push(
-      or(
-        sql`${apps.nameEn} ILIKE ${raw} ESCAPE '\\'`,
-        sql`${apps.nameAr} ILIKE ${raw} ESCAPE '\\'`,
-        sql`${apps.shortDescriptionEn} ILIKE ${raw} ESCAPE '\\'`,
-        sql`${apps.shortDescriptionAr} ILIKE ${raw} ESCAPE '\\'`,
-        norm !== raw ? sql`translate(${apps.nameAr}, 'أإآٱةؤئ', 'ااااهوي') ILIKE ${norm} ESCAPE '\\'` : sql`false`
-      )!
-    );
+    const term = filters.search.trim();
+    const normTerm = normalizeArabic(term);
+    const raw = `%${escapeLike(term)}%`;
+    const norm = `%${escapeLike(normTerm)}%`;
+    // Stored Arabic names may carry tashkeel/tatweel (e.g. "وَحي") while users
+    // type the plain form ("وحي"). translate() maps the letter variants
+    // (أإآٱةؤئ) and, because the target string is shorter, deletes the
+    // diacritics/tatweel appended after them. The normalized branch is always
+    // added: even when normalizeArabic() leaves the query unchanged, the
+    // stored text still needs normalization.
+    const normalizedNameAr = sql`translate(${apps.nameAr}, 'أإآٱةؤئًٌٍَُِّْٰـ', 'ااااهوي')`;
+    const conditions = [
+      sql`${apps.nameEn} ILIKE ${raw} ESCAPE '\\'`,
+      sql`${apps.nameAr} ILIKE ${raw} ESCAPE '\\'`,
+      sql`${apps.shortDescriptionEn} ILIKE ${raw} ESCAPE '\\'`,
+      sql`${apps.shortDescriptionAr} ILIKE ${raw} ESCAPE '\\'`,
+      sql`${normalizedNameAr} ILIKE ${norm} ESCAPE '\\'`,
+    ];
+    // Definite-article form: "الوحي" should also find an app named "وحي"
+    // (the reverse already works via substring matching).
+    if (normTerm.length > 3 && normTerm.startsWith("ال")) {
+      const bare = `%${escapeLike(normTerm.slice(2))}%`;
+      conditions.push(sql`${normalizedNameAr} ILIKE ${bare} ESCAPE '\\'`);
+    }
+    conds.push(or(...conditions)!);
   }
 
   const where = and(...conds);

@@ -44,6 +44,16 @@ describe("suggestQuery", () => {
     expect(suggestQuery("ab", ["ab"])).toBeNull(); // token <4 chars: no levenshtein guessing
   });
 
+  it("keeps an Arabic definite-article token whose bare form is a vocabulary word", () => {
+    // "الوحي" is 2 edits from both "وحي" (the app name) and "الدوري" (a
+    // metadata label); lexicographic tie-breaking used to pick "الدوري" and
+    // send the search to an unrelated query.
+    expect(suggestQuery("الوحي", ["وحي", "الدوري"])).toBeNull();
+    // Fuzzy correction still applies when the bare form is unknown.
+    expect(suggestQuery("الوحك", ["وحي"])).toBeNull(); // 3 edits -> no suggestion
+    expect(suggestQuery("الوحي", ["الدوري"])).toBe("الدوري");
+  });
+
   it("does not leak Object.prototype inherited names as aliases", () => {
     // Regression: a token colliding with an inherited property name must fall
     // through to the fuzzy path, not resolve QUERY_ALIASES[token] to

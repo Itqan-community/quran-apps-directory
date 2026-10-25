@@ -114,11 +114,16 @@ export function levenshtein(a: string, b: string): number {
  * replacing when the alias differs; (2) else, for tokens of >= 4 chars, the
  * nearest vocabulary word (normalized, lowercased) with Levenshtein distance
  * <= MAX_EDIT_DISTANCE — strictly smaller distance wins, ties break
- * lexicographically — replacing only when the distance is > 0. Original
- * whitespace is preserved around tokens.
+ * lexicographically — replacing only when the distance is > 0. A token whose
+ * article-stripped form (الوحي → وحي) is already a vocabulary word is left
+ * untouched. Original whitespace is preserved around tokens.
  */
 export function suggestQuery(query: string, vocabulary: string[]): string | null {
   const parts = query.match(/\S+|\s+/g) ?? [];
+  // Normalize the vocabulary once: the fuzzy pass compares every token against
+  // every word, and the article check below needs exact membership.
+  const vocab = vocabulary.map((w) => normalizeArabic(w).toLowerCase());
+  const vocabSet = new Set(vocab);
   const corrected = parts.map((part) => {
     if (/^\s+$/.test(part)) return part; // preserve whitespace runs verbatim
     if (part.length < MIN_TOKEN_LEN || part.length > MAX_TOKEN_LEN) return part;
@@ -128,10 +133,14 @@ export function suggestQuery(query: string, vocabulary: string[]): string | null
     if (alias !== undefined && alias !== token) return alias;
     // 2. Nearest vocabulary word within MAX_EDIT_DISTANCE (tokens >= 4 chars).
     if (token.length < MIN_FUZZY_LEN) return part;
+    // A definite-article prefix (الوحي → وحي) is already a vocabulary word:
+    // keep the user's wording instead of "correcting" it to an unrelated word
+    // that happens to be equidistant (e.g. الدوري).
+    const bare = token.startsWith("ال") ? token.slice(2) : null;
+    if (bare && vocabSet.has(bare)) return part;
     let bestWord: string | null = null;
     let bestDist = Infinity;
-    for (const word of vocabulary) {
-      const vocabWord = normalizeArabic(word).toLowerCase();
+    for (const vocabWord of vocab) {
       if (Math.abs(vocabWord.length - token.length) > MAX_EDIT_DISTANCE) continue;
       const dist = levenshtein(token, vocabWord);
       if (bestWord === null || dist < bestDist || (dist === bestDist && vocabWord < bestWord)) {

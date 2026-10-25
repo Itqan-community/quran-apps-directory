@@ -32,12 +32,10 @@ async function seedFixtures() {
   `;
   await sql`INSERT INTO apps_categories (app_id, category_id) VALUES (${apps[0].id}, ${catMushaf}), (${apps[1].id}, ${catTafsir})`;
 
-  // Arabic normalization fixture: stored name uses ta-marbuta (ة) with no tashkeel.
-  // SQL translate() cannot strip tashkeel from stored data, so diacritics must live
-  // in the search terms, not here. Raw ILIKE for "الصلاه" misses (haa ≠ marbuta),
-  // so only the translate()-normalized branch can match — a regression net for
-  // the Arabic translate map (buggy map shifted ة→ا and would return 0 results).
-  await sql`UPDATE apps SET name_ar = 'الصلاة' WHERE slug = 't-app-1'`;
+  // Arabic normalization fixture: stored name uses ta-marbuta (ة) with tashkeel,
+  // matching real data like "وَحي". The translate()-normalized SQL branch strips
+  // diacritics/tatweel and maps letter variants, so plain queries match too.
+  await sql`UPDATE apps SET name_ar = 'الصَّلاة' WHERE slug = 't-app-1'`;
 }
 
 beforeAll(async () => {
@@ -81,8 +79,8 @@ describe("getApps", () => {
   });
 
   it("search normalizes Arabic (ta-marbuta vs haa)", async () => {
-    // Raw ILIKE cannot match (search has tashkeel + haa, stored has neither),
-    // so this only passes through the translate()-normalized SQL branch.
+    // Raw ILIKE cannot match (search has tashkeel + haa, stored has tashkeel and
+    // marbuta), so this only passes through the translate()-normalized SQL branch.
     // With the old buggy map ('اااااهوي', 8 chars), translate() produced
     // 'الصلاا' and this search returned 0 results.
     const res = await getApps({ search: "الصَّلاه" });
@@ -90,9 +88,23 @@ describe("getApps", () => {
     expect(res.results[0].slug).toBe("t-app-1");
   });
 
-  it("search normalizes Arabic (alef variants)", async () => {
+  it("search ignores tashkeel in stored Arabic names", async () => {
+    // Real data stores diacritized names such as "وَحي"; a plain query must match.
     const res = await getApps({ search: "الصلاة" });
     expect(res.count).toBe(1);
+    expect(res.results[0].slug).toBe("t-app-1");
+  });
+
+  it("search matches a definite-article query against a bare stored name", async () => {
+    // "الوحي" must find an app named "وحي" (article-insensitive matching).
+    await sql`UPDATE apps SET name_ar = 'وَحي' WHERE slug = 't-app-1'`;
+    try {
+      const res = await getApps({ search: "الوحي" });
+      expect(res.count).toBe(1);
+      expect(res.results[0].slug).toBe("t-app-1");
+    } finally {
+      await sql`UPDATE apps SET name_ar = 'الصَّلاة' WHERE slug = 't-app-1'`;
+    }
   });
 
   it("escapes LIKE metacharacters in search input", async () => {

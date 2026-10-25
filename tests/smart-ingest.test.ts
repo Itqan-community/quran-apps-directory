@@ -230,6 +230,16 @@ describe("upsertAppEmbedding", () => {
     expect((await upsertAppEmbedding(appId)).status).toBe("embedded");
   });
 
+  it("re-embeds when the provider/model version changes", async () => {
+    // Same doc + same provider version = unchanged: the skip above covers that.
+    // A provider/model switch must invalidate doc_hash even though the document
+    // text is identical, otherwise a reindex would leave stale vectors behind.
+    vi.stubEnv("AI_EMBEDDING_MODEL", "changed-model");
+    const switched = await upsertAppEmbedding(appId);
+    expect(switched.status).toBe("embedded");
+    expect((await upsertAppEmbedding(appId)).status).toBe("skipped");
+  });
+
   it("broken provider propagates typed error (callers catch)", async () => {
     // Clear the stored hash so the upsert reaches the provider (otherwise the
     // unchanged-doc skip returns before any embedding happens).

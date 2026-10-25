@@ -20,7 +20,7 @@ import {
   metadataOptions,
   metadataTypes,
 } from "@/db/schema";
-import { getEmbeddingProvider } from "./provider";
+import { aiSearchVersion, getEmbeddingProvider } from "./provider";
 import { type EmbeddingProvider, EmbeddingUnavailableError } from "./types";
 
 // ---------------------------------------------------------------------------
@@ -279,9 +279,12 @@ function jsonbArrayLabels(
 // ---------------------------------------------------------------------------
 
 /**
- * Embeds one app: builds the document, skips when its SHA-256 matches
- * `apps.doc_hash` (unchanged doc), otherwise embeds via `opts.provider` (or
- * the factory default) and writes embedding + doc_hash + embedded_at.
+ * Embeds one app: builds the document, skips when the SHA-256 of
+ * `provider/model|document` matches `apps.doc_hash` (unchanged doc for the
+ * current embedding version), otherwise embeds via `opts.provider` (or the
+ * factory default) and writes embedding + doc_hash + embedded_at. Including
+ * the embedding version in the hash is what makes a provider/model switch
+ * re-embed on the next reindex instead of being skipped as "unchanged".
  * Throws EmbeddingUnavailableError for a malformed (non-768-dim) vector;
  * provider failures propagate as-is for callers to catch.
  */
@@ -293,7 +296,8 @@ export async function upsertAppEmbedding(
   if (!bundle) return { status: "app_not_found" };
 
   const doc = buildAppDocument(bundle);
-  const hash = sha256Hex(doc);
+  const provider = opts?.provider ?? getEmbeddingProvider();
+  const hash = sha256Hex(`${aiSearchVersion(provider)}|${doc}`);
 
   const hashRows = await db
     .select({ docHash: apps.docHash })
@@ -301,7 +305,6 @@ export async function upsertAppEmbedding(
     .where(eq(apps.id, appId));
   if (hashRows[0]?.docHash === hash) return { status: "skipped" };
 
-  const provider = opts?.provider ?? getEmbeddingProvider();
   const values = await provider.embedDocument(doc);
   if (values.length !== EMBEDDING_DIMENSIONS) {
     throw new EmbeddingUnavailableError(

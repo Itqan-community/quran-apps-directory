@@ -30,11 +30,11 @@ export function getEmbeddingProvider(): EmbeddingProvider {
 }
 
 /** `${provider.name}:${sanitized model}` — a stable cache-key ingredient. */
-export function aiSearchVersion(): string {
-  const name = providerName();
+export function aiSearchVersion(provider?: EmbeddingProvider): string {
+  const name = provider?.name ?? providerName();
   const defaultModel = DEFAULT_MODEL[name as EmbeddingProvider["name"]] ?? "gemini";
   const model = (process.env.AI_EMBEDDING_MODEL ?? defaultModel).replace(/[^a-z0-9.]/gi, "");
-  return `${getEmbeddingProvider().name}:${model}`;
+  return `${name}:${model}`;
 }
 
 function providerName(): string {
