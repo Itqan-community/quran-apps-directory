@@ -323,10 +323,12 @@ describe("deleteCategory", () => {
 describe("saveDeveloper", () => {
   it("happy path: jsonb rows normalized into the record, revalidates apps (not categories)", async () => {
     const res = await saveDeveloper(baseDeveloper);
-    expect(res).toEqual({ ok: true });
+    expect(res).toMatchObject({ ok: true });
 
     const [row] = await sql`SELECT * FROM developers WHERE name_en = 'T9 Dev Alpha'`;
     expect(row).not.toBeUndefined();
+    // The created id comes back so callers (e.g. the app form's inline modal) can select it.
+    expect(res.ok && res.id).toBe(Number(row.id));
     expect(row.website).toBe("https://t9alpha.dev");
     expect(row.email).toBe("hello@t9alpha.dev");
     expect(row.logo_url).toBe("https://cdn.test/t9-logo.png");
@@ -379,7 +381,7 @@ describe("saveDeveloper", () => {
       socialLinks: [{ url: "  " }, { url: " https://bsky.app/profile/t9 " }],
       isVerified: false,
     });
-    expect(res).toEqual({ ok: true });
+    expect(res).toMatchObject({ ok: true });
 
     const [row] = await sql`SELECT social_links, website, email FROM developers WHERE name_en = 'T9 Dev Social Trim'`;
     expect(row.website).toBeNull();
@@ -397,7 +399,8 @@ describe("saveDeveloper", () => {
       socialLinks: [{ url: "https://youtube.com/@t9" }],
       isVerified: true,
     });
-    expect(res).toEqual({ ok: true });
+    expect(res).toMatchObject({ ok: true });
+    expect(res.ok && res.id).toBe(devEditId);
 
     const [row] = await sql`
       SELECT website, email, is_verified, social_links FROM developers WHERE id = ${devEditId}`;

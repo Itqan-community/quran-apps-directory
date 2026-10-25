@@ -220,6 +220,24 @@ describe("saveApp — validation", () => {
     const after = await sql`SELECT count(*)::int AS n FROM apps WHERE slug LIKE 't8-%'`;
     expect(after[0]!.n).toBe(before[0]!.n);
   });
+
+  it("avgRating outside 0–5 → validation with an avgRating field error", async () => {
+    const res = await saveApp({ ...baseInput, avgRating: 7 });
+    expect(res.ok).toBe(false);
+    if (!res.ok) {
+      expect(res.error).toBe("validation");
+      expect(res.fieldErrors?.avgRating?.length ?? 0).toBeGreaterThan(0);
+    }
+  });
+
+  it("negative counts → validation with reviewCount/viewCount field errors", async () => {
+    const res = await saveApp({ ...baseInput, reviewCount: -1, viewCount: -5 });
+    expect(res.ok).toBe(false);
+    if (!res.ok) {
+      expect(res.fieldErrors?.reviewCount?.length ?? 0).toBeGreaterThan(0);
+      expect(res.fieldErrors?.viewCount?.length ?? 0).toBeGreaterThan(0);
+    }
+  });
 });
 
 describe("saveApp — create", () => {
@@ -276,6 +294,24 @@ describe("saveApp — create", () => {
     ]);
 
     expect(vi.mocked(revalidateTag).mock.calls).toContainEqual(["apps", "max"]);
+  });
+
+  it("writes rating, reviews and views; rating rounded to the column scale", async () => {
+    const res = await saveApp({
+      ...baseInput,
+      nameEn: "T8 Stats App",
+      nameAr: "ت:إحصاءات",
+      avgRating: 4.567,
+      reviewCount: 120,
+      viewCount: 9000,
+    });
+    expect(res).toEqual({ ok: true, id: expect.any(Number) });
+    const id = res.ok ? res.id : 0;
+
+    const [row] = await sql`SELECT avg_rating, review_count, view_count FROM apps WHERE id = ${id}`;
+    expect(String(row!.avg_rating)).toBe("4.57");
+    expect(Number(row!.review_count)).toBe(120);
+    expect(Number(row!.view_count)).toBe(9000);
   });
 });
 

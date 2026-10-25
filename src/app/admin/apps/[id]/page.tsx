@@ -68,6 +68,9 @@ async function EditContent({ params }: { params: Promise<{ id: string }> }) {
     status: a.status,
     featured: a.featured,
     sortOrder: a.sortOrder,
+    avgRating: a.avgRating,
+    reviewCount: a.reviewCount,
+    viewCount: a.viewCount,
   };
 
   return (

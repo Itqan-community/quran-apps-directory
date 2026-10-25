@@ -185,6 +185,7 @@ async function AppsContent({ searchParams }: { searchParams: Promise<RawSearchPa
               <thead>
                 <tr className={adminHeadRow}>
                   <th className="px-2 py-2 text-start font-medium"> </th>
+                  <th className={adminTh}>المعرف</th>
                   <th className={adminTh}>الأيقونة</th>
                   <th className={adminTh}>التطبيق</th>
                   <th className={adminTh}>المنصة</th>
@@ -257,6 +258,7 @@ function AppRow({ row }: { row: AppListItem }) {
   return (
     <tr className={adminBodyRow}>
       <BulkCheckbox id={row.id} />
+      <td className="px-3 py-2 tabular-nums text-text-secondary">{row.id}</td>
       <td className="px-3 py-2">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

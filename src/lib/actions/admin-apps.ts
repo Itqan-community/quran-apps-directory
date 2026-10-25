@@ -198,6 +198,9 @@ function appColumnValues(data: {
   screenshotsEn: string[];
   screenshotsAr: string[];
   sortOrder: number;
+  avgRating: number;
+  reviewCount: number;
+  viewCount: number;
   platform: "android" | "ios" | "web" | "cross_platform";
   featured: boolean;
   developerId: number;
@@ -219,6 +222,10 @@ function appColumnValues(data: {
     screenshotsEn: data.screenshotsEn,
     screenshotsAr: data.screenshotsAr,
     sortOrder: data.sortOrder,
+    // numeric(3,2) is a string in drizzle; round to the column's scale so 4.567 → "4.57".
+    avgRating: data.avgRating.toFixed(2),
+    reviewCount: data.reviewCount,
+    viewCount: data.viewCount,
     platform: data.platform,
     featured: data.featured,
     developerId: data.developerId,

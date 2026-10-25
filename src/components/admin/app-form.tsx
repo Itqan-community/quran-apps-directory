@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import {
   Check,
@@ -16,6 +17,7 @@ import {
 } from "lucide-react";
 import { AppleMark, GooglePlayMark, HuaweiMark } from "@/components/brand-marks";
 import { saveApp, deleteApp } from "@/lib/actions/admin-apps";
+import { DeveloperModal } from "@/components/admin/taxonomy-editor";
 import {
   DeveloperCombobox,
   LangTag,
@@ -59,6 +61,9 @@ export type AppFormInitial = {
   status: string;
   featured: boolean;
   sortOrder: number;
+  avgRating: string;
+  reviewCount: number;
+  viewCount: number;
 };
 
 export const CREATE_DEFAULT: AppFormInitial = {
@@ -84,6 +89,9 @@ export const CREATE_DEFAULT: AppFormInitial = {
   status: "draft",
   featured: false,
   sortOrder: 0,
+  avgRating: "0.00",
+  reviewCount: 0,
+  viewCount: 0,
 };
 
 const STATUSES: { value: string; label: string }[] = [
@@ -157,11 +165,16 @@ export default function AppForm({
     }
     return rec;
   });
+  const [developerList, setDeveloperList] = useState<DeveloperOption[]>(developers);
   const [developerId, setDeveloperId] = useState<number>(initialDeveloper(developers, initial));
+  const [developerModalOpen, setDeveloperModalOpen] = useState(false);
   const [platform, setPlatform] = useState(initial.platform);
   const [status, setStatus] = useState(initial.status);
   const [featured, setFeatured] = useState(initial.featured);
   const [sortOrder, setSortOrder] = useState(String(initial.sortOrder));
+  const [avgRating, setAvgRating] = useState(String(initial.avgRating));
+  const [reviewCount, setReviewCount] = useState(String(initial.reviewCount));
+  const [viewCount, setViewCount] = useState(String(initial.viewCount));
   const [slugOverride, setSlugOverride] = useState("");
 
   const [busy, setBusy] = useState(false);
@@ -215,6 +228,9 @@ export default function AppForm({
       status,
       featured,
       sortOrder: Number.parseInt(sortOrder, 10) || 0,
+      avgRating: Math.round((Number.parseFloat(avgRating) || 0) * 100) / 100,
+      reviewCount: Number.parseInt(reviewCount, 10) || 0,
+      viewCount: Number.parseInt(viewCount, 10) || 0,
     };
     if (mode === "edit" && appId) payload.id = appId;
     if (mode === "edit" && slugOverride.trim()) payload.slug = slugOverride.trim();
@@ -506,6 +522,58 @@ export default function AppForm({
       </section>
 
       <section className={sectionCls}>
+        <span aria-hidden className={`absolute inset-x-0 top-0 h-1 ${toneBarCls.cats}`} />
+        <SectionHeader
+          icon={<Star aria-hidden className="size-4" />}
+          title="التقييم والإحصائيات"
+          hint="تظهر على البطاقة وصفحة التطبيق وتؤثر على الترتيب الذكي"
+          tone="cats"
+        />
+        <div className="grid gap-4 sm:grid-cols-3">
+          <label className="flex min-w-0 flex-col gap-1">
+            <span className={labelCls}>متوسط التقييم (0 – 5)</span>
+            <input
+              type="number"
+              min={0}
+              max={5}
+              step={0.01}
+              dir="ltr"
+              value={avgRating}
+              onChange={(e) => setAvgRating(e.target.value)}
+              className={inputCls}
+            />
+            <ErrorList messages={errorFor(serverErrors, "avgRating")} />
+          </label>
+          <label className="flex min-w-0 flex-col gap-1">
+            <span className={labelCls}>عدد المراجعات</span>
+            <input
+              type="number"
+              min={0}
+              step={1}
+              dir="ltr"
+              value={reviewCount}
+              onChange={(e) => setReviewCount(e.target.value)}
+              className={inputCls}
+            />
+            <ErrorList messages={errorFor(serverErrors, "reviewCount")} />
+          </label>
+          <label className="flex min-w-0 flex-col gap-1">
+            <span className={labelCls}>عدد المشاهدات</span>
+            <input
+              type="number"
+              min={0}
+              step={1}
+              dir="ltr"
+              value={viewCount}
+              onChange={(e) => setViewCount(e.target.value)}
+              className={inputCls}
+            />
+            <ErrorList messages={errorFor(serverErrors, "viewCount")} />
+          </label>
+        </div>
+      </section>
+
+      <section className={sectionCls}>
         <span aria-hidden className={`absolute inset-x-0 top-0 h-1 ${toneBarCls.status}`} />
         <SectionHeader
           icon={<Settings2 aria-hidden className="size-4" />}
@@ -516,7 +584,12 @@ export default function AppForm({
         <div className="flex min-w-0 flex-col gap-4">
           <div className="flex min-w-0 flex-col gap-1">
             <span className={labelCls}>المطور *</span>
-            <DeveloperCombobox developers={developers} value={developerId} onChange={setDeveloperId} />
+            <DeveloperCombobox
+              developers={developerList}
+              value={developerId}
+              onChange={setDeveloperId}
+              onCreateClick={() => setDeveloperModalOpen(true)}
+            />
             <ErrorList messages={errorFor(serverErrors, "developerId")} />
           </div>
           <div className="grid gap-4 border-t border-border/60 pt-4 sm:grid-cols-2">
@@ -590,6 +663,25 @@ export default function AppForm({
           </span>
         )}
       </div>
+      {/* Portal: a <form> cannot be nested inside the app form. */}
+      {developerModalOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <DeveloperModal
+            open={developerModalOpen}
+            onClose={() => setDeveloperModalOpen(false)}
+            onSaved={(id, developer) => {
+              if (!id || !developer) return;
+              setDeveloperList((cur) =>
+                cur.some((d) => d.id === id)
+                  ? cur
+                  : [...cur, { id, ...developer }].sort((a, b) => a.nameEn.localeCompare(b.nameEn))
+              );
+              setDeveloperId(id);
+            }}
+          />,
+          document.body
+        )}
     </form>
   );
 }

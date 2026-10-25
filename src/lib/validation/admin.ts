@@ -71,6 +71,9 @@ export const appFormSchema = z
     status: z.enum(["draft", "published", "archived"]),
     featured: z.boolean().default(false),
     sortOrder: z.number().int().min(0).default(0),
+    avgRating: z.number().min(0).max(5).default(0),
+    reviewCount: z.number().int().min(0).default(0),
+    viewCount: z.number().int().min(0).default(0),
     slug: z.string().trim().max(200).optional(), // create-time computed, edit-time optional override
   })
   .refine(

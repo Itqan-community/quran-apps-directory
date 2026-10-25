@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Check, Plus } from "lucide-react";
+import { Check, Plus, X } from "lucide-react";
 import { saveCategory, saveDeveloper } from "@/lib/actions/admin-taxonomy";
 import { btnGhost, btnPrimary, inputCls, labelCls } from "@/components/admin/app-form-sections";
 
@@ -278,7 +278,16 @@ export const DEVELOPER_CREATE_DEFAULT: DeveloperInitial = {
 };
 
 /** Add/edit form for one developer (prefilled by the [id] edit page). */
-export function DeveloperForm({ editing }: { editing: DeveloperInitial | null }) {
+export type DeveloperFormSaved = { nameEn: string; nameAr: string };
+
+export function DeveloperForm({
+  editing,
+  onSaved,
+}: {
+  editing: DeveloperInitial | null;
+  /** When provided (modal use), replaces the default post-save navigation. */
+  onSaved?: (id?: number, developer?: DeveloperFormSaved) => void;
+}) {
   const router = useRouter();
   const initial = editing ?? DEVELOPER_CREATE_DEFAULT;
   const [f, setF] = useState(() => ({
@@ -324,8 +333,12 @@ export function DeveloperForm({ editing }: { editing: DeveloperInitial | null })
     try {
       const res = await saveDeveloper(payload);
       if (res.ok) {
-        router.push("/admin/developers");
-        router.refresh();
+        if (onSaved) {
+          onSaved(res.id, { nameEn: f.nameEn.trim(), nameAr: f.nameAr.trim() });
+        } else {
+          router.push("/admin/developers");
+          router.refresh();
+        }
       } else {
         setServerErrors(res.fieldErrors ?? {});
         setTopError(res.message ?? null);
@@ -490,5 +503,67 @@ export function DeveloperForm({ editing }: { editing: DeveloperInitial | null })
         )}
       </div>
     </form>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Create-only developer modal (used by the app form's "+" next to the picker)
+// ---------------------------------------------------------------------------
+
+export function DeveloperModal({
+  open,
+  onClose,
+  onSaved,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onSaved: (id?: number, developer?: DeveloperFormSaved) => void;
+}) {
+  useEffect(() => {
+    if (!open) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="admin-modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      onClick={onClose}
+      role="presentation"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="إضافة مطوّر"
+        className="admin-modal-panel max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-app bg-card p-4 shadow-app"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <h2 className="text-base font-bold text-text">إضافة مطوّر</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className={`${btnGhost} inline-flex items-center gap-1`}
+            aria-label="إغلاق"
+          >
+            <X aria-hidden className="size-4" />
+          </button>
+        </div>
+        {/* key: fresh state every time the modal opens */}
+        <DeveloperForm
+          key="new"
+          editing={null}
+          onSaved={(id, developer) => {
+            onSaved(id, developer);
+            onClose();
+          }}
+        />
+      </div>
+    </div>
   );
 }

@@ -152,6 +152,8 @@ export async function saveDeveloper(input: unknown): Promise<TaxonomyResult> {
     if (row.url) socialLinks[row.url] = row.url;
   }
 
+  let savedId: number;
+
   const values = {
     nameEn: data.nameEn,
     nameAr: data.nameAr,
@@ -166,7 +168,11 @@ export async function saveDeveloper(input: unknown): Promise<TaxonomyResult> {
 
   try {
     if (editId === undefined) {
-      await db.insert(developers).values(values);
+      const inserted = await db
+        .insert(developers)
+        .values(values)
+        .returning({ id: developers.id });
+      savedId = inserted[0]!.id;
     } else {
       const updated = await db
         .update(developers)
@@ -176,6 +182,7 @@ export async function saveDeveloper(input: unknown): Promise<TaxonomyResult> {
       if (updated.length === 0) {
         return { ok: false, error: "validation", message: DEV_NOT_FOUND_MSG };
       }
+      savedId = updated[0]!.id;
     }
   } catch (e) {
     if (pgDupError(e)) {
@@ -188,7 +195,7 @@ export async function saveDeveloper(input: unknown): Promise<TaxonomyResult> {
 
   // Developer names surface via joins on public pages (apps tag).
   revalidateTag("apps", "max");
-  return { ok: true };
+  return { ok: true, id: savedId };
 }
 
 /** FK CASCADE — deleting a developer deletes their apps (warned in the confirm dialog). */

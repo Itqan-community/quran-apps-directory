@@ -760,11 +760,14 @@ export function DeveloperCombobox({
   developers,
   value,
   onChange,
+  onCreateClick,
   placeholder = "ابحث واختر المطور…",
 }: {
   developers: DeveloperOptionLite[];
   value: number;
   onChange: (id: number) => void;
+  /** Renders the trailing "+" that opens the inline create modal (app form). */
+  onCreateClick?: () => void;
   placeholder?: string;
 }) {
   const [open, setOpen] = useState(false);
@@ -811,113 +814,126 @@ export function DeveloperCombobox({
     : "";
 
   return (
-    <div ref={rootRef} className="relative min-w-0">
-      <button
-        type="button"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        onClick={() => (developers.length === 0 ? null : setOpen((o) => !o))}
-        disabled={developers.length === 0}
-        className={`${inputCls} flex !w-full items-center gap-2 text-start disabled:opacity-50`}
-      >
-        <Building2 aria-hidden className="size-4 shrink-0 text-text-secondary" />
-        <span className={`min-w-0 flex-1 truncate ${selected ? "text-text" : "text-text-secondary"}`}>
-          {developers.length === 0 ? "لا يوجد مطورون" : selected ? label : placeholder}
-        </span>
-        {selected && (
-          <span
-            role="button"
-            tabIndex={0}
-            aria-label="مسح المطور"
-            title="مسح"
-            onClick={(e) => {
-              e.stopPropagation();
-              onChange(developers[0]?.id ?? 0);
-              setQuery("");
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
+    <div className="flex min-w-0 items-stretch gap-2">
+      <div ref={rootRef} className="relative min-w-0 flex-1">
+        <button
+          type="button"
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          onClick={() => (developers.length === 0 ? null : setOpen((o) => !o))}
+          disabled={developers.length === 0}
+          className={`${inputCls} flex !w-full items-center gap-2 text-start disabled:opacity-50`}
+        >
+          <Building2 aria-hidden className="size-4 shrink-0 text-text-secondary" />
+          <span className={`min-w-0 flex-1 truncate ${selected ? "text-text" : "text-text-secondary"}`}>
+            {developers.length === 0 ? "لا يوجد مطورون — أضف واحدًا" : selected ? label : placeholder}
+          </span>
+          {selected && (
+            <span
+              role="button"
+              tabIndex={0}
+              aria-label="مسح المطور"
+              title="مسح"
+              onClick={(e) => {
                 e.stopPropagation();
                 onChange(developers[0]?.id ?? 0);
-              }
-            }}
-            className="flex size-5 shrink-0 items-center justify-center rounded-full text-text-secondary hover:bg-primary/10 hover:text-red-600"
-          >
-            <X aria-hidden className="size-3.5" />
-          </span>
-        )}
-        <ChevronDown
-          aria-hidden
-          className={`size-4 shrink-0 text-text-secondary transition ${open ? "rotate-180" : ""}`}
-        />
-      </button>
-      {open && (
-        <div className="absolute inset-x-0 top-full z-30 mt-1 overflow-hidden rounded-app border border-border bg-card shadow-app">
-          <div className="flex items-center gap-2 border-b border-border/60 px-3 py-2">
-            <Search aria-hidden className="size-4 shrink-0 text-text-secondary" />
-            <input
-              ref={searchRef}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
+                setQuery("");
+              }}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && filtered.length > 0) {
+                if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
-                  pick(filtered[0]!.id);
+                  e.stopPropagation();
+                  onChange(developers[0]?.id ?? 0);
                 }
               }}
-              placeholder="اكتب للبحث بالعربية أو الإنجليزية…"
-              aria-label="البحث عن مطور"
-              className="w-full bg-transparent text-sm text-text outline-none placeholder:text-text-secondary"
-            />
-            {query && (
-              <button
-                type="button"
-                aria-label="مسح البحث"
-                onClick={() => setQuery("")}
-                className="text-text-secondary hover:text-text"
-              >
-                <X aria-hidden className="size-3.5" />
-              </button>
-            )}
+              className="flex size-5 shrink-0 items-center justify-center rounded-full text-text-secondary hover:bg-primary/10 hover:text-red-600"
+            >
+              <X aria-hidden className="size-3.5" />
+            </span>
+          )}
+          <ChevronDown
+            aria-hidden
+            className={`size-4 shrink-0 text-text-secondary transition ${open ? "rotate-180" : ""}`}
+          />
+        </button>
+        {open && (
+          <div className="absolute inset-x-0 top-full z-30 mt-1 overflow-hidden rounded-app border border-border bg-card shadow-app">
+            <div className="flex items-center gap-2 border-b border-border/60 px-3 py-2">
+              <Search aria-hidden className="size-4 shrink-0 text-text-secondary" />
+              <input
+                ref={searchRef}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && filtered.length > 0) {
+                    e.preventDefault();
+                    pick(filtered[0]!.id);
+                  }
+                }}
+                placeholder="اكتب للبحث بالعربية أو الإنجليزية…"
+                aria-label="البحث عن مطور"
+                className="w-full bg-transparent text-sm text-text outline-none placeholder:text-text-secondary"
+              />
+              {query && (
+                <button
+                  type="button"
+                  aria-label="مسح البحث"
+                  onClick={() => setQuery("")}
+                  className="text-text-secondary hover:text-text"
+                >
+                  <X aria-hidden className="size-3.5" />
+                </button>
+              )}
+            </div>
+            <ul role="listbox" aria-label="المطورون" className="max-h-60 overflow-y-auto p-1">
+              {filtered.length === 0 ? (
+                <li className="px-3 py-6 text-center text-xs text-text-secondary">
+                  لا نتائج لـ «{query.trim()}»
+                </li>
+              ) : (
+                filtered.map((d) => {
+                  const active = d.id === value;
+                  return (
+                    <li key={d.id}>
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={active}
+                        onClick={() => pick(d.id)}
+                        className={`flex w-full items-center gap-2 rounded-app px-2.5 py-2 text-start text-sm transition ${
+                          active
+                            ? "bg-primary font-bold text-white"
+                            : "text-text hover:bg-primary/10"
+                        }`}
+                      >
+                        <span className="min-w-0 flex-1 truncate">
+                          {d.nameEn}
+                          {d.nameAr ? <span className={active ? "text-white/80" : "text-text-secondary"}> — {d.nameAr}</span> : null}
+                        </span>
+                        {active && <Check aria-hidden className="size-4 shrink-0" />}
+                      </button>
+                    </li>
+                  );
+                })
+              )}
+            </ul>
+            <div className="flex items-center justify-between border-t border-border/60 px-3 py-1.5 text-[11px] text-text-secondary">
+              <span className="tabular-nums">{filtered.length} من {developers.length}</span>
+              <span>Enter يختار الأول • Esc يغلق</span>
+            </div>
           </div>
-          <ul role="listbox" aria-label="المطورون" className="max-h-60 overflow-y-auto p-1">
-            {filtered.length === 0 ? (
-              <li className="px-3 py-6 text-center text-xs text-text-secondary">
-                لا نتائج لـ «{query.trim()}»
-              </li>
-            ) : (
-              filtered.map((d) => {
-                const active = d.id === value;
-                return (
-                  <li key={d.id}>
-                    <button
-                      type="button"
-                      role="option"
-                      aria-selected={active}
-                      onClick={() => pick(d.id)}
-                      className={`flex w-full items-center gap-2 rounded-app px-2.5 py-2 text-start text-sm transition ${
-                        active
-                          ? "bg-primary font-bold text-white"
-                          : "text-text hover:bg-primary/10"
-                      }`}
-                    >
-                      <span className="min-w-0 flex-1 truncate">
-                        {d.nameEn}
-                        {d.nameAr ? <span className={active ? "text-white/80" : "text-text-secondary"}> — {d.nameAr}</span> : null}
-                      </span>
-                      {active && <Check aria-hidden className="size-4 shrink-0" />}
-                    </button>
-                  </li>
-                );
-              })
-            )}
-          </ul>
-          <div className="flex items-center justify-between border-t border-border/60 px-3 py-1.5 text-[11px] text-text-secondary">
-            <span className="tabular-nums">{filtered.length} من {developers.length}</span>
-            <span>Enter يختار الأول • Esc يغلق</span>
-          </div>
-        </div>
+        )}
+      </div>
+      {onCreateClick && (
+        <button
+          type="button"
+          onClick={onCreateClick}
+          aria-label="إضافة مطوّر جديد"
+          title="إضافة مطوّر جديد"
+          className="inline-flex shrink-0 items-center justify-center rounded-app bg-primary px-3 text-white transition hover:bg-primary-hover"
+        >
+          <Plus aria-hidden className="size-4" />
+        </button>
       )}
     </div>
   );
