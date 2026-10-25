@@ -1,7 +1,7 @@
 -r base.txt
 
 # Testing Tools
-pytest==8.4.2
+pytest==9.0.3
 pytest-django==4.11.1
 pytest-cov>=6.3.0
 coverage==7.10.6
