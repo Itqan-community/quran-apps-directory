@@ -91,7 +91,10 @@ export default async function TrackResults({
     rejected: t("status.rejected"),
   };
 
-  const tab = email && !id ? "email" : "tracking";
+  // Tab selection is driven by which query parameter is present — not by its
+  // value. The email tab links to `?email=` (empty until submitted), so a
+  // truthiness check would keep falling back to the tracking tab.
+  const tab = id ? "tracking" : email !== undefined ? "email" : "tracking";
   const byId = id ? await getSubmissionByTrackingIdCached(id) : null;
   const byEmail = !id && email ? await getSubmissionsByEmailCached(email) : [];
 
@@ -135,7 +138,7 @@ export default async function TrackResults({
         <form method="GET" className="mb-6 flex flex-col gap-2 rounded-app border border-border bg-card p-5">
           <label className="flex flex-col gap-1.5">
             <span className="text-sm font-bold text-text">{t("byEmail")}</span>
-            <input className={inputCls} dir="ltr" type="email" name="email" placeholder={t("emailPlaceholder")} />
+            <input className={inputCls} dir="ltr" type="email" name="email" defaultValue={email ?? ""} placeholder={t("emailPlaceholder")} />
             <span className="text-xs text-text-secondary">{t("emailHint")}</span>
           </label>
           <button type="submit" className="rounded-app bg-primary px-5 py-2 text-sm font-bold text-white hover:bg-primary-hover">

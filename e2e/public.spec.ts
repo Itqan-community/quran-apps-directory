@@ -63,6 +63,22 @@ test.describe("public smoke", () => {
   });
 });
 
+test.describe("track submission", () => {
+  test("email tab switches the form field", async ({ page }) => {
+    await page.goto("/en/track-submission");
+    await expect(page.locator('input[name="id"]')).toBeVisible();
+
+    await page.getByRole("link", { name: "By Email" }).click();
+    await expect(page).toHaveURL(/\/en\/track-submission\?email=/);
+    await expect(page.locator('input[name="email"]')).toBeVisible();
+    await expect(page.locator('input[name="id"]')).toHaveCount(0);
+
+    await page.getByRole("link", { name: "By Tracking ID" }).click();
+    await expect(page.locator('input[name="id"]')).toBeVisible();
+    await expect(page.locator('input[name="email"]')).toHaveCount(0);
+  });
+});
+
 test.describe("smart search", () => {
   test("smart tab navigates to mode=smart and renders results/chips", async ({ page }) => {
     await page.goto("/ar/apps");
