@@ -1363,20 +1363,6 @@ body {
   }
 }
 
-.chip-arrow {
-  display: flex;
-  align-items: center;
-  margin-inline-start: 2px;
-  opacity: 0.6;
-}
-
-@media (max-width: 480px) {
-  .chip-arrow svg {
-    width: 10px;
-    height: 10px;
-  }
-}
-
 /* ============================================================
    MAIN CONTENT / GRID
    ============================================================ */
@@ -2349,6 +2335,91 @@ body {
 
   .support-fab .fab-text {
     font-size: 14px;
+  }
+}
+
+/* ============================================================
+   LISTING SKELETON (cards only; hero stays rendered)
+   ============================================================ */
+.skeleton-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skeleton-tag {
+  width: 74px;
+  height: 24px;
+  border-radius: 6px;
+}
+
+.skeleton-tag--short {
+  width: 52px;
+}
+
+.skeleton-stats-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-top: 1px solid var(--stat-border);
+  border-bottom: 1px solid var(--stat-border);
+}
+
+.skeleton-stat {
+  width: 58px;
+  height: 26px;
+  border-radius: 8px;
+}
+
+.skeleton-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.skeleton-action {
+  flex: 1;
+  height: 38px;
+  border-radius: 8px;
+}
+
+@media (max-width: 480px) {
+  .skeleton-tag-row {
+    gap: 4px;
+  }
+
+  .skeleton-tag {
+    width: 58px;
+    height: 20px;
+  }
+
+  .skeleton-tag--short {
+    width: 42px;
+  }
+
+  .skeleton-stats-row {
+    padding: 8px 0;
+  }
+
+  .skeleton-stat {
+    width: 44px;
+    height: 20px;
+  }
+
+  .skeleton-actions-row {
+    gap: 6px;
+  }
+
+  .skeleton-action {
+    height: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-block,
+  .shimmer-icon,
+  .shimmer-line {
+    animation: none;
   }
 }
 
