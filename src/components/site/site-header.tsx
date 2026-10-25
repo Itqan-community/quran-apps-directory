@@ -23,7 +23,7 @@ export async function SiteHeader({ lang }: { lang: "ar" | "en" }) {
         <div className="header-container">
           <Link href={`/${lang}`} className="shrink-0" aria-label={t("title")}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/logo.svg" alt={t("title")} height={40} width={120} />
+            <img src="/images/logo.svg" alt={t("title")} height={40} className="site-logo" />
           </Link>
           <nav className="nav-menu" aria-label="Main">
             {links.map((l) => (

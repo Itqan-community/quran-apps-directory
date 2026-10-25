@@ -149,6 +149,19 @@ body {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.site-logo {
+  display: block;
+  width: auto;
+  height: 40px;
+}
+
+@media (max-width: 768px) {
+  .site-logo {
+    width: 100px;
+    height: 40px;
+  }
+}
+
 @media (max-width: 768px) {
   .header-container {
     left: 10px;
@@ -945,9 +958,13 @@ body {
 .hero-title {
   font-size: 2.75rem;
   font-weight: 600;
-  color: var(--green-deep);
+  color: var(--text-color);
   margin: 0 0 12px;
   line-height: 1.2;
+}
+
+.dark .hero-title {
+  color: var(--green-deep);
 }
 
 @media (max-width: 768px) {
@@ -965,10 +982,14 @@ body {
 
 .hero-subtitle {
   font-size: 1.25rem;
-  color: var(--green-mid);
+  color: var(--text-color);
   margin: 0 0 32px;
   font-weight: 400;
   letter-spacing: 0.5px;
+}
+
+.dark .hero-subtitle {
+  color: var(--green-mid);
 }
 
 @media (max-width: 768px) {
