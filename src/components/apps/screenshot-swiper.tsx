@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type TouchEvent as ReactTouchEvent } from "react";
+import { createPortal } from "react-dom";
 import useEmblaCarousel from "embla-carousel-react";
 
 export function ScreenshotSwiper({
@@ -14,13 +15,57 @@ export function ScreenshotSwiper({
   title: string;
   dir: "ltr" | "rtl";
 }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start", loop: true, direction: dir });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start", loop: false, direction: dir });
   const [selected, setSelected] = useState(0);
   const [count, setCount] = useState(0);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const suppressLightboxClickRef = useRef(false);
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+
+  const goToImage = useCallback(
+    (step: number) => {
+      setLightbox((current) => {
+        if (current === null || images.length < 2) return current;
+        return (current + step + images.length) % images.length;
+      });
+    },
+    [images.length],
+  );
+
+  function handleLightboxTouchStart(event: ReactTouchEvent<HTMLDivElement>) {
+    if (images.length < 2) return;
+    const touch = event.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+  }
+
+  function handleLightboxTouchEnd(event: ReactTouchEvent<HTMLDivElement>) {
+    const start = touchStartRef.current;
+    touchStartRef.current = null;
+    if (!start || images.length < 2) return;
+
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    if (Math.abs(dx) < 50 || Math.abs(dx) <= Math.abs(dy)) return;
+
+    // Swiping left goes to the next image (same gesture in both directions).
+    suppressLightboxClickRef.current = true;
+    window.setTimeout(() => {
+      suppressLightboxClickRef.current = false;
+    }, 400);
+    goToImage(dx < 0 ? 1 : -1);
+  }
+
+  function handleLightboxClick(event: ReactMouseEvent<HTMLDivElement>) {
+    if (suppressLightboxClickRef.current) {
+      suppressLightboxClickRef.current = false;
+      return;
+    }
+    if (event.target === event.currentTarget) setLightbox(null);
+  }
 
   const onSelect = useCallback(() => {
     if (emblaApi) {
@@ -42,6 +87,15 @@ export function ScreenshotSwiper({
     const init = () => setCount(emblaApi.scrollSnapList().length);
     requestAnimationFrame(init);
   }, [emblaApi, images]);
+
+  useEffect(() => {
+    if (lightbox === null) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [lightbox]);
 
   useEffect(() => {
     if (lightbox === null) return;
@@ -133,44 +187,53 @@ export function ScreenshotSwiper({
         </>
       )}
 
-      {lightbox !== null && images[lightbox] && (
-        <div
-          className="lightbox-overlay"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setLightbox(null);
-          }}
-        >
-          <button onClick={() => setLightbox(null)} className="lightbox-close" aria-label="Close">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M18 6 6 18M6 6l12 12" />
-            </svg>
-          </button>
-          {images.length > 1 && (
-            <>
-              <button
-                onClick={() => setLightbox((lightbox - 1 + images.length) % images.length)}
-                className="lightbox-nav-btn prev"
-                aria-label="Previous"
-              >
-                <svg width="12" height="20" viewBox="0 0 11 20" fill="none" aria-hidden="true">
-                  <path d="M10.617 0.924C10.888 1.195 10.888 1.635 10.617 1.906L1.802 10.72L10.617 19.535C10.888 19.806 10.888 20.246 10.617 20.517C10.346 20.788 9.906 20.788 9.635 20.517L0.566 11.448C0.164 11.046 0.164 10.395 0.566 9.993L9.635 0.924C9.906 0.653 10.346 0.653 10.617 0.924Z" fill="currentColor" />
-                </svg>
-              </button>
-              <button
-                onClick={() => setLightbox((lightbox + 1) % images.length)}
-                className="lightbox-nav-btn next"
-                aria-label="Next"
-              >
-                <svg width="12" height="20" viewBox="0 0 11 20" fill="none" aria-hidden="true">
-                  <path d="M0.383 20.076C0.112 19.805 0.112 19.365 0.383 19.094L9.198 10.28L0.383 1.465C0.112 1.194 0.112 0.754 0.383 0.483C0.654 0.212 1.094 0.212 1.365 0.483L10.434 9.552C10.836 9.954 10.836 10.605 10.434 11.007L1.365 20.076C1.094 20.347 0.654 20.347 0.383 20.076Z" fill="currentColor" />
-                </svg>
-              </button>
-            </>
-          )}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={images[lightbox]} alt={`${alt} screenshot ${lightbox + 1}`} />
-        </div>
-      )}
+      {lightbox !== null &&
+        images[lightbox] &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="lightbox-overlay"
+            onClick={handleLightboxClick}
+            onTouchStart={handleLightboxTouchStart}
+            onTouchEnd={handleLightboxTouchEnd}
+          >
+            <button onClick={() => setLightbox(null)} className="lightbox-close" aria-label="Close">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+            <span className="lightbox-counter" dir="ltr" aria-live="polite" aria-atomic="true">
+              {lightbox + 1} / {images.length}
+            </span>
+            <div className="lightbox-figure">
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={() => goToImage(-1)}
+                    className="lightbox-nav-btn prev"
+                    aria-label="Previous"
+                  >
+                    <svg width="12" height="20" viewBox="0 0 11 20" fill="none" aria-hidden="true">
+                      <path d="M10.617 0.924C10.888 1.195 10.888 1.635 10.617 1.906L1.802 10.72L10.617 19.535C10.888 19.806 10.888 20.246 10.617 20.517C10.346 20.788 9.906 20.788 9.635 20.517L0.566 11.448C0.164 11.046 0.164 10.395 0.566 9.993L9.635 0.924C9.906 0.653 10.346 0.653 10.617 0.924Z" fill="currentColor" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => goToImage(1)}
+                    className="lightbox-nav-btn next"
+                    aria-label="Next"
+                  >
+                    <svg width="12" height="20" viewBox="0 0 11 20" fill="none" aria-hidden="true">
+                      <path d="M0.383 20.076C0.112 19.805 0.112 19.365 0.383 19.094L9.198 10.28L0.383 1.465C0.112 1.194 0.112 0.754 0.383 0.483C0.654 0.212 1.094 0.212 1.365 0.483L10.434 9.552C10.836 9.954 10.836 10.605 10.434 11.007L1.365 20.076C1.094 20.347 0.654 20.347 0.383 20.076Z" fill="currentColor" />
+                    </svg>
+                  </button>
+                </>
+              )}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={images[lightbox]} alt={`${alt} screenshot ${lightbox + 1}`} />
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

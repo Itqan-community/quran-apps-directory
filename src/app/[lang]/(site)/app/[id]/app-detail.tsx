@@ -16,6 +16,7 @@ import { parseAppParam } from "@/lib/app-params";
 import { formatRating } from "@/lib/services/arabic";
 import { appUrlParam } from "@/components/apps/app-card";
 import { RelatedActions } from "@/components/apps/related-actions";
+import { PlatformMarks, getPlatformLabel } from "@/components/apps/platform-marks";
 import { DescriptionTextClient } from "./description-text";
 import "@/components/apps/app-detail.css";
 
@@ -276,7 +277,10 @@ function AppLink({ app, lang }: { app: AppListItem; lang: "ar" | "en" }) {
             <span className="related-stat-label">{isAr ? "التقييمات" : "Rating"}</span>
           </div>
           <div className="related-stat-item">
-            <span className="related-stat-value">{platformValue(app.platform, isAr)}</span>
+            <div title={getPlatformLabel(app.platform, lang)}>
+              <PlatformMarks platform={app.platform} />
+              <span className="sr-only">{getPlatformLabel(app.platform, lang)}</span>
+            </div>
             <span className="related-stat-label">{isAr ? "المنصة" : "Platform"}</span>
           </div>
         </div>
@@ -285,14 +289,4 @@ function AppLink({ app, lang }: { app: AppListItem; lang: "ar" | "en" }) {
       </div>
     </article>
   );
-}
-
-function platformValue(platform: string, isAr: boolean): string {
-  const labels: Record<string, string> = {
-    android: isAr ? "أندرويد" : "Android",
-    ios: isAr ? "آيفون" : "iOS",
-    web: isAr ? "ويب" : "Web",
-    cross_platform: isAr ? "متعدد المنصات" : "All",
-  };
-  return labels[platform] ?? platform;
 }

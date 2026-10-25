@@ -265,10 +265,6 @@ body {
     margin-inline-start: auto;
     margin-inline-end: 12px;
   }
-
-  .mobile-menu-toggle {
-    display: flex;
-  }
 }
 
 @media (max-width: 768px) {
@@ -318,6 +314,13 @@ body {
 
 .mobile-menu-toggle:hover {
   background: var(--hover-bg);
+}
+
+/* Keep this after the base rule so it isn't overridden by `display: none`. */
+@media (max-width: 992px) {
+  .mobile-menu-toggle {
+    display: flex;
+  }
 }
 
 /* Mobile menu overlay */

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
 const QUESTIONS = [1, 2, 3, 4] as const;
@@ -9,18 +9,43 @@ export function SupportWidget() {
   const t = useTranslations("support");
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  function closeSupport() {
+    setOpen(false);
+    setSelected(null);
+  }
 
   function toggleSupport() {
     if (open) {
-      setOpen(false);
-      setSelected(null);
+      closeSupport();
     } else {
       setOpen(true);
     }
   }
 
+  useEffect(() => {
+    if (!open) return;
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        closeSupport();
+      }
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeSupport();
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
   return (
-    <div className="support-container">
+    <div className="support-container" ref={containerRef}>
       {open && (
         <div className="support-card-wrapper">
           <div className="support-card">
@@ -66,7 +91,7 @@ export function SupportWidget() {
         className={`support-fab ${open ? "active" : ""}`}
       >
         <span className="fab-text">{t("fab")}</span>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="10" />
           <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
           <path d="M12 17h.01" />

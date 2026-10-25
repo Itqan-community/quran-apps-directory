@@ -662,6 +662,7 @@
 
 /* Screenshots */
 .screenshots-section {
+  position: relative;
   margin: 12px 0 24px;
 }
 
@@ -820,8 +821,8 @@
 }
 
 .swiper-pagination .swiper-pagination-bullet {
-  background-color: rgba(255, 255, 255, 0.9);
-  opacity: 0.8;
+  background-color: #cccccc;
+  opacity: 1;
   margin: 0 4px;
   width: 8px;
   height: 8px;
@@ -891,13 +892,25 @@
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.15s ease-out;
+  touch-action: pan-y;
 }
 
-.lightbox-overlay img {
-  max-width: calc(100vw - 40px);
-  max-height: calc(100vh - 90px);
+.lightbox-figure {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: calc(100vw - 180px);
+}
+
+.lightbox-figure img {
+  max-width: 100%;
+  max-height: calc(100vh - 120px);
+  width: auto;
+  height: auto;
   object-fit: contain;
   border-radius: 8px;
+  display: block;
 }
 
 .lightbox-close {
@@ -915,6 +928,25 @@
 
 .lightbox-close:hover {
   background: rgba(255, 255, 255, 0.15);
+}
+
+.lightbox-counter {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
+[dir="rtl"] .lightbox-nav-btn svg {
+  transform: rotate(180deg);
 }
 
 .lightbox-nav-btn {
@@ -939,11 +971,21 @@
 }
 
 .lightbox-nav-btn.prev {
-  inset-inline-start: 18px;
+  inset-inline-start: -64px;
 }
 
 .lightbox-nav-btn.next {
-  inset-inline-end: 18px;
+  inset-inline-end: -64px;
+}
+
+@media (max-width: 768px) {
+  .lightbox-figure {
+    max-width: calc(100vw - 32px);
+  }
+
+  .lightbox-nav-btn {
+    display: none;
+  }
 }
 
 /* Related apps */
@@ -951,7 +993,12 @@
   display: flex;
   gap: 20px;
   overflow-x: auto;
+  /* RTL scroll containers can leak their scrollable width into the document,
+     shifting the whole page horizontally on mobile. Paint containment stops
+     that while keeping the inner horizontal scrolling intact. */
+  contain: paint;
   scroll-snap-type: x mandatory;
+  overscroll-behavior-inline: contain;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 16px;
   margin-inline-end: -24px;
@@ -985,6 +1032,7 @@
   max-width: 300px;
   flex-shrink: 0;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
   text-decoration: none;
   color: inherit;
 }
