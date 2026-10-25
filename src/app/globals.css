@@ -1,4 +1,11 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+
+/*
+ * Scan only application sources. Automatic detection walks the repo root and
+ * crashes Turbopack when it hits root-owned deployment artifacts such as
+ * certbot/letsencrypt/accounts (mode 0700).
+ */
+@source "../../src";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
