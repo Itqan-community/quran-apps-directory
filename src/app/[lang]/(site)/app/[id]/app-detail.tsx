@@ -122,7 +122,7 @@ export default async function AppDetail({
           <div className="details-grid">
             <div className="details-main">
               <h2>{t("description")}</h2>
-              <div className="app-description">
+              <div className="detail-description">
                 <DescriptionTextClient text={description} labels={{ more: t("readMore"), less: t("readLess") }} />
               </div>
             </div>

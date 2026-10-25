@@ -51,6 +51,26 @@ test.describe("public smoke", () => {
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   });
 
+  test("app detail description expands when Read More is clicked", async ({ page }) => {
+    await page.goto(`/en/app/${FIRST_APP.slug}_${FIRST_APP.id}`);
+
+    const description = page.locator(".details-main p").first();
+    const readMore = page.getByRole("button", { name: "Read More" });
+    await expect(readMore).toBeVisible();
+
+    const collapsedHeight = await description.evaluate((el) => el.getBoundingClientRect().height);
+    // The toggle is inert until hydration; retry a no-op early click.
+    await expect(async () => {
+      await readMore.click();
+      await expect(page.getByRole("button", { name: "Read Less" })).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+
+    // The expand must not be clipped by an ancestor: the paragraph grows well past
+    // its collapsed height and the toggle stays visible below it.
+    const expandedHeight = await description.evaluate((el) => el.getBoundingClientRect().height);
+    expect(expandedHeight).toBeGreaterThan(collapsedHeight + 50);
+  });
+
   test("apps listing filters by search param", async ({ page }) => {
     await page.goto("/en/apps?search=ayah");
     await expect(page.locator("article").first()).toContainText(/ayah|آية/i);

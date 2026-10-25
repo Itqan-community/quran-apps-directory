@@ -532,24 +532,26 @@
   }
 }
 
-/* Description truncation */
-.app-description {
+/* Description truncation — its own class: `.app-description` is the app-card
+   2-line clamp in globals.css and would clip this block when expanded. */
+.detail-description {
   position: relative;
   margin-bottom: 16px;
+  color: var(--text-secondary);
 }
 
-.app-description p {
+.detail-description p {
   margin: 0;
 }
 
-.app-description .truncated {
+.detail-description .truncated {
   overflow: hidden;
   max-height: 90px;
   position: relative;
   white-space: pre-line;
 }
 
-.app-description .truncated::after {
+.detail-description .truncated::after {
   content: "";
   position: absolute;
   bottom: 0;
