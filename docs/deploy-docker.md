@@ -37,6 +37,9 @@ cp .env.prod.example .env.prod
 # … fill .env.prod (see the comments in the file):
 #   DOMAIN, CF_DNS_API_TOKEN, ACME_EMAIL, DATABASE_URL (managed, pgvector!),
 #   NEXT_PUBLIC_SITE_URL/AUTH_URL (https://<your-domain>), auth, R2, SMTP, AI vars.
+#   R2_PUBLIC_URL is both runtime and build-time (next.config bakes
+#   images.remotePatterns): use the bucket's public base, no bucket path, and
+#   rebuild when it changes.
 #   PROVISION_DB=1 for the FIRST deploy — see below, then set it back to 0.
 
 docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build

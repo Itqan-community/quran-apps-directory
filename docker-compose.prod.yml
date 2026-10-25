@@ -36,6 +36,10 @@ services:
         PROVISION_DB: ${PROVISION_DB:-0}
         NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
         NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN:-}
+        # next.config.ts bakes images.remotePatterns at build time; without
+        # this the app rejects the bucket's public host with
+        # `"url" parameter is not allowed`.
+        R2_PUBLIC_URL: ${R2_PUBLIC_URL}
     env_file: .env.prod
     environment:
       NODE_ENV: production

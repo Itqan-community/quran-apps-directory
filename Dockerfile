@@ -17,6 +17,10 @@ COPY . .
 ARG NEXT_PUBLIC_SITE_URL
 ARG NEXT_PUBLIC_SENTRY_DSN
 ARG DATABASE_URL
+# Build-time only: next.config.ts reads R2_PUBLIC_URL to allow the bucket's
+# public host in images.remotePatterns. Without it the standalone server
+# rejects every uploaded image with `"url" parameter is not allowed`.
+ARG R2_PUBLIC_URL
 # Opt-in schema provisioning (PROVISION_DB=1 in .env.prod). Needed on the first
 # deploy: the prerender below reads the DB, so a schema-less DATABASE_URL fails
 # the build. See scripts/provision-db.sh and docs/deploy-docker.md.
@@ -24,6 +28,7 @@ ARG PROVISION_DB=0
 ENV NEXT_TELEMETRY_DISABLED=1 \
     NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
     NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN \
+    R2_PUBLIC_URL=$R2_PUBLIC_URL \
     DATABASE_URL=$DATABASE_URL
 RUN if [ "$PROVISION_DB" = "1" ]; then \
       sh scripts/provision-db.sh; \
