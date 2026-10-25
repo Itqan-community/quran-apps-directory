@@ -67,7 +67,7 @@ without keys).
 | Framework | Next.js 16.4 (App Router, `cacheComponents`, `proxy.ts`), React 19, TypeScript 5 |
 | DB / ORM | PostgreSQL 16 + **pgvector**, Drizzle ORM (`postgres` driver, `prepare: false`), drizzle-kit push |
 | Auth | Auth.js v5 (credentials), admin guard in `proxy.ts` + `lib/admin-guard.ts` |
-| Styling | Tailwind CSS v4 (CSS-first `@theme` tokens), dark mode via `next-themes` |
+| Styling | Tailwind CSS v4 (CSS-first `@theme` tokens), light/dark mode via a lightweight theme provider |
 | i18n | `next-intl` (`ar` default, `en`), `[lang]` segment, RTL/LTR layouts |
 | Media | Cloudflare R2 (S3-compatible; MinIO locally), `sharp` processing |
 | Email | Nodemailer (submission confirmations, review notices) |
