@@ -89,6 +89,15 @@
     "badges": {
       "featured": "Featured",
       "new": "New"
+    },
+    "sort": {
+      "label": "Sort by",
+      "featured": "Featured",
+      "newest": "Newest",
+      "rating": "Top rated",
+      "az": "A–Z",
+      "app": "app",
+      "apps": "apps"
     }
   },
   "developer": {

@@ -52,16 +52,43 @@ export type AppListItem = {
 };
 
 const ORDERABLE = {
+  // Featured apps lead the curated listing; display order then breaks the rest.
+  featured_first: sql`apps.featured DESC, apps.sort_order`,
   sort_order: apps.sortOrder,
   name_en: apps.nameEn,
+  // Arabic letter order (hamza-alef variants fold under alif, as in Arabic
+  // dictionaries) — the en_US.utf8 DB collation would order by codepoint.
+  name_ar: sql`apps.name_ar COLLATE "ar-x-icu"`,
   avg_rating: apps.avgRating,
   view_count: apps.viewCount,
   review_count: apps.reviewCount,
   created_at: apps.createdAt,
 } as const;
 
+/**
+ * Map the public `?sort=` URL param to the internal `ordering` CSV.
+ * Missing/unknown values return undefined → the curated default
+ * (featured_first: featured apps first, then sort_order, name_en).
+ * "az" follows the locale: A–Z applies to the names as displayed
+ * (English vs Arabic letter order).
+ */
+export function sortOrdering(sort: string | undefined, locale: "ar" | "en"): string | undefined {
+  switch (sort) {
+    case "featured":
+      return "featured_first";
+    case "newest":
+      return "created_at,desc";
+    case "rating":
+      return "avg_rating,desc";
+    case "az":
+      return locale === "ar" ? "name_ar" : "name_en";
+    default:
+      return undefined;
+  }
+}
+
 function parseOrdering(ordering?: string) {
-  const parts = (ordering ?? "sort_order,name_en").split(",").map((s) => s.trim());
+  const parts = (ordering ?? "featured_first,name_en").split(",").map((s) => s.trim());
   const dir = parts[parts.length - 1] === "desc" ? "desc" : "asc";
   const field = Object.hasOwn(ORDERABLE, parts[0]) ? (parts[0] as keyof typeof ORDERABLE) : "sort_order";
   const col = ORDERABLE[field];

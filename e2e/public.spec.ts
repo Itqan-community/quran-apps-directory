@@ -76,6 +76,36 @@ test.describe("public smoke", () => {
     await expect(page.locator("article").first()).toContainText(/ayah|آية/i);
   });
 
+  test("home sort select reorders the grid and updates the URL", async ({ page }) => {
+    await page.goto("/en");
+    const sort = page.getByLabel("Sort by");
+    await expect(sort).toBeVisible();
+    // The select is inert until hydration; retry a no-op early selection.
+    await expect(async () => {
+      await sort.selectOption("newest");
+      await expect(page).toHaveURL(/sort=newest/, { timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+    await expect(page.locator("article").first()).toContainText(/Ten Qira.at Researcher/);
+  });
+
+  test("home AR az sort orders by Arabic name (Arabic letter order)", async ({ page }) => {
+    await page.goto("/ar?sort=az");
+    // First app in Arabic letter order; EN-name sorting would surface a different app
+    await expect(page.locator("article").first().locator("h3.app-name")).toContainText("آمين");
+  });
+
+  test("home sort select back to Featured drops the param", async ({ page }) => {
+    await page.goto("/en?sort=newest");
+    await expect(page.locator("article").first()).toContainText(/Ten Qira.at Researcher/);
+    const sort = page.getByLabel("Sort by");
+    await expect(async () => {
+      await sort.selectOption("featured");
+      await expect(page).toHaveURL(/\/en$/, { timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+    // Featured apps lead the curated grid (Wahy is the first featured app)
+    await expect(page.locator("article").first()).toContainText("Wahy");
+  });
+
   test("ramadan page renders custom footer without global footer", async ({ page }) => {
     await page.goto("/ar/ramadan");
     await expect(page.getByText("مع القرآن.. رفقة أقرب")).toBeVisible();

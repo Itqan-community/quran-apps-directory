@@ -13,6 +13,7 @@ import { Pagination } from "./pagination";
 import { HeroSearch } from "./hero-search";
 import { CategoryIcon } from "./category-icon";
 import { ListingCardsSkeleton } from "./listing-skeleton";
+import { SortSelect } from "./sort-select";
 import { CompactModeConnector } from "@/components/site/compact-mode-connector";
 
 export async function AppsListing({
@@ -22,6 +23,8 @@ export async function AppsListing({
   search,
   selectedCategory,
   mode,
+  sort,
+  showSort,
 }: {
   lang: "ar" | "en";
   filters: AppsFilters;
@@ -29,6 +32,10 @@ export async function AppsListing({
   search?: string;
   selectedCategory?: string;
   mode?: "smart";
+  /** Raw `?sort=` URL value (drives the select's checked option) */
+  sort?: string;
+  /** Render the count + sort toolbar above the grid (homepage only for now) */
+  showSort?: boolean;
 }) {
   const t = await getTranslations({ locale: lang, namespace: "appList" });
 
@@ -80,6 +87,8 @@ export async function AppsListing({
           filters={filters}
           search={search}
           mode={mode}
+          sort={sort}
+          showSort={showSort}
         />
       </Suspense>
     </>
@@ -91,11 +100,15 @@ async function ListingResults({
   filters,
   search,
   mode,
+  sort,
+  showSort,
 }: {
   lang: "ar" | "en";
   filters: AppsFilters;
   search?: string;
   mode?: "smart";
+  sort?: string;
+  showSort?: boolean;
 }) {
   const t = await getTranslations({ locale: lang, namespace: "appList" });
   // Smart mode uses the hybrid AI ranking; traditional keeps the legacy path.
@@ -142,6 +155,15 @@ async function ListingResults({
           className="mb-4 rounded-app border border-border bg-surface px-4 py-3 text-sm text-text-secondary"
         >
           {t("search.fallbackNotice")}
+        </div>
+      )}
+
+      {showSort && (
+        <div className="listing-toolbar">
+          <span className="listing-toolbar-count">
+            {count} {count === 1 ? t("sort.app") : t("sort.apps")}
+          </span>
+          <SortSelect lang={lang} value={sort ?? "featured"} />
         </div>
       )}
 
