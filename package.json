@@ -29,10 +29,10 @@
     "next": "16.4.3",
     "next-auth": "^5.0.0-beta.32",
     "next-intl": "^4.14.9",
-    "nodemailer": "^7.0.13",
+    "nodemailer": "^10.2.1",
     "postgres": "^3.4.9",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "sharp": "^0.35.5",
     "ua-parser-js": "^2.0.10",
     "zod": "^4.6.5"
@@ -42,7 +42,6 @@
     "@tailwindcss/turbopack": "^4",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^26.6.4",
-    "@types/nodemailer": "^8.0.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^18.0.6",
@@ -51,6 +50,7 @@
     "eslint-config-next": "16.4.3",
     "tailwindcss": "^4",
     "typescript": "^5",
+    "vite": "^8.3.3",
     "vitest": "^5.0.3"
   }
 }
