@@ -106,7 +106,9 @@ export function websiteJsonLd(lang: "ar" | "en") {
 export function itemListJsonLd(
   apps: { id: number; slug: string; nameEn: string; nameAr: string; shortDescriptionEn: string; shortDescriptionAr: string; applicationIcon: string; avgRating: string }[],
   category: string | null,
-  lang: "ar" | "en"
+  lang: "ar" | "en",
+  /** Paginated listings: total across pages + items skipped before this page. */
+  page?: { total?: number; offset?: number }
 ) {
   const isAr = lang === "ar";
   const CATEGORY_NAMES: Record<string, { ar: string; en: string }> = {
@@ -135,10 +137,10 @@ export function itemListJsonLd(
         ? "مجموعة شاملة من تطبيقات القرآن الكريم"
         : "Comprehensive collection of Quran applications",
     url: `${SITE_URL}/${lang}${category ? `/${category}` : ""}`,
-    numberOfItems: apps.length,
+    numberOfItems: page?.total ?? apps.length,
     itemListElement: apps.slice(0, 20).map((app, index) => ({
       "@type": "SoftwareApplication",
-      position: index + 1,
+      position: (page?.offset ?? 0) + index + 1,
       name: isAr ? app.nameAr : app.nameEn,
       description: isAr ? app.shortDescriptionAr : app.shortDescriptionEn,
       url: `${SITE_URL}/${lang}/app/${app.slug}_${app.id}`,

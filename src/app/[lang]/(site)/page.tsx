@@ -7,9 +7,11 @@ import { websiteJsonLd, itemListJsonLd } from "@/lib/seo/jsonld";
 import { getAppsCached } from "@/lib/cache/apps";
 import { sortOrdering } from "@/lib/repo/apps-rows";
 
-// searchParams-driven sort: no instant prefetch shell (validation cannot
-// resolve URL data inside the static shell), same as /apps
+// searchParams-driven sort + pager: no instant prefetch shell (validation
+// cannot resolve URL data inside the static shell), same as /apps
 export const instant = false;
+
+const PAGE_SIZE = 20;
 
 type SP = Record<string, string | string[] | undefined>;
 
@@ -25,20 +27,27 @@ export default async function HomePage({
   setRequestLocale(locale);
   const sort = (Array.isArray(sp.sort) ? sp.sort[0] : sp.sort) || undefined;
   const ordering = sortOrdering(sort, locale);
-  // Live parity: the old home loads the whole grid (infinite scroll in the SPA);
-  // a single server render window covers the current 123 apps without a pager.
-  const { results: all } = await getAppsCached({ pageSize: 200, ordering });
+  const rawPage = Number(Array.isArray(sp.page) ? sp.page[0] : sp.page);
+  const page = Number.isFinite(rawPage) ? Math.max(1, Math.floor(rawPage)) : 1;
+  // One render window of 20; the numbered pager sits below the grid.
+  const { count, results } = await getAppsCached({ pageSize: PAGE_SIZE, page, ordering });
 
   return (
     <main>
       <JsonLd data={websiteJsonLd(locale)} />
-      <JsonLd data={itemListJsonLd(all, null, locale)} />
+      <JsonLd
+        data={itemListJsonLd(results, null, locale, {
+          total: count,
+          offset: (page - 1) * PAGE_SIZE,
+        })}
+      />
       <AppsListing
         lang={locale}
-        filters={{ pageSize: 200, ordering }}
+        filters={{ pageSize: PAGE_SIZE, page, ordering }}
         categories={await getCategoriesCached()}
         sort={sort}
         showSort
+        basePath={`/${locale}`}
       />
     </main>
   );

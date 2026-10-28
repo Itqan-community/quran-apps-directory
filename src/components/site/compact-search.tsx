@@ -29,6 +29,17 @@ export function CompactSearch({
     router.push(`/${lang}/apps${query.trim() ? `?search=${encodeURIComponent(query.trim())}` : ""}`);
   }
 
+  // Category chips are real links (prefetch/SEO), but switching category from
+  // a sorted listing must keep the sort. The current query is only known on the
+  // client, so read it at click time and let unmodified links navigate normally.
+  function keepSort(e: React.MouseEvent<HTMLAnchorElement>, slug: string) {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const sort = new URLSearchParams(window.location.search).get("sort");
+    if (!sort) return;
+    e.preventDefault();
+    router.push(`/${lang}/${slug}?sort=${encodeURIComponent(sort)}`);
+  }
+
   return (
     <>
       <div className="flex flex-1 items-center gap-2.5">
@@ -60,6 +71,7 @@ export function CompactSearch({
         <Link
           key={c.id}
           href={`/${lang}/${c.slug}`}
+          onClick={(e) => keepSort(e, c.slug)}
           className={`compact-category-chip ${activeSlug === c.slug ? "active" : ""}`}
         >
           <CategoryIcon svg={c.icon} size={16} />
@@ -94,7 +106,10 @@ export function CompactSearch({
               <Link
                 key={c.id}
                 href={`/${lang}/${c.slug}`}
-                onClick={() => setDropdownOpen(false)}
+                onClick={(e) => {
+                  setDropdownOpen(false);
+                  keepSort(e, c.slug);
+                }}
                 className={`compact-category-option ${activeSlug === c.slug ? "active" : ""}`}
               >
                 <CategoryIcon svg={c.icon} size={16} />

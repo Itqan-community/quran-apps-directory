@@ -25,6 +25,7 @@ export async function AppsListing({
   mode,
   sort,
   showSort,
+  basePath,
 }: {
   lang: "ar" | "en";
   filters: AppsFilters;
@@ -34,10 +35,15 @@ export async function AppsListing({
   mode?: "smart";
   /** Raw `?sort=` URL value (drives the select's checked option) */
   sort?: string;
-  /** Render the count + sort toolbar above the grid (homepage only for now) */
+  /** Render the count + sort toolbar above the grid (home/category listings) */
   showSort?: boolean;
+  /** Route the pagination links point at (defaults to /{lang}/apps) */
+  basePath?: string;
 }) {
   const t = await getTranslations({ locale: lang, namespace: "appList" });
+  // Keep the chosen ordering when the user switches category filters; page
+  // resets because the result set changes.
+  const sortQuery = sort && sort !== "featured" ? `?sort=${encodeURIComponent(sort)}` : "";
 
   return (
     <>
@@ -54,7 +60,7 @@ export async function AppsListing({
           <div className="categories-chips-wrapper">
             <div className="categories-chips">
               <Link
-                href={`/${lang}`}
+                href={`/${lang}${sortQuery}`}
                 scroll={false}
                 className={`category-chip ${!selectedCategory ? "active" : ""}`}
               >
@@ -65,7 +71,7 @@ export async function AppsListing({
               {categories.map((category) => (
                 <Link
                   key={category.id}
-                  href={`/${lang}/${category.slug}`}
+                  href={`/${lang}/${category.slug}${sortQuery}`}
                   scroll={false}
                   className={`category-chip ${selectedCategory === category.slug ? "active" : ""}`}
                 >
@@ -86,9 +92,11 @@ export async function AppsListing({
           lang={lang}
           filters={filters}
           search={search}
+          selectedCategory={selectedCategory}
           mode={mode}
           sort={sort}
           showSort={showSort}
+          basePath={basePath}
         />
       </Suspense>
     </>
@@ -99,16 +107,20 @@ async function ListingResults({
   lang,
   filters,
   search,
+  selectedCategory,
   mode,
   sort,
   showSort,
+  basePath,
 }: {
   lang: "ar" | "en";
   filters: AppsFilters;
   search?: string;
+  selectedCategory?: string;
   mode?: "smart";
   sort?: string;
   showSort?: boolean;
+  basePath?: string;
 }) {
   const t = await getTranslations({ locale: lang, namespace: "appList" });
   // Smart mode uses the hybrid AI ranking; traditional keeps the legacy path.
@@ -163,7 +175,7 @@ async function ListingResults({
           <span className="listing-toolbar-count">
             {count} {count === 1 ? t("sort.app") : t("sort.apps")}
           </span>
-          <SortSelect lang={lang} value={sort ?? "featured"} />
+          <SortSelect lang={lang} value={sort ?? "featured"} basePath={basePath} />
         </div>
       )}
 
@@ -182,7 +194,15 @@ async function ListingResults({
           lang={lang}
           page={filters.page ?? 1}
           totalPages={totalPages}
-          searchParams={{ ...(filters as unknown as Record<string, unknown>), ...(mode ? { mode } : {}) }}
+          basePath={basePath}
+          searchParams={{
+            ...(filters as unknown as Record<string, unknown>),
+            // The category already lives in the path; repeating it as a query
+            // param would create duplicate URLs on the category pager.
+            ...(selectedCategory ? { categorySlugs: undefined } : {}),
+            ...(sort ? { sort } : {}),
+            ...(mode ? { mode } : {}),
+          }}
         />
       )}
     </div>

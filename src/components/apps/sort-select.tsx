@@ -8,20 +8,30 @@ import type { Locale } from "@/lib/i18n";
 const SORT_OPTIONS = ["featured", "newest", "rating", "az"] as const;
 
 /**
- * Homepage sort control. The homepage carries no other URL params, so the
- * pushed URL is rebuilt from scratch; if this control ever moves to a
- * param-carrying page (e.g. /apps), merge the existing params instead.
+ * Listing sort control. `basePath` is the route whose params the select
+ * rewrites (home by default, or the current category route) so changing the
+ * sort never navigates away from an active category filter.
  */
-export function SortSelect({ lang, value }: { lang: Locale; value: string }) {
+export function SortSelect({
+  lang,
+  value,
+  basePath,
+}: {
+  lang: Locale;
+  value: string;
+  /** Listing route to stay on; defaults to the homepage. */
+  basePath?: string;
+}) {
   const router = useRouter();
   const t = useTranslations("appList.sort");
+  const root = basePath ?? `/${lang}`;
 
   function onChange(e: ChangeEvent<HTMLSelectElement>) {
     const next = e.target.value;
     const params = new URLSearchParams();
     if (next !== "featured") params.set("sort", next);
     const qs = params.toString();
-    router.push(`/${lang}${qs ? `?${qs}` : ""}`);
+    router.push(`${root}${qs ? `?${qs}` : ""}`);
   }
 
   return (

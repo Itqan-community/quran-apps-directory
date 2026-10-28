@@ -88,6 +88,49 @@ test.describe("public smoke", () => {
     await expect(page.locator("article").first()).toContainText(/Ten Qira.at Researcher/);
   });
 
+  test("home paginates 20 apps per page", async ({ page }) => {
+    await page.goto("/en");
+    const cards = page.locator("article:not(.shimmer-card)");
+    await expect(cards).toHaveCount(20);
+    const pager = page.getByRole("navigation", { name: "Pagination" });
+    await pager.getByRole("link", { name: "2", exact: true }).click();
+    await expect(page).toHaveURL(/\/en\?page=2$/);
+    // Wait for the streamed page-2 content before counting
+    await expect(cards.first()).toContainText("Moeen");
+    await expect(cards).toHaveCount(20);
+  });
+
+  test("home keeps the sort when paginating", async ({ page }) => {
+    await page.goto("/en?sort=newest");
+    const cards = page.locator("article:not(.shimmer-card)");
+    await expect(cards.first()).toContainText(/Ten Qira.at Researcher/);
+    await page
+      .getByRole("navigation", { name: "Pagination" })
+      .getByRole("link", { name: "2", exact: true })
+      .click();
+    await expect(page).toHaveURL(/sort=newest/);
+    await expect(page).toHaveURL(/page=2/);
+    await expect(cards.first()).toContainText("Al Quran: Tafsir& by Word");
+  });
+
+  test("category filter keeps the sort and the pager", async ({ page }) => {
+    await page.goto("/en?sort=newest");
+    const cards = page.locator("article:not(.shimmer-card)");
+    await expect(cards.first()).toContainText(/Ten Qira.at Researcher/);
+
+    // Category chips beneath the hero search keep the active ordering.
+    await page.locator(".categories-chips").getByRole("link", { name: /Mushaf/ }).click();
+    await expect(page).toHaveURL(/\/en\/mushaf\?sort=newest$/);
+    await expect(page.getByLabel("Sort by")).toHaveValue("newest");
+
+    // The category listing paginates at the same window size as the home grid.
+    const pager = page.getByRole("navigation", { name: "Pagination" });
+    await expect(pager).toBeVisible();
+    await pager.getByRole("link", { name: "2", exact: true }).click();
+    await expect(page).toHaveURL(/\/en\/mushaf\?sort=newest&page=2$/);
+    await expect(cards.first()).toBeVisible();
+  });
+
   test("home AR az sort orders by Arabic name (Arabic letter order)", async ({ page }) => {
     await page.goto("/ar?sort=az");
     // First app in Arabic letter order; EN-name sorting would surface a different app
