@@ -118,8 +118,11 @@ test.describe("public smoke", () => {
     const cards = page.locator("article:not(.shimmer-card)");
     await expect(cards.first()).toContainText(/Ten Qira.at Researcher/);
 
-    // Category chips beneath the hero search keep the active ordering.
-    await page.locator(".categories-chips").getByRole("link", { name: /Mushaf/ }).click();
+    // The dock rail keeps the active ordering across category switches.
+    await page
+      .getByRole("navigation", { name: "Categories" })
+      .getByRole("link", { name: /Mushaf/ })
+      .click();
     await expect(page).toHaveURL(/\/en\/mushaf\?sort=newest$/);
     await expect(page.getByLabel("Sort by")).toHaveValue("newest");
 
@@ -129,6 +132,46 @@ test.describe("public smoke", () => {
     await pager.getByRole("link", { name: "2", exact: true }).click();
     await expect(page).toHaveURL(/\/en\/mushaf\?sort=newest&page=2$/);
     await expect(cards.first()).toBeVisible();
+  });
+
+  test("dock shows counts and preserves the sort", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/en?sort=newest");
+
+    const nav = page.getByRole("navigation", { name: "Categories" });
+    await expect(nav).toBeVisible();
+    await expect(nav.getByRole("link", { name: /^All/ })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+
+    await nav.getByRole("link", { name: /Mushaf/ }).click();
+    await expect(page).toHaveURL(/\/en\/mushaf\?sort=newest$/);
+    await expect(page.getByLabel("Sort by")).toHaveValue("newest");
+  });
+
+  test("apps search results use the dock without sort", async ({ page }) => {
+    await page.goto("/en/apps?search=ayah");
+    await expect(page.getByRole("navigation", { name: "Categories" })).toBeVisible();
+    await expect(page.getByLabel("Sort by")).toHaveCount(0);
+  });
+
+  test("unknown category has no active dock chip", async ({ page }) => {
+    await page.goto("/en/not-a-real-category");
+    await expect(page.getByRole("navigation", { name: "Categories" })).toBeVisible();
+    await expect(page.locator(".dock-pill[aria-current='page']")).toHaveCount(0);
+  });
+
+  test("narrow desktop rail scrolls to the last category", async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 900 });
+    await page.goto("/en");
+
+    const nav = page.getByRole("navigation", { name: "Categories" });
+    expect(await nav.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true);
+
+    const tools = nav.getByRole("link", { name: /Tools/ });
+    await tools.scrollIntoViewIfNeeded();
+    await expect(tools).toBeVisible();
   });
 
   test("home AR az sort orders by Arabic name (Arabic letter order)", async ({ page }) => {

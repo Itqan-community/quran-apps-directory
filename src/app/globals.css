@@ -57,6 +57,17 @@
   --stat-border: #f0f0f0;
   --tag-bg: #f5f5f5;
   --tag-more-bg: #e8e8e8;
+  /* Category dock (floating index bar) */
+  --dock-surface: rgba(255, 255, 255, 0.84);
+  --dock-border: rgba(255, 255, 255, 0.72);
+  --dock-chip: rgba(160, 83, 59, 0.055);
+  --dock-chip-line: rgba(160, 83, 59, 0.06);
+  --dock-chip-text: #5f5a55;
+  --dock-chip-active: #a0533b;
+  --dock-chip-active-text: #ffffff;
+  --dock-num: rgba(255, 255, 255, 0.72);
+  --dock-num-text: #6c757d;
+  --dock-num-active: rgba(255, 255, 255, 0.18);
   /* Admin console identity: deep green-ink sidebar (light mode). */
   --admin-ink: #10201d;
   --admin-ink-soft: rgba(255, 255, 255, 0.08);
@@ -86,6 +97,17 @@
   --stat-border: #333;
   --tag-bg: #2a2a2a;
   --tag-more-bg: #333;
+  /* Category dock (floating index bar) */
+  --dock-surface: rgba(24, 24, 24, 0.84);
+  --dock-border: rgba(255, 255, 255, 0.08);
+  --dock-chip: rgba(255, 140, 66, 0.1);
+  --dock-chip-line: rgba(255, 140, 66, 0.12);
+  --dock-chip-text: #d6d0c8;
+  --dock-chip-active: #ff8c42;
+  --dock-chip-active-text: #171717;
+  --dock-num: rgba(255, 255, 255, 0.1);
+  --dock-num-text: #b3b3b3;
+  --dock-num-active: rgba(0, 0, 0, 0.14);
   /* Dark mode: the ink sidebar relaxes to the surface token. */
   --admin-ink: #1a1a1a;
   --admin-ink-soft: rgba(255, 255, 255, 0.06);
@@ -1239,94 +1261,206 @@ body {
   }
 }
 
-/* Category chips */
-.categories-chips-wrapper {
-  max-width: 100%;
-  overflow: hidden;
+/* ============================================================
+   CATEGORY DOCK (floating index: rail + utility zone)
+   ============================================================ */
+.category-dock-shell {
+  position: sticky;
+  top: 98px;
+  z-index: 40;
+  max-width: 1392px;
+  margin: -34px auto 0;
+  padding: 0 16px;
 }
 
-@media (max-width: 480px) {
-  .categories-chips-wrapper {
-    margin-top: 8px;
-  }
-}
-
-.categories-chips {
+.category-dock {
   display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  padding: 8px 4px;
-  cursor: grab;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  justify-content: center;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  height: 72px;
+  padding: 0 14px 0 12px;
+  border-radius: 20px;
+  background: var(--dock-surface);
+  border: 1px solid var(--dock-border);
+  box-shadow:
+    0 12px 32px rgba(31, 20, 12, 0.1),
+    0 2px 8px rgba(31, 20, 12, 0.05);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
 }
 
-.categories-chips::-webkit-scrollbar {
+.dock-rail {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* Trailing pad lets the last chip scroll clear of the inline-end fade. */
+  padding-inline-end: 28px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 28px), transparent 100%);
+  mask-image: linear-gradient(to right, black calc(100% - 28px), transparent 100%);
+}
+
+.dock-rail::-webkit-scrollbar {
   display: none;
 }
 
-.categories-chips:active {
-  cursor: grabbing;
+[dir="rtl"] .dock-rail {
+  -webkit-mask-image: linear-gradient(to left, black calc(100% - 28px), transparent 100%);
+  mask-image: linear-gradient(to left, black calc(100% - 28px), transparent 100%);
 }
 
-@media (max-width: 768px) {
-  .categories-chips {
-    justify-content: flex-start;
-    flex-wrap: nowrap;
-  }
-}
-
-@media (max-width: 480px) {
-  .categories-chips {
-    gap: 6px;
-    padding: 6px 2px;
-  }
-}
-
-.category-chip {
+.dock-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 24px;
-  font-size: 14px;
-  font-weight: 400;
+  height: 38px;
+  flex-shrink: 0;
+  padding: 0 12px;
+  border-radius: 19px;
+  background: var(--dock-chip);
+  box-shadow: inset 0 0 0 1px var(--dock-chip-line);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--dock-chip-text);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.dock-pill:hover {
+  background: color-mix(in srgb, var(--dock-chip-active) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dock-chip-active) 24%, transparent);
+  transform: translateY(-1px);
+}
+
+.dock-pill.active {
+  background: var(--dock-chip-active);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--dock-chip-active) 35%, transparent);
+  color: var(--dock-chip-active-text);
+  font-weight: 600;
+}
+
+.dock-pill:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.dock-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--dock-num);
+  color: var(--dock-num-text);
+  font-size: 9.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.dock-pill.active .dock-num {
+  background: var(--dock-num-active);
+  color: var(--dock-chip-active-text);
+}
+
+.dock-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  padding-inline-start: 14px;
+  border-inline-start: 1px solid color-mix(in srgb, var(--dock-chip-text) 18%, transparent);
+}
+
+.dock-count {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dock-sort {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 10px 0 12px;
+  border-radius: 19px;
+  background: var(--card-bg);
+  box-shadow: inset 0 0 0 1px var(--border-color);
+  font-size: 12.5px;
+  font-weight: 500;
   color: var(--text-color);
   cursor: pointer;
-  transition: all 0.2s ease;
   white-space: nowrap;
-  text-decoration: none;
 }
 
-.category-chip.active {
-  background: var(--chip-active-bg);
-  border-color: var(--chip-active-border);
-  color: var(--chip-active-text);
+.dock-sort svg {
+  width: 14px;
+  height: 14px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
 }
 
-.dark .category-chip {
-  background: rgba(45, 45, 45, 0.9);
-  border-color: #444;
-  color: #bbb;
+/* The native select sits transparent over the pill so keyboard and screen
+   readers keep the native control; it must stay rendered (not display:none). */
+.dock-sort-native {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  margin: 0;
 }
 
-.dark .category-chip.active {
-  border-color: var(--chip-active-border);
+.dock-sort-native:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
 }
 
-@media (max-width: 480px) {
-  .category-chip {
-    gap: 4px;
-    padding: 6px 10px;
-    border-radius: 18px;
-    font-size: 11px;
-  }
+/* Fixed-width shimmers for the streaming dock (utility count + All badge). */
+.dock-shimmer,
+.dock-num--shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 37%, #f0f0f0 63%);
+  background-size: 800px 100%;
+  animation: shimmer 1.5s infinite ease-in-out;
 }
 
+.dark .dock-shimmer,
+.dark .dock-num--shimmer {
+  background: linear-gradient(90deg, #2a2a2a 25%, #333 37%, #2a2a2a 63%);
+  background-size: 800px 100%;
+}
+
+.dock-shimmer--count {
+  display: inline-block;
+  width: 72px;
+  height: 12px;
+  border-radius: 6px;
+}
+
+.dock-num--shimmer {
+  min-width: 0;
+  padding: 0;
+  width: 28px;
+}
+
+/* The About page still renders category icons via .chip-icon. */
 .chip-icon {
   display: flex;
   align-items: center;
@@ -1353,13 +1487,51 @@ body {
   }
 }
 
-.chip-text {
-  font-size: 13px;
+/* Narrow screens: the rail stays scrollable; the dock gets a little tighter.
+   Task 3 replaces the rail with the mobile trigger + sheet. */
+@media (max-width: 900px) {
+  .category-dock-shell {
+    margin-top: -24px;
+  }
+
+  .category-dock {
+    height: 64px;
+    border-radius: 18px;
+    padding: 0 10px 0 8px;
+  }
+
+  .dock-rail {
+    overflow-x: auto;
+  }
+
+  .dock-pill {
+    height: 34px;
+    padding: 0 10px;
+    font-size: 12.5px;
+  }
+
+  .dock-actions {
+    gap: 8px;
+    padding-inline-start: 10px;
+  }
+
+  .dock-sort {
+    height: 34px;
+  }
 }
 
-@media (max-width: 480px) {
-  .chip-text {
-    font-size: 11px;
+@media (prefers-reduced-motion: reduce) {
+  .dock-pill {
+    transition: none;
+  }
+
+  .dock-pill:hover {
+    transform: none;
+  }
+
+  .dock-shimmer,
+  .dock-num--shimmer {
+    animation: none;
   }
 }
 
@@ -1885,73 +2057,6 @@ body {
   .btn-secondary svg {
     width: 12px;
     height: 12px;
-  }
-}
-
-/* ============================================================
-   LISTING TOOLBAR (count + sort select, homepage)
-   ============================================================ */
-.listing-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.listing-toolbar-count {
-  font-size: 1rem;
-  font-weight: 400;
-  color: var(--text-secondary);
-}
-
-.sort-select-wrap {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sort-select-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-}
-
-.sort-select {
-  appearance: none;
-  -webkit-appearance: none;
-  border: 1px solid var(--border-color);
-  background-color: var(--card-bg);
-  color: var(--text-color);
-  border-radius: 8px;
-  padding: 7px 32px 7px 12px;
-  font-size: 0.875rem;
-  line-height: 1.2;
-  cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%236c757d' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-}
-
-.dark .sort-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23b3b3b3' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-
-.sort-select:focus-visible {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
-}
-
-[dir="rtl"] .sort-select {
-  padding: 7px 12px 7px 32px;
-  background-position: left 10px center;
-}
-
-@media (max-width: 640px) {
-  .listing-toolbar-count {
-    font-size: 0.875rem;
   }
 }
 

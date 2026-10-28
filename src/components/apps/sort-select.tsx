@@ -7,10 +7,39 @@ import type { Locale } from "@/lib/i18n";
 
 const SORT_OPTIONS = ["featured", "newest", "rating", "az"] as const;
 
+function SortIcon() {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+      <path
+        d="M2 4h12M4.5 8h7M7 12h2"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function Chevron() {
+  return (
+    <svg viewBox="0 0 10 6" fill="none" aria-hidden="true" focusable="false">
+      <path
+        d="M1 1l4 4 4-4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 /**
- * Listing sort control. `basePath` is the route whose params the select
- * rewrites (home by default, or the current category route) so changing the
- * sort never navigates away from an active category filter.
+ * Listing sort control rendered as a dock pill. The native `<select>` sits
+ * transparent over the pill so keyboard and screen readers keep the native
+ * control; `basePath` is the route whose params the select rewrites (home by
+ * default, or the current category route) so changing the sort never navigates
+ * away from an active category filter.
  */
 export function SortSelect({
   lang,
@@ -25,6 +54,11 @@ export function SortSelect({
   const router = useRouter();
   const t = useTranslations("appList.sort");
   const root = basePath ?? `/${lang}`;
+  // `?sort=` is user-controlled URL input; coerce unknown values so next-intl
+  // never receives an unknown key.
+  const safeValue = (SORT_OPTIONS as readonly string[]).includes(value)
+    ? value
+    : "featured";
 
   function onChange(e: ChangeEvent<HTMLSelectElement>) {
     const next = e.target.value;
@@ -35,15 +69,22 @@ export function SortSelect({
   }
 
   return (
-    <label className="sort-select-wrap">
-      <span className="sort-select-label">{t("label")}</span>
-      <select className="sort-select" value={value} onChange={onChange}>
+    <div className="dock-sort">
+      <SortIcon />
+      <span className="dock-sort-value">{t(safeValue)}</span>
+      <Chevron />
+      <select
+        className="dock-sort-native"
+        aria-label={t("label")}
+        value={safeValue}
+        onChange={onChange}
+      >
         {SORT_OPTIONS.map((opt) => (
           <option key={opt} value={opt}>
             {t(opt)}
           </option>
         ))}
       </select>
-    </label>
+    </div>
   );
 }
