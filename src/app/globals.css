@@ -1297,6 +1297,10 @@ body {
   min-width: 0;
   overflow-x: auto;
   overflow-y: hidden;
+  /* Block/inline-start padding leaves room for the pill focus ring and the
+     hover lift, which the scroll container's overflow would otherwise clip. */
+  padding-block: 6px;
+  padding-inline-start: 5px;
   /* Trailing pad lets the last chip scroll clear of the inline-end fade. */
   padding-inline-end: 28px;
   scrollbar-width: none;
@@ -1428,7 +1432,9 @@ body {
   margin: 0;
 }
 
-.dock-sort-native:focus-visible {
+/* The select is transparent (opacity: 0), so a ring on it would be invisible;
+   draw the focus ring on the visible pill instead. */
+.dock-sort:focus-within {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
 }

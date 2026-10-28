@@ -192,6 +192,68 @@ test.describe("public smoke", () => {
     await expect(tools).toBeVisible();
   });
 
+  test("dock controls show an unclipped keyboard focus ring", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/en?sort=newest");
+
+    // The initial load briefly streams the skeleton dock alongside the static
+    // shell; wait for the settled page with exactly one dock and one sort control.
+    await expect(page.locator(".category-dock")).toHaveCount(1);
+    await expect(page.getByLabel("Sort by")).toHaveCount(1);
+
+    // Resolve --primary-color to a computed color for comparison.
+    const primary = await page.evaluate(() => {
+      const probe = document.createElement("span");
+      probe.style.color = "var(--primary-color)";
+      document.body.appendChild(probe);
+      const value = getComputedStyle(probe).color;
+      probe.remove();
+      return value;
+    });
+
+    // The native select is transparent (opacity: 0), so a ring on it is
+    // invisible: the 2px primary ring must render on the visible .dock-sort pill.
+    await page.getByLabel("Sort by").focus();
+    const sortRing = await page
+      .locator(".dock-sort")
+      .evaluate((el) => {
+        const cs = getComputedStyle(el);
+        return { width: cs.outlineWidth, style: cs.outlineStyle, color: cs.outlineColor };
+      });
+    expect(sortRing.style).toBe("solid");
+    expect(sortRing.width).toBe("2px");
+    expect(sortRing.color).toBe(primary);
+
+    // The rail is a scroll container (overflow-y: hidden): the focused pill's
+    // ring must not be clipped by it — top/bottom and the inline-start edge of
+    // the first ("All") pill.
+    await page
+      .getByRole("navigation", { name: "Categories" })
+      .getByRole("link", { name: /^All/ })
+      .focus();
+    const clip = await page.evaluate(() => {
+      const pill = document.querySelector(".dock-rail .dock-pill");
+      const rail = document.querySelector(".dock-rail");
+      if (!pill || !rail) throw new Error("dock rail or first pill not found");
+      const pcs = getComputedStyle(pill);
+      const rcs = getComputedStyle(rail);
+      const extend = parseFloat(pcs.outlineWidth) + parseFloat(pcs.outlineOffset || "0");
+      const pr = pill.getBoundingClientRect();
+      const rr = rail.getBoundingClientRect();
+      // A scroll container clips at its padding box (border box minus border).
+      return {
+        style: pcs.outlineStyle,
+        outlineTop: pr.top - extend,
+        outlineLeft: pr.left - extend,
+        railTop: rr.top + parseFloat(rcs.borderTopWidth || "0"),
+        railLeft: rr.left + parseFloat(rcs.borderLeftWidth || "0"),
+      };
+    });
+    expect(clip.style).toBe("solid");
+    expect(clip.outlineTop).toBeGreaterThanOrEqual(clip.railTop);
+    expect(clip.outlineLeft).toBeGreaterThanOrEqual(clip.railLeft);
+  });
+
   test("home AR az sort orders by Arabic name (Arabic letter order)", async ({ page }) => {
     await page.goto("/ar?sort=az");
     // First app in Arabic letter order; EN-name sorting would surface a different app
