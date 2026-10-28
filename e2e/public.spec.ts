@@ -124,14 +124,26 @@ test.describe("public smoke", () => {
       .getByRole("link", { name: /Mushaf/ })
       .click();
     await expect(page).toHaveURL(/\/en\/mushaf\?sort=newest$/);
-    await expect(page.getByLabel("Sort by")).toHaveValue("newest");
+
+    // A cross-route client navigation leaves a hidden PPR static shell inside
+    // <main> (pre-existing Next.js 16 artifact), so post-navigation locators are
+    // scoped to the visible page. The visible UI must show exactly one dock and
+    // one sort control — pin that, then assert the sort value on the visible one.
+    await expect(page.locator(".category-dock").filter({ visible: true })).toHaveCount(1);
+    const visibleSort = page.getByLabel("Sort by").filter({ visible: true });
+    await expect(visibleSort).toHaveCount(1);
+    await expect(visibleSort).toHaveValue("newest");
 
     // The category listing paginates at the same window size as the home grid.
-    const pager = page.getByRole("navigation", { name: "Pagination" });
+    const pager = page
+      .getByRole("navigation", { name: "Pagination" })
+      .filter({ visible: true });
     await expect(pager).toBeVisible();
     await pager.getByRole("link", { name: "2", exact: true }).click();
     await expect(page).toHaveURL(/\/en\/mushaf\?sort=newest&page=2$/);
-    await expect(cards.first()).toBeVisible();
+    await expect(
+      page.locator("article:not(.shimmer-card)").filter({ visible: true }).first(),
+    ).toBeVisible();
   });
 
   test("dock shows counts and preserves the sort", async ({ page }) => {
@@ -147,7 +159,13 @@ test.describe("public smoke", () => {
 
     await nav.getByRole("link", { name: /Mushaf/ }).click();
     await expect(page).toHaveURL(/\/en\/mushaf\?sort=newest$/);
-    await expect(page.getByLabel("Sort by")).toHaveValue("newest");
+
+    // Cross-route client navigation leaves a hidden PPR static shell inside
+    // <main> (pre-existing Next.js 16 artifact): scope to the visible page and
+    // pin that exactly one sort control is visible.
+    const visibleSort = page.getByLabel("Sort by").filter({ visible: true });
+    await expect(visibleSort).toHaveCount(1);
+    await expect(visibleSort).toHaveValue("newest");
   });
 
   test("apps search results use the dock without sort", async ({ page }) => {
