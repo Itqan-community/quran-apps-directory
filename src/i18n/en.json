@@ -80,7 +80,12 @@
       "memorize": "Memorize",
       "tajweed": "Tajweed",
       "tools": "Other",
-      "accessibility": "Accessibility"
+      "accessibility": "Accessibility",
+      "allApps": "All apps",
+      "browse": "Browse categories",
+      "allCategories": "All categories",
+      "count": "{count} categories",
+      "close": "Close categories"
     },
     "apps": {
       "title": "Apps List",

@@ -68,6 +68,9 @@
   --dock-num: rgba(255, 255, 255, 0.72);
   --dock-num-text: #6c757d;
   --dock-num-active: rgba(255, 255, 255, 0.18);
+  --dock-sheet: #ffffff;
+  --dock-sheet-tile: #f8f5f0;
+  --dock-sheet-active: #a0533b;
   /* Admin console identity: deep green-ink sidebar (light mode). */
   --admin-ink: #10201d;
   --admin-ink-soft: rgba(255, 255, 255, 0.08);
@@ -108,6 +111,9 @@
   --dock-num: rgba(255, 255, 255, 0.1);
   --dock-num-text: #b3b3b3;
   --dock-num-active: rgba(0, 0, 0, 0.14);
+  --dock-sheet: #1e1e1e;
+  --dock-sheet-tile: #262626;
+  --dock-sheet-active: #ff8c42;
   /* Dark mode: the ink sidebar relaxes to the surface token. */
   --admin-ink: #1a1a1a;
   --admin-ink-soft: rgba(255, 255, 255, 0.06);
@@ -1439,16 +1445,21 @@ body {
   outline-offset: 2px;
 }
 
-/* Fixed-width shimmers for the streaming dock (utility count + All badge). */
+/* Fixed-width shimmers for the streaming dock and sheet (utility count,
+   All badge, mobile trigger count, All tile count). */
 .dock-shimmer,
-.dock-num--shimmer {
+.dock-num--shimmer,
+.m-cat-count--shimmer,
+.m-tile-count--shimmer {
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 37%, #f0f0f0 63%);
   background-size: 800px 100%;
   animation: shimmer 1.5s infinite ease-in-out;
 }
 
 .dark .dock-shimmer,
-.dark .dock-num--shimmer {
+.dark .dock-num--shimmer,
+.dark .m-cat-count--shimmer,
+.dark .m-tile-count--shimmer {
   background: linear-gradient(90deg, #2a2a2a 25%, #333 37%, #2a2a2a 63%);
   background-size: 800px 100%;
 }
@@ -1493,8 +1504,14 @@ body {
   }
 }
 
-/* Narrow screens: the rail stays scrollable; the dock gets a little tighter.
-   Task 3 replaces the rail with the mobile trigger + sheet. */
+/* Mobile category trigger: hidden on desktop, shown at ≤900px where it
+   replaces the rail (see the media block below). */
+.m-cat {
+  display: none;
+}
+
+/* Narrow screens: the rail and the desktop result count are replaced by the
+   mobile category trigger, which opens the bottom-sheet index. */
 @media (max-width: 900px) {
   .category-dock-shell {
     margin-top: -24px;
@@ -1503,17 +1520,69 @@ body {
   .category-dock {
     height: 64px;
     border-radius: 18px;
-    padding: 0 10px 0 8px;
+    padding: 0 8px;
   }
 
-  .dock-rail {
-    overflow-x: auto;
+  .dock-rail,
+  .dock-count {
+    display: none;
   }
 
-  .dock-pill {
-    height: 34px;
-    padding: 0 10px;
-    font-size: 12.5px;
+  .m-cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    height: 44px;
+    padding: 0 12px;
+    border: none;
+    border-radius: 12px;
+    background: var(--dock-chip);
+    box-shadow: inset 0 0 0 1px var(--dock-chip-line);
+    color: var(--dock-chip-text);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .m-cat-label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .m-cat-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    min-width: 20px;
+    height: 18px;
+    padding: 0 6px;
+    border-radius: 9px;
+    background: var(--dock-sheet-tile);
+    color: var(--dock-chip-text);
+    font-size: 10px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  .m-cat-count--shimmer {
+    min-width: 0;
+    padding: 0;
+    width: 28px;
+  }
+
+  .m-cat svg {
+    width: 10px;
+    height: 6px;
+    flex-shrink: 0;
   }
 
   .dock-actions {
@@ -1523,6 +1592,165 @@ body {
 
   .dock-sort {
     height: 34px;
+  }
+
+  /* Mobile category sheet: a native <dialog> in the top layer, so it sits
+     above the fixed header without any z-index. The dialog is a full-viewport
+     transparent overlay and the panel is the bottom-anchored child, so a click
+     on the dimmed area targets the dialog itself (backdrop close). */
+  dialog.m-sheet {
+    position: fixed;
+    inset: 0;
+    /* Explicit size: the panel is out of flow, so the UA's fit-content
+       would collapse the dialog (and the panel's anchor) to 0x0. */
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text-color);
+    overflow: hidden;
+  }
+
+  dialog.m-sheet::backdrop {
+    background: rgba(20, 15, 10, 0.36);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .m-sheet-panel {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-height: 85dvh;
+    overflow-y: auto;
+    padding: 8px 16px calc(16px + env(safe-area-inset-bottom));
+    border-radius: 24px 24px 0 0;
+    background: var(--dock-sheet);
+    box-shadow: 0 -16px 40px rgba(31, 20, 12, 0.22);
+    transform: translateY(0);
+    transition: transform 0.28s cubic-bezier(0.22, 0.8, 0.3, 1);
+
+    @starting-style {
+      transform: translateY(100%);
+    }
+  }
+
+  .m-sheet-handle {
+    display: block;
+    width: 36px;
+    height: 4px;
+    margin: 4px auto 0;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--dock-chip-text) 28%, transparent);
+  }
+
+  .m-sheet-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .m-sheet-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .m-sheet-sub {
+    margin: 2px 0 0;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .m-sheet-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: var(--dock-sheet-tile);
+    color: var(--text-color);
+    cursor: pointer;
+  }
+
+  .m-sheet-close svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .m-sheet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .m-tile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    min-height: 52px;
+    /* Tight padding keeps the longest names (Translations, Accessibility)
+       on one line next to their count in a 3-column 390px grid. */
+    padding: 8px 10px;
+    border-radius: 14px;
+    background: var(--dock-sheet-tile);
+    color: var(--text-color);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-decoration: none;
+  }
+
+  .m-tile-name {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .m-tile-count {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .m-tile-count--shimmer {
+    min-width: 0;
+    padding: 0;
+    width: 24px;
+  }
+
+  .m-tile.active {
+    background: var(--dock-sheet-active);
+    color: var(--dock-chip-active-text);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--dock-sheet-active) 35%, transparent);
+  }
+
+  .m-tile.active .m-tile-count {
+    padding: 2px 6px;
+    border-radius: 8px;
+    background: var(--dock-num-active);
+    color: var(--dock-chip-active-text);
+  }
+
+  .m-cat:focus-visible,
+  .m-tile:focus-visible,
+  .m-sheet-close:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
   }
 }
 
@@ -1535,8 +1763,15 @@ body {
     transform: none;
   }
 
+  dialog.m-sheet,
+  .m-sheet-panel {
+    transition: none;
+  }
+
   .dock-shimmer,
-  .dock-num--shimmer {
+  .dock-num--shimmer,
+  .m-cat-count--shimmer,
+  .m-tile-count--shimmer {
     animation: none;
   }
 }

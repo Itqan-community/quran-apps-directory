@@ -279,6 +279,49 @@ test.describe("public smoke", () => {
   });
 });
 
+test.describe("mobile category sheet", () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test("opens, lists all categories and navigates", async ({ page }) => {
+    await page.goto("/en");
+    // Wait for the streamed listing so the dock is the settled one, not the
+    // streaming fallback whose open state would be discarded on the swap.
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
+
+    const trigger = page.getByRole("button", { name: /All apps/ });
+    await trigger.click();
+
+    const sheet = page.getByRole("dialog", { name: "Browse categories" });
+    await expect(sheet).toBeVisible();
+    await expect(sheet.getByRole("link")).toHaveCount(12);
+
+    await sheet.getByRole("link", { name: /Mushaf/ }).click();
+    await expect(page).toHaveURL(/\/en\/mushaf$/);
+
+    // Cross-route client navigation leaves a hidden PPR static shell inside
+    // <main> (pre-existing Next.js 16 artifact): scope the sheet assertion to
+    // visible content and pin that exactly one dock is visible afterwards.
+    await expect(sheet.filter({ visible: true })).toHaveCount(0);
+    await expect(page.locator(".category-dock").filter({ visible: true })).toHaveCount(1);
+  });
+
+  test("closes on Escape and returns focus", async ({ page }) => {
+    await page.goto("/en");
+    // Wait for the streamed listing so the dock is the settled one, not the
+    // streaming fallback whose open state would be discarded on the swap.
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
+
+    const trigger = page.getByRole("button", { name: /All apps/ });
+    await trigger.click();
+
+    const sheet = page.getByRole("dialog", { name: "Browse categories" });
+    await expect(sheet).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(sheet).toBeHidden();
+    await expect(trigger).toBeFocused();
+  });
+});
+
 test.describe("track submission", () => {
   test("email tab switches the form field", async ({ page }) => {
     await page.goto("/en/track-submission");

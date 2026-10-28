@@ -80,7 +80,12 @@
       "memorize": "تحفيظ",
       "tajweed": "تجويد",
       "tools": "أخرى",
-      "accessibility": "ذوي الإعاقة"
+      "accessibility": "ذوي الإعاقة",
+      "allApps": "كل التطبيقات",
+      "browse": "تصفح التصنيفات",
+      "allCategories": "جميع التصنيفات",
+      "count": "{count} تصنيفاً",
+      "close": "إغلاق التصنيفات"
     },
     "apps": {
       "title": "قائمة التطبيقات",
