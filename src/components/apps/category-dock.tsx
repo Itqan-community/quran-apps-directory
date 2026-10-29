@@ -50,6 +50,15 @@ function SearchIcon() {
   );
 }
 
+/** First argument that is in the DOM and actually visible (the other search
+ *  button is `display:none` on the opposite breakpoint and can never take
+ *  focus). */
+function firstVisible(
+  ...els: (HTMLButtonElement | null)[]
+): HTMLButtonElement | null {
+  return els.find((el) => el?.checkVisibility()) ?? null;
+}
+
 /**
  * Floating category index dock. The rail is the only category surface on
  * desktop; at ≤900px the rail is replaced by a trigger that opens the
@@ -73,6 +82,7 @@ export function CategoryDock({
   const [lastPathname, setLastPathname] = useState(pathname);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const desktopSearchRef = useRef<HTMLButtonElement>(null);
+  const mobileSearchRef = useRef<HTMLButtonElement>(null);
   const lastSearchTriggerRef = useRef<HTMLButtonElement | null>(null);
   const allActive = selectedCategory === undefined;
   // Unknown category slugs get no active chip (and `All` is not active either).
@@ -102,15 +112,19 @@ export function CategoryDock({
   }
 
   // Ctrl/⌘K opens the palette from anywhere on the listing, except while the
-  // user is typing in a field. The desktop search button is the focus-return
-  // target for shortcut opens.
+  // user is typing in a field. The focus-return target for shortcut opens is
+  // the *visible* search button — the other one is display:none on the
+  // opposite breakpoint and can never take focus.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== "k") return;
       const target = e.target as HTMLElement | null;
       if (target?.closest("input, textarea, [contenteditable='true']")) return;
       e.preventDefault();
-      lastSearchTriggerRef.current = desktopSearchRef.current;
+      lastSearchTriggerRef.current = firstVisible(
+        desktopSearchRef.current,
+        mobileSearchRef.current,
+      );
       setSearchOpen(true);
     }
     window.addEventListener("keydown", onKey);
@@ -124,7 +138,15 @@ export function CategoryDock({
 
   function closeSearch() {
     setSearchOpen(false);
-    lastSearchTriggerRef.current?.focus();
+    // Focus the last trigger if it is still visible, otherwise the visible
+    // search button (desktop, else mobile). The palette's requestClose path
+    // closes the dialog before calling back, so this focus lands — a focus
+    // call while the modal is still open is a no-op.
+    firstVisible(
+      lastSearchTriggerRef.current,
+      desktopSearchRef.current,
+      mobileSearchRef.current,
+    )?.focus();
   }
 
   return (
@@ -147,6 +169,7 @@ export function CategoryDock({
         </button>
 
         <button
+          ref={mobileSearchRef}
           type="button"
           className="m-search"
           onClick={(e) => {

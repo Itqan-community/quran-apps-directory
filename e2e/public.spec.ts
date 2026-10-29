@@ -280,6 +280,9 @@ test.describe("public smoke", () => {
 
   test("search palette submits a search", async ({ page }) => {
     await page.goto("/en");
+    // Wait for the streamed listing so the dock is the settled one, not the
+    // streaming fallback whose open state would be discarded on the swap.
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
     const search = page.getByRole("button", { name: "Search apps" });
     const dialog = page.getByRole("dialog", { name: "Search apps" });
     // The dock is inert until hydration; retry a no-op early click.
@@ -298,6 +301,7 @@ test.describe("public smoke", () => {
 
   test("search palette supports Smart mode", async ({ page }) => {
     await page.goto("/en");
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
     const search = page.getByRole("button", { name: "Search apps" });
     const dialog = page.getByRole("dialog", { name: "Search apps" });
     await expect(async () => {
@@ -313,6 +317,7 @@ test.describe("public smoke", () => {
 
   test("search palette closes on Escape and returns focus", async ({ page }) => {
     await page.goto("/en");
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
     const search = page.getByRole("button", { name: "Search apps" });
     const dialog = page.getByRole("dialog", { name: "Search apps" });
     await expect(async () => {
@@ -327,6 +332,7 @@ test.describe("public smoke", () => {
 
   test("search palette category shortcut preserves the sort", async ({ page }) => {
     await page.goto("/en?sort=newest");
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
     const search = page.getByRole("button", { name: "Search apps" });
     const dialog = page.getByRole("dialog", { name: "Search apps" });
     await expect(async () => {
@@ -346,12 +352,31 @@ test.describe("public smoke", () => {
 
   test("Ctrl+K opens the search palette", async ({ page }) => {
     await page.goto("/en");
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
     const dialog = page.getByRole("dialog", { name: "Search apps" });
     // The keydown listener attaches on hydration; retry a pre-hydration press.
     await expect(async () => {
       await page.keyboard.press("Control+k");
       await expect(dialog).toBeVisible({ timeout: 1_000 });
     }).toPass({ timeout: 10_000 });
+  });
+
+  test("Ctrl+K Escape returns focus to the search button", async ({ page }) => {
+    await page.goto("/en");
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
+    const search = page.getByRole("button", { name: "Search apps" });
+    const dialog = page.getByRole("dialog", { name: "Search apps" });
+    // The keydown listener attaches on hydration; retry a pre-hydration press.
+    await expect(async () => {
+      await page.keyboard.press("Control+k");
+      await expect(dialog).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    // Nothing was focused before showModal() for a shortcut open, so the
+    // browser's own focus restore cannot get here — the dock must.
+    await expect(search).toBeFocused();
   });
 });
 
@@ -424,6 +449,9 @@ test.describe("mobile search", () => {
 
   test("opens full-screen with all categories", async ({ page }) => {
     await page.goto("/en");
+    // Wait for the streamed listing so the dock is the settled one, not the
+    // streaming fallback whose open state would be discarded on the swap.
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
     const search = page.getByRole("button", { name: "Search apps" });
     const dialog = page.getByRole("dialog", { name: "Search apps" });
     // The dock is inert until hydration; retry a no-op early click.
@@ -438,6 +466,24 @@ test.describe("mobile search", () => {
 
     const box = await dialog.boundingBox();
     expect(box?.width).toBeGreaterThanOrEqual(390);
+  });
+
+  test("Ctrl+K Escape returns focus to the search button", async ({ page }) => {
+    await page.goto("/en");
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
+    const search = page.getByRole("button", { name: "Search apps" });
+    const dialog = page.getByRole("dialog", { name: "Search apps" });
+    // The keydown listener attaches on hydration; retry a pre-hydration press.
+    await expect(async () => {
+      await page.keyboard.press("Control+k");
+      await expect(dialog).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    // The visible trigger is the mobile button here; the desktop one is
+    // display:none and can never take focus.
+    await expect(search).toBeFocused();
   });
 });
 

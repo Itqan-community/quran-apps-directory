@@ -59,8 +59,12 @@ function SparkIcon() {
  * dialog itself (backdrop close). The dialog stays mounted at all times so the
  * search button's `aria-controls` always resolves and a closed dialog is
  * hidden by the user agent; the `open` prop drives `showModal()`/`close()`
- * and the body-scroll lock. Esc, the backdrop and the close button all route
- * through `onClose` so the dock owns the state.
+ * and the body-scroll lock. Esc, the backdrop, the close button and
+ * "All categories" use `requestClose()`, which closes the dialog *before*
+ * calling `onClose`: a focus call made while the modal is still open is a
+ * no-op, so the dock's focus return only lands once the dialog is off the
+ * top layer. Navigation paths (submit, category links) call `onClose`
+ * directly — the route change closes the palette.
  *
  * Launcher only: no live results, no debounce, no new API — submit navigates
  * to the existing `/apps` search route.
@@ -113,15 +117,24 @@ export function SearchPalette({
     submit(query);
   }
 
+  // Close the dialog first, then hand back to the dock: while the modal is
+  // open, focus calls to elements outside the top layer are no-ops, so the
+  // dock's focus return only works after `dialog.close()` has run.
+  function requestClose() {
+    const dialog = dialogRef.current;
+    if (dialog?.open) dialog.close();
+    onClose();
+  }
+
   function onCancel(e: SyntheticEvent<HTMLDialogElement>) {
     e.preventDefault();
-    onClose();
+    requestClose();
   }
 
   // A click whose target is the dialog itself landed on the backdrop, not the
   // panel: close the palette.
   function onDialogClick(e: MouseEvent<HTMLDialogElement>) {
-    if (e.target === e.currentTarget) onClose();
+    if (e.target === e.currentTarget) requestClose();
   }
 
   return (
@@ -157,7 +170,7 @@ export function SearchPalette({
             type="button"
             className="sp-close"
             aria-label={t("search.closeAria")}
-            onClick={onClose}
+            onClick={requestClose}
           >
             <CloseIcon />
           </button>
@@ -191,7 +204,7 @@ export function SearchPalette({
         <div className="sp-section">
           <div className="sp-section-head">
             <span className="sp-label">{t("categories.browse")}</span>
-            <button type="button" className="sp-all" onClick={onClose}>
+            <button type="button" className="sp-all" onClick={requestClose}>
               {t("categories.allCategories")}
             </button>
           </div>
