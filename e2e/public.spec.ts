@@ -192,6 +192,39 @@ test.describe("public smoke", () => {
     await expect(tools).toBeVisible();
   });
 
+  test("dock rail fits all 12 pills at 1440 without scrolling", async ({ page }) => {
+    // Spec §5 hard goal: at the 1440 reference width every pill is visible and
+    // the rail never scrolls (the inline-end fade is only for narrower widths).
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/en");
+    // Wait for the streamed listing so the dock is the settled one, not the
+    // streaming fallback.
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
+    await expect(page.locator(".category-dock")).toHaveCount(1);
+
+    const nav = page.getByRole("navigation", { name: "Categories" });
+    const fit = await nav.evaluate((rail) => {
+      const pills = Array.from(rail.querySelectorAll(".dock-pill"));
+      const last = pills[pills.length - 1];
+      if (!last) throw new Error("no dock pills rendered");
+      const rr = rail.getBoundingClientRect();
+      const lr = last.getBoundingClientRect();
+      return {
+        count: pills.length,
+        scrollWidth: rail.scrollWidth,
+        clientWidth: rail.clientWidth,
+        lastRight: lr.right,
+        railRight: rr.right,
+      };
+    });
+
+    expect(fit.count).toBe(12);
+    // The rail must not scroll at 1440.
+    expect(fit.scrollWidth).toBeLessThanOrEqual(fit.clientWidth);
+    // The last pill clears the rail's 28px trailing pad, i.e. the fade zone.
+    expect(fit.lastRight).toBeLessThanOrEqual(fit.railRight - 28);
+  });
+
   test("dock controls show an unclipped keyboard focus ring", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/en?sort=newest");

@@ -1154,17 +1154,23 @@ body {
   mask-image: linear-gradient(to left, black calc(100% - 28px), transparent 100%);
 }
 
+/* 12px (not the spec's 13px): Expo Arabic's Latin glyphs run wider than the
+   mockup's typeface, and the spec's hard goal is all 12 pills visible at 1440
+   without scroll. Measured at 1440 (rail offers 1048px of content space in
+   EN, 1065px in AR): 13px with the mockup's tighter capsule (10px padding /
+   5px gap / 15px count) overflows by 115px in EN and 52px in AR; 12px with
+   the capsule below leaves +12px (EN) / +72px (AR) of slack. */
 .dock-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   height: 38px;
   flex-shrink: 0;
-  padding-inline: 12px;
+  padding-inline: 8px;
   border-radius: 19px;
   background: var(--dock-chip);
   box-shadow: inset 0 0 0 1px var(--dock-chip-line);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--dock-chip-text);
   text-decoration: none;
@@ -1241,9 +1247,9 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 18px;
+  min-width: 14px;
   height: 18px;
-  padding-inline: 5px;
+  padding-inline: 3px;
   border-radius: 9px;
   background: var(--dock-num);
   color: var(--dock-num-text);
@@ -1350,7 +1356,7 @@ body {
 .dock-num--shimmer {
   min-width: 0;
   padding: 0;
-  width: 28px;
+  width: 22px;
 }
 
 /* The About page still renders category icons via .chip-icon. */
