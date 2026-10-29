@@ -71,6 +71,8 @@
   --dock-sheet: #ffffff;
   --dock-sheet-tile: #f8f5f0;
   --dock-sheet-active: #a0533b;
+  --palette-surface: rgba(255, 255, 255, 0.93);
+  --palette-backdrop: rgba(20, 15, 10, 0.36);
   /* Admin console identity: deep green-ink sidebar (light mode). */
   --admin-ink: #10201d;
   --admin-ink-soft: rgba(255, 255, 255, 0.08);
@@ -114,6 +116,8 @@
   --dock-sheet: #1e1e1e;
   --dock-sheet-tile: #262626;
   --dock-sheet-active: #ff8c42;
+  --palette-surface: rgba(28, 28, 28, 0.94);
+  --palette-backdrop: rgba(0, 0, 0, 0.55);
   /* Dark mode: the ink sidebar relaxes to the surface token. */
   --admin-ink: #1a1a1a;
   --admin-ink-soft: rgba(255, 255, 255, 0.06);
@@ -1364,6 +1368,49 @@ body {
   outline-offset: 2px;
 }
 
+/* Dock search button: 34px rounded square, replaces the former decorative
+   grid mark; opens the Spotlight search palette. */
+.dock-search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 10px;
+  background: var(--dock-chip);
+  box-shadow: inset 0 0 0 1px var(--dock-chip-line);
+  color: var(--dock-chip-text);
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    box-shadow 0.18s ease,
+    color 0.18s ease;
+}
+
+.dock-search:hover {
+  background: color-mix(in srgb, var(--dock-chip-active) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dock-chip-active) 24%, transparent);
+  color: var(--dock-chip-active);
+}
+
+.dock-search:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.dock-search svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Mobile search button: hidden on desktop, shown at ≤900px where it joins
+   the category trigger and sort (see the media block below). */
+.m-search {
+  display: none;
+}
+
 .dock-num {
   display: inline-flex;
   align-items: center;
@@ -1524,8 +1571,35 @@ body {
   }
 
   .dock-rail,
-  .dock-count {
+  .dock-count,
+  .dock-search {
     display: none;
+  }
+
+  /* Mobile search button: 44px tap target, first in the dock row. */
+  .m-search {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    background: var(--dock-chip);
+    box-shadow: inset 0 0 0 1px var(--dock-chip-line);
+    color: var(--dock-chip-text);
+    cursor: pointer;
+  }
+
+  .m-search svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .m-search:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
   }
 
   .m-cat {
@@ -1760,8 +1834,426 @@ body {
   }
 }
 
+/* ============================================================
+   SPOTLIGHT SEARCH PALETTE
+   A native <dialog> in the top layer (above the fixed header, no
+   z-index needed). The dialog is a full-viewport transparent overlay
+   and .sp-panel is the visible panel, so a click on the dimmed area
+   targets the dialog itself (backdrop close).
+   ============================================================ */
+
+.search-palette {
+  position: fixed;
+  inset: 0;
+  /* Explicit size: the panel is out of flow, so the UA's fit-content
+     would collapse the dialog (and the panel's anchor) to 0x0. */
+  width: 100%;
+  height: 100%;
+  /* The UA stylesheet caps `dialog:modal` at
+     `max-width/max-height: calc(100% - 6px - 2em)`, which would leave a
+     dimmed strip below and beside the panel: lift the cap so the
+     overlay is a true full-viewport box (Task 3 lesson). */
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-color);
+  overflow: hidden;
+}
+
+.search-palette::backdrop {
+  background: var(--palette-backdrop);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.sp-panel {
+  position: absolute;
+  top: 12vh;
+  inset-inline: 0;
+  margin-inline: auto;
+  width: 660px;
+  max-width: calc(100% - 32px);
+  max-height: calc(100% - 24vh);
+  display: flex;
+  flex-direction: column;
+  border-radius: 22px;
+  background: var(--palette-surface);
+  border: 1px solid var(--dock-border);
+  box-shadow:
+    0 24px 64px rgba(31, 20, 12, 0.24),
+    0 4px 16px rgba(31, 20, 12, 0.12);
+  backdrop-filter: blur(20px) saturate(1.1);
+  -webkit-backdrop-filter: blur(20px) saturate(1.1);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+}
+
+.sp-panel::-webkit-scrollbar {
+  display: none;
+}
+
+/* 64px input row: magnifier, autofocused input, Esc pill (desktop), close. */
+.sp-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  height: 64px;
+  padding-inline: 18px;
+  border-block-end: 1px solid color-mix(in srgb, var(--dock-chip-text) 14%, transparent);
+}
+
+.sp-search-icon {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--dock-chip-active);
+}
+
+.sp-search-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sp-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 16.5px;
+  color: var(--text-color);
+}
+
+.sp-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.sp-input:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Keycap hint pills (Esc / footer shortcuts): symbols, not copy. */
+.sp-esc,
+.sp-hint kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 20px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 6px;
+  background: var(--dock-chip);
+  box-shadow: inset 0 0 0 1px var(--dock-chip-line);
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.sp-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: var(--dock-chip);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.sp-close svg {
+  width: 14px;
+  height: 14px;
+}
+
+.sp-close:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Sections: 9px tracked uppercase labels, 14px top rhythm. */
+.sp-section {
+  flex-shrink: 0;
+  padding: 14px 18px 0;
+}
+
+.sp-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.sp-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* Traditional / Smart segmented control. */
+.sp-mode {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--dock-chip);
+  box-shadow: inset 0 0 0 1px var(--dock-chip-line);
+}
+
+.sp-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.sp-mode-btn.active {
+  background: var(--dock-sheet);
+  color: var(--text-color);
+  box-shadow: 0 1px 4px rgba(31, 20, 12, 0.14);
+}
+
+.sp-mode-btn:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.sp-mode-btn svg {
+  width: 11px;
+  height: 11px;
+  color: var(--dock-chip-active);
+}
+
+/* "All categories": closes the palette; the dock rail holds the full index. */
+.sp-all {
+  border: none;
+  background: none;
+  padding: 2px 0;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--dock-chip-active);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.sp-all:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Category shortcuts: 3×2 on desktop; the last five (--extra) are hidden
+   there and shown on mobile, where all 11 are reachable. */
+.sp-cats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.search-cat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 13px;
+  background: var(--dock-chip);
+  box-shadow: inset 0 0 0 1px var(--dock-chip-line);
+  color: var(--text-color);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.search-cat:hover {
+  background: color-mix(in srgb, var(--dock-chip-active) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dock-chip-active) 24%, transparent);
+}
+
+.search-cat:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.search-cat--extra {
+  display: none;
+}
+
+.search-cat-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-cat-count {
+  flex-shrink: 0;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Example queries: chips that submit immediately with the selected mode. */
+.sp-suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sp-suggest-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 999px;
+  background: var(--dock-sheet);
+  box-shadow: inset 0 0 0 1px var(--dock-chip-line);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-color);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.sp-suggest-btn:hover {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dock-chip-active) 30%, transparent);
+}
+
+.sp-suggest-btn:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.sp-suggest-btn svg {
+  width: 13px;
+  height: 13px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+/* Footer hints: Enter to search · esc Close · ⌘K Open anytime. */
+.sp-footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  flex-shrink: 0;
+  margin-top: 14px;
+  padding: 10px 18px 12px;
+  border-block-start: 1px solid color-mix(in srgb, var(--dock-chip-text) 14%, transparent);
+}
+
+.sp-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Mobile: full-screen warm surface; the input row becomes a floating card,
+   all 11 category tiles show, the Esc pill and footer hints are desktop-only. */
+@media (max-width: 900px) {
+  .sp-panel {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    border-radius: 0;
+    border: 0;
+    background: var(--dock-sheet-tile);
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    overflow-y: auto;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .sp-input-row {
+    height: 56px;
+    margin: 12px 12px 0;
+    padding-inline: 12px;
+    border-radius: 16px;
+    border-block-end: none;
+    background: var(--dock-sheet);
+    box-shadow:
+      inset 0 0 0 1px var(--dock-chip-line),
+      0 2px 8px rgba(31, 20, 12, 0.06);
+  }
+
+  .sp-esc,
+  .sp-footer,
+  .sp-all {
+    display: none;
+  }
+
+  .sp-section {
+    padding: 14px 12px 0;
+  }
+
+  .search-cat--extra {
+    display: flex;
+  }
+
+  .sp-cats {
+    gap: 10px;
+  }
+
+  .search-cat {
+    min-height: 52px;
+    font-size: 12.5px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .dock-pill {
+  .dock-pill,
+  .dock-search,
+  .search-cat,
+  .sp-panel {
     transition: none;
   }
 

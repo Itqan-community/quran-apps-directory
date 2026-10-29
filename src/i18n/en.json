@@ -64,7 +64,18 @@
       "aiMatch": "match",
       "aiReasoning": "Why this result?",
       "didYouMean": "Did you mean",
-      "fallbackNotice": "AI search temporarily unavailable — showing keyword results"
+      "fallbackNotice": "AI search temporarily unavailable — showing keyword results",
+      "paletteAria": "Search apps",
+      "palettePlaceholder": "Search apps, categories…",
+      "mode": "Search mode",
+      "try": "Try searching for",
+      "suggestionMushaf": "Mushaf with translation",
+      "suggestionTajweed": "Tajweed for kids",
+      "suggestionMemorize": "Apps for memorization",
+      "enter": "Enter to search",
+      "openAnytime": "Open anytime",
+      "close": "Close",
+      "closeAria": "Close search"
     },
     "categories": {
       "all": "All",

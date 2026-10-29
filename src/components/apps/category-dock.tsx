@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -10,6 +10,7 @@ import { categoryHref } from "@/lib/listing-links";
 import { formatAppCount } from "@/lib/listing-format";
 import { SortSelect } from "./sort-select";
 import { CategorySheet } from "./category-sheet";
+import { SearchPalette } from "./search-palette";
 
 export type CategoryDockProps = {
   lang: Locale;
@@ -35,6 +36,20 @@ function Chevron() {
   );
 }
 
+function SearchIcon() {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+      <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+      <path
+        d="M10.5 10.5L14 14"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 /**
  * Floating category index dock. The rail is the only category surface on
  * desktop; at ≤900px the rail is replaced by a trigger that opens the
@@ -54,8 +69,11 @@ export function CategoryDock({
   const t = useTranslations("appList");
   const pathname = usePathname();
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [lastPathname, setLastPathname] = useState(pathname);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const desktopSearchRef = useRef<HTMLButtonElement>(null);
+  const lastSearchTriggerRef = useRef<HTMLButtonElement | null>(null);
   const allActive = selectedCategory === undefined;
   // Unknown category slugs get no active chip (and `All` is not active either).
   const activeSlug = categories.some((c) => c.slug === selectedCategory)
@@ -72,24 +90,77 @@ export function CategoryDock({
   const allCount = allActive ? formatAppCount(count) : null;
   const totalText = formatAppCount(count);
 
-  // A route change — a sheet link, browser back, anything — closes the sheet
-  // so it can never stay open on a different page. Resetting state during
-  // render (React's recommended pattern for adjusting state when an external
-  // value changes) instead of in a `useEffect` keeps this lint-clean under
-  // react-hooks/set-state-in-effect.
+  // A route change — a sheet link, a palette shortcut, browser back, anything
+  // — closes the sheet and the search palette so they can never stay open on a
+  // different page. Resetting state during render (React's recommended pattern
+  // for adjusting state when an external value changes) instead of in a
+  // `useEffect` keeps this lint-clean under react-hooks/set-state-in-effect.
   if (pathname !== lastPathname) {
     setLastPathname(pathname);
     setSheetOpen(false);
+    setSearchOpen(false);
   }
+
+  // Ctrl/⌘K opens the palette from anywhere on the listing, except while the
+  // user is typing in a field. The desktop search button is the focus-return
+  // target for shortcut opens.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== "k") return;
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("input, textarea, [contenteditable='true']")) return;
+      e.preventDefault();
+      lastSearchTriggerRef.current = desktopSearchRef.current;
+      setSearchOpen(true);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   function closeSheet() {
     setSheetOpen(false);
     triggerRef.current?.focus();
   }
 
+  function closeSearch() {
+    setSearchOpen(false);
+    lastSearchTriggerRef.current?.focus();
+  }
+
   return (
     <div className="category-dock-shell">
       <div className="category-dock">
+        <button
+          ref={desktopSearchRef}
+          type="button"
+          className="dock-search"
+          onClick={(e) => {
+            lastSearchTriggerRef.current = e.currentTarget;
+            setSearchOpen(true);
+          }}
+          aria-label={t("search.paletteAria")}
+          aria-haspopup="dialog"
+          aria-expanded={searchOpen}
+          aria-controls="search-palette"
+        >
+          <SearchIcon />
+        </button>
+
+        <button
+          type="button"
+          className="m-search"
+          onClick={(e) => {
+            lastSearchTriggerRef.current = e.currentTarget;
+            setSearchOpen(true);
+          }}
+          aria-label={t("search.paletteAria")}
+          aria-haspopup="dialog"
+          aria-expanded={searchOpen}
+          aria-controls="search-palette"
+        >
+          <SearchIcon />
+        </button>
+
         <nav className="dock-rail" aria-label={t("categories.title")}>
           <Link
             href={categoryHref(lang, undefined, sort)}
@@ -169,6 +240,14 @@ export function CategoryDock({
         selectedCategory={selectedCategory}
         sort={sort}
         count={count}
+      />
+
+      <SearchPalette
+        open={searchOpen}
+        onClose={closeSearch}
+        lang={lang}
+        categories={categories}
+        sort={sort}
       />
     </div>
   );

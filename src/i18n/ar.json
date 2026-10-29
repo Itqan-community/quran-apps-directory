@@ -64,7 +64,18 @@
       "aiMatch": "تطابق",
       "aiReasoning": "لماذا هذه النتيجة؟",
       "didYouMean": "هل تقصد",
-      "fallbackNotice": "تعذر الوصول للبحث الذكي مؤقتًا — نعرض نتائج البحث العادي"
+      "fallbackNotice": "تعذر الوصول للبحث الذكي مؤقتًا — نعرض نتائج البحث العادي",
+      "paletteAria": "ابحث عن التطبيقات",
+      "palettePlaceholder": "ابحث عن التطبيقات أو التصنيفات…",
+      "mode": "طريقة البحث",
+      "try": "جرّب البحث عن",
+      "suggestionMushaf": "المصحف مع الترجمة",
+      "suggestionTajweed": "التجويد للأطفال",
+      "suggestionMemorize": "تطبيقات للحفظ",
+      "enter": "اضغط Enter للبحث",
+      "openAnytime": "افتح في أي وقت",
+      "close": "إغلاق",
+      "closeAria": "إغلاق البحث"
     },
     "categories": {
       "all": "الكل",

@@ -277,6 +277,82 @@ test.describe("public smoke", () => {
     await expect(page.getByText("مع القرآن.. رفقة أقرب")).toBeVisible();
     await expect(page.getByRole("heading", { name: "رمضان فرصة للمشاركة" })).toBeVisible();
   });
+
+  test("search palette submits a search", async ({ page }) => {
+    await page.goto("/en");
+    const search = page.getByRole("button", { name: "Search apps" });
+    const dialog = page.getByRole("dialog", { name: "Search apps" });
+    // The dock is inert until hydration; retry a no-op early click.
+    await expect(async () => {
+      await search.click();
+      await expect(dialog).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+
+    const input = dialog.getByRole("textbox", { name: "Search apps" });
+    await expect(input).toBeFocused();
+
+    await input.fill("ayah");
+    await input.press("Enter");
+    await expect(page).toHaveURL(/\/en\/apps\?search=ayah/);
+  });
+
+  test("search palette supports Smart mode", async ({ page }) => {
+    await page.goto("/en");
+    const search = page.getByRole("button", { name: "Search apps" });
+    const dialog = page.getByRole("dialog", { name: "Search apps" });
+    await expect(async () => {
+      await search.click();
+      await expect(dialog).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+
+    await dialog.getByRole("button", { name: "Smart Search" }).click();
+    await dialog.getByRole("textbox", { name: "Search apps" }).fill("ayah");
+    await dialog.getByRole("textbox").press("Enter");
+    await expect(page).toHaveURL(/\/en\/apps\?search=ayah&mode=smart/);
+  });
+
+  test("search palette closes on Escape and returns focus", async ({ page }) => {
+    await page.goto("/en");
+    const search = page.getByRole("button", { name: "Search apps" });
+    const dialog = page.getByRole("dialog", { name: "Search apps" });
+    await expect(async () => {
+      await search.click();
+      await expect(dialog).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+    await expect(search).toBeFocused();
+  });
+
+  test("search palette category shortcut preserves the sort", async ({ page }) => {
+    await page.goto("/en?sort=newest");
+    const search = page.getByRole("button", { name: "Search apps" });
+    const dialog = page.getByRole("dialog", { name: "Search apps" });
+    await expect(async () => {
+      await search.click();
+      await expect(dialog).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+
+    await dialog.getByRole("link", { name: /Mushaf/ }).click();
+    await expect(page).toHaveURL(/\/en\/mushaf\?sort=newest$/);
+
+    // Cross-route client navigation leaves a hidden PPR static shell inside
+    // <main> (pre-existing Next.js 16 artifact): scope the post-navigation
+    // dialog assertion to visible content and pin one visible dock.
+    await expect(dialog.filter({ visible: true })).toHaveCount(0);
+    await expect(page.locator(".category-dock").filter({ visible: true })).toHaveCount(1);
+  });
+
+  test("Ctrl+K opens the search palette", async ({ page }) => {
+    await page.goto("/en");
+    const dialog = page.getByRole("dialog", { name: "Search apps" });
+    // The keydown listener attaches on hydration; retry a pre-hydration press.
+    await expect(async () => {
+      await page.keyboard.press("Control+k");
+      await expect(dialog).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+  });
 });
 
 test.describe("mobile category sheet", () => {
@@ -340,6 +416,28 @@ test.describe("mobile category sheet", () => {
     await page.keyboard.press("Escape");
     await expect(sheet).toBeHidden();
     await expect(trigger).toBeFocused();
+  });
+});
+
+test.describe("mobile search", () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test("opens full-screen with all categories", async ({ page }) => {
+    await page.goto("/en");
+    const search = page.getByRole("button", { name: "Search apps" });
+    const dialog = page.getByRole("dialog", { name: "Search apps" });
+    // The dock is inert until hydration; retry a no-op early click.
+    await expect(async () => {
+      await search.click();
+      await expect(dialog).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+
+    await expect(dialog.getByRole("textbox", { name: "Search apps" })).toBeVisible();
+    await expect(dialog.getByRole("button", { name: "Close search" })).toBeVisible();
+    await expect(dialog.getByRole("link")).toHaveCount(11);
+
+    const box = await dialog.boundingBox();
+    expect(box?.width).toBeGreaterThanOrEqual(390);
   });
 });
 
