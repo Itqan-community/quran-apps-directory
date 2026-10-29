@@ -378,6 +378,47 @@ test.describe("public smoke", () => {
     // browser's own focus restore cannot get here — the dock must.
     await expect(search).toBeFocused();
   });
+
+  test("Arabic dock and search are RTL-usable", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/ar");
+    await expect(page.locator("html[dir='rtl']")).toHaveCount(1);
+
+    const nav = page.getByRole("navigation", { name: "التصنيفات" });
+    await expect(nav).toBeVisible();
+    expect(await nav.evaluate((el) => getComputedStyle(el).direction)).toBe("rtl");
+
+    // RTL: the rail flows right-to-left, so the first pill (All) sits to the
+    // right of the last one — its `left` edge is further along the viewport.
+    const lefts = await nav.locator(".dock-pill").evaluateAll((els) =>
+      els.map((el) => el.getBoundingClientRect().left),
+    );
+    expect(lefts[0]).toBeGreaterThan(lefts[lefts.length - 1]);
+
+    await nav.getByRole("link", { name: /مصحف/ }).click();
+    await expect(page).toHaveURL(/\/ar\/mushaf$/);
+
+    // Cross-route client navigation leaves a hidden PPR static shell inside
+    // <main> (pre-existing Next.js 16 artifact): scope the post-navigation
+    // locators to visible content and pin that exactly one dock is visible.
+    await expect(page.locator(".category-dock").filter({ visible: true })).toHaveCount(1);
+    // Wait for the streamed listing so the dock is the settled one, not the
+    // streaming fallback whose open state would be discarded on the swap.
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
+
+    const search = page
+      .getByRole("button", { name: "ابحث عن التطبيقات" })
+      .filter({ visible: true });
+    const dialog = page
+      .getByRole("dialog", { name: "ابحث عن التطبيقات" })
+      .filter({ visible: true });
+    // The dock is inert until hydration; retry a no-op early click.
+    await expect(async () => {
+      await search.click();
+      await expect(dialog).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+    await expect(dialog.getByRole("textbox", { name: "ابحث عن التطبيقات" })).toBeVisible();
+  });
 });
 
 test.describe("mobile category sheet", () => {

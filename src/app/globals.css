@@ -48,9 +48,6 @@
   --footer-bg: #f3f3f3;
   --green-deep: #1b5e20;
   --green-mid: #558b2f;
-  --chip-active-bg: #e8f5e9;
-  --chip-active-border: #4caf50;
-  --chip-active-text: #1b5e20;
   --badge-featured-bg: rgba(255, 193, 7, 0.9);
   --badge-featured-text: #5d4200;
   --badge-new-bg: rgba(76, 175, 80, 0.9);
@@ -67,7 +64,9 @@
   --dock-chip-active-text: #ffffff;
   --dock-num: rgba(255, 255, 255, 0.72);
   --dock-num-text: #6c757d;
-  --dock-num-active: rgba(255, 255, 255, 0.18);
+  /* 0.08 keeps the white counter text on the active pill at 4.5:1 (spec §5);
+     the spec table's 0.18 veil measured 3.86:1. */
+  --dock-num-active: rgba(255, 255, 255, 0.08);
   --dock-sheet: #ffffff;
   --dock-sheet-tile: #f8f5f0;
   --dock-sheet-active: #a0533b;
@@ -96,9 +95,6 @@
   --footer-bg: #1a1a1a;
   --green-deep: #81c784;
   --green-mid: #a5d6a7;
-  --chip-active-bg: rgba(76, 175, 80, 0.15);
-  --chip-active-border: #4caf50;
-  --chip-active-text: #81c784;
   --stat-border: #333;
   --tag-bg: #2a2a2a;
   --tag-more-bg: #333;
@@ -1107,7 +1103,7 @@ body {
   z-index: 40;
   max-width: 1392px;
   margin: -34px auto 0;
-  padding: 0 16px;
+  padding-inline: 16px;
 }
 
 .category-dock {
@@ -1115,7 +1111,10 @@ body {
   align-items: center;
   gap: 8px;
   height: 72px;
-  padding: 0 14px 0 12px;
+  /* Logical: the search button (inline-start) and the utility zone
+     (inline-end) keep their relative padding when the dock mirrors in RTL. */
+  padding-block: 0;
+  padding-inline: 12px 14px;
   border-radius: 20px;
   background: var(--dock-surface);
   border: 1px solid var(--dock-border);
@@ -1161,7 +1160,7 @@ body {
   gap: 6px;
   height: 38px;
   flex-shrink: 0;
-  padding: 0 12px;
+  padding-inline: 12px;
   border-radius: 19px;
   background: var(--dock-chip);
   box-shadow: inset 0 0 0 1px var(--dock-chip-line);
@@ -1244,7 +1243,7 @@ body {
   justify-content: center;
   min-width: 18px;
   height: 18px;
-  padding: 0 5px;
+  padding-inline: 5px;
   border-radius: 9px;
   background: var(--dock-num);
   color: var(--dock-num-text);
@@ -1282,7 +1281,10 @@ body {
   align-items: center;
   gap: 6px;
   height: 38px;
-  padding: 0 10px 0 12px;
+  /* Logical: the sort glyph (inline-start) and chevron (inline-end) keep
+     their relative padding when the pill mirrors in RTL. */
+  padding-block: 0;
+  padding-inline: 12px 10px;
   border-radius: 19px;
   background: var(--card-bg);
   box-shadow: inset 0 0 0 1px var(--border-color);
@@ -1436,7 +1438,7 @@ body {
     flex: 1;
     min-width: 0;
     height: 44px;
-    padding: 0 12px;
+    padding-inline: 12px;
     border: none;
     border-radius: 12px;
     background: var(--dock-chip);
@@ -1464,7 +1466,7 @@ body {
     flex-shrink: 0;
     min-width: 20px;
     height: 18px;
-    padding: 0 6px;
+    padding-inline: 6px;
     border-radius: 9px;
     background: var(--dock-sheet-tile);
     color: var(--dock-chip-text);
@@ -1535,7 +1537,9 @@ body {
     gap: 14px;
     max-height: 85dvh;
     overflow-y: auto;
-    padding: 8px 16px calc(16px + env(safe-area-inset-bottom));
+    /* Logical padding; the bottom edge adds the device safe-area inset. */
+    padding-block: 8px calc(16px + env(safe-area-inset-bottom));
+    padding-inline: 16px;
     border-radius: 24px 24px 0 0;
     background: var(--dock-sheet);
     box-shadow: 0 -16px 40px rgba(31, 20, 12, 0.22);
@@ -1610,7 +1614,8 @@ body {
     min-height: 52px;
     /* Tight padding keeps the longest names (Translations, Accessibility)
        on one line next to their count in a 3-column 390px grid. */
-    padding: 8px 10px;
+    padding-block: 8px;
+    padding-inline: 10px;
     border-radius: 14px;
     background: var(--dock-sheet-tile);
     color: var(--text-color);
@@ -1626,11 +1631,13 @@ body {
     overflow-wrap: anywhere;
   }
 
+  /* --dock-chip-text (not --text-secondary): on the tile surface the global
+     muted color measures 4.37:1 in light mode — below the spec's 4.5:1. */
   .m-tile-count {
     flex-shrink: 0;
     font-size: 10px;
     font-weight: 600;
-    color: var(--text-secondary);
+    color: var(--dock-chip-text);
     font-variant-numeric: tabular-nums;
   }
 
@@ -1647,7 +1654,8 @@ body {
   }
 
   .m-tile.active .m-tile-count {
-    padding: 2px 6px;
+    padding-block: 2px;
+    padding-inline: 6px;
     border-radius: 8px;
     background: var(--dock-num-active);
     color: var(--dock-chip-active-text);
@@ -1783,7 +1791,7 @@ body {
   flex-shrink: 0;
   min-width: 20px;
   height: 22px;
-  padding: 0 7px;
+  padding-inline: 7px;
   border-radius: 6px;
   background: var(--dock-chip);
   box-shadow: inset 0 0 0 1px var(--dock-chip-line);
@@ -1820,7 +1828,8 @@ body {
 /* Sections: 9px tracked uppercase labels, 14px top rhythm. */
 .sp-section {
   flex-shrink: 0;
-  padding: 14px 18px 0;
+  padding-block: 14px 0;
+  padding-inline: 18px;
 }
 
 .sp-section-head {
@@ -1854,7 +1863,7 @@ body {
   align-items: center;
   gap: 5px;
   height: 28px;
-  padding: 0 12px;
+  padding-inline: 12px;
   border: none;
   border-radius: 999px;
   background: transparent;
@@ -1915,7 +1924,8 @@ body {
   justify-content: space-between;
   gap: 8px;
   min-height: 44px;
-  padding: 8px 12px;
+  padding-block: 8px;
+  padding-inline: 12px;
   border-radius: 13px;
   background: var(--dock-chip);
   box-shadow: inset 0 0 0 1px var(--dock-chip-line);
@@ -1950,11 +1960,14 @@ body {
   white-space: nowrap;
 }
 
+/* --dock-chip-text (not --text-secondary): the counter sits on the
+   translucent chip surface, where the global muted color measures 4.37:1 in
+   light mode — below the spec's 4.5:1 for counters. */
 .search-cat-count {
   flex-shrink: 0;
   font-size: 10.5px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--dock-chip-text);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1970,7 +1983,7 @@ body {
   align-items: center;
   gap: 7px;
   height: 34px;
-  padding: 0 14px;
+  padding-inline: 14px;
   border: none;
   border-radius: 999px;
   background: var(--dock-sheet);
@@ -2006,8 +2019,9 @@ body {
   flex-wrap: wrap;
   gap: 18px;
   flex-shrink: 0;
-  margin-top: 14px;
-  padding: 10px 18px 12px;
+  margin-block-start: 14px;
+  padding-block: 10px 12px;
+  padding-inline: 18px;
   border-block-start: 1px solid color-mix(in srgb, var(--dock-chip-text) 14%, transparent);
 }
 
@@ -2042,7 +2056,8 @@ body {
 
   .sp-input-row {
     height: 56px;
-    margin: 12px 12px 0;
+    margin-block: 12px 0;
+    margin-inline: 12px;
     padding-inline: 12px;
     border-radius: 16px;
     border-block-end: none;
@@ -2059,7 +2074,8 @@ body {
   }
 
   .sp-section {
-    padding: 14px 12px 0;
+    padding-block: 14px 0;
+    padding-inline: 12px;
   }
 
   .search-cat--extra {
