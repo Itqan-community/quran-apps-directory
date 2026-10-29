@@ -1,13 +1,11 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { getCategoriesCached } from "@/lib/cache/categories";
 import { CompactSearch } from "./compact-search";
 import { LangToggle } from "./lang-toggle";
 import { MobileMenu } from "./mobile-menu";
 
 export async function SiteHeader({ lang }: { lang: "ar" | "en" }) {
   const t = await getTranslations({ locale: lang, namespace: "header" });
-  const categories = await getCategoriesCached();
 
   const links = [
     { href: `/${lang}`, label: t("home") },
@@ -54,7 +52,7 @@ export async function SiteHeader({ lang }: { lang: "ar" | "en" }) {
 
         {/* Compact bar (desktop scrolled state of the lists/hero) */}
         <div className="header-container-compact compact-search-row">
-          <CompactSearch lang={lang} categories={categories} />
+          <CompactSearch lang={lang} />
         </div>
       </div>
     </header>

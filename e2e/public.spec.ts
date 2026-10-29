@@ -525,3 +525,19 @@ test.describe("smart search", () => {
     await expect(page).not.toHaveURL(/mode=smart/);
   });
 });
+
+test.describe("compact header", () => {
+  test("compact header keeps search but drops category chips", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/en");
+    await page.mouse.wheel(0, 1200);
+
+    await expect(page.locator("#site-header")).toHaveAttribute(
+      "data-header-compact",
+      "true",
+    );
+    await expect(page.locator(".compact-category-chip")).toHaveCount(0);
+    await expect(page.locator(".compact-search-input")).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Categories" })).toBeVisible();
+  });
+});
