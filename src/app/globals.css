@@ -1605,6 +1605,12 @@ body {
        would collapse the dialog (and the panel's anchor) to 0x0. */
     width: 100%;
     height: 100%;
+    /* The UA stylesheet caps `dialog:modal` at
+       `max-width/max-height: calc(100% - 6px - 2em)`, which would leave a
+       dimmed strip below and beside the sheet: lift the cap so the overlay
+       (and the bottom-anchored panel) is full-bleed. */
+    max-width: none;
+    max-height: none;
     margin: 0;
     padding: 0;
     border: 0;

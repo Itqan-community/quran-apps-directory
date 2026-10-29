@@ -295,6 +295,27 @@ test.describe("mobile category sheet", () => {
     await expect(sheet).toBeVisible();
     await expect(sheet.getByRole("link")).toHaveCount(12);
 
+    // The sheet must be full-bleed: the panel spans the full viewport width
+    // and reaches the bottom edge. Visibility/count assertions cannot catch
+    // the UA's `dialog:modal` max-size cap (it leaves a dimmed strip below
+    // and beside the panel), so pin the geometry explicitly.
+    const geometry = await page.evaluate(() => {
+      const panel = document.querySelector(".m-sheet-panel");
+      if (!panel) return null;
+      const rect = panel.getBoundingClientRect();
+      return {
+        left: rect.left,
+        width: rect.width,
+        bottom: rect.bottom,
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight,
+      };
+    });
+    expect(geometry, "sheet panel must exist").not.toBeNull();
+    expect(geometry!.left).toBeCloseTo(0, 0);
+    expect(geometry!.width).toBeCloseTo(geometry!.innerWidth, 0);
+    expect(geometry!.bottom).toBeCloseTo(geometry!.innerHeight, 0);
+
     await sheet.getByRole("link", { name: /Mushaf/ }).click();
     await expect(page).toHaveURL(/\/en\/mushaf$/);
 
