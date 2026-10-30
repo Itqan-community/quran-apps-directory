@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { Suspense, use, useEffect, useRef } from "react";
 import type { MouseEvent, ReactElement, SyntheticEvent } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -8,6 +8,7 @@ import type { Locale } from "@/lib/i18n";
 import type { CategoryItem } from "@/lib/repo/categories";
 import { categoryHref } from "@/lib/listing-links";
 import { formatAppCount } from "@/lib/listing-format";
+import { requestDockFocus } from "./dock-focus";
 
 export type CategorySheetProps = {
   open: boolean;
@@ -16,7 +17,8 @@ export type CategorySheetProps = {
   categories: CategoryItem[];
   selectedCategory?: string;
   sort?: string;
-  count: number | null;
+  /** Streamed result count (see `CategoryDock`); the All tile unwraps it. */
+  count: Promise<number>;
 };
 
 function CloseIcon() {
@@ -33,12 +35,30 @@ function CloseIcon() {
 }
 
 /**
+ * The All tile's count badge: unwraps the streamed count promise. `use()`
+ * suspends while it is pending, so it sits inside a `<Suspense>` boundary
+ * whose fallback is the fixed-width shimmer.
+ */
+function AllTileCount({ count }: { count: Promise<number> }) {
+  const value = use(count);
+  const text = formatAppCount(value);
+  return text ? (
+    <span className="m-tile-count">{text}</span>
+  ) : (
+    <span className="m-tile-count m-tile-count--shimmer" aria-hidden="true" />
+  );
+}
+
+/**
  * Mobile bottom sheet: a 3×4 index of all categories (All + 11) rendered as a
  * native `<dialog>` opened with `showModal()`. The dialog stays mounted at all
  * times so the trigger's `aria-controls` always resolves and a closed dialog is
  * hidden by the user agent; the `open` prop drives `showModal()`/`close()` and
- * the body-scroll lock. Esc, the backdrop and the close button all route
- * through `onClose` so the dock owns the state.
+ * the body-scroll lock. Esc, the backdrop and the close button route through
+ * `requestClose()` (which closes the dialog *before* calling `onClose` — a
+ * focus call made while the modal is still open is a no-op, so the dock's focus
+ * return only lands once the dialog is off the top layer). Tile links record a
+ * focus target for the destination page's dock, then close and navigate.
  */
 export function CategorySheet({
   open,
@@ -65,6 +85,8 @@ export function CategorySheet({
     if (open) {
       if (!dialog.open) dialog.showModal();
       document.body.style.overflow = "hidden";
+      // The overlay is not a scroll container (see `dialog.m-sheet`), so this
+      // focus handoff cannot scroll the panel's entry transform out of view.
       closeRef.current?.focus();
     } else {
       if (dialog.open) dialog.close();
@@ -80,18 +102,33 @@ export function CategorySheet({
     };
   }, [open]);
 
+  // Close the dialog first, then hand back to the dock: while the modal is
+  // open, focus calls to elements outside the top layer are no-ops, so the
+  // dock's focus return only works after `dialog.close()` has run.
+  function requestClose() {
+    const dialog = dialogRef.current;
+    if (dialog?.open) dialog.close();
+    onClose();
+  }
+
+  // A tile is a navigation: record where the destination page's dock should
+  // restore focus (the now-active category trigger), then close and let the
+  // link navigate.
+  function onTileClick() {
+    requestDockFocus("category");
+    requestClose();
+  }
+
   function onCancel(e: SyntheticEvent<HTMLDialogElement>) {
     e.preventDefault();
-    onClose();
+    requestClose();
   }
 
   // A click whose target is the dialog itself landed on the backdrop, not the
   // panel: close the sheet.
   function onDialogClick(e: MouseEvent<HTMLDialogElement>) {
-    if (e.target === e.currentTarget) onClose();
+    if (e.target === e.currentTarget) requestClose();
   }
-
-  const allCount = formatAppCount(count);
 
   return (
     <dialog
@@ -116,7 +153,7 @@ export function CategorySheet({
             type="button"
             className="m-sheet-close"
             aria-label={t("categories.close")}
-            onClick={onClose}
+            onClick={requestClose}
           >
             <CloseIcon />
           </button>
@@ -128,15 +165,21 @@ export function CategorySheet({
             scroll={false}
             className={`m-tile ${allActive ? "active" : ""}`}
             aria-current={allActive ? "page" : undefined}
-            onClick={onClose}
+            onClick={onTileClick}
           >
             <span className="m-tile-name">{t("categories.all")}</span>
-            {allActive &&
-              (allCount ? (
-                <span className="m-tile-count">{allCount}</span>
-              ) : (
-                <span className="m-tile-count m-tile-count--shimmer" aria-hidden="true" />
-              ))}
+            {allActive && (
+              <Suspense
+                fallback={
+                  <span
+                    className="m-tile-count m-tile-count--shimmer"
+                    aria-hidden="true"
+                  />
+                }
+              >
+                <AllTileCount count={count} />
+              </Suspense>
+            )}
           </Link>
 
           {categories.map((category) => {
@@ -148,7 +191,7 @@ export function CategorySheet({
                 scroll={false}
                 className={`m-tile ${isActive ? "active" : ""}`}
                 aria-current={isActive ? "page" : undefined}
-                onClick={onClose}
+                onClick={onTileClick}
               >
                 <span className="m-tile-name">
                   {lang === "ar" ? category.nameAr : category.nameEn}

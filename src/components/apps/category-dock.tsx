@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, use, useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -11,6 +12,7 @@ import { formatAppCount } from "@/lib/listing-format";
 import { SortSelect } from "./sort-select";
 import { CategorySheet } from "./category-sheet";
 import { SearchPalette } from "./search-palette";
+import { takeDockFocus } from "./dock-focus";
 
 export type CategoryDockProps = {
   lang: Locale;
@@ -19,7 +21,13 @@ export type CategoryDockProps = {
   sort?: string;
   showSort?: boolean;
   basePath?: string;
-  count: number | null;
+  /**
+   * The result count, streamed as a promise. The dock is rendered once,
+   * outside the Suspense boundary, so it stays mounted across the fallback →
+   * settled swap; only this count resolves late and streams in. Unwrapped with
+   * `use()` behind small shimmer boundaries (see `StreamedCount`).
+   */
+  count: Promise<number>;
 };
 
 function Chevron() {
@@ -50,21 +58,52 @@ function SearchIcon() {
   );
 }
 
+/**
+ * Visibility check with a Safari 16.4–17.3 / iOS 16 fallback:
+ * `Element.checkVisibility()` does not exist there and throws, which would
+ * break Ctrl/⌘K and the focus return before the palette/sheet opens.
+ * `getClientRects().length > 0` is the long-standing equivalent for
+ * "laid out and not display:none / visibility:hidden".
+ */
+function isElementVisible(el: HTMLElement): boolean {
+  if (typeof el.checkVisibility === "function") {
+    return el.checkVisibility();
+  }
+  return el.getClientRects().length > 0;
+}
+
 /** First argument that is in the DOM and actually visible (the other search
  *  button is `display:none` on the opposite breakpoint and can never take
  *  focus). */
 function firstVisible(
-  ...els: (HTMLButtonElement | null)[]
-): HTMLButtonElement | null {
-  return els.find((el) => el?.checkVisibility()) ?? null;
+  ...els: (HTMLElement | null)[]
+): HTMLElement | null {
+  return els.find((el) => el != null && isElementVisible(el)) ?? null;
+}
+
+/**
+ * Unwraps the streamed count promise and renders the formatted value.
+ * `use()` suspends while the promise is pending, so this must sit inside a
+ * `<Suspense>` boundary whose fallback is the fixed-width shimmer.
+ */
+function StreamedCount({
+  count,
+  format,
+}: {
+  count: Promise<number>;
+  format: (value: number) => ReactNode;
+}) {
+  const value = use(count);
+  return <>{format(value)}</>;
 }
 
 /**
  * Floating category index dock. The rail is the only category surface on
  * desktop; at ≤900px the rail is replaced by a trigger that opens the
  * bottom-sheet index (`CategorySheet`). The utility zone carries the current
- * result count and the sort pill. `count={null}` (streaming fallback) renders
- * fixed-width shimmers instead of numbers.
+ * result count and the sort pill. The dock is rendered once, outside the
+ * results Suspense boundary, so it (and any open palette/sheet) survives the
+ * fallback → settled swap; only `count` streams in (shimmer until resolved).
  */
 export function CategoryDock({
   lang,
@@ -83,22 +122,19 @@ export function CategoryDock({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const desktopSearchRef = useRef<HTMLButtonElement>(null);
   const mobileSearchRef = useRef<HTMLButtonElement>(null);
-  const lastSearchTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const lastSearchTriggerRef = useRef<HTMLElement | null>(null);
   const allActive = selectedCategory === undefined;
   // Unknown category slugs get no active chip (and `All` is not active either).
   const activeSlug = categories.some((c) => c.slug === selectedCategory)
     ? selectedCategory
     : undefined;
   const activeCategory = categories.find((c) => c.slug === activeSlug);
-  // Trigger count: the active category's appCount; the result count when All
-  // is active; nothing for an unknown category.
-  const triggerCount = activeCategory
+  // Trigger count source: the active category's own appCount, the streamed
+  // result count when All is active, nothing for an unknown category.
+  const triggerUsesResultCount = allActive && !activeCategory;
+  const triggerCategoryCount = activeCategory
     ? formatAppCount(activeCategory.appCount)
-    : allActive
-      ? formatAppCount(count)
-      : null;
-  const allCount = allActive ? formatAppCount(count) : null;
-  const totalText = formatAppCount(count);
+    : null;
 
   // A route change — a sheet link, a palette shortcut, browser back, anything
   // — closes the sheet and the search palette so they can never stay open on a
@@ -130,6 +166,45 @@ export function CategoryDock({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  // Post-navigation focus handoff: a sheet/palette link recorded its intended
+  // target before navigating (see dock-focus). The dock remounts on the
+  // destination page, so consume the request here and focus the matching
+  // element once the new page's DOM is settled.
+  useEffect(() => {
+    const target = takeDockFocus();
+    if (!target) return;
+
+    if (target === "category") {
+      // The active dock pill on desktop, the category trigger on mobile (the
+      // rail is display:none there and can never take focus).
+      const activePill = document.querySelector<HTMLElement>(
+        ".dock-pill[aria-current='page']",
+      );
+      const el = firstVisible(activePill, triggerRef.current);
+      if (!el) return;
+      const id = requestAnimationFrame(() => el.focus());
+      return () => cancelAnimationFrame(id);
+    }
+
+    // "search-results": the heading streams in with the results (inside the
+    // Suspense boundary, below the dock), so poll until it lands. It is
+    // focusable via tabIndex=-1 (see the heading in ListingResults).
+    let attempts = 0;
+    const id = window.setInterval(() => {
+      attempts += 1;
+      const heading = document.getElementById("search-results-title");
+      if (heading) {
+        heading.focus();
+        window.clearInterval(id);
+        return;
+      }
+      if (attempts >= 200) {
+        window.clearInterval(id);
+      }
+    }, 50);
+    return () => window.clearInterval(id);
+  }, [lastPathname]);
 
   function closeSheet() {
     setSheetOpen(false);
@@ -185,19 +260,30 @@ export function CategoryDock({
         </button>
 
         <nav className="dock-rail" aria-label={t("categories.title")}>
+          {/* prefetch={false}: the 12 pills sit in the viewport, so Next 16
+              would prefetch every route on page load — heavy, and a cached
+              flight makes a click navigate in one piece, which defeats the
+              deliberate slow-flight streaming test. */}
           <Link
             href={categoryHref(lang, undefined, sort)}
             scroll={false}
+            prefetch={false}
             className={`dock-pill ${allActive ? "active" : ""}`}
             aria-current={allActive ? "page" : undefined}
           >
             <span>{t("categories.all")}</span>
-            {allActive &&
-              (allCount ? (
-                <span className="dock-num">{allCount}</span>
-              ) : (
-                <span className="dock-num dock-num--shimmer" aria-hidden />
-              ))}
+            {allActive && (
+              <Suspense
+                fallback={<span className="dock-num dock-num--shimmer" aria-hidden />}
+              >
+                <StreamedCount
+                  count={count}
+                  format={(value) => (
+                    <span className="dock-num">{formatAppCount(value)}</span>
+                  )}
+                />
+              </Suspense>
+            )}
           </Link>
 
           {categories.map((category) => {
@@ -207,6 +293,7 @@ export function CategoryDock({
                 key={category.id}
                 href={categoryHref(lang, category.slug, sort)}
                 scroll={false}
+                prefetch={false}
                 className={`dock-pill ${isActive ? "active" : ""}`}
                 aria-current={isActive ? "page" : undefined}
               >
@@ -233,21 +320,39 @@ export function CategoryDock({
                 : activeCategory.nameEn
               : t("categories.allApps")}
           </span>
-          {triggerCount ? (
-            <span className="m-cat-count">{triggerCount}</span>
-          ) : activeCategory || allActive ? (
-            <span className="m-cat-count m-cat-count--shimmer" aria-hidden />
+          {triggerUsesResultCount ? (
+            <Suspense
+              fallback={
+                <span className="m-cat-count m-cat-count--shimmer" aria-hidden />
+              }
+            >
+              <StreamedCount
+                count={count}
+                format={(value) => (
+                  <span className="m-cat-count">{formatAppCount(value)}</span>
+                )}
+              />
+            </Suspense>
+          ) : triggerCategoryCount ? (
+            <span className="m-cat-count">{triggerCategoryCount}</span>
           ) : null}
           <Chevron />
         </button>
 
         <div className="dock-actions">
           <span className="dock-count">
-            {totalText ? (
-              `${totalText} ${t(count === 1 ? "sort.app" : "sort.apps")}`
-            ) : (
-              <span className="dock-shimmer dock-shimmer--count" aria-hidden />
-            )}
+            <Suspense
+              fallback={<span className="dock-shimmer dock-shimmer--count" aria-hidden />}
+            >
+              <StreamedCount
+                count={count}
+                format={(value) => (
+                  <>
+                    {`${formatAppCount(value)} ${t(value === 1 ? "sort.app" : "sort.apps")}`}
+                  </>
+                )}
+              />
+            </Suspense>
           </span>
           {showSort && (
             <SortSelect lang={lang} value={sort ?? "featured"} basePath={basePath} />

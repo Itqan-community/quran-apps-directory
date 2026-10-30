@@ -215,6 +215,43 @@ describe("searchAppsSmart", () => {
     expect(r.results).toEqual([]);
   });
 
+  it("presents the relevance-cut set in the requested ?sort= order", async () => {
+    // beta is the exact query vector (strongest match); alpha is rotated to
+    // cosine 0.9 with it so it stays above the relevance cutoff without
+    // outranking beta — relevance order and A–Z disagree, which is the point.
+    const q = await mock.embedQuery("beta audio kids");
+    const dot = (a: number[], b: number[]) => a.reduce((s, x, i) => s + x * b[i], 0);
+    const qq = dot(q, q);
+    const qNorm = Math.sqrt(qq);
+    const w = await mock.embedQuery("alpha mushaf offline");
+    const proj = dot(w, q) / qq;
+    const ortho = w.map((x, i) => x - proj * q[i]);
+    const oNorm = Math.sqrt(dot(ortho, ortho));
+    const alphaVec = q.map(
+      (x, i) => 0.9 * (x / qNorm) + Math.sqrt(1 - 0.81) * (ortho[i] / oNorm),
+    );
+    await sql`UPDATE apps SET embedding = ${vectorLiteral(q)}::vector WHERE id = ${betaId}`;
+    await sql`UPDATE apps SET embedding = ${vectorLiteral(alphaVec)}::vector WHERE id = ${alphaId}`;
+
+    const relevance = await searchAppsSmart({ search: "beta audio kids" }, { provider: mock });
+    expect(relevance.fallbackMode).toBe(false);
+    expect(relevance.results.map((x) => x.slug)).toEqual(["beta", "alpha"]);
+
+    // The curated default is relevance; an explicit A–Z re-orders the same set.
+    const featured = await searchAppsSmart(
+      { search: "beta audio kids", ordering: "featured_first" },
+      { provider: mock },
+    );
+    expect(featured.results.map((x) => x.slug)).toEqual(["beta", "alpha"]);
+
+    const az = await searchAppsSmart(
+      { search: "beta audio kids", ordering: "name_en" },
+      { provider: mock },
+    );
+    expect(az.count).toBe(relevance.count);
+    expect(az.results.map((x) => x.slug)).toEqual(["alpha", "beta"]);
+  });
+
   it("no search term -> legacy list in fallback mode", async () => {
     const r = await searchAppsSmart({});
     expect(r.fallbackMode).toBe(true);

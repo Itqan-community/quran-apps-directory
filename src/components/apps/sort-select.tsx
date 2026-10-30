@@ -1,7 +1,7 @@
 "use client";
 
 import type { ChangeEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { Locale } from "@/lib/i18n";
 
@@ -39,7 +39,9 @@ function Chevron() {
  * transparent over the pill so keyboard and screen readers keep the native
  * control; `basePath` is the route whose params the select rewrites (home by
  * default, or the current category route) so changing the sort never navigates
- * away from an active category filter.
+ * away from an active category filter. Every other query param — the search
+ * term, `mode`, facet filters — is carried over (the pager's `page` is
+ * dropped, since re-sorting restarts at the first page).
  */
 export function SortSelect({
   lang,
@@ -52,6 +54,7 @@ export function SortSelect({
   basePath?: string;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const t = useTranslations("appList.sort");
   const root = basePath ?? `/${lang}`;
   // `?sort=` is user-controlled URL input; coerce unknown values so next-intl
@@ -62,8 +65,10 @@ export function SortSelect({
 
   function onChange(e: ChangeEvent<HTMLSelectElement>) {
     const next = e.target.value;
-    const params = new URLSearchParams();
-    if (next !== "featured") params.set("sort", next);
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("page");
+    if (next === "featured") params.delete("sort");
+    else params.set("sort", next);
     const qs = params.toString();
     router.push(`${root}${qs ? `?${qs}` : ""}`);
   }

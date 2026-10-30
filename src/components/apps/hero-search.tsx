@@ -3,8 +3,9 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { searchHref } from "@/lib/listing-links";
 
-export function HeroSearch({ lang }: { lang: "ar" | "en" }) {
+export function HeroSearch({ lang, sort }: { lang: "ar" | "en"; sort?: string }) {
   const t = useTranslations("appList.search");
   const router = useRouter();
   const [searchType, setSearchType] = useState<"traditional" | "smart">("traditional");
@@ -14,8 +15,8 @@ export function HeroSearch({ lang }: { lang: "ar" | "en" }) {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const query = q.trim();
-    const mode = searchType === "smart" ? "&mode=smart" : "";
-    const url = query ? `/${lang}/apps?search=${encodeURIComponent(query)}${mode}` : `/${lang}/apps`;
+    // A non-default sort survives the search submit: the results dock keeps it.
+    const url = query ? searchHref(lang, query, searchType, sort) : `/${lang}/apps`;
     startTransition(() => {
       router.push(url);
     });

@@ -49,9 +49,12 @@ full-screen surface.
 - `ListingResults` computes `{ count, results, suggestedQuery, fallbackMode }`
   from `getAppsCached` or `getSmartAppsCached`, then renders the search-results
   header, the optional `.listing-toolbar` (`showSort`), the grid and pagination.
-- Home (`/`) and category (`/[category]`) pages pass `showSort`; `/apps` does not.
-  `/apps` owns `?search=` and `?mode=smart`.
-- `SortSelect` routes to `basePath` with `?sort=` and drops the page param.
+- Home (`/`), category (`/[category]`) and `/apps` (search results) all pass
+  `showSort`; `/apps` owns `?search=` and `?mode=smart` and applies `?sort=` to
+  both paths (SQL ordering for traditional search, the same order applied to
+  the relevance-cut set for smart search).
+- `SortSelect` routes to `basePath`, rewriting only `?sort=` and dropping the
+  page param: `search`, `mode` and the facet params are carried over.
 - Category chips use `/{lang}/{slug}?sort=…`; `All` uses `/{lang}?sort=…`.
 - `getCategoriesCached()` returns `CategoryItem[]` including `appCount`, `icon`,
   `nameEn` and `nameAr`.
@@ -106,8 +109,10 @@ full-screen surface.
 - The native `<select>` sits transparent over the pill so keyboard and screen
   readers keep the native control. The accessible label is the existing
   `appList.sort.label` (“Sort by”).
-- Rendered only when `showSort` is true. `/apps` hides it, preserving today’s
-  behavior.
+- Rendered when `showSort` is true — every listing route, search results
+  included. On `/apps` the chosen order persists across a new search (the hero
+  form and the palette submit carry `?sort=`), and smart search presents its
+  relevance-cut matches in that order (the default keeps relevance order).
 
 ### 4.2 Mobile category sheet
 
@@ -251,11 +256,13 @@ and palette are the client boundary. `CategoryItem[]` is serializable.
 - Category: `categoryHref(lang, slug, sort)` →
   `/{lang}/{slug}` plus `?sort=<encoded>` when sort is set and not `featured`.
 - All: `categoryHref(lang, undefined, sort)` → `/{lang}` plus the same query.
-- Search: `searchHref(lang, query, mode)` →
-  `/{lang}/apps?search=<encoded>` plus `&mode=smart` for Smart. Empty query
-  returns `/{lang}/apps`; the palette does not navigate on empty submit.
-- Sort: `SortSelect` pushes `basePath?sort=<value>`; `featured` omits the param
-  and the page is dropped, matching `c308410`.
+- Search: `searchHref(lang, query, mode, sort?)` →
+  `/{lang}/apps?search=<encoded>` plus `&mode=smart` for Smart and `&sort=` when
+  a non-default sort is active. Empty query returns `/{lang}/apps`; the palette
+  does not navigate on empty submit.
+- Sort: `SortSelect` pushes `basePath` with the current query re-encoded, the
+  page dropped and `?sort=<value>` set (`featured` omits the param), matching
+  `c308410` plus param preservation.
 
 ### State
 
@@ -331,7 +338,8 @@ Reuse existing `appList.search.traditional`,
   `aria-current="page"`; all category links present.
 - Existing category + sort + pager test updated to click the dock’s `Mushaf`
   link; URL keeps `sort=newest`; sort select value is `newest`.
-- `/en/apps?search=ayah`: dock visible; no sort select.
+- `/en/apps?search=ayah`: dock visible with the sort pill; changing the sort
+  keeps the search term and lands on `?search=ayah&sort=newest`.
 - Unknown category: dock visible; no active chip.
 - Search palette: open from the dock button; input has focus; submit “ayah” →
   `/en/apps?search=ayah`; Smart mode adds `mode=smart`; Esc closes and returns
@@ -346,7 +354,8 @@ Reuse existing `appList.search.traditional`,
   scrolled into view; the fade is applied.
 - RTL (`/ar`): the dock and palette render; `html[dir="rtl"]`; active chip and
   sheet/palette are usable.
-- `/apps` hides sort while home/category show it.
+- `/apps` shows the sort pill like home/category; a smart search re-orders its
+  matches when a non-default sort is chosen.
 
 **Manual/visual**
 

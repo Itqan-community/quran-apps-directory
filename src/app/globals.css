@@ -1499,8 +1499,11 @@ body {
     padding-inline-start: 10px;
   }
 
+  /* 44px tap target: the pill keeps its capsule shape (radius tracks the
+     height) and its width/typography; only the hit area grows. */
   .dock-sort {
-    height: 34px;
+    min-height: 44px;
+    border-radius: 22px;
   }
 
   /* Mobile category sheet: a native <dialog> in the top layer, so it sits
@@ -1525,7 +1528,17 @@ body {
     border: 0;
     background: transparent;
     color: var(--text-color);
-    overflow: hidden;
+    /* Not a scroll container: the panel starts a full panel-height below the
+       fold (the `@starting-style` transform on `.m-sheet-panel`), so this
+       overlay never needs to clip it — it simply sits outside the viewport
+       until it slides up. That matters because `showModal()` focuses the close
+       button while the panel is still off-screen: on a scrollable overlay
+       (`overflow: hidden` is still programmatically scrollable) the UA's focus
+       scroll moves the dialog by exactly the panel height, cancelling the
+       entry transform, and the sheet pops open instead of sliding.
+       `overflow: clip` would avoid that too, but the CSS minifier prunes it
+       for browsers without support instead of keeping it as a fallback. */
+    overflow: visible;
   }
 
   dialog.m-sheet::backdrop {
@@ -1587,13 +1600,14 @@ body {
     color: var(--text-secondary);
   }
 
+  /* 44px tap target: the circle grows with the hit area (icon size unchanged). */
   .m-sheet-close {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border: none;
     border-radius: 50%;
     background: var(--dock-sheet-tile);
@@ -1807,13 +1821,14 @@ body {
   color: var(--text-secondary);
 }
 
+/* 44px tap target: the circle grows with the hit area (icon size unchanged). */
 .sp-close {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 34px;
-  height: 34px;
+  width: 44px;
+  height: 44px;
   border: none;
   border-radius: 50%;
   background: var(--dock-chip);
@@ -1864,11 +1879,12 @@ body {
   box-shadow: inset 0 0 0 1px var(--dock-chip-line);
 }
 
+/* 44px tap target: the pill keeps its width/typography; the hit area grows. */
 .sp-mode-btn {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  height: 28px;
+  min-height: 44px;
   padding-inline: 12px;
   border: none;
   border-radius: 999px;
@@ -1984,11 +2000,12 @@ body {
   gap: 8px;
 }
 
+/* 44px tap target: the pill keeps its width/typography; the hit area grows. */
 .sp-suggest-btn {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  height: 34px;
+  min-height: 44px;
   padding-inline: 14px;
   border: none;
   border-radius: 999px;

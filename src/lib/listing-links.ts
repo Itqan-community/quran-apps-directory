@@ -17,9 +17,13 @@ export function searchHref(
   lang: Locale,
   query: string,
   mode: "traditional" | "smart" = "traditional",
+  sort?: string,
 ): string {
   const q = query.trim();
   if (!q) return `/${lang}/apps`;
   const modeQuery = mode === "smart" ? "&mode=smart" : "";
-  return `/${lang}/apps?search=${encodeURIComponent(q)}${modeQuery}`;
+  // `?sort=` must survive a search submit / did-you-mean hop: the results
+  // page keeps the dock's sort (and its own `sortQuery` skips the default).
+  const sortPart = sort && sort !== "featured" ? `&sort=${encodeURIComponent(sort)}` : "";
+  return `/${lang}/apps?search=${encodeURIComponent(q)}${modeQuery}${sortPart}`;
 }

@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getLang } from "@/lib/i18n";
 import { AppsListing } from "@/components/apps/apps-listing";
 import { getCategoriesCached } from "@/lib/cache/categories";
+import { sortOrdering } from "@/lib/repo/apps-rows";
 
 // searchParams-driven listing: no instant prefetch shell (validation cannot
 // resolve URL data inside the static shell)
@@ -29,6 +30,10 @@ export default async function AppsPage({
   const search = (Array.isArray(sp.search) ? sp.search[0] : sp.search)?.trim() || undefined;
   const page = Number((Array.isArray(sp.page) ? sp.page[0] : sp.page) ?? 1) || 1;
   const mode = sp.mode === "smart" ? "smart" : undefined;
+  // Search results keep the dock's sort: traditional search orders in SQL,
+  // smart search applies the same order to its relevance-cut set.
+  const sort = (Array.isArray(sp.sort) ? sp.sort[0] : sp.sort) || undefined;
+  const ordering = sortOrdering(sort, locale);
   const categories = await getCategoriesCached();
 
   return (
@@ -45,9 +50,13 @@ export default async function AppsPage({
         mushafType: csv(sp, "mushaf_type"),
         features: csv(sp, "features"),
         featured: sp.featured === "true" ? true : undefined,
+        ordering,
         page,
       }}
       categories={categories}
+      sort={sort}
+      showSort
+      basePath={`/${locale}/apps`}
     />
   );
 }

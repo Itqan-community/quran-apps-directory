@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { startSlowFlightProxy } from "./helpers/slow-flight-proxy";
 
 // From the synced dev DB (live parity): first app by sort order
 const FIRST_APP = { slug: "1-wahy", id: 1 };
@@ -168,10 +169,27 @@ test.describe("public smoke", () => {
     await expect(visibleSort).toHaveValue("newest");
   });
 
-  test("apps search results use the dock without sort", async ({ page }) => {
+  test("apps search results keep the dock sort", async ({ page }) => {
     await page.goto("/en/apps?search=ayah");
     await expect(page.getByRole("navigation", { name: "Categories" })).toBeVisible();
-    await expect(page.getByLabel("Sort by")).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: /Search results for/i })).toBeVisible();
+
+    const sort = page.getByLabel("Sort by").filter({ visible: true });
+    await expect(sort).toHaveCount(1);
+    await expect(sort).toHaveValue("featured");
+
+    // Re-sorting stays on the search results and carries the query over
+    // (only the pager's `page` is dropped).
+    await sort.selectOption("newest");
+    await expect(page).toHaveURL(/\/en\/apps\?search=ayah&sort=newest$/);
+    await expect(sort).toHaveValue("newest");
+    await expect(page.getByRole("heading", { name: /Search results for/i })).toBeVisible();
+
+    // A new search submitted from the hero keeps the active sort.
+    await page.getByRole("textbox", { name: "Traditional Search" }).fill("mushaf");
+    await page.getByRole("button", { name: "Search Now" }).click();
+    await expect(page).toHaveURL(/\/en\/apps\?search=mushaf&sort=newest$/);
+    await expect(page.getByLabel("Sort by").filter({ visible: true })).toHaveValue("newest");
   });
 
   test("unknown category has no active dock chip", async ({ page }) => {
@@ -412,6 +430,109 @@ test.describe("public smoke", () => {
     await expect(search).toBeFocused();
   });
 
+  test("palette stays open across the streaming fallback swap", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+
+    // Replay the initial page through a proxy in two parts (fallback shell,
+    // then settled content) with a delay in between, so the skeleton window
+    // is wide enough to open the palette in.
+    const proxy = await startSlowFlightProxy("http://127.0.0.1:3210", 3_000);
+    try {
+      // Load the initial page itself through the slow proxy. The persistent
+      // dock renders with the fallback cards, then the settled listing arrives
+      // — the same-page fallback → settled swap spec §4.5 promises to survive.
+      // (A category route change is not the target: the dock intentionally
+      // closes overlays on route changes.)
+      await page.goto(`http://127.0.0.1:${proxy.port}/en`, {
+        waitUntil: "commit",
+      });
+
+      // Open the palette as soon as the persistent dock is interactive. The
+      // page was loaded through the slow proxy, so the listing/count may still
+      // be streaming; the dock's hydration is the only gate (the card
+      // skeletons can be hidden in the PPR shell). The assertions below then
+      // prove the dock (and the overlay) survive the settled content arriving.
+      const search = page.getByRole("button", { name: "Search apps" });
+      const dialog = page.getByRole("dialog", { name: "Search apps" });
+      await expect(async () => {
+        await search.click();
+        await expect(dialog).toBeVisible({ timeout: 1_000 });
+      }).toPass({ timeout: 20_000 });
+      await dialog.getByRole("textbox", { name: "Search apps" }).fill("mushaf");
+
+      // The delayed settled content lands on the same page: the fallback
+      // swaps to the listing.
+      await expect(page).toHaveURL(/\/en$/);
+      await expect(
+        page.locator("article:not(.shimmer-card)").filter({ visible: true }).first(),
+      ).toBeVisible({ timeout: 15_000 });
+
+      // The palette survived the swap: still open, query intact, and the dock
+      // is the single persistent one (its count has streamed in). Cross-route
+      // client navigation leaves a hidden PPR static shell inside <main>
+      // (pre-existing Next.js 16 artifact), so pin one *visible* dock.
+      await expect(dialog).toBeVisible();
+      await expect(dialog.getByRole("textbox", { name: "Search apps" })).toHaveValue(
+        "mushaf",
+      );
+      await expect(
+        page.locator(".category-dock").filter({ visible: true }),
+      ).toHaveCount(1);
+    } finally {
+      await proxy.close();
+    }
+  });
+
+  test("palette category link navigation returns focus to the active pill", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/en?sort=newest");
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
+    const search = page.getByRole("button", { name: "Search apps" });
+    const dialog = page.getByRole("dialog", { name: "Search apps" });
+    await expect(async () => {
+      await search.click();
+      await expect(dialog).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+
+    await dialog.getByRole("link", { name: /Mushaf/ }).click();
+    await expect(page).toHaveURL(/\/en\/mushaf\?sort=newest$/);
+    await expect(dialog.filter({ visible: true })).toHaveCount(0);
+
+    // Post-navigation focus lands on the active dock pill of the new page,
+    // not on <body>.
+    const pill = page
+      .getByRole("navigation", { name: "Categories" })
+      .getByRole("link", { name: /Mushaf/ })
+      .filter({ visible: true });
+    await expect(pill).toBeFocused();
+  });
+
+  test("palette submit returns focus to the results heading", async ({ page }) => {
+    await page.goto("/en");
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
+    const search = page.getByRole("button", { name: "Search apps" });
+    const dialog = page.getByRole("dialog", { name: "Search apps" });
+    await expect(async () => {
+      await search.click();
+      await expect(dialog).toBeVisible({ timeout: 1_000 });
+    }).toPass({ timeout: 10_000 });
+
+    const input = dialog.getByRole("textbox", { name: "Search apps" });
+    await input.fill("ayah");
+    await input.press("Enter");
+    await expect(page).toHaveURL(/\/en\/apps\?search=ayah/);
+
+    // The heading streams in with the results; focus must land on it once it
+    // is rendered.
+    const heading = page
+      .getByRole("heading", { name: /Search results for/ })
+      .filter({ visible: true });
+    await expect(heading).toBeVisible();
+    await expect(heading).toBeFocused();
+  });
+
   test("Arabic dock and search are RTL-usable", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/ar");
@@ -464,16 +585,55 @@ test.describe("mobile category sheet", () => {
     await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
 
     const trigger = page.getByRole("button", { name: /All apps/ });
+
+    // Take the overlay's scroll offset right after focus moves into the sheet.
+    // `showModal()` focuses the first focusable descendant (the close button)
+    // while the panel is still translated a full panel-height below the fold.
+    // If the overlay is a scroll container (e.g. `overflow: hidden`, which is
+    // still scrollable programmatically) the UA's initial focus scroll moves it
+    // by exactly that offset, pinning the panel in place: the sheet pops open
+    // instead of sliding up. The overlay must therefore not scroll at all.
+    await page.evaluate(() => {
+      const dialog = document.getElementById("category-sheet")!;
+      (window as unknown as { __sheetScrollAtFocus: Promise<number> }).__sheetScrollAtFocus =
+        new Promise<number>((resolve) => {
+          document.addEventListener(
+            "focusin",
+            (e) => {
+              if (!dialog.contains(e.target as Node)) return;
+              setTimeout(() => resolve(dialog.scrollTop), 0);
+            },
+            { capture: true },
+          );
+        });
+    });
+
     await trigger.click();
 
     const sheet = page.getByRole("dialog", { name: "Browse categories" });
     await expect(sheet).toBeVisible();
     await expect(sheet.getByRole("link")).toHaveCount(12);
 
+    const scrollAtFocus = await page.evaluate(
+      () =>
+        (window as unknown as { __sheetScrollAtFocus: Promise<number> })
+          .__sheetScrollAtFocus,
+    );
+    expect(scrollAtFocus, "focusing the sheet must not scroll its overlay").toBe(0);
+
     // The sheet must be full-bleed: the panel spans the full viewport width
     // and reaches the bottom edge. Visibility/count assertions cannot catch
     // the UA's `dialog:modal` max-size cap (it leaves a dimmed strip below
-    // and beside the panel), so pin the geometry explicitly.
+    // and beside the panel), so pin the geometry explicitly — once the entry
+    // transform has settled (the panel slides up from below the viewport, and
+    // `toBeVisible` already holds while it is still off-screen).
+    await page.waitForFunction(() => {
+      const panel = document.querySelector(".m-sheet-panel");
+      if (!panel) return false;
+      const transform = getComputedStyle(panel).transform;
+      return transform === "none" || transform === "matrix(1, 0, 0, 1, 0, 0)";
+    });
+
     const geometry = await page.evaluate(() => {
       const panel = document.querySelector(".m-sheet-panel");
       if (!panel) return null;
@@ -515,6 +675,62 @@ test.describe("mobile category sheet", () => {
     await page.keyboard.press("Escape");
     await expect(sheet).toBeHidden();
     await expect(trigger).toBeFocused();
+  });
+
+  test("sheet link navigation returns focus to the category trigger", async ({
+    page,
+  }) => {
+    await page.goto("/en");
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
+
+    const trigger = page.getByRole("button", { name: /All apps/ });
+    await trigger.click();
+    const sheet = page.getByRole("dialog", { name: "Browse categories" });
+    await expect(sheet).toBeVisible();
+
+    await sheet.getByRole("link", { name: /Mushaf/ }).click();
+    await expect(page).toHaveURL(/\/en\/mushaf$/);
+    await expect(sheet.filter({ visible: true })).toHaveCount(0);
+
+    // Post-navigation focus lands on the (now active) category trigger of the
+    // new page, not on <body>.
+    const activeTrigger = page.getByRole("button", { name: /Mushaf/ }).filter({ visible: true });
+    await expect(activeTrigger).toBeFocused();
+  });
+
+  test("mobile controls meet the 44px tap-target minimum", async ({ page }) => {
+    await page.goto("/en");
+    await expect(page.locator("article:not(.shimmer-card)").first()).toBeVisible();
+
+    const minHeight = (locator: ReturnType<typeof page.locator>) =>
+      locator.evaluate((el) => parseFloat(getComputedStyle(el).height));
+
+    // Dock sort pill (mobile).
+    expect(await minHeight(page.locator(".dock-sort"))).toBeGreaterThanOrEqual(44);
+
+    // Sheet close button.
+    const trigger = page.getByRole("button", { name: /All apps/ });
+    await trigger.click();
+    const sheet = page.getByRole("dialog", { name: "Browse categories" });
+    await expect(sheet).toBeVisible();
+    expect(
+      await minHeight(sheet.locator(".m-sheet-close")),
+    ).toBeGreaterThanOrEqual(44);
+    await page.keyboard.press("Escape");
+    await expect(sheet).toBeHidden();
+
+    // Palette close, mode buttons and suggestion chips (full-screen on mobile).
+    const search = page.getByRole("button", { name: "Search apps" });
+    await search.click();
+    const dialog = page.getByRole("dialog", { name: "Search apps" });
+    await expect(dialog).toBeVisible();
+    expect(await minHeight(dialog.locator(".sp-close"))).toBeGreaterThanOrEqual(44);
+    expect(
+      await minHeight(dialog.locator(".sp-mode-btn").first()),
+    ).toBeGreaterThanOrEqual(44);
+    expect(
+      await minHeight(dialog.locator(".sp-suggest-btn").first()),
+    ).toBeGreaterThanOrEqual(44);
   });
 });
 
@@ -588,6 +804,8 @@ test.describe("smart search", () => {
     await expect(page.locator("a.did-you-mean")).toHaveAttribute("href", /search=[^&]*%D9%82%D8%B1%D8%A2%D9%86/);
     // page still lists apps or shows fallback notice — both are valid UI; assert it rendered (no 500):
     await expect(page.getByRole("heading", { name: /نتائج البحث عن/ })).toBeVisible();
+    // Smart search keeps the dock's sort too (it re-orders the matched set).
+    await expect(page.locator(".dock-sort").filter({ visible: true })).toHaveCount(1);
   });
 
   test("traditional tab stays modeless", async ({ page }) => {

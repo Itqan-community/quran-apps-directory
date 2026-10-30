@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import type { Locale } from "@/lib/i18n";
 import type { CategoryItem } from "@/lib/repo/categories";
 import { categoryHref, searchHref } from "@/lib/listing-links";
+import { requestDockFocus } from "./dock-focus";
 
 export type SearchPaletteProps = {
   open: boolean;
@@ -108,8 +109,19 @@ export function SearchPalette({
   function submit(raw: string) {
     const q = raw.trim();
     if (!q) return;
-    router.push(searchHref(lang, q, mode));
-    onClose();
+    // Submit is a navigation: record where the destination page's dock should
+    // restore focus (the results heading), then close and navigate.
+    requestDockFocus("search-results");
+    router.push(searchHref(lang, q, mode, sort));
+    requestClose();
+  }
+
+  // A category shortcut is a navigation: record where the destination
+  // page's dock should restore focus (the now-active dock pill), then close
+  // and let the link navigate.
+  function onCategoryClick() {
+    requestDockFocus("category");
+    requestClose();
   }
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -215,7 +227,7 @@ export function SearchPalette({
                 href={categoryHref(lang, category.slug, sort)}
                 scroll={false}
                 className={`search-cat ${index >= 6 ? "search-cat--extra" : ""}`}
-                onClick={onClose}
+                onClick={onCategoryClick}
               >
                 <span className="search-cat-name">
                   {lang === "ar" ? category.nameAr : category.nameEn}

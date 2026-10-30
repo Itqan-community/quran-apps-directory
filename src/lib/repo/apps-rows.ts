@@ -95,6 +95,41 @@ function parseOrdering(ordering?: string) {
   return dir === "desc" ? desc(col) : asc(col);
 }
 
+const ORDER_COLLATORS = {
+  name_en: new Intl.Collator("en"),
+  name_ar: new Intl.Collator("ar"),
+} as const;
+
+/**
+ * JS twin of `parseOrdering` for result sets ranked outside SQL (smart
+ * search): resolves the same `?sort=` → ordering CSV into a comparator.
+ * Returns null for the curated default (`featured_first…`) and for unknown
+ * fields, meaning "keep the incoming order" — for smart search that is the
+ * relevance order, which the default sort must preserve.
+ */
+export function orderingComparator<
+  T extends Pick<AppListItem, "nameEn" | "nameAr" | "avgRating" | "createdAt" | "sortOrder">,
+>(ordering?: string): ((a: T, b: T) => number) | null {
+  const parts = (ordering ?? "").split(",").map((s) => s.trim());
+  const dir = parts[parts.length - 1] === "desc" ? -1 : 1;
+  switch (parts[0]) {
+    case "name_en":
+    case "name_ar": {
+      const collator = ORDER_COLLATORS[parts[0]];
+      const key = parts[0] === "name_en" ? "nameEn" : "nameAr";
+      return (a, b) => dir * collator.compare(a[key], b[key]);
+    }
+    case "created_at":
+      return (a, b) => dir * (a.createdAt.getTime() - b.createdAt.getTime());
+    case "avg_rating":
+      return (a, b) => dir * (Number(a.avgRating) - Number(b.avgRating));
+    case "sort_order":
+      return (a, b) => dir * (a.sortOrder - b.sortOrder);
+    default:
+      return null;
+  }
+}
+
 /** Escape LIKE metacharacters so user input is matched literally (pairs with ESCAPE '\' in SQL). */
 function escapeLike(s: string) {
   return s.replace(/[%_\\]/g, "\\$&");

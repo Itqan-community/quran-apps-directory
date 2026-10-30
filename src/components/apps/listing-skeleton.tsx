@@ -1,7 +1,3 @@
-import type { Locale } from "@/lib/i18n";
-import type { CategoryItem } from "@/lib/repo/categories";
-import { CategoryDock } from "./category-dock";
-
 function SkeletonCard() {
   return (
     <article className="app-card shimmer-card" aria-hidden="true">
@@ -35,43 +31,20 @@ function SkeletonCard() {
 }
 
 /**
- * Streaming fallback: the real dock stays visible, interactive and sticky
- * while the card grid loads; its counts render as fixed-width shimmers
- * (`count={null}`) until the real result count arrives.
+ * Streaming fallback: only the card grid. The category dock is rendered once,
+ * outside the Suspense boundary (see `AppsListing`), so it stays mounted and
+ * interactive across the fallback → settled swap; its count streams in
+ * independently. Rendering a second dock here would unmount the first on the
+ * swap and discard any open palette/sheet state.
  */
-export function ListingCardsSkeleton({
-  lang,
-  categories,
-  selectedCategory,
-  sort,
-  showSort,
-  basePath,
-}: {
-  lang: Locale;
-  categories: CategoryItem[];
-  selectedCategory?: string;
-  sort?: string;
-  showSort?: boolean;
-  basePath?: string;
-}) {
+export function ListingCardsSkeleton() {
   return (
-    <>
-      <CategoryDock
-        lang={lang}
-        categories={categories}
-        selectedCategory={selectedCategory}
-        sort={sort}
-        showSort={showSort}
-        basePath={basePath}
-        count={null}
-      />
-      <div className="main-content" aria-hidden="true">
-        <div className="apps-grid">
-          {Array.from({ length: 8 }).map((_, index) => (
-            <SkeletonCard key={index} />
-          ))}
-        </div>
+    <div className="main-content" aria-hidden="true">
+      <div className="apps-grid">
+        {Array.from({ length: 8 }).map((_, index) => (
+          <SkeletonCard key={index} />
+        ))}
       </div>
-    </>
+    </div>
   );
 }

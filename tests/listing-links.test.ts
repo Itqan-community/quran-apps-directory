@@ -26,4 +26,17 @@ describe("listing link helpers", () => {
     );
     expect(searchHref("en", "   ")).toBe("/en/apps");
   });
+
+  it("carries a non-default sort into search links", () => {
+    expect(searchHref("en", "ayah", "traditional", "newest")).toBe(
+      "/en/apps?search=ayah&sort=newest",
+    );
+    expect(searchHref("en", "ayah", "smart", "az")).toBe(
+      "/en/apps?search=ayah&mode=smart&sort=az",
+    );
+    // The default sort is the route's own default: no param.
+    expect(searchHref("en", "ayah", "traditional", "featured")).toBe(
+      "/en/apps?search=ayah",
+    );
+  });
 });

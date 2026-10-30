@@ -32,14 +32,16 @@ export default async function CategoryPage({
   // Unknown category: the old SPA also served its listing view with the hero
   // and the in-app empty state (200) — parity documented in the spec amendments.
   return (
-    <AppsListing
-      lang={locale}
-      selectedCategory={category}
-      filters={{ categorySlugs: [category], pageSize: PAGE_SIZE, page, ordering }}
-      categories={categories}
-      sort={sort}
-      showSort
-      basePath={`/${locale}/${category}`}
-    />
+    <main>
+      <AppsListing
+        lang={locale}
+        selectedCategory={category}
+        filters={{ categorySlugs: [category], pageSize: PAGE_SIZE, page, ordering }}
+        categories={categories}
+        sort={sort}
+        showSort
+        basePath={`/${locale}/${category}`}
+      />
+    </main>
   );
 }

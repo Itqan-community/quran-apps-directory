@@ -8,7 +8,8 @@
  *   4. cosine pool over published embedded apps (SMART_POOL_SIZE, deterministic
  *      tie-break sort_order asc, name_en asc — spec §13)
  *   5. hybrid re-rank (vector + keyword/IDF + metadata + quality)
- *   6. relevance cutoff, then page slice (pool exhausted = empty page)
+ *   6. relevance cutoff, requested `?sort=` presentation order, then page slice
+ *      (pool exhausted = empty page)
  *
  * Any provider/cache failure, or a zero-size pool, degrades to the legacy hard
  * keyword path (getAppListRows) with fallbackMode: true; reasons and
@@ -32,7 +33,7 @@ import {
   metadataTypes,
   searchEmbeddingCache,
 } from "@/db/schema";
-import { getAppListRows, parsePageParams, type AppListItem, type AppsFilters } from "./apps-rows";
+import { getAppListRows, orderingComparator, parsePageParams, type AppListItem, type AppsFilters } from "./apps-rows";
 import { aiSearchVersion, getEmbeddingProvider } from "@/lib/ai/provider";
 import { EmbeddingUnavailableError, type EmbeddingProvider } from "@/lib/ai/types";
 import {
@@ -493,6 +494,15 @@ async function runSmartSearch(
   kept.sort(
     (a, b) => b.score - a.score || a.item.sortOrder - b.item.sortOrder || a.item.nameEn.localeCompare(b.item.nameEn)
   );
+
+  // `?sort=` (presentation only, never part of the semantic query): when the
+  // user picked a non-default order, present the relevance-cut set in it and
+  // keep score as the tie-break. The curated default (`featured_first`, also
+  // what an absent sort maps to) keeps the relevance order untouched.
+  const requestedOrder = orderingComparator(filters.ordering);
+  if (requestedOrder) {
+    kept.sort((a, b) => requestedOrder(a.item, b.item) || b.score - a.score);
+  }
 
   const { page, pageSize } = parsePageParams(filters);
   const start = (page - 1) * pageSize;
