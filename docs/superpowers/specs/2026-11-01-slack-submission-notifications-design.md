@@ -180,9 +180,13 @@ when the count is zero (skip-send rule — no empty digests).
 
 ### 4.5 Worker & scheduling — BullMQ worker (new `worker` container)
 
-Standalone entrypoint `scripts/run-notification-worker.ts` (repo script
-convention: `node --experimental-strip-types --env-file-if-exists=.env`,
-relative imports only — no `@/*` alias):
+Standalone entrypoint `scripts/run-notification-worker.ts`. Runtime: `tsx`
+(dev dependency, present in the full `deps`-stage node_modules) because the
+worker must import the shared service/repo tree whose files use the tsconfig
+`@/*` alias — `node --experimental-strip-types` does not resolve aliases (the
+reason `db/seed.ts` and friends avoid them, and that convention stays
+untouched for those scripts). Under tsx the script may import `@/lib/...`
+normally; repo alias conventions apply.
 
 1. **Register** repeatable jobs: for each `DigestDefinition`:
    `add(def.name, { kind: "digest", digest: def.name },
@@ -229,7 +233,7 @@ COPY scripts ./scripts
 USER node
 # Runtime env (DATABASE_URL, SLACK_WEBHOOK_URL, REDIS_URL, digest crons, TZ)
 # arrives from the compose service's env_file — no .env is baked into the image.
-CMD ["node", "--experimental-strip-types", "scripts/run-notification-worker.ts"]
+CMD ["npx", "tsx", "scripts/run-notification-worker.ts"]
 ```
 
 (Note: node_modules full tree is reused from the existing `deps` stage; no new
@@ -412,10 +416,10 @@ Following existing conventions (`tests/email.test.ts`, `tests/review-actions.tes
    qad-prod-worker-1` and a test submission.
 3. Manual checks, no waiting for the actual schedule:
    - Enqueue the digest through the BullMQ-correct path:
-     `docker compose -f docker-compose.prod.yml run --rm worker node
-     --experimental-strip-types scripts/run-notification-worker.ts --fire-digest
-     pending-submissions` (a dedicated mode: registers nothing, adds one digest
-     job, exits). With the worker service running, the message posts immediately.
+     `docker compose -f docker-compose.prod.yml run --rm worker npx tsx
+     scripts/run-notification-worker.ts --fire-digest pending-submissions`
+     (a dedicated mode: registers nothing, adds one digest
+     job, exits).
    - Inspect the queue: `docker compose -f docker-compose.prod.yml exec redis
      redis-cli LLEN bull:notifications:wait` (BullMQ keys live under the
      `bull:notifications:*` namespace).
@@ -447,10 +451,10 @@ Following existing conventions (`tests/email.test.ts`, `tests/review-actions.tes
 - **At-least-once delivery**: BullMQ does not guarantee exactly-once. Worst
   observed case is a duplicate Slack message on exotic retry timing; not worth
   a dedup store under YAGNI.
-- **Node strip-types compatibility**: worker script must stick to the existing
-  repo script dialect (relative imports, no `@/*`, typed import syntax only for
-  `.ts` files) — the same constraint already respected by `db/seed.ts` and
-  `scripts/reindex-embeddings.ts`.
+- **Worker runtime uses `tsx`** (dev dependency): shared service/repo files use
+  the `@/*` tsconfig alias which `node --experimental-strip-types` cannot
+  resolve; tsx resolves it with zero config. The repo's existing alias-free
+  scripts keep their `node --experimental-strip-types` dialect unchanged.
 
 ## 12. Open Items for Implementation Plan
 
