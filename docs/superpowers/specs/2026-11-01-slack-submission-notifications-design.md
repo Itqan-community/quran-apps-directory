@@ -240,7 +240,7 @@ CMD ["node", "--experimental-strip-types", "scripts/run-notification-worker.ts"]
 ```yaml
 redis:
   image: redis:7-alpine
-  command: ["redis-server", "--appendonly", "yes"]   # job persistence across restarts
+  command: ["redis-server", "--appendonly", "yes", "--maxmemory", "128mb", "--maxmemory-policy", "noeviction"]  # persistence + hard memory ceiling; noeviction, NOT allkeys-lru — silent eviction would drop queued jobs; noeviction makes full-memory errors loud and handled
   volumes: [redis-data:/data]
   restart: unless-stopped
 
@@ -430,6 +430,16 @@ Following existing conventions (`tests/email.test.ts`, `tests/review-actions.tes
 - **Redis dependency is real**: a new containerized stateful service. Mitigated
   by AOF persistence, restart policies, and it being optional at the app level
   (env unset = disabled).
+- **Redis exhaustion is a bounded, loud failure**: `maxmemory 128mb +
+  noeviction` means full memory throws errors instead of silently evicting
+  queued jobs (LRU-style). Expected steady-state usage is well under 10 MB
+  (id-only payloads, ringed completed/failed sets, a handful of repeat
+  configs). 128 MB leaves roughly an order of magnitude of headroom; if the
+  ceiling is ever approached, the cause is misconfig (e.g. retention raised,
+  or a deleted digest's repeat config orphaned — see §4.4 clean-up rule) and
+  it fails visibly in `docker logs` rather than gradually losing data.
+  Check via `docker compose exec redis redis-cli INFO memory | grep
+  used_memory_human`; alerting, if wanted later, rides on that same metric.
 - **Enqueue-time loss window**: if Redis is briefly unreachable exactly when a
   submission commits, that instant notification is lost (accepted in favor of
   one notification path without a dual-send fallback; the email notification
