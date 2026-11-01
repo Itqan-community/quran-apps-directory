@@ -12,6 +12,7 @@ import { submissionSchema, generateTrackingId, type SubmissionInput } from "@/li
 import { findDuplicateAppName } from "@/lib/repo/apps";
 import { sendAdminNewSubmission, sendSubmissionReceived } from "@/lib/services/email";
 import type { EmailSubmission } from "@/lib/services/email";
+import { enqueueSubmissionNotification } from "@/lib/services/notifications-queue";
 
 export type SubmitResult =
   | { ok: true; trackingId: string }
@@ -102,7 +103,7 @@ export async function submitApp(input: unknown): Promise<SubmitResult> {
         return { ok: true as const, trackingId, submissionId };
       });
 
-      await sendSubmitEmails(data, result.trackingId, result.submissionId);
+      await notifySubmission(data, result.trackingId, result.submissionId);
       return { ok: true as const, trackingId: result.trackingId };
     } catch (e) {
       const message = e instanceof Error ? e.message : String(e);
@@ -114,6 +115,19 @@ export async function submitApp(input: unknown): Promise<SubmitResult> {
     }
   }
   return { ok: false, error: "server", message: "Failed to generate tracking ID. Please try again." };
+}
+
+async function notifySubmission(
+  data: SubmissionInput,
+  trackingId: string,
+  submissionId: number,
+): Promise<void> {
+  try {
+    await sendSubmitEmails(data, trackingId, submissionId); // email path unchanged
+    await enqueueSubmissionNotification(submissionId);      // id-only payload
+  } catch (e) {
+    console.error("submit notification failed", e);
+  }
 }
 
 async function sendSubmitEmails(
