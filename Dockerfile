@@ -7,12 +7,13 @@
 
 FROM node:22-bookworm-slim AS deps
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json .npmrc ./
 RUN npm ci --no-audit --no-fund
 
 FROM node:22-bookworm-slim AS worker
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules   # full tree: bullmq, tsx, drizzle…
+# full tree: bullmq, tsx, drizzle…
+COPY --from=deps /app/node_modules ./node_modules
 COPY package.json package-lock.json tsconfig.json ./
 COPY src ./src
 COPY db ./db
