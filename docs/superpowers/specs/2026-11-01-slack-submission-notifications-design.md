@@ -263,7 +263,8 @@ volumes:
 
 `docker-compose.yml` (dev) — **same full stack**, since this is the primary
 local/dev version: `redis` service (identical AOF command + volume, named under
-the dev project) and a `worker` service pointing at the same `worker` Dockerfile
+the dev project; dev additionally publishes port 6379 because the host-side
+Next dev server enqueues over `localhost:6379` — prod Redis stays port-less) and a `worker` service pointing at the same `worker` Dockerfile
 target with `restart: unless-stopped` and `depends_on: [redis]`. One
 dev-specific detail: inside the container, `localhost` is not the dev Postgres —
 the `worker` service sets `DATABASE_URL=postgres://postgres:postgres@db:5432/qad`
