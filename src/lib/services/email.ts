@@ -27,7 +27,7 @@ export function emailBackend(): "console" | "smtp" {
   return process.env.SMTP_HOST ? "smtp" : "console";
 }
 
-function siteUrl(): string {
+export function siteUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL || "https://quran-apps.itqan.dev";
 }
 

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { slackBackend, postToSlack, postToSlackUrl, type SlackMessage } from "@/lib/services/slack";
+import { newSubmissionMessage, pendingDigestMessage } from "@/lib/services/slack";
 
 const msg: SlackMessage = { text: "hello" };
 const okTransport = () => async () => ({ ok: true, status: 200 });
@@ -65,5 +66,37 @@ describe("postToSlack", () => {
     await expect(p).resolves.toBeUndefined();
     expect(transport).not.toHaveBeenCalled();
     expect(info.mock.calls.some((c) => String(c[0]).includes("[slack]"))).toBe(true);
+  });
+});
+
+const NOW = new Date("2026-11-01T09:00:00Z");
+const DAY = 24 * 60 * 60 * 1000;
+
+describe("message builders", () => {
+  it("newSubmissionMessage embeds the admin review URL and facts", () => {
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "http://localhost:3000");
+    const m = newSubmissionMessage({
+      trackingId: "QAD-ABC123", appNameEn: "Test App", appNameAr: "تطبيق",
+      submitterName: "Ahmed", submitterEmail: "ahmed@test.dev",
+      categories: ["Quran", "Kids"], submissionId: 42, submittedAt: NOW,
+    }, NOW);
+    const json = JSON.stringify(m);
+    expect(json).toContain("http://localhost:3000/admin/submissions/42");
+    expect(json).toContain("Test App");
+    expect(json).toContain("QAD-ABC123");
+    expect(json).toContain("Ahmed");
+  });
+  it("pendingDigestMessage shows total, ages and each item's tracking id", () => {
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "http://localhost:3000");
+    const m = pendingDigestMessage([
+      { trackingId: "QAD-XYZ789", appNameEn: "Older App", submittedAt: new Date(NOW.getTime() - 5 * DAY) },
+      { trackingId: "QAD-NEW456", appNameEn: "New App", submittedAt: new Date(NOW.getTime() - DAY) },
+    ], 2, NOW);
+    const json = JSON.stringify(m);
+    expect(json).toContain("2");
+    expect(json).toContain("QAD-XYZ789");
+    expect(json).toContain("QAD-NEW456");
+    expect(json).toContain("5 days ago");
+    expect(json).toContain("http://localhost:3000/admin/submissions");
   });
 });
