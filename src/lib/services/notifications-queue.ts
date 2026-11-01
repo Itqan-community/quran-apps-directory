@@ -26,6 +26,19 @@ export type QueueLike = {
     data: NotificationJobData,
     opts?: unknown,
   ) => Promise<unknown>;
+  // Cron-based repeatable scheduling. In bullmq v6 a plain `add` with
+  // `{ repeat: { pattern } }` fires once and creates NO scheduler — the
+  // scheduler must be created via `upsertJobScheduler` (idempotent on the
+  // scheduler id). `jobTemplate.opts` carries the per-job options (retention).
+  upsertJobScheduler: (
+    jobSchedulerId: string,
+    repeatOpts: { pattern?: string; tz?: string },
+    jobTemplate?: {
+      name?: string;
+      data?: NotificationJobData;
+      opts?: unknown;
+    },
+  ) => Promise<unknown>;
 };
 
 /** True when a Redis connection is configured. Read at call time. */
@@ -63,9 +76,19 @@ export async function enqueueSubmissionNotification(
     const self = selfQueue;
     // Wrap so the bullmq-specific `JobsOptions` param meets the `QueueLike`
     // contract (`opts?: unknown`); callers only ever pass JOB_DEFAULTS.
+    // `upsertJobScheduler` is delegated for interface completeness — the
+    // producer never schedules, but the shared `QueueLike` carries it.
     queue = {
       add: (name, data, opts) =>
         self.add(name, data, opts as JobsOptions | undefined),
+      upsertJobScheduler: (id, repeatOpts, jobTemplate) =>
+        self.upsertJobScheduler(
+          id,
+          repeatOpts,
+          jobTemplate as
+            | { name?: string; data?: unknown; opts?: JobsOptions }
+            | undefined,
+        ),
     };
   }
 

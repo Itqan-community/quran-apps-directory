@@ -122,8 +122,12 @@ export async function handleJob(raw: unknown, io: WorkerIO): Promise<void> {
 }
 
 /**
- * Registers each digest whose cron env var is set as a BullMQ repeat job
- * (job name = digest name, write-once). Returns the number registered.
+ * Registers each digest whose cron env var is set as a BullMQ job scheduler
+ * (scheduler id = job name = digest name, write-once). Uses
+ * `upsertJobScheduler` — idempotent on every boot (upserting an existing id
+ * updates it) and, unlike `add({ repeat })` in bullmq v6, actually creates a
+ * cron scheduler instead of firing the job once. Returns the number of
+ * digests actually registered.
  */
 export async function registerDigests(
   queue: QueueLike,
@@ -138,12 +142,18 @@ export async function registerDigests(
       );
       continue;
     }
-    await queue.add(def.name, { kind: "digest", digest: def.name }, {
-      ...JOB_DEFAULTS,
-      repeat: { pattern },
-    });
+    await queue.upsertJobScheduler(
+      def.name,
+      { pattern },
+      {
+        name: def.name,
+        data: { kind: "digest", digest: def.name },
+        opts: JOB_DEFAULTS,
+      },
+    );
     registered += 1;
   }
+  console.info(`[notifications] registered ${registered} digest(s)`);
   return registered;
 }
 
@@ -196,6 +206,14 @@ async function main(): Promise<void> {
   const queueLike: QueueLike = {
     add: (name, data, opts) =>
       queue.add(name, data, opts as JobsOptions | undefined),
+    upsertJobScheduler: (id, repeatOpts, jobTemplate) =>
+      queue.upsertJobScheduler(
+        id,
+        repeatOpts,
+        jobTemplate as
+          | { name?: string; data?: unknown; opts?: JobsOptions }
+          | undefined,
+      ),
   };
   await registerDigests(queueLike, process.env);
 

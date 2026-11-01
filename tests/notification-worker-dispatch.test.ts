@@ -241,37 +241,68 @@ describe("handleJob (malformed payloads)", () => {
 });
 
 describe("registerDigests", () => {
-  it("adds one repeat job per configured digest and returns the registered count", async () => {
+  it("upserts one scheduler per configured digest (idempotent) and returns the registered count", async () => {
+    const upsertJobScheduler = vi.fn().mockResolvedValue(undefined);
     const add = vi.fn().mockResolvedValue(undefined);
-    const queue = { add } as QueueLike;
+    const queue = { add, upsertJobScheduler } as QueueLike;
+    const info = vi.spyOn(console, "info").mockImplementation(() => {});
     vi.stubEnv("DIGEST_PENDING_SUBMISSIONS_CRON", "0 8 * * *");
+
+    // Explicit expected count: defs whose cron env var is set in this env —
+    // decoupled from the assumption that every digest is registered.
+    const expectedCount = digests.filter(
+      (d) => process.env[d.cronEnvVar],
+    ).length;
+    expect(expectedCount).toBeGreaterThan(0); // test is meaningful
 
     const count = await registerDigests(queue, process.env);
 
-    expect(count).toBe(digests.length);
-    expect(add).toHaveBeenCalledTimes(digests.length);
+    expect(count).toBe(expectedCount);
+    // One upsert per registered def — idempotent scheduler registration.
+    expect(upsertJobScheduler).toHaveBeenCalledTimes(expectedCount);
+    // Registration goes through the scheduler API, never a plain add.
+    expect(add).not.toHaveBeenCalled();
     for (const def of digests) {
-      expect(add).toHaveBeenCalledWith(
-        def.name,
-        { kind: "digest", digest: def.name },
-        expect.objectContaining({
-          ...JOB_DEFAULTS,
-          repeat: { pattern: "0 8 * * *" },
-        }),
+      if (!process.env[def.cronEnvVar]) continue;
+      expect(upsertJobScheduler).toHaveBeenCalledWith(
+        def.name, // scheduler id = write-once digest name
+        { pattern: "0 8 * * *" }, // cron pattern
+        {
+          name: def.name, // job name stays the write-once digest name
+          data: { kind: "digest", digest: def.name }, // payload unchanged
+          // Full JOB_DEFAULTS carried via the job template opts — includes the
+          // retention ring (removeOnComplete: 100 / removeOnFail: 200).
+          opts: expect.objectContaining(JOB_DEFAULTS),
+        },
       );
     }
+    // F2: operator-visible registration summary with the accurate count.
+    expect(info).toHaveBeenCalledWith(
+      `[notifications] registered ${expectedCount} digest(s)`,
+    );
   });
 
   it("skips digests whose cron env var is unset and returns the registered count", async () => {
+    const upsertJobScheduler = vi.fn().mockResolvedValue(undefined);
     const add = vi.fn().mockResolvedValue(undefined);
-    const queue = { add } as QueueLike;
+    const queue = { add, upsertJobScheduler } as QueueLike;
     const info = vi.spyOn(console, "info").mockImplementation(() => {});
     delete process.env.DIGEST_PENDING_SUBMISSIONS_CRON;
+
+    const expectedCount = digests.filter(
+      (d) => process.env[d.cronEnvVar],
+    ).length;
+    expect(expectedCount).toBe(0);
 
     const count = await registerDigests(queue, process.env);
 
     expect(count).toBe(0);
+    expect(upsertJobScheduler).not.toHaveBeenCalled();
     expect(add).not.toHaveBeenCalled();
-    expect(info).toHaveBeenCalled();
+    // Skip is logged per def, and the summary reflects zero registered.
+    expect(info).toHaveBeenCalledWith(
+      expect.stringContaining("not registered"),
+    );
+    expect(info).toHaveBeenCalledWith("[notifications] registered 0 digest(s)");
   });
 });

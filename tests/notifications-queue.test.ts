@@ -54,7 +54,8 @@ describe("enqueueSubmissionNotification (disabled)", () => {
     clearRedisUrl();
     const info = vi.spyOn(console, "info").mockImplementation(() => {});
     const add = vi.fn().mockResolvedValue(undefined);
-    const queue = { add } as QueueLike;
+    const upsertJobScheduler = vi.fn().mockResolvedValue(undefined);
+    const queue = { add, upsertJobScheduler } as QueueLike;
 
     const ok = await enqueueSubmissionNotification(42, queue);
 
