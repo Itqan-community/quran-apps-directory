@@ -88,7 +88,12 @@ function submittedLabel(submittedAt: Date, now: Date): string {
 }
 
 const mrkdwn = (text: string): SlackMessageBlock => ({ type: "mrkdwn", text });
-const header = (text: string): SlackMessageBlock => ({ type: "header", text: mrkdwn(text) });
+/** Slack header blocks require plain_text (mrkdwn is rejected) and are capped at 150 chars. */
+const HEADER_MAX_CHARS = 150;
+const header = (text: string): SlackMessageBlock => ({
+  type: "header",
+  text: { type: "plain_text", text: text.slice(0, HEADER_MAX_CHARS) },
+});
 const button = (label: string, url: string): SlackMessageBlock => ({
   type: "button",
   text: { type: "plain_text", text: label },

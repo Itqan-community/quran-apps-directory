@@ -72,6 +72,10 @@ describe("postToSlack", () => {
 const NOW = new Date("2026-11-01T09:00:00Z");
 const DAY = 24 * 60 * 60 * 1000;
 
+/** Slack header blocks must carry a plain_text object (mrkdwn is rejected by the API). */
+const headerText = (m: SlackMessage): { type: string; text: string } =>
+  (m.blocks?.[0] as { text: { type: string; text: string } }).text;
+
 describe("message builders", () => {
   it("newSubmissionMessage embeds the admin review URL and facts", () => {
     vi.stubEnv("NEXT_PUBLIC_SITE_URL", "http://localhost:3000");
@@ -85,6 +89,8 @@ describe("message builders", () => {
     expect(json).toContain("Test App");
     expect(json).toContain("QAD-ABC123");
     expect(json).toContain("Ahmed");
+    expect(headerText(m).type).toBe("plain_text");
+    expect(headerText(m).text).toContain("Test App");
   });
   it("pendingDigestMessage shows total, ages and each item's tracking id", () => {
     vi.stubEnv("NEXT_PUBLIC_SITE_URL", "http://localhost:3000");
@@ -98,5 +104,20 @@ describe("message builders", () => {
     expect(json).toContain("QAD-NEW456");
     expect(json).toContain("5 days ago");
     expect(json).toContain("http://localhost:3000/admin/submissions");
+    expect(headerText(m).type).toBe("plain_text");
+    expect(headerText(m).text).toContain("2");
+  });
+  it("clips header text to Slack's 150-char limit", () => {
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "http://localhost:3000");
+    const longName = "A".repeat(200);
+    const m = newSubmissionMessage({
+      trackingId: "QAD-LONG01", appNameEn: longName, appNameAr: "طويل",
+      submitterName: "Ahmed", submitterEmail: "ahmed@test.dev",
+      categories: ["Quran"], submissionId: 7, submittedAt: NOW,
+    }, NOW);
+    const header = headerText(m);
+    expect(header.type).toBe("plain_text");
+    expect(header.text.length).toBe(150);
+    expect(header.text).toBe(`New app submission: ${"A".repeat(130)}`);
   });
 });
