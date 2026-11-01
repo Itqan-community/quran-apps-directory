@@ -86,3 +86,21 @@ services:
       - ./certbot/letsencrypt:/etc/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "128mb", "--maxmemory-policy", "noeviction"]
+    volumes: [redis-data:/data]
+    restart: unless-stopped
+
+  worker:
+    build: { context: ., dockerfile: Dockerfile, target: worker }
+    env_file: .env.prod            # DATABASE_URL, SLACK_WEBHOOK_URL, REDIS_URL, DIGEST_…_CRON, TZ
+    environment:
+      NODE_ENV: production
+    depends_on: [redis]
+    restart: unless-stopped
+    # no ports/expose — jobs egress to Postgres + Slack only
+
+volumes:
+  redis-data:
