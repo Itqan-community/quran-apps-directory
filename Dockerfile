@@ -10,6 +10,18 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 
+FROM node:22-bookworm-slim AS worker
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules   # full tree: bullmq, tsx, drizzle…
+COPY package.json package-lock.json tsconfig.json ./
+COPY src ./src
+COPY db ./db
+COPY scripts ./scripts
+USER node
+# Runtime env (DATABASE_URL, SLACK_WEBHOOK_URL, REDIS_URL, digest crons, TZ) comes
+# from the compose service's env_file — nothing baked into image layers.
+CMD ["npx", "tsx", "scripts/run-notification-worker.ts"]
+
 FROM node:22-bookworm-slim AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules

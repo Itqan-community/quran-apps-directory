@@ -25,6 +25,21 @@ services:
       - "9001:9001"
     volumes:
       - miniodata:/bitnami/minio/data
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "128mb", "--maxmemory-policy", "noeviction"]
+    ports: ["6379:6379"]   # dev only — host-side next dev producer enqueues over localhost:6379
+    volumes: [redis-data:/data]
+    restart: unless-stopped
+  worker:
+    build: { context: ., dockerfile: Dockerfile, target: worker }
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/qad   # service-network host, NOT localhost
+      REDIS_URL: redis://redis:6379
+      DIGEST_PENDING_SUBMISSIONS_CRON: "0 9 */3 * *"
+    depends_on: [redis]
+    restart: unless-stopped
 volumes:
   pgdata:
   miniodata:
+  redis-data:
