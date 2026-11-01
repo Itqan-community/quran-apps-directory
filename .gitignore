@@ -49,3 +49,6 @@ next-env.d.ts
 # docker runtime material — never commit credentials or certificates
 certbot/cloudflare.ini
 certbot/letsencrypt/
+
+# production cut-over runbook (real production data instructions, not for git)
+PROD-CUTOVER.md

@@ -80,7 +80,7 @@ Then set `PROVISION_DB=0` again and redeploy. Two reasons not to leave it on:
 the runner image only has the pruned standalone output and could not run it.
 
 **Seeding is a separate, manual step.** `db/seed.ts` needs `ADMIN_EMAIL` /
-`ADMIN_PASSWORD` to create the admin user (`db/seed.ts:163`), and those are
+`ADMIN_PASSWORD` to create the admin user (`db/seed.ts` `seedAdmin`), and those are
 runtime-only values — making them build args would bake the password into image
 history. Run it on the VPS after provisioning, or from any machine that can
 reach the database:
@@ -91,8 +91,26 @@ npm ci --no-audit --no-fund
 node --experimental-strip-types db/seed.ts     # idempotent: all inserts ON CONFLICT DO NOTHING
 ```
 
+**Production-clone seeding.** With `LIVE_DB_URL` set to a restored pg_dump of the
+legacy Django backend, `db:seed` takes a different path: it **refuses to run on
+a populated database**, so wipe it first with `db:flush`. It then clones all
+content models with their original IDs — categories, developers, apps (+ copied
+embeddings), apps_categories, app_screenshots, metadata_types/options,
+app_metadata_values, app_submissions (+categories), submission_status_logs,
+app_view_events (full history) and search_embedding_cache. Submission reviewer
+fields are nulled because users are not migrated yet. Flush and seed are
+explicit separate commands (`db/flush.ts` truncates content tables only —
+`users` is kept):
+
+```bash
+LIVE_DB_URL=postgres://postgres:postgres@localhost:5433/qad_prod_clone npm run db:flush
+LIVE_DB_URL=postgres://postgres:postgres@localhost:5433/qad_prod_clone npm run db:seed
+LIVE_DB_URL=postgres://postgres:postgres@localhost:5433/qad_prod_clone npm run db:parity
+```
+
 Seed **before** the deploy build if you want the first build's prerendered pages
 to contain content.
+
 
 What happens on first boot:
 

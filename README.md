@@ -113,7 +113,7 @@ docker compose up -d db        # pgvector/pg16 on :5433 (add `minio` for local R
 cp .env.example .env.local     # then fill the values you need (see below)
 npm run db:pgvector            # CREATE EXTENSION vector (idempotent)
 npm run db:push                # push the Drizzle schema
-npm run db:seed                # idempotent seed from db/seed-data/
+npm run db:seed                # prod-clone seed when LIVE_DB_URL is set, else JSON seed
 npm run dev                    # http://localhost:3000 → /ar
 ```
 
@@ -125,7 +125,8 @@ npm run dev                    # http://localhost:3000 → /ar
 | `npm run lint` | ESLint |
 | `npm run db:pgvector` | Enable the pgvector extension on `DATABASE_URL` |
 | `npm run db:push` / `db:push:test` | Push schema to dev / test DB |
-| `npm run db:seed` | Idempotent seed (upsert by slug) |
+| `npm run db:flush` | Destructive: truncate all content tables (`users` untouched) |
+| `npm run db:seed` | If `LIVE_DB_URL` is set: clone everything from the restored prod dump with original IDs (users/auth excluded; refuses to run on a populated DB — run `db:flush` first); otherwise idempotent seed from `db/seed-data/` |
 | `npm run db:migrate-live` | One-time copy from the legacy Railway DB (`LIVE_DB_URL`) |
 | `npm run db:parity` / `db:sync-live-json` | Legacy parity checks / JSON sync |
 | `npm run embeddings:reindex` | Re-embed all published apps for Smart Search (tallies `{embedded, skipped, failed}`, exit 0) |
