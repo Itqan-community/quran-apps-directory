@@ -6,7 +6,11 @@
  * `build` may do its own repo I/O; it never posts — delivery stays in the worker.
  */
 
-import { countPendingSubmissions, listPendingSubmissions } from "@/lib/repo/submissions";
+import {
+  countPendingSubmissions,
+  listPendingSubmissions,
+  oldestPendingSubmittedAt,
+} from "@/lib/repo/submissions";
 import { pendingDigestMessage, type SlackMessage } from "@/lib/services/slack";
 
 export type DigestDefinition = {
@@ -23,7 +27,14 @@ export const digests: DigestDefinition[] = [
     async build() {
       const items = await listPendingSubmissions();
       if (items.length === 0) return null;
-      return pendingDigestMessage(items, await countPendingSubmissions());
+      // total and oldest are facts over ALL pending rows (spec §4.1): the
+      // shown slice is only the newest 10, so the oldest age must come from
+      // a separate aggregate, not from the slice.
+      const [total, oldest] = await Promise.all([
+        countPendingSubmissions(),
+        oldestPendingSubmittedAt(),
+      ]);
+      return pendingDigestMessage(items, total, new Date(), oldest ?? undefined);
     },
   },
 ];

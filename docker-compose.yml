@@ -33,10 +33,18 @@ services:
     restart: unless-stopped
   worker:
     build: { context: ., dockerfile: Dockerfile, target: worker }
+    # SLACK_WEBHOOK_URL (and anything else the worker needs at runtime)
+    # comes from the shared dev .env; the explicit environment: entries below
+    # override env_file (compose precedence) where the container-network
+    # values differ from the host-side ones.
+    env_file: .env
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/qad   # service-network host, NOT localhost
       REDIS_URL: redis://redis:6379
       DIGEST_PENDING_SUBMISSIONS_CRON: "0 9 */3 * *"
+      # Digest review buttons must point at the dev site, not a prod URL that
+      # might sit in .env.
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
     depends_on: [redis]
     restart: unless-stopped
 volumes:

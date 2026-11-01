@@ -122,11 +122,18 @@ async function notifySubmission(
   trackingId: string,
   submissionId: number,
 ): Promise<void> {
+  // Each sink fails independently: an email failure must not suppress the
+  // Slack enqueue, and vice versa. (sendSubmitEmails already catches
+  // internally; the outer catch is a belt-and-braces guard.)
   try {
     await sendSubmitEmails(data, trackingId, submissionId); // email path unchanged
+  } catch (e) {
+    console.error("submit email failed (email)", e);
+  }
+  try {
     await enqueueSubmissionNotification(submissionId);      // id-only payload
   } catch (e) {
-    console.error("submit notification failed", e);
+    console.error("submit notification failed (slack queue)", e);
   }
 }
 

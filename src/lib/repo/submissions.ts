@@ -115,6 +115,9 @@ export async function getSubmissionForAdminNotification(
 export async function listPendingSubmissions(
   limit = 10
 ): Promise<PendingDigestItem[]> {
+  // Clamp: the digest only ever needs a small newest-first slice, and a
+  // limit of 0 would silently return nothing.
+  const clamped = Math.max(1, Math.min(50, limit));
   return db
     .select({
       trackingId: appSubmissions.trackingId,
@@ -123,8 +126,22 @@ export async function listPendingSubmissions(
     })
     .from(appSubmissions)
     .where(eq(appSubmissions.status, "pending"))
-    .orderBy(desc(appSubmissions.createdAt))
-    .limit(limit);
+    // id desc as a deterministic tie-breaker for identical created_at values.
+    .orderBy(desc(appSubmissions.createdAt), desc(appSubmissions.id))
+    .limit(clamped);
+}
+
+/**
+ * Min created_at over ALL pending rows (spec §4.1: the "oldest pending" age
+ * in the digest is a fact over every pending row, not over the newest-10
+ * slice `listPendingSubmissions` returns). Null when nothing is pending.
+ */
+export async function oldestPendingSubmittedAt(): Promise<Date | null> {
+  const rows = await db
+    .select({ oldest: sql<Date>`min(${appSubmissions.createdAt})` })
+    .from(appSubmissions)
+    .where(eq(appSubmissions.status, "pending"));
+  return rows[0]?.oldest ?? null;
 }
 
 export async function countPendingSubmissions(): Promise<number> {

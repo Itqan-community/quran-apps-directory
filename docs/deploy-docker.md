@@ -228,6 +228,50 @@ After the first successful deploy:
 4. Verify `/ar/apps?search=ورش&mode=smart` returns ranked results; then test fallback by
    temporarily breaking the key (banner appears, keyword results still served).
 
+## Slack/Redis notifications
+
+The prod stack runs two extra services: `redis` (bounded: `maxmemory 128mb` +
+`noeviction`) and `worker` (the BullMQ consumer that posts submission
+notifications and digests to Slack). Both are no-ops until their env vars are
+filled in `.env.prod`.
+
+1. **Fill the env vars** in `.env.prod`:
+   - `SLACK_WEBHOOK_URL` — the incoming-webhook URL (empty = notifications
+     silently skipped, exactly like an unset `ADMIN_EMAIL`).
+   - `REDIS_URL` — `redis://redis:6379` (the in-stack service; the app
+     container enqueues over the same URL).
+   - `DIGEST_PENDING_SUBMISSIONS_CRON` — a 5-field cron pattern for the
+     pending-submissions digest (e.g. `0 9 */3 * *`); empty = no digest.
+   - `TZ` — the timezone the cron pattern is evaluated in (BullMQ schedules
+     are TZ-aware); leave unset for UTC.
+2. **First boot:** `docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build`
+   starts redis, then the worker. On boot the worker registers each digest
+   whose cron var is set as a persistent BullMQ job scheduler
+   (`upsertJobScheduler`, idempotent on every restart). Verify with
+   `docker compose --env-file .env.prod -f docker-compose.prod.yml logs worker`
+   → `registered 1 digest(s)` (or `0 digest(s)` when the cron var is empty).
+3. **Manual verification** (no cron wait): from a checkout that can reach the
+   prod Redis, fire one digest job now:
+   ```bash
+   export REDIS_URL="$(sed -n 's/^REDIS_URL=//p' .env.prod)"
+   export SLACK_WEBHOOK_URL="$(sed -n 's/^SLACK_WEBHOOK_URL=//p' .env.prod)"
+   npx tsx scripts/run-notification-worker.ts --fire-digest pending-submissions
+   ```
+   → logs `enqueued one-shot digest "pending-submissions"`; the worker picks
+   it up (`[notifications] processed pending-submissions <id>`) and posts to
+   Slack when there are pending submissions (skips with a log line otherwise).
+
+Rollback / disabling:
+
+- Set `SLACK_WEBHOOK_URL` (and the cron var) to empty in `.env.prod` and
+  `… up -d worker app` — the app still accepts submissions; notifications
+  degrade to logged no-ops. Unsetting the cron var also **removes the
+  persisted scheduler** on the worker's next boot (an unset var both stops
+  registration and cleans up the leftover).
+- To drop all queue state: `redis-cli --scan --pattern 'bull:notifications:*' | xargs -r redis-cli DEL`
+  (covers the job lists, the retention rings, and the `bull:notifications:repeat:*`
+  scheduler keys).
+
 ## Ops cheatsheet
 
 ```bash

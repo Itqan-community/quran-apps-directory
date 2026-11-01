@@ -4,7 +4,8 @@ import {
   JOB_DEFAULTS,
   notificationsQueueEnabled,
   enqueueSubmissionNotification,
-  type QueueLike,
+  producerConnectionOptions,
+  type JobAdderLike,
 } from "@/lib/services/notifications-queue";
 
 const originalRedisUrl = process.env.REDIS_URL;
@@ -32,6 +33,27 @@ describe("NOTIFICATIONS_QUEUE / JOB_DEFAULTS", () => {
   });
 });
 
+describe("producerConnectionOptions (F1/F2: bounded, fast-fail, bullmq-owned)", () => {
+  it("passes an OPTIONS object (not a client instance) with bounded retry", () => {
+    const opts = producerConnectionOptions("redis://localhost:6379");
+    // An options object means bullmq constructs + owns its own ioredis client
+    // and quits it on close() — a caller-supplied INSTANCE is treated as
+    // `shared` and leaked (never quit) on every submission.
+    expect(opts).toBeTypeOf("object");
+    expect(opts).not.toHaveProperty("quit"); // not a live client
+    expect(opts).not.toHaveProperty("status");
+    // `url` inside the options object is honored by bullmq's client builder.
+    expect(opts.url).toBe("redis://localhost:6379");
+    // Bounded: offline queue off, one retry per request, short connect
+    // timeout, and a null-returning retryStrategy so ioredis gives up instead
+    // of reconnecting forever (the default that made queue.add hang).
+    expect(opts.enableOfflineQueue).toBe(false);
+    expect(opts.maxRetriesPerRequest).toBe(1);
+    expect(opts.connectTimeout).toBe(2_000);
+    expect(opts.retryStrategy(1)).toBeNull();
+  });
+});
+
 describe("notificationsQueueEnabled", () => {
   it("is false when REDIS_URL is unset", () => {
     clearRedisUrl();
@@ -54,8 +76,7 @@ describe("enqueueSubmissionNotification (disabled)", () => {
     clearRedisUrl();
     const info = vi.spyOn(console, "info").mockImplementation(() => {});
     const add = vi.fn().mockResolvedValue(undefined);
-    const upsertJobScheduler = vi.fn().mockResolvedValue(undefined);
-    const queue = { add, upsertJobScheduler } as QueueLike;
+    const queue = { add } as JobAdderLike;
 
     const ok = await enqueueSubmissionNotification(42, queue);
 
@@ -73,7 +94,7 @@ describe("enqueueSubmissionNotification (enabled, injected queue)", () => {
     const info = vi.spyOn(console, "info").mockImplementation(() => {});
     const add = vi.fn().mockResolvedValue(undefined);
     const close = vi.fn().mockResolvedValue(undefined);
-    const queue = { add, close } as unknown as QueueLike;
+    const queue = { add, close } as unknown as JobAdderLike;
 
     const ok = await enqueueSubmissionNotification(42, queue);
 

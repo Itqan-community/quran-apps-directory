@@ -1,4 +1,4 @@
-import { describe, it, expect, afterAll, vi } from "vitest";
+import { describe, it, expect, afterAll, afterEach, vi } from "vitest";
 import postgres from "postgres";
 import { submitApp } from "@/lib/actions/submissions";
 import { enqueueSubmissionNotification } from "@/lib/services/notifications-queue";
@@ -37,7 +37,7 @@ describe("submitApp post-commit notification enqueue", () => {
     expect(enqueuedId).toBe(Number(row.id));
   });
 
-  it("still returns ok and logs when enqueue fails", async () => {
+  it("still returns ok (with a tracking id) and logs when enqueue fails", async () => {
     vi.mocked(enqueueSubmissionNotification).mockRejectedValueOnce(new Error("redis down"));
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     const res = await submitApp({
@@ -46,8 +46,14 @@ describe("submitApp post-commit notification enqueue", () => {
       google_play_link: "https://play.google.com/store/apps/details?id=test",
       content_confirmation: true,
     });
+    // The submission itself succeeded — the notification failure is swallowed
+    // and logged, and the user still gets their tracking id.
     expect(res.ok).toBe(true);
-    expect(errorSpy).toHaveBeenCalledWith("submit notification failed", expect.anything());
-    errorSpy.mockRestore();
+    if (res.ok) expect(res.trackingId).toBeTruthy();
+    expect(errorSpy).toHaveBeenCalledWith("submit notification failed (slack queue)", expect.anything());
   });
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });

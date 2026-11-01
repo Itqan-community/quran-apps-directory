@@ -5,7 +5,7 @@ import { newSubmissionMessage, pendingDigestMessage } from "@/lib/services/slack
 const msg: SlackMessage = { text: "hello" };
 const okTransport = () => async () => ({ ok: true, status: 200 });
 
-afterEach(() => { vi.unstubAllEnvs(); vi.restoreAllMocks(); });
+afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 
 describe("slackBackend", () => {
   it("is none when SLACK_WEBHOOK_URL is unset", () => {
@@ -119,5 +119,122 @@ describe("message builders", () => {
     expect(header.type).toBe("plain_text");
     expect(header.text.length).toBe(150);
     expect(header.text).toBe(`New app submission: ${"A".repeat(130)}`);
+  });
+
+  it("pendingDigestMessage reports the TRUE oldest age from `oldest` when total > 10 (F3)", () => {
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "http://localhost:3000");
+    // 12 pending: the shown slice holds the newest 10 (ages 1..10 days). The
+    // true oldest row is 40 days old and is NOT in the slice — a slice-derived
+    // estimate would under-report it as 10 days.
+    const items = Array.from({ length: 12 }, (_, i) => ({
+      trackingId: `QAD-SLICE${i}`,
+      appNameEn: `App ${i}`,
+      submittedAt: new Date(NOW.getTime() - (i + 1) * DAY),
+    }));
+    const m = pendingDigestMessage(items, 12, NOW, new Date(NOW.getTime() - 40 * DAY));
+    const json = JSON.stringify(m);
+    expect(json).toContain("40 days ago");
+    // The slice-derived estimate must not be reported as the oldest age.
+    expect(json).not.toContain("oldest 10 days ago");
+    expect(json).not.toContain("oldest 12 days ago");
+  });
+
+  it("pendingDigestMessage falls back to the slice-derived estimate when `oldest` is omitted (old behavior)", () => {
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "http://localhost:3000");
+    const m = pendingDigestMessage([
+      { trackingId: "QAD-A", appNameEn: "A", submittedAt: new Date(NOW.getTime() - 3 * DAY) },
+      { trackingId: "QAD-B", appNameEn: "B", submittedAt: new Date(NOW.getTime() - DAY) },
+    ], 2, NOW);
+    const json = JSON.stringify(m);
+    expect(json).toContain("oldest 3 days ago");
+  });
+});
+
+describe("mrkdwn escaping (F7: user-controlled text)", () => {
+  it("escapes <!channel> mentions and <url|label> link injection in section fields", () => {
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "http://localhost:3000");
+    const m = newSubmissionMessage({
+      trackingId: "QAD-EVIL01",
+      appNameEn: "<!channel> Free iPhone",
+      appNameAr: "<https://evil|Review>",
+      submitterName: "Bob <@U0123>",
+      submitterEmail: "bob@test.dev",
+      submitterOrganization: "<!here> Org",
+      categories: ["<https://evil|Quran>"],
+      submissionId: 42, submittedAt: NOW,
+    }, NOW);
+
+    const json = JSON.stringify(m);
+    expect(json).toContain("&lt;!channel&gt;");
+    expect(json).toContain("&lt;https://evil|Review&gt;");
+    expect(json).toContain("&lt;@U0123&gt;");
+
+    // No raw mention / link injection survives in ANY section's mrkdwn text.
+    const mrkdwnTexts = (m.blocks ?? [])
+      .filter((b) => b.type === "section")
+      .flatMap((b) => {
+        const fields = (b as { fields?: unknown[] }).fields;
+        if (Array.isArray(fields)) return fields;
+        return [b.text];
+      })
+      .map((f) => (typeof f === "object" && f !== null && "text" in f ? String((f as { text: unknown }).text) : String(f)));
+    expect(mrkdwnTexts.length).toBeGreaterThan(0);
+    for (const text of mrkdwnTexts) {
+      expect(text).not.toMatch(/<!channel>|<@U|<https?:\/\//);
+    }
+  });
+
+  it("escapes user-controlled app names in digest bullets", () => {
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "http://localhost:3000");
+    const m = pendingDigestMessage([
+      { trackingId: "QAD-EVIL02", appNameEn: "<!channel> Free iPhone", submittedAt: new Date(NOW.getTime() - DAY) },
+    ], 1, NOW);
+    const json = JSON.stringify(m);
+    expect(json).toContain("&lt;!channel&gt;");
+    const bullets = (m.blocks ?? [])
+      .filter((b) => b.type === "section")
+      .map((b) => (typeof b.text === "object" && b.text !== null && "text" in b.text ? String((b.text as { text: unknown }).text) : ""))
+      .join("\n");
+    expect(bullets).not.toContain("<!channel>");
+  });
+});
+
+describe("defaultTransport (F8: real fetch path)", () => {
+  it("POSTs the JSON body to the URL and throws on !ok", async () => {
+    const fetchMock = vi.fn(async (_url: string, init?: RequestInit) => ({ ok: false, status: 503 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(
+      postToSlackUrl("https://hooks.slack.test/T1/B1/x", msg),
+    ).rejects.toThrow("[slack] post failed (HTTP 503)");
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(url).toBe("https://hooks.slack.test/T1/B1/x");
+    expect(init?.method).toBe("POST");
+    expect(init?.headers).toEqual({ "content-type": "application/json" });
+    expect(init?.body).toBe(JSON.stringify(msg));
+    // The default transport bounds hung connections with an AbortSignal.
+    expect(init?.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it("resolves when the response is ok", async () => {
+    const fetchMock = vi.fn(async () => ({ ok: true, status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    await expect(
+      postToSlackUrl("https://hooks.slack.test/T1/B1/x", msg),
+    ).resolves.toBeUndefined();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("wraps network-level rejections with the [slack] prefix and preserves the cause", async () => {
+    const fetchMock = vi.fn(async () => { throw new Error("fetch failed"); });
+    vi.stubGlobal("fetch", fetchMock);
+    await expect(
+      postToSlackUrl("https://hooks.slack.test/T1/B1/x", msg),
+    ).rejects.toMatchObject({
+      message: "[slack] post failed (fetch failed)",
+      cause: expect.any(Error),
+    });
   });
 });

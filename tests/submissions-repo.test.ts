@@ -12,6 +12,7 @@ const CAT_NAME_EN = "T:Slack Cat";
 const CAT_SLUG = "t-slack-cat";
 
 let idA = 0;
+let idB = 0;
 let pendingBaseline = 0;
 
 beforeAll(async () => {
@@ -42,6 +43,7 @@ beforeAll(async () => {
     RETURNING id, tracking_id`;
   for (const r of rows) {
     if (r.tracking_id === "t-slack-a") idA = Number(r.id);
+    if (r.tracking_id === "t-slack-b") idB = Number(r.id);
   }
 
   // Category link on row A only.
@@ -56,18 +58,34 @@ afterAll(async () => {
 });
 
 describe("listPendingSubmissions", () => {
-  it("returns exactly the seeded pending rows, newest-first", async () => {
+  it("returns the seeded pending rows, newest-first (filter-robust)", async () => {
     const items = await listPendingSubmissions(10);
-    expect(items.map((i) => i.trackingId)).toEqual(["t-slack-b", "t-slack-a"]);
+    // The test DB is shared across the suite, so other pending rows may be
+    // present. Filter to the seeded tracking ids before asserting order.
+    const seeded = items
+      .filter((i) => i.trackingId === "t-slack-a" || i.trackingId === "t-slack-b")
+      .map((i) => i.trackingId);
+    expect(seeded).toEqual(["t-slack-b", "t-slack-a"]);
     for (const item of items) {
       expect(item.appNameEn).toBeTypeOf("string");
       expect(item.submittedAt).toBeInstanceOf(Date);
     }
   });
 
-  it("truncates to the newest rows when limit is small", async () => {
+  it("truncates to the single newest pending row when limit is 1", async () => {
     const items = await listPendingSubmissions(1);
-    expect(items.map((i) => i.trackingId)).toEqual(["t-slack-b"]);
+    expect(items).toHaveLength(1);
+    // The one returned row must be the overall newest pending row (the shared
+    // DB may hold other pending rows, so compare against a direct query).
+    const [newest] = await sql`
+      SELECT tracking_id FROM app_submissions
+      WHERE status = 'pending' ORDER BY created_at DESC, id DESC LIMIT 1`;
+    expect(items[0].trackingId).toBe(String(newest.tracking_id));
+  });
+
+  it("clamps a non-positive limit to 1 (never returns nothing)", async () => {
+    const items = await listPendingSubmissions(0);
+    expect(items).toHaveLength(1);
   });
 });
 
@@ -90,6 +108,14 @@ describe("getSubmissionForAdminNotification", () => {
     expect(data?.developerNameEn).toBe("Dev A");
     expect(data?.categories).toEqual([CAT_NAME_EN]);
     expect(data?.submittedAt).toBeInstanceOf(Date);
+  });
+
+  it("returns an empty categories array when no categories are linked", async () => {
+    // Row B (t-slack-b) has no app_submissions_categories link.
+    const data = await getSubmissionForAdminNotification(idB);
+    expect(data).not.toBeNull();
+    expect(data?.trackingId).toBe("t-slack-b");
+    expect(data?.categories).toEqual([]);
   });
 
   it("returns null for a non-existing id", async () => {

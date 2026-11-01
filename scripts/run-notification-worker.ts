@@ -137,8 +137,23 @@ export async function registerDigests(
   for (const def of digests) {
     const pattern = env[def.cronEnvVar];
     if (!pattern) {
+      // An unset cron var must ALSO remove a scheduler persisted by a
+      // previous boot with the var set — upsert alone would leave the old
+      // scheduler firing. Idempotent: a missing scheduler just resolves
+      // false and the removal is not announced.
+      const removed = await queue
+        .removeJobScheduler(def.name)
+        .catch((err) => {
+          console.error(
+            `[notifications] failed to remove leftover scheduler "${def.name}"`,
+            err,
+          );
+          return false;
+        });
       console.info(
-        `[notifications] digest "${def.name}" not registered (${def.cronEnvVar} unset)`,
+        removed
+          ? `[notifications] digest "${def.name}" not registered (${def.cronEnvVar} unset) — removed leftover scheduler`
+          : `[notifications] digest "${def.name}" not registered (${def.cronEnvVar} unset)`,
       );
       continue;
     }
@@ -214,6 +229,7 @@ async function main(): Promise<void> {
           | { name?: string; data?: unknown; opts?: JobsOptions }
           | undefined,
       ),
+    removeJobScheduler: (id) => queue.removeJobScheduler(id),
   };
   await registerDigests(queueLike, process.env);
 
@@ -225,6 +241,20 @@ async function main(): Promise<void> {
       `[notifications] job "${job?.name ?? "unknown"}" failed:`,
       err,
     );
+  });
+  worker.on("completed", (job) => {
+    console.info("[notifications] processed", job.name, job.id);
+  });
+  // Graceful shutdown: let in-flight jobs finish, close the worker (and its
+  // shared connection), then exit 0 for a clean compose restart.
+  process.on("SIGTERM", () => {
+    worker
+      .close()
+      .then(() => process.exit(0))
+      .catch((err) => {
+        console.error("[notifications] worker.close() failed on SIGTERM:", err);
+        process.exit(1);
+      });
   });
   console.info(`[notifications] worker running on queue "${NOTIFICATIONS_QUEUE}"`);
   // Block forever; the ioredis connection keeps the event loop alive too.

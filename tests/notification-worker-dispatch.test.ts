@@ -243,8 +243,9 @@ describe("handleJob (malformed payloads)", () => {
 describe("registerDigests", () => {
   it("upserts one scheduler per configured digest (idempotent) and returns the registered count", async () => {
     const upsertJobScheduler = vi.fn().mockResolvedValue(undefined);
+    const removeJobScheduler = vi.fn().mockResolvedValue(false);
     const add = vi.fn().mockResolvedValue(undefined);
-    const queue = { add, upsertJobScheduler } as QueueLike;
+    const queue = { add, upsertJobScheduler, removeJobScheduler } as QueueLike;
     const info = vi.spyOn(console, "info").mockImplementation(() => {});
     vi.stubEnv("DIGEST_PENDING_SUBMISSIONS_CRON", "0 8 * * *");
 
@@ -262,6 +263,8 @@ describe("registerDigests", () => {
     expect(upsertJobScheduler).toHaveBeenCalledTimes(expectedCount);
     // Registration goes through the scheduler API, never a plain add.
     expect(add).not.toHaveBeenCalled();
+    // Nothing is configured-out here, so no leftover-scheduler removal runs.
+    expect(removeJobScheduler).not.toHaveBeenCalled();
     for (const def of digests) {
       if (!process.env[def.cronEnvVar]) continue;
       expect(upsertJobScheduler).toHaveBeenCalledWith(
@@ -284,8 +287,10 @@ describe("registerDigests", () => {
 
   it("skips digests whose cron env var is unset and returns the registered count", async () => {
     const upsertJobScheduler = vi.fn().mockResolvedValue(undefined);
+    // No leftover scheduler exists → removal is a no-op (resolves false).
+    const removeJobScheduler = vi.fn().mockResolvedValue(false);
     const add = vi.fn().mockResolvedValue(undefined);
-    const queue = { add, upsertJobScheduler } as QueueLike;
+    const queue = { add, upsertJobScheduler, removeJobScheduler } as QueueLike;
     const info = vi.spyOn(console, "info").mockImplementation(() => {});
     delete process.env.DIGEST_PENDING_SUBMISSIONS_CRON;
 
@@ -299,10 +304,38 @@ describe("registerDigests", () => {
     expect(count).toBe(0);
     expect(upsertJobScheduler).not.toHaveBeenCalled();
     expect(add).not.toHaveBeenCalled();
+    // An unset cron var also removes any leftover scheduler (idempotent: a
+    // missing scheduler resolves false and is not announced as removed).
+    expect(removeJobScheduler).toHaveBeenCalledTimes(digests.length);
+    for (const def of digests) {
+      expect(removeJobScheduler).toHaveBeenCalledWith(def.name);
+    }
     // Skip is logged per def, and the summary reflects zero registered.
     expect(info).toHaveBeenCalledWith(
       expect.stringContaining("not registered"),
     );
     expect(info).toHaveBeenCalledWith("[notifications] registered 0 digest(s)");
+  });
+
+  it("removes a leftover scheduler when the cron env var is unset (announces the removal)", async () => {
+    const upsertJobScheduler = vi.fn().mockResolvedValue(undefined);
+    // A scheduler persisted by a previous boot still exists → removal
+    // resolves true and the log line must say so.
+    const removeJobScheduler = vi.fn().mockResolvedValue(true);
+    const add = vi.fn().mockResolvedValue(undefined);
+    const queue = { add, upsertJobScheduler, removeJobScheduler } as QueueLike;
+    const info = vi.spyOn(console, "info").mockImplementation(() => {});
+    delete process.env.DIGEST_PENDING_SUBMISSIONS_CRON;
+
+    const count = await registerDigests(queue, process.env);
+
+    expect(count).toBe(0);
+    expect(upsertJobScheduler).not.toHaveBeenCalled();
+    expect(removeJobScheduler).toHaveBeenCalledTimes(digests.length);
+    expect(removeJobScheduler).toHaveBeenCalledWith("pending-submissions");
+    // The removal is operator-visible (distinct from the plain skip line).
+    expect(info).toHaveBeenCalledWith(
+      expect.stringContaining("removed leftover scheduler"),
+    );
   });
 });

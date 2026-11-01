@@ -18,10 +18,14 @@ async function defaultTransport(
   url: string,
   body: SlackMessage,
 ): Promise<{ ok: boolean; status: number }> {
+  // ~10s ceiling: a hung Slack connection must not stall the concurrency-1
+  // worker. Only the default transport gets this — an injected transport
+  // (tests) owns its own timeout semantics.
   const response = await fetch(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(body),
+    signal: AbortSignal.timeout(10_000),
   });
   return { ok: response.ok, status: response.status };
 }
@@ -41,8 +45,16 @@ export async function postToSlackUrl(
     return;
   }
   const transport = injected ?? defaultTransport;
-  const { ok, status } = await transport(url, message);
-  if (!ok) throw new Error(`[slack] post failed (HTTP ${status})`);
+  let result: { ok: boolean; status: number };
+  try {
+    result = await transport(url, message);
+  } catch (err) {
+    // Network-level rejection (DNS, timeout, refused) — rethrow with the
+    // workspace `[slack]` prefix and the original error preserved as cause.
+    const reason = err instanceof Error ? err.message : String(err);
+    throw new Error(`[slack] post failed (${reason})`, { cause: err });
+  }
+  if (!result.ok) throw new Error(`[slack] post failed (HTTP ${result.status})`);
 }
 
 /** Posts to SLACK_WEBHOOK_URL (read at call time). */
@@ -88,6 +100,20 @@ function submittedLabel(submittedAt: Date, now: Date): string {
 }
 
 const mrkdwn = (text: string): SlackMessageBlock => ({ type: "mrkdwn", text });
+
+/**
+ * Escapes user-controlled text for mrkdwn so Slack cannot parse it as
+ * markup — raw `<!channel>`/`<@U…>` mentions, or `<url|label>` link
+ * injection, from app names, submitter fields, or category names. Slack's
+ * documented order: `&` first, then `<` and `>`. (The plain-text fallback
+ * `text` and `plain_text` headers are not mrkdwn and stay raw.)
+ */
+function escapeMrkdwn(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
 /** Slack header blocks require plain_text (mrkdwn is rejected) and are capped at 150 chars. */
 const HEADER_MAX_CHARS = 150;
 const header = (text: string): SlackMessageBlock => ({
@@ -113,13 +139,13 @@ export function newSubmissionMessage(sub: SlackSubmission, now: Date = new Date(
     `Review: ${url}`,
   ].join("\n");
   const fields: SlackMessageBlock[] = [
-    mrkdwn(`*App:*\n${sub.appNameEn} (${sub.appNameAr})`),
+    mrkdwn(`*App:*\n${escapeMrkdwn(sub.appNameEn)} (${escapeMrkdwn(sub.appNameAr)})`),
     mrkdwn(`*Tracking ID:*\n${sub.trackingId}`),
-    mrkdwn(`*Submitted by:*\n${sub.submitterName} <${sub.submitterEmail}>`),
-    mrkdwn(`*Categories:*\n${sub.categories.join(", ") || "—"}`),
+    mrkdwn(`*Submitted by:*\n${escapeMrkdwn(sub.submitterName)} <${escapeMrkdwn(sub.submitterEmail)}>`),
+    mrkdwn(`*Categories:*\n${escapeMrkdwn(sub.categories.join(", ")) || "—"}`),
     mrkdwn(`*Submitted:*\n${sub.submittedAt.toISOString()} (${submittedLabel(sub.submittedAt, now)})`),
   ];
-  if (sub.submitterOrganization) fields.push(mrkdwn(`*Organization:*\n${sub.submitterOrganization}`));
+  if (sub.submitterOrganization) fields.push(mrkdwn(`*Organization:*\n${escapeMrkdwn(sub.submitterOrganization)}`));
   return {
     text,
     blocks: [
@@ -134,19 +160,28 @@ export function newSubmissionMessage(sub: SlackSubmission, now: Date = new Date(
  * Block Kit digest of pending submissions (spec §4.1/§4.8). `items` must be
  * newest-first (as returned by `listPendingSubmissions`); at most the newest
  * `DIGEST_MAX_ITEMS` are shown as `name (trackingId) — N days ago` bullets.
+ *
+ * The "oldest pending" age is a fact over ALL pending rows, not over the
+ * newest-10 slice that is shown: with `total > DIGEST_MAX_ITEMS` the slice
+ * underestimates it. Pass `oldest` (the min submittedAt over all pending
+ * rows, from `oldestPendingSubmittedAt`) to report the true age; when
+ * omitted, the slice-derived estimate is used (old behavior).
  */
 export function pendingDigestMessage(
   items: PendingDigestItem[],
   total: number,
   now: Date = new Date(),
+  oldest?: Date,
 ): SlackMessage {
   const url = adminUrl();
   const shown = items.slice(0, DIGEST_MAX_ITEMS);
-  const oldestDays = shown.length
-    ? Math.max(...shown.map((i) => wholeDays(i.submittedAt, now)))
-    : 0;
+  const oldestDays = oldest
+    ? wholeDays(oldest, now)
+    : shown.length
+      ? Math.max(...shown.map((i) => wholeDays(i.submittedAt, now)))
+      : 0;
   const bullets = shown.map(
-    (i) => `• ${i.appNameEn} (${i.trackingId}) — ${ageLabel(wholeDays(i.submittedAt, now))}`,
+    (i) => `• ${escapeMrkdwn(i.appNameEn)} (${i.trackingId}) — ${ageLabel(wholeDays(i.submittedAt, now))}`,
   );
   const text = [
     `${total} pending submission${total === 1 ? "" : "s"} — oldest ${ageLabel(oldestDays)}`,
