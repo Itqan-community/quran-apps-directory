@@ -14,7 +14,6 @@ import { Pagination } from "./pagination";
 import { HeroSearch } from "./hero-search";
 import { CategoryDock } from "./category-dock";
 import { ListingCardsSkeleton } from "./listing-skeleton";
-import { CompactModeConnector } from "@/components/site/compact-mode-connector";
 
 export async function AppsListing({
   lang,
@@ -53,7 +52,6 @@ export async function AppsListing({
   return (
     <>
       {/* Hero (shared with home/category/apps, like the old AppList page) */}
-      <CompactModeConnector />
       <section className="hero-section">
         <div className="hero-background" aria-hidden>
           <img src="/images/star.svg" alt="" className="hero-star-decoration" />

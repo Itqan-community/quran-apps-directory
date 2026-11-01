@@ -123,7 +123,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 120px 24px 40px;
+  padding: 48px 24px 40px;
 }
 
 .contact-hero .hero-content {
@@ -255,7 +255,7 @@
 
 @media (max-width: 768px) {
   .contact-hero {
-    padding: 80px 16px 24px;
+    padding: 16px 16px 24px;
   }
 
   .contact-us-page h1.contact-title {

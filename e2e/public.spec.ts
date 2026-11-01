@@ -818,18 +818,45 @@ test.describe("smart search", () => {
   });
 });
 
-test.describe("compact header", () => {
-  test("compact header keeps search but drops category chips", async ({ page }) => {
+test.describe("fixed header", () => {
+  test("stays full-width and expanded while scrolling", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/en");
+
+    const header = page.locator("#site-header");
+    const nav = page.getByRole("navigation", { name: "Main" });
+    await expect(nav).toBeVisible();
+
+    // Full-bleed bar pinned to the top edge (no floating card, no inset).
+    const before = await header.evaluate((el) => {
+      const rect = el.getBoundingClientRect();
+      return {
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+        position: getComputedStyle(el).position,
+        viewport: document.documentElement.clientWidth,
+      };
+    });
+    expect(before.position).toBe("fixed");
+    expect(before.top).toBe(0);
+    expect(before.left).toBe(0);
+    expect(before.width).toBe(before.viewport);
+
     await page.mouse.wheel(0, 1200);
 
-    await expect(page.locator("#site-header")).toHaveAttribute(
-      "data-header-compact",
-      "true",
-    );
-    await expect(page.locator(".compact-category-chip")).toHaveCount(0);
-    await expect(page.locator(".compact-search-input")).toBeVisible();
+    // Still pinned, same height, still the expanded nav — the compact search
+    // bar and its scroll swap are gone.
+    const after = await header.evaluate((el) => {
+      const rect = el.getBoundingClientRect();
+      return { top: rect.top, width: rect.width, height: rect.height };
+    });
+    expect(after.top).toBe(0);
+    expect(after.width).toBe(before.width);
+    expect(after.height).toBe(before.height);
+    await expect(nav).toBeVisible();
+    await expect(page.locator(".compact-search-input")).toHaveCount(0);
     await expect(page.getByRole("navigation", { name: "Categories" })).toBeVisible();
   });
 });

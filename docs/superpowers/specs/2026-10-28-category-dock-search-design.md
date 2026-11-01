@@ -4,6 +4,14 @@
 **Status:** Design approved in chat; written spec pending review
 **Feature area:** Public listing pages (`/`, `/[category]`, `/apps`) and the compact header
 
+> **Amendment 2026-10-30 (header):** the fixed header is now a full-width, flat
+> bar — `--header-h` (72px desktop / 64px mobile) plus the safe-area inset, a
+> hairline bottom border and no floating card — and it never changes on scroll:
+> the compact search bar and its `data-header-compact` scroll connector were
+> removed, and page content is offset by `.site-main`. Statements below about
+> the floating card, the compact swap or a dock pinned "below the compact
+> header" are superseded; the dock now pins at `--header-h + 8px`.
+
 ## 1. Context
 
 The public listing pages render a 12-chip category row inside the hero (`All` plus
@@ -180,17 +188,17 @@ Use the existing brand tokens where possible. New dock/palette tokens:
 | --- | --- | --- |
 | `--dock-surface` | `rgba(255,255,255,.84)` | `rgba(24,24,24,.84)` |
 | `--dock-border` | `rgba(255,255,255,.72)` | `rgba(255,255,255,.08)` |
-| `--dock-chip` | `rgba(160,83,59,.055)` | `rgba(255,140,66,.10)` |
-| `--dock-chip-line` | `rgba(160,83,59,.06)` | `rgba(255,140,66,.12)` |
-| `--dock-chip-text` | `#5F5A55` | `#D6D0C8` |
-| `--dock-chip-active` | `#A0533B` | `#FF8C42` |
-| `--dock-chip-active-text` | `#FFFFFF` | `#171717` |
+| `--dock-chip` | `rgba(6,28,26,.045)` | `rgba(255,255,255,.06)` |
+| `--dock-chip-line` | `rgba(6,28,26,.07)` | `rgba(255,255,255,.10)` |
+| `--dock-chip-text` | `#5C5C5C` | `#D6D0C8` |
+| `--dock-chip-active` | `var(--cta-color)` (`#061C1A`) | `#F2F5F3` |
+| `--dock-chip-active-text` | `#FFFFFF` | `#0F0F0F` |
 | `--dock-num` | `rgba(255,255,255,.72)` | `rgba(255,255,255,.10)` |
 | `--dock-num-text` | `#6C757D` | `#B3B3B3` |
-| `--dock-num-active` | `rgba(255,255,255,.18)` | `rgba(0,0,0,.14)` |
+| `--dock-num-active` | `rgba(255,255,255,.16)` | `rgba(15,15,15,.12)` |
 | `--dock-sheet` | `#FFFFFF` | `#1E1E1E` |
-| `--dock-sheet-tile` | `#F8F5F0` | `#262626` |
-| `--dock-sheet-active` | `#A0533B` | `#FF8C42` |
+| `--dock-sheet-tile` | `#F5F5F5` | `#262626` |
+| `--dock-sheet-active` | `var(--cta-color)` (`#061C1A`) | `#F2F5F3` |
 | `--palette-surface` | `rgba(255,255,255,.93)` | `rgba(28,28,28,.94)` |
 | `--palette-backdrop` | `rgba(20,15,10,.36)` | `rgba(0,0,0,.55)` |
 
@@ -202,6 +210,10 @@ Use the existing brand tokens where possible. New dock/palette tokens:
   `prefers-reduced-motion: reduce` by removing transforms and transitions.
 - Focus: 2px `--primary-color` ring, 2px offset, on all interactive dock,
   sheet and palette controls. Tap targets are at least 44px on mobile.
+- The selected chip/tile uses the site's black-and-white button pairing (ink
+  fill with white label, inverted on dark surfaces) — not the orange accent —
+  and is flat: both its containers (`.dock-rail`, `.m-sheet-panel`) are scroll
+  containers, so a drop shadow was clipped into a hard-edged blob.
 - The active pill, counters and muted labels must meet 4.5:1 contrast for small
   text in both themes.
 

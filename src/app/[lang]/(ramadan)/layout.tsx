@@ -15,7 +15,7 @@ export default async function RamadanGroupLayout({
   return (
     <div className="dark min-h-screen bg-[#0f0f0f] text-white" data-ramadan="true">
       <SiteHeader lang={locale} />
-      <div>{children}</div>
+      <div className="site-main">{children}</div>
     </div>
   );
 }

@@ -121,7 +121,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 120px 24px 40px;
+  padding: 48px 24px 40px;
 }
 
 .form-shell-hero .hero-content {
@@ -163,7 +163,7 @@
 
 @media (max-width: 768px) {
   .form-shell-hero {
-    padding: 80px 16px 24px;
+    padding: 16px 16px 24px;
   }
 
   .form-shell-page h1.form-shell-title {

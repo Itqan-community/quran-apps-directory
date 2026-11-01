@@ -8,20 +8,20 @@
 /* Hero */
 .app-hero-section {
   position: relative;
-  padding: 110px 55px 40px;
+  padding: 38px 55px 40px;
   min-height: auto;
   width: 100%;
 }
 
 @media (max-width: 768px) {
   .app-hero-section {
-    padding: 120px 16px 40px;
+    padding: 56px 16px 40px;
   }
 }
 
 @media (max-width: 480px) {
   .app-hero-section {
-    padding: 100px 30px 40px;
+    padding: 36px 30px 40px;
   }
 }
 
