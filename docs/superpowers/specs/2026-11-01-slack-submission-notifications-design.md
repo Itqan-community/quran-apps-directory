@@ -108,9 +108,15 @@ Mirrors `email.ts` conventions:
   - `newSubmissionMessage(sub: SlackSubmission): SlackMessage` — Block Kit:
     app name (EN/AR), submitter name/email, categories, submitted date,
     and a "Review" link button → `${siteUrl()}/admin/submissions/{id}`.
-  - `pendingDigestMessage(items: PendingDigestItem[], total: number): SlackMessage`
-    — total count, oldest pending age, newest N (≤ 10) with name + tracking id,
-    and a link button to `${siteUrl()}/admin/submissions`.
+  - `pendingDigestMessage(items: PendingDigestItem[], total: number, now?):
+    SlackMessage` — total count, oldest pending age, newest N (≤ 10) with
+    name + tracking id, and a link button to `${siteUrl()}/admin/submissions`.
+  - Amendment (2026-11-01, final-review ruling): the digest's "oldest pending
+    age" is computed over ALL pending rows (repo-provided
+    `oldestPendingSubmittedAt()`), not the newest-10 shown slice — it becomes
+    an optional `oldest?: Date` parameter; when absent the shown-slice fallback
+    applies. User-derived text is mrkdwn-escaped (`&`, `<`, `>`) before
+    interpolation.
 - Types exported for reuse: `SlackMessage`, `SlackMessageBlock`,
   `SlackSubmission`, `PendingDigestItem`.
 - `siteUrl()` is currently private in `email.ts`. Minimal collaboration change:
@@ -294,10 +300,14 @@ with
 ```ts
 async function notifySubmission(submissionId: number, trackingId: string) {
   try {
-    await sendSubmitEmails(...as today...);            // unchanged email path
-    await enqueueSubmissionNotification(submissionId); // bullmq producer
+    await sendSubmitEmails(data, trackingId, submissionId);            // unchanged email path
   } catch (e) {
-    console.error("submit notification failed", e);
+    console.error("submit email failed (email)", e);
+  }
+  try {
+    await enqueueSubmissionNotification(submissionId); // id-only payload over the wire
+  } catch (e) {
+    console.error("submit notification failed (slack queue)", e);
   }
 }
 ```
