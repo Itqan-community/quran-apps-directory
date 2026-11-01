@@ -134,14 +134,25 @@ export async function listPendingSubmissions(
 /**
  * Min created_at over ALL pending rows (spec §4.1: the "oldest pending" age
  * in the digest is a fact over every pending row, not over the newest-10
- * slice `listPendingSubmissions` returns). Null when nothing is pending.
+ * slice `listPendingSubmissions` returns). Null when nothing pending.
+ *
+ * Bare time aggregates (sql-min(createdAt)) surface through the
+ * drizzle/postgres-js row mapping as raw SQL text ("2026-01-08 14:17:31.85+00")
+ * instead of the Date the driver parses for plain column selects — which broke
+ * wholeDays in the Slack digest at cutover. Epoch milliseconds over int8 is
+ * deterministic under every transport: numeric text → Number → Date.
  */
 export async function oldestPendingSubmittedAt(): Promise<Date | null> {
   const rows = await db
-    .select({ oldest: sql<Date>`min(${appSubmissions.createdAt})` })
+    .select({
+      sinceMs: sql<string | number>`extract(epoch from min(${appSubmissions.createdAt})) * 1000::int8`,
+    })
     .from(appSubmissions)
     .where(eq(appSubmissions.status, "pending"));
-  return rows[0]?.oldest ?? null;
+  const raw = rows[0]?.sinceMs;
+  if (raw === null || raw === undefined || raw === "") return null;
+  const ms = Number(raw);
+  return Number.isFinite(ms) ? new Date(ms) : null;
 }
 
 export async function countPendingSubmissions(): Promise<number> {
