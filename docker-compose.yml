@@ -36,8 +36,13 @@ services:
     # SLACK_WEBHOOK_URL (and anything else the worker needs at runtime)
     # comes from the shared dev .env; the explicit environment: entries below
     # override env_file (compose precedence) where the container-network
-    # values differ from the host-side ones.
-    env_file: .env
+    # values differ from the host-side ones. required: false — a fresh clone
+    # has no .env (README convention is .env.local) and config must not
+    # hard-fail without one. (List-of-objects form: this compose version
+    # rejects a bare single object for env_file.)
+    env_file:
+      - path: .env
+        required: false
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/qad   # service-network host, NOT localhost
       REDIS_URL: redis://redis:6379
