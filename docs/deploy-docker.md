@@ -83,29 +83,28 @@ the runner image only has the pruned standalone output and could not run it.
 `ADMIN_PASSWORD` to create the admin user (`db/seed.ts` `seedAdmin`), and those are
 runtime-only values — making them build args would bake the password into image
 history. Run it on the VPS after provisioning, or from any machine that can
-reach the database:
+reach the database.
+
+**Production-clone seeding.** `db/seed.ts` picks its source in order: 1. a live
+legacy clone DB when `LIVE_DB_URL` is set, 2. the git-ignored snapshot
+`db/seed-data/prod-clone.json` (generated once on any machine by
+`LIVE_DB_URL=... npm run db:clone-snapshot`). It fails when neither is
+available — the old static bootstrap was removed now that the snapshot is the
+canonical source.
+Snapshot/live seeding requires an empty database (run `db:flush` first) and
+clones content models with their original IDs — categories, developers, apps
+(+ copied embeddings), apps_categories, app_screenshots,
+metadata_types/options, app_metadata_values, app_submissions (+categories),
+submission_status_logs, app_view_events (full history) and
+search_embedding_cache. Image keys stored bare in the legacy DB are
+rewritten to absolute `pub-…r2.dev` URLs; submission reviewer fields are
+nulled because users are not migrated yet. Flush stays a separate explicit
+command (`db/flush.ts` truncates content tables only — `users` is kept):
 
 ```bash
-export DATABASE_URL="$(sed -n 's/^DATABASE_URL=//p' .env.prod)"
-npm ci --no-audit --no-fund
-node --experimental-strip-types db/seed.ts     # idempotent: all inserts ON CONFLICT DO NOTHING
-```
-
-**Production-clone seeding.** With `LIVE_DB_URL` set to a restored pg_dump of the
-legacy Django backend, `db:seed` takes a different path: it **refuses to run on
-a populated database**, so wipe it first with `db:flush`. It then clones all
-content models with their original IDs — categories, developers, apps (+ copied
-embeddings), apps_categories, app_screenshots, metadata_types/options,
-app_metadata_values, app_submissions (+categories), submission_status_logs,
-app_view_events (full history) and search_embedding_cache. Submission reviewer
-fields are nulled because users are not migrated yet. Flush and seed are
-explicit separate commands (`db/flush.ts` truncates content tables only —
-`users` is kept):
-
-```bash
-LIVE_DB_URL=postgres://postgres:postgres@localhost:5433/qad_prod_clone npm run db:flush
-LIVE_DB_URL=postgres://postgres:postgres@localhost:5433/qad_prod_clone npm run db:seed
-LIVE_DB_URL=postgres://postgres:postgres@localhost:5433/qad_prod_clone npm run db:parity
+npm run db:flush
+npm run db:seed
+npm run db:parity    # optional (LIVE_DB_URL machine only)
 ```
 
 Seed **before** the deploy build if you want the first build's prerendered pages
@@ -163,7 +162,8 @@ docker run -d --name qad-minio -p 9010:9000 -p 9011:9001 \
   -e MINIO_DEFAULT_BUCKETS=qad \
   -v qad-minio-data:/bitnami/minio/data bitnamilegacy/minio:latest
 
-# 2. Schema into that db; optional seed for realistic pages
+# 2. Schema into that db; optional seed for realistic pages (needs the
+#    prod-clone.json snapshot present — db/seed no longer has a static fallback)
 DATABASE_URL=postgres://postgres:postgres@localhost:5434/qad node --experimental-strip-types db/enable-pgvector.ts
 DATABASE_URL=postgres://postgres:postgres@localhost:5434/qad npx drizzle-kit push --force
 DATABASE_URL=postgres://postgres:postgres@localhost:5434/qad npm run db:seed        # optional

@@ -12,6 +12,8 @@ node_modules
 certbot/letsencrypt
 # Production DB dumps must never be baked into image layers.
 *.dump
+# Same for the generated prod-clone seed snapshot (contains submissions PII).
+db/seed-data/prod-clone.json
 e2e
 docs
 *.md
