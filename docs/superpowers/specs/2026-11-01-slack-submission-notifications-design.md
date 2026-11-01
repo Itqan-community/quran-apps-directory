@@ -138,6 +138,11 @@ Mirrors `email.ts` conventions:
   side effects — same degradation philosophy as the email/R2 services.
 - Connection details owned only here ("owns connection" rule; `slack.ts` and
   workers share the URL string but never the connection object).
+- `src/lib/services/notifications-queue.ts` and the worker create jobs with an
+  explicit retention policy: `removeOnComplete: 100, removeOnFail: 200`
+  (a bounded debugging tail in Redis rather than unbounded growth). The
+  complete-on-fire removal always applies to regular jobs of **both** kinds —
+  `submission-notification` and digest runs alike.
 
 The producer in `submitApp` (see §5) does not import bullmq.
 
@@ -199,6 +204,12 @@ Single source of truth for the queue name: a deterministic exported constant
 imported by the worker script as a relative path (simple, one-way dependency —
 the worker script is a repo script, not part of the Next app bundle).
 Per-job options: `attempts: 5, backoff: { type: "exponential", delay: 30_000 }`.
+Job lifecycle (fires vs. persistent state): a **repeatable job** is a persisted
+repeat *configuration* in Redis; each cron slot enqueues one normal job and
+scheduling continues forever from that config. Regular jobs of both kinds
+(`submission-notification` **and** each fired digest run) are removed from Redis
+once processed, subject to the retention tail defined in §4.3 — only the repeat
+configs survive as persistent state.
 Timezone: respects container `TZ` (spec'd default UTC unless `.env.prod` sets
 `TZ`).
 
@@ -246,11 +257,18 @@ volumes:
   redis-data:
 ```
 
-`docker-compose.yml` (dev) — add the same `redis` service (no persistence
-volume needed for dev; plus `depends_on`-free, app runs with next dev) so local
-`REDIS_URL=redis://localhost:6379` works when wanted; the worker is run
-manually in dev via the same script (no dev worker service). Unset `REDIS_URL`
-still means "notifications disabled" in local dev.
+`docker-compose.yml` (dev) — **same full stack**, since this is the primary
+local/dev version: `redis` service (identical AOF command + volume, named under
+the dev project) and a `worker` service pointing at the same `worker` Dockerfile
+target with `restart: unless-stopped` and `depends_on: [redis]`. One
+dev-specific detail: inside the container, `localhost` is not the dev Postgres —
+the `worker` service sets `DATABASE_URL=postgres://postgres:postgres@db:5432/qad`
+(service-network hostname, no mapped port), while `REDIS_URL` uses
+`redis://redis:6379`. Slack vars may be left unset in `.env` locally: the
+worker then runs with the no-op Slack degradation (§4.1) and enqueued jobs
+complete without sending — useful for exercising the queue end to end without a
+real webhook. Unset `REDIS_URL` in the app env still means "producer disabled"
+(§4.3) — the compose stack is additive and safe to run.
 
 ### 4.7 Producer wiring in the action — `src/lib/actions/submissions.ts`
 
