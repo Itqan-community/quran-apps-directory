@@ -2005,20 +2005,23 @@ body {
 
 .apps-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* minmax(0, 1fr) — plain 1fr lets a card's min-content width blow the
+     tracks past the viewport and cause page-wide horizontal scroll on
+     mobile. Keep 1fr tracks clampable to 0. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 24px;
 }
 
 @media (max-width: 1024px) {
   .apps-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
   }
 }
 
 @media (max-width: 640px) {
   .apps-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
 }
@@ -2345,6 +2348,9 @@ body {
   align-items: center;
   gap: 2px;
   flex: 1;
+  /* Let the flex items shrink below their content min-width so the row
+     fits inside narrow cards on ~360px phones (same grid-blowout guard). */
+  min-width: 0;
 }
 
 .stat-item > div {
