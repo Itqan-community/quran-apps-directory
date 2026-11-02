@@ -61,9 +61,9 @@ export function PlatformMarks({
       {marks.map(({ Icon, chip }, index) => (
         <span
           key={index}
-          className={`flex size-6 items-center justify-center rounded-lg ${chip}`}
+          className={`flex size-5 sm:size-6 items-center justify-center rounded-lg ${chip}`}
         >
-          <Icon className="size-3.5" />
+          <Icon className="size-3 sm:size-3.5" />
         </span>
       ))}
     </span>

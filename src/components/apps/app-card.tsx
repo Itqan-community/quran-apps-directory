@@ -6,6 +6,7 @@ import type { MatchReason } from "@/lib/ai/rank";
 import type { AppListItem } from "@/lib/repo/apps-rows";
 import { formatRating } from "@/lib/services/arabic";
 import { StatItem } from "./stat-item";
+import { CategoryTagsRow } from "./category-tags-row";
 import { CardActions } from "./card-actions";
 import { brandChip, platformMarks } from "./platform-marks";
 
@@ -41,9 +42,6 @@ export async function AppCard({
   const platformLabel =
     marks.length > 0 ? marks.map((m) => m.label[lang]).join(lang === "ar" ? "، " : ", ") : app.platform;
   const detailHref = `/${lang}/app/${appUrlParam(app)}`;
-  const visibleTags = app.categories.slice(0, 3);
-  const extraTags = app.categories.slice(3);
-  const allTags = [...visibleTags, ...extraTags];
 
   return (
     <article
@@ -104,28 +102,8 @@ export async function AppCard({
           </Link>
         </div>
 
-        {/* Category tags */}
-        {allTags.length > 0 && (
-          <div className="category-tags">
-            {visibleTags.map((c) => (
-              <span key={c.slug} className="category-tag">
-                {isAr ? c.nameAr : c.nameEn}
-              </span>
-            ))}
-            {extraTags.length > 0 && (
-              <span className="category-tag category-more">
-                +{extraTags.length}
-                <span className="category-tooltip">
-                  {extraTags.map((c) => (
-                    <span key={c.slug} className="tooltip-tag">
-                      {isAr ? c.nameAr : c.nameEn}
-                    </span>
-                  ))}
-                </span>
-              </span>
-            )}
-          </div>
-        )}
+        {/* Category tags: 2 readable + "+N" chip that expands on click */}
+        <CategoryTagsRow tags={app.categories} lang={lang} moreLabel={t("tags.more")} lessLabel={t("tags.less")} />
 
         {/* Match reasons (smart search only) — up to 3 chips, localized by lang */}
         {matchReasons && matchReasons.length > 0 && (
@@ -155,9 +133,9 @@ export async function AppCard({
                 marks.map(({ Icon, chip }, i) => (
                   <span
                     key={i}
-                    className={`flex size-6 items-center justify-center rounded-lg ${chip}`}
+                    className={`flex items-center justify-center rounded-lg size-5 sm:size-6 ${chip}`}
                   >
-                    <Icon className="size-3.5" />
+                    <Icon className="size-3 sm:size-3.5" />
                   </span>
                 ))
               ) : undefined

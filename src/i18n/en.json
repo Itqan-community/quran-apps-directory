@@ -106,6 +106,10 @@
       "featured": "Featured",
       "new": "New"
     },
+    "tags": {
+      "more": "Show all categories",
+      "less": "Hide categories"
+    },
     "sort": {
       "label": "Sort by",
       "featured": "Featured",

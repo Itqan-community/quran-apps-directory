@@ -2232,6 +2232,10 @@ body {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  /* Reserve both clamped lines even when the text fits in one: without
+     this, 1-line descriptions make those cards ~5px shorter than their
+     neighbours and the grid rows drift out of alignment. */
+  min-height: 2.8em;
 }
 
 @media (max-width: 640px) {
@@ -2239,12 +2243,18 @@ body {
     font-size: 11px;
     -webkit-line-clamp: 1;
     line-height: 1.3;
+    min-height: 1.3em;
   }
 }
 
 .category-tags {
   display: flex;
-  flex-wrap: wrap;
+  /* Never wrap to a second row: a fixed single-line tag row keeps every
+     card the same height regardless of tag count or tag length. Codes
+     that overflow shrink + ellipsize (see .category-tag). */
+  flex-wrap: nowrap;
+  overflow: hidden;
+  min-width: 0;
   gap: 6px;
 }
 
@@ -2263,38 +2273,38 @@ body {
   color: var(--text-secondary);
   font-weight: 400;
   white-space: nowrap;
+  /* Shrinkable chip: when the single-line tag row runs out of width the
+     chip compresses and ellipsizes instead of pushing a new row. */
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* "+N" chip stays full size ("wedge"/last chip) so users always know there
+   are more tags — it must never be the one that gets squeezed away. It is
+   a <button>: clicking it pops the hidden tags (see .category-tooltip). */
 .category-tag.category-more {
+  flex: 0 0 auto;
+  /* Reset the button chrome only — font/padding/bg come from .category-tag,
+     which is why the chip matches its sibling spans exactly. */
+  appearance: none;
+  border: none;
   background: var(--tag-more-bg);
   font-weight: 500;
-  position: relative;
   cursor: pointer;
-}
-
-.category-tag.category-more:hover .category-tooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
 }
 
 .dark .category-tag.category-more {
   color: #bbb;
 }
 
-@media (max-width: 640px) {
-  .category-tag {
-    padding: 3px 6px;
-    font-size: 10px;
-    border-radius: 4px;
-  }
-}
-
+/* The +N chip's popup (like the old project's tooltip, but click-controlled
+   and `position: fixed` with coords set from the chip at click time, so the
+   clipped tag row or the viewport edge can never cut it off). */
 .category-tooltip {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
+  position: fixed;
+  transform: translateX(-50%);
   background: var(--card-bg);
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 10px;
@@ -2303,19 +2313,10 @@ body {
   flex-wrap: wrap;
   gap: 6px;
   min-width: 140px;
-  max-width: 260px;
+  max-width: calc(100vw - 16px);
+  width: max-content;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s ease;
-  z-index: 10;
-  pointer-events: none;
-}
-
-@media (max-width: 640px) {
-  .category-tooltip {
-    display: none;
-  }
+  z-index: 200;
 }
 
 .tooltip-tag {
@@ -2326,6 +2327,12 @@ body {
   font-size: 11px;
   color: var(--text-secondary);
   white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .tooltip-tag {
+    font-size: 10px;
+  }
 }
 
 .stats-row {
@@ -2351,6 +2358,9 @@ body {
   /* Let the flex items shrink below their content min-width so the row
      fits inside narrow cards on ~360px phones (same grid-blowout guard). */
   min-width: 0;
+  /* Content wider than its half of the row (e.g. 3–4 platform marks) must
+     never paint over the neighbouring rating item. */
+  overflow: hidden;
 }
 
 .stat-item > div {
@@ -2369,6 +2379,18 @@ body {
   align-items: flex-end;
   text-align: right;
   padding-inline-end: 16px;
+}
+
+@media (max-width: 640px) {
+  /* Tighter edge padding on phones: the inner space is split between the
+     rating and up to 4 platform marks, which don't fit at 16px insets. */
+  .stat-item:first-child {
+    padding-inline-start: 8px;
+  }
+
+  .stat-item:last-child {
+    padding-inline-end: 8px;
+  }
 }
 
 @media (max-width: 640px) {
