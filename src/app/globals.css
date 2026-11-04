@@ -1812,10 +1812,6 @@ body {
   outline-offset: 2px;
 }
 
-.search-cat--extra {
-  display: none;
-}
-
 .search-cat-name {
   flex: 1;
   min-width: 0;
@@ -1833,48 +1829,6 @@ body {
   font-weight: 600;
   color: var(--dock-chip-text);
   font-variant-numeric: tabular-nums;
-}
-
-/* Example queries: chips that submit immediately with the selected mode. */
-.sp-suggest {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-/* 44px tap target: the pill keeps its width/typography; the hit area grows. */
-.sp-suggest-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 44px;
-  padding-inline: 14px;
-  border: none;
-  border-radius: 999px;
-  background: var(--dock-sheet);
-  box-shadow: inset 0 0 0 1px var(--dock-chip-line);
-  font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--text-color);
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.sp-suggest-btn:hover {
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--dock-chip-active) 30%, transparent);
-}
-
-.sp-suggest-btn:focus-visible {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
-}
-
-.sp-suggest-btn svg {
-  width: 13px;
-  height: 13px;
-  color: var(--text-secondary);
-  flex-shrink: 0;
 }
 
 /* Footer hints: Enter to search · esc Close · ⌘K Open anytime. */
@@ -1900,7 +1854,7 @@ body {
 }
 
 /* Mobile: full-screen warm surface; the input row becomes a floating card,
-   all 11 category tiles show, the Esc pill and footer hints are desktop-only. */
+   the Esc pill and footer hints are desktop-only. */
 @media (max-width: 900px) {
   .sp-panel {
     position: absolute;
@@ -1941,10 +1895,6 @@ body {
   .sp-section {
     padding-block: 14px 0;
     padding-inline: 12px;
-  }
-
-  .search-cat--extra {
-    display: flex;
   }
 
   .sp-cats {

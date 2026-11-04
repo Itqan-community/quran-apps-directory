@@ -221,12 +221,12 @@ export function SearchPalette({
             </button>
           </div>
           <div className="sp-cats">
-            {categories.map((category, index) => (
+            {categories.map((category) => (
               <Link
                 key={category.id}
                 href={categoryHref(lang, category.slug, sort)}
                 scroll={false}
-                className={`search-cat ${index >= 6 ? "search-cat--extra" : ""}`}
+                className="search-cat"
                 onClick={onCategoryClick}
               >
                 <span className="search-cat-name">
@@ -235,36 +235,6 @@ export function SearchPalette({
                 <span className="search-cat-count">{category.appCount}</span>
               </Link>
             ))}
-          </div>
-        </div>
-
-        <div className="sp-section">
-          <span className="sp-label">{t("search.try")}</span>
-          <div className="sp-suggest">
-            <button
-              type="button"
-              className="sp-suggest-btn"
-              onClick={() => submit(t("search.suggestionMushaf"))}
-            >
-              <SearchIcon />
-              {t("search.suggestionMushaf")}
-            </button>
-            <button
-              type="button"
-              className="sp-suggest-btn"
-              onClick={() => submit(t("search.suggestionTajweed"))}
-            >
-              <SearchIcon />
-              {t("search.suggestionTajweed")}
-            </button>
-            <button
-              type="button"
-              className="sp-suggest-btn"
-              onClick={() => submit(t("search.suggestionMemorize"))}
-            >
-              <SearchIcon />
-              {t("search.suggestionMemorize")}
-            </button>
           </div>
         </div>
 
