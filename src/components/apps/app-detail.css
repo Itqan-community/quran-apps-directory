@@ -1636,3 +1636,12 @@
   background: #333;
   color: #aaa;
 }
+
+/* ExpoArabic's metrics are top-heavy — the (11px) ascent almost reaches the
+ * glyph ink top while the (5px) descent band is mostly empty, so Arabic text
+ * rides visibly high inside these short pills (Latin/EN text is unaffected).
+ * A 1px translate re-centers the ink optically without affecting layout. */
+[dir="rtl"] .related-category-tag,
+[dir="rtl"] .related-tooltip-tag {
+  transform: translateY(1px);
+}
