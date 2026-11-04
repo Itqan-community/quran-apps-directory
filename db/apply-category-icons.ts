@@ -1,7 +1,8 @@
 import "dotenv/config"; // fallback only; .env.prod is loaded via --env-file (see npm script)
 import postgres from "postgres";
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 /**
  * Idempotent backfill of `categories.icon` (the SVG pills on the app detail
@@ -24,7 +25,7 @@ import { resolve } from "node:path";
  * db/seed-data/category-icons.sql.
  */
 
-const SNAPSHOT_PATH = resolve("db/seed-data/category-icons.sql");
+const SNAPSHOT_PATH = join(dirname(fileURLToPath(import.meta.url)), "seed-data", "category-icons.sql");
 
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) {
