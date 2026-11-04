@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { BackLink } from "@/components/admin/ui";
 import AppForm, { CREATE_DEFAULT } from "@/components/admin/app-form";
 import { getAllCategories, getAllDevelopers, getAllMetadataTypesWithActiveOptions } from "@/lib/repo/admin";
+import { getNextSortOrder } from "@/lib/repo/apps";
 
 function FormSkeleton() {
   return <div className="h-[800px] animate-pulse rounded-app bg-surface" />;
@@ -27,6 +28,7 @@ async function NewContent() {
     getAllCategories(),
     getAllMetadataTypesWithActiveOptions(),
   ]);
+  const next = await getNextSortOrder();
 
   return (
     <AppForm
@@ -34,7 +36,7 @@ async function NewContent() {
       developers={developers}
       categories={categories}
       metadataTypes={metadataTypes}
-      initial={CREATE_DEFAULT}
+      initial={{ ...CREATE_DEFAULT, sortOrder: next }}
     />
   );
 }

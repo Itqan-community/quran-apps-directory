@@ -213,7 +213,11 @@ export async function approveSubmission(id: number): Promise<ReviewResult> {
       // Step 4: developer upsert.
       const developerId = await getOrCreateDeveloper(tx, sub);
 
-      // Step 5: insert the published app.
+      // Step 5: insert the published app. Plain aggregate select inside the tx
+      // (no row lock, spec §4-F1): submission-born apps take the next sort slot.
+      const [{ nxt: nextSort }] = await tx
+        .select({ nxt: sql`COALESCE(MAX(${apps.sortOrder}), -1) + 1` })
+        .from(apps);
       const [app] = await tx
         .insert(apps)
         .values({
@@ -234,6 +238,7 @@ export async function approveSubmission(id: number): Promise<ReviewResult> {
           screenshotsAr: transferred.screenshotsAr,
           avgRating: "2.50",
           reviewCount: 0,
+          sortOrder: Number(nextSort),
           platform: detectPlatform(sub),
           status: "published",
           developerId,

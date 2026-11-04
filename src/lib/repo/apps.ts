@@ -13,6 +13,14 @@ export async function getApps(filters: AppsFilters = {}) {
   return { count, page, pageSize, results };
 }
 
+/** Next directory sort position: global max(sort_order) + 1 (0 when the table is empty). */
+export async function getNextSortOrder(): Promise<number> {
+  const [row] = await db
+    .select({ nxt: sql`COALESCE(MAX(${apps.sortOrder}), -1) + 1` })
+    .from(apps);
+  return Number(row.nxt);
+}
+
 /**
  * Names must be unique across the directory (slug already is). name_ar has
  * two legacy repeats in the live data, so it is enforced at write time rather

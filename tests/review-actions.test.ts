@@ -384,6 +384,7 @@ describe("approveSubmission", () => {
     stubConsoleBackend();
     stubR2();
     const id = await subId(`${P}F`);
+    const [{ m }] = await sql`SELECT COALESCE(MAX(sort_order), -1) AS m FROM apps`;
 
     const res = await approveSubmission(id);
     expect(res).toEqual({ ok: true, appId: expect.any(Number) });
@@ -391,6 +392,7 @@ describe("approveSubmission", () => {
     const [app] = await appBySlug("t-rev5-sub-f");
     expect(app).not.toBeNull();
     expect(app.status).toBe("published");
+    expect(Number(app.sort_order)).toBe(Number(m) + 1);
     expect(app.platform).toBe("cross_platform");
     expect(app.avg_rating).toBe("2.50");
     expect(app.review_count).toBe(0);
