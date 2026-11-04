@@ -28,7 +28,7 @@ async function NewContent() {
     getAllCategories(),
     getAllMetadataTypesWithActiveOptions(),
   ]);
-  const next = await getNextSortOrder();
+  const next = await getNextSortOrder().catch(() => CREATE_DEFAULT.sortOrder);
 
   return (
     <AppForm
