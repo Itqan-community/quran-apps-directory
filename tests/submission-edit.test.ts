@@ -5,8 +5,15 @@ vi.mock("@/lib/auth", () => ({
   auth: async () => ({ user: { id: "1", email: "admin@local.dev" } }),
 }));
 vi.mock("next/cache", () => ({ revalidateTag: vi.fn(), revalidatePath: vi.fn() }));
+// Deterministic tracking id for the submitApp test so fixtures can be cleaned
+// up by the QAD-FISET% prefix. Everything else in the module stays real.
+vi.mock("@/lib/validation/submission", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/validation/submission")>()),
+  generateTrackingId: () => "QAD-FISET1",
+}));
 
 import { editSubmission } from "@/lib/actions/admin-submissions";
+import { submitApp } from "@/lib/actions/submissions";
 import { revalidateTag } from "next/cache";
 
 const sql = postgres(process.env.TEST_DATABASE_URL!, { max: 4 });
@@ -15,6 +22,11 @@ const P = "QAD-EDT";
 const OLD_CAT_SLUG = "qad-edt-old-cat";
 const NEW_CAT_SLUG = "qad-edt-new-cat";
 const DEV_NAME = "T:EdtDevCo";
+
+// Public submitApp fixtures (distinctive prefix).
+const S = "QAD-FISET";
+const SUBMIT_APP_NAME = "T:Fisset Desc";
+const SUBMIT_APP_SLUG_PREFIX = "t-fissetdesc";
 
 let oldCatId = 0;
 let newCatId = 0;
@@ -107,9 +119,11 @@ const submissionSeed = (tracking: string) =>
 beforeAll(async () => {
   // Defensive pre-clean so a failed run mid-suite never breaks the next run.
   await sql`DELETE FROM app_submissions WHERE tracking_id LIKE ${`${P}%`}`;
+  await sql`DELETE FROM app_submissions WHERE tracking_id LIKE ${`${S}%`}`;
   await sql`DELETE FROM categories WHERE slug IN (${OLD_CAT_SLUG}, ${NEW_CAT_SLUG})`;
   await sql`DELETE FROM developers WHERE name_en = ${DEV_NAME}`;
   await sql`DELETE FROM users WHERE id = 1 AND email = 'admin@local.dev'`;
+  await sql`DELETE FROM apps WHERE slug LIKE ${`${SUBMIT_APP_SLUG_PREFIX}%`} OR name_en = ${SUBMIT_APP_NAME}`;
 
   // Deterministic FK target for changed_by_id from the mocked session.
   await sql`
@@ -135,9 +149,11 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await sql`DELETE FROM app_submissions WHERE tracking_id LIKE ${`${P}%`}`;
+  await sql`DELETE FROM app_submissions WHERE tracking_id LIKE ${`${S}%`}`;
   await sql`DELETE FROM categories WHERE slug IN (${OLD_CAT_SLUG}, ${NEW_CAT_SLUG})`;
   await sql`DELETE FROM developers WHERE name_en = ${DEV_NAME}`;
   await sql`DELETE FROM users WHERE id = 1 AND email = 'admin@local.dev'`;
+  await sql`DELETE FROM apps WHERE slug LIKE ${`${SUBMIT_APP_SLUG_PREFIX}%`} OR name_en = ${SUBMIT_APP_NAME}`;
   await sql.end();
 });
 
@@ -230,5 +246,36 @@ describe("editSubmission", () => {
     stubConsoleBackend();
     const res = await editSubmission(999999, payload());
     expect(res).toEqual({ ok: false, error: "not_found", message: expect.any(String) });
+  });
+});
+
+describe("submitApp (public) description persistence", () => {
+  it("persists the four description fields collected by the public form", async () => {
+    stubConsoleBackend();
+    vi.stubEnv("REDIS_URL", "");
+
+    const res = await submitApp({
+      submitter_email: "fisset@test.dev",
+      app_name_en: SUBMIT_APP_NAME,
+      app_name_ar: "ت:فست",
+      short_description_en: "S-desc-marker",
+      short_description_ar: "وصف قصير علامة",
+      description_en: "D-desc-marker",
+      description_ar: "وصف علامة",
+      google_play_link: "https://play.google.com/store/apps/details?id=fisset",
+      content_confirmation: true,
+    });
+    expect(res).toEqual({ ok: true, trackingId: "QAD-FISET1" });
+    if (!res.ok) return;
+
+    const [row] = await sql`
+      SELECT short_description_en, short_description_ar, description_en, description_ar
+      FROM app_submissions WHERE tracking_id = ${res.trackingId}`;
+    expect(row).toEqual({
+      short_description_en: "S-desc-marker",
+      short_description_ar: "وصف قصير علامة",
+      description_en: "D-desc-marker",
+      description_ar: "وصف علامة",
+    });
   });
 });
