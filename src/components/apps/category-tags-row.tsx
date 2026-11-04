@@ -178,7 +178,7 @@ export function CategoryTagsRow({
             left: pos.left,
             ...(pos.bottomEdge !== null
               ? { bottom: pos.bottomEdge }
-              : { top: pos.topEdge }),
+              : { top: pos.topEdge ?? undefined }),
           }}
           onMouseEnter={cancelHoverClose}
           onMouseLeave={scheduleHoverClose}
