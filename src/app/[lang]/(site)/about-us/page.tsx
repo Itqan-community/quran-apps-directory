@@ -132,10 +132,9 @@ export default async function AboutUsPage({ params }: Props) {
           <h2>{tF("itqan_projects")}</h2>
           <div className="projects-grid">
             {[
-              { href: `https://itqan.dev/${locale}`, label: tF("main_site") },
-              { href: "https://itqan.dev/projects", label: tF("content_management") },
-              { href: "https://itqan.dev/resources", label: tF("resources") },
-              { href: "https://itqan.dev/resources/fonts", label: tF("mushaf_fonts") },
+              { href: "https://itqan.dev", label: tF("main_website") },
+              { href: "https://community.itqan.dev", label: tF("community") },
+              { href: "https://ratq.itqan.dev", label: tF("ratq") },
             ].map((p) => (
               <a key={p.href} href={p.href} target="_blank" rel="noopener noreferrer" className="project-card">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
