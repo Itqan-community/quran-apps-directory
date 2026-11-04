@@ -987,7 +987,7 @@
 }
 
 .swiper-pagination .swiper-pagination-bullet {
-  background-color: #cccccc;
+  background-color: var(--border-color);
   opacity: 1;
   margin: 0 4px;
   width: 8px;
@@ -996,11 +996,16 @@
   border: none;
   cursor: pointer;
   padding: 0;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.swiper-pagination .swiper-pagination-bullet:hover {
+  background-color: var(--text-secondary);
 }
 
 .swiper-pagination .swiper-pagination-bullet.swiper-pagination-bullet-active {
-  background-color: #7c4332;
-  opacity: 1;
+  background-color: var(--cta-color);
+  box-shadow: inset 0 0 0 1px rgba(255, 193, 7, 0.45);
 }
 
 /* Default screenshot when none exist */
