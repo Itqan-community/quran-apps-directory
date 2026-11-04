@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { BackLink } from "@/components/admin/ui";
-import AppForm, { CREATE_DEFAULT } from "@/components/admin/app-form";
+import AppForm from "@/components/admin/app-form";
+import { CREATE_DEFAULT } from "@/components/admin/app-form-initial";
 import { getAllCategories, getAllDevelopers, getAllMetadataTypesWithActiveOptions } from "@/lib/repo/admin";
 import { getNextSortOrder } from "@/lib/repo/apps";
 

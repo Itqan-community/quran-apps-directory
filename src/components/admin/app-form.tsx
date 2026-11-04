@@ -35,65 +35,13 @@ import {
   toneBarCls,
   type FormMetadataType,
 } from "@/components/admin/app-form-sections";
+import { CREATE_DEFAULT, type AppFormInitial } from "@/components/admin/app-form-initial";
+
+export type { AppFormInitial };
+export { CREATE_DEFAULT };
 
 export type DeveloperOption = { id: number; nameEn: string; nameAr: string };
 export type CategoryOption = { id: number; nameEn: string; nameAr: string; isActive: boolean };
-
-export type AppFormInitial = {
-  slug: string; // current slug as a hint (edit only)
-  nameEn: string;
-  nameAr: string;
-  shortDescriptionEn: string;
-  shortDescriptionAr: string;
-  descriptionEn: string;
-  descriptionAr: string;
-  applicationIcon: string;
-  mainImageEn: string;
-  mainImageAr: string;
-  googlePlayLink: string;
-  appStoreLink: string;
-  appGalleryLink: string;
-  screenshotsEn: string[];
-  screenshotsAr: string[];
-  categoryIds: number[];
-  metadataOptionIds: { typeId: number; optionIds: number[] }[];
-  developerId: number;
-  platform: string;
-  status: string;
-  featured: boolean;
-  sortOrder: number;
-  avgRating: string;
-  reviewCount: number;
-  viewCount: number;
-};
-
-export const CREATE_DEFAULT: AppFormInitial = {
-  slug: "",
-  nameEn: "",
-  nameAr: "",
-  shortDescriptionEn: "",
-  shortDescriptionAr: "",
-  descriptionEn: "",
-  descriptionAr: "",
-  applicationIcon: "",
-  mainImageEn: "",
-  mainImageAr: "",
-  googlePlayLink: "",
-  appStoreLink: "",
-  appGalleryLink: "",
-  screenshotsEn: [],
-  screenshotsAr: [],
-  categoryIds: [],
-  metadataOptionIds: [],
-  developerId: 0,
-  platform: "cross_platform",
-  status: "draft",
-  featured: false,
-  sortOrder: 0,
-  avgRating: "0.00",
-  reviewCount: 0,
-  viewCount: 0,
-};
 
 const STATUSES: { value: string; label: string }[] = [
   { value: "draft", label: "مسودة" },
