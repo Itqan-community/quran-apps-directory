@@ -18,47 +18,68 @@ const urlList = z
   .max(10)
   .default([]);
 
-export const submissionSchema = z
-  .object({
-    submitter_name: z.string().trim().max(200).default(""),
-    submitter_email: z.string().trim().email().max(200),
-    submitter_phone: z.string().trim().max(50).default(""),
-    submitter_organization: z.string().trim().max(200).default(""),
-    is_developer: z.boolean().default(false),
+export const submissionBaseSchema = z.object({
+  submitter_name: z.string().trim().max(200).default(""),
+  submitter_email: z.string().trim().email().max(200),
+  submitter_phone: z.string().trim().max(50).default(""),
+  submitter_organization: z.string().trim().max(200).default(""),
+  is_developer: z.boolean().default(false),
 
-    app_name_en: z.string().trim().min(1).max(200),
-    app_name_ar: z.string().trim().max(200).default(""),
+  app_name_en: z.string().trim().min(1).max(200),
+  app_name_ar: z.string().trim().max(200).default(""),
 
-    google_play_link: storeUrl.default(""),
-    app_store_link: storeUrl.default(""),
-    app_gallery_link: storeUrl.default(""),
-    website_link: storeUrl.default(""),
+  short_description_en: z.string().trim().max(150).default(""),
+  short_description_ar: z.string().trim().max(150).default(""),
+  description_en: z.string().trim().default(""),
+  description_ar: z.string().trim().default(""),
 
-    categories: z.array(z.number().int().positive()).default([]),
+  google_play_link: storeUrl.default(""),
+  app_store_link: storeUrl.default(""),
+  app_gallery_link: storeUrl.default(""),
+  website_link: storeUrl.default(""),
 
-    developer_name_en: z.string().trim().max(200).default(""),
-    developer_name_ar: z.string().trim().max(200).default(""),
-    developer_website: storeUrl.default(""),
-    developer_email: z.string().trim().email().max(200).or(z.literal("")).default(""),
+  categories: z.array(z.number().int().positive()).default([]),
 
-    app_icon_url: storeUrl.default(""),
-    main_image_en: storeUrl.default(""),
-    main_image_ar: storeUrl.default(""),
-    screenshots_en: urlList,
-    screenshots_ar: urlList,
+  developer_name_en: z.string().trim().max(200).default(""),
+  developer_name_ar: z.string().trim().max(200).default(""),
+  developer_website: storeUrl.default(""),
+  developer_email: z.string().trim().email().max(200).or(z.literal("")).default(""),
 
-    additional_notes: z.string().trim().max(2000).default(""),
-    content_confirmation: z.literal(true),
-  })
-  .refine(
-    (data) =>
-      Boolean(
-        data.google_play_link || data.app_store_link || data.app_gallery_link
-      ),
-    { message: "storeLink", path: ["google_play_link"] }
-  );
+  app_icon_url: storeUrl.default(""),
+  main_image_en: storeUrl.default(""),
+  main_image_ar: storeUrl.default(""),
+  screenshots_en: urlList,
+  screenshots_ar: urlList,
+
+  additional_notes: z.string().trim().max(2000).default(""),
+  content_confirmation: z.literal(true),
+});
+
+export const submissionSchema = submissionBaseSchema.refine(
+  (data) =>
+    Boolean(
+      data.google_play_link || data.app_store_link || data.app_gallery_link
+    ),
+  { message: "storeLink", path: ["google_play_link"] }
+);
 
 export type SubmissionInput = z.infer<typeof submissionSchema>;
+
+/**
+ * Admin in-place edit: content fields only. The identity fields (submitter_*)
+ * and content_confirmation are omitted so they can never be rewritten, and the
+ * store-link cross-field refine is NOT applied — an admin may clear all links
+ * intentionally.
+ */
+export const submissionEditSchema = submissionBaseSchema.omit({
+  submitter_name: true,
+  submitter_email: true,
+  submitter_phone: true,
+  submitter_organization: true,
+  content_confirmation: true,
+});
+
+export type SubmissionEditInput = z.infer<typeof submissionEditSchema>;
 
 /** Generate a QAD-XXXXXX tracking id (uppercase letters + digits). */
 export function generateTrackingId(): string {

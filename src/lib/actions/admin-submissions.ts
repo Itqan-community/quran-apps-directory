@@ -2,6 +2,7 @@
 
 import { revalidateTag } from "next/cache";
 import { eq, sql } from "drizzle-orm";
+import { z } from "zod";
 import { db } from "@/db";
 import {
   appSubmissions,
@@ -16,6 +17,7 @@ import { reindexAppEmbedding } from "@/lib/ai/reindex";
 import { requireAdmin } from "@/lib/admin-guard";
 import { pgDupError } from "@/lib/db-errors";
 import { findDuplicateAppName } from "@/lib/repo/apps";
+import { submissionEditSchema } from "@/lib/validation/submission";
 import { r2Configured } from "@/lib/services/r2";
 import {
   transferSubmissionImages,
@@ -38,6 +40,16 @@ type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
 function adminUserId(session: Awaited<ReturnType<typeof requireAdmin>>): number {
   return Number((session.user as { id?: string } | undefined)?.id ?? 0);
+}
+
+/** Same Zod-issues → fieldErrors mapping as saveApp (admin-apps.ts). */
+function zodFieldErrors(error: z.ZodError): Record<string, string[]> {
+  const flat = z.flattenError(error).fieldErrors as Record<string, string[] | undefined>;
+  const out: Record<string, string[]> = {};
+  for (const [key, list] of Object.entries(flat)) {
+    if (list && list.length > 0) out[key] = [...list];
+  }
+  return out;
 }
 
 /** Port of Django's slugify for this domain: lowercase, non-alnum → "-", collapse, trim; empty → "app". */
@@ -455,6 +467,100 @@ export async function markUnderReview(id: number): Promise<ReviewResult> {
   if (outcome.kind === "not_found") return notFoundResult();
   if (outcome.kind === "invalid_transition")
     return invalidTransitionResult("لا يمكن تحديد الطلب قيد المراجعة في الحالة الحالية.");
+  return { ok: false, error: "db", message: outcome.message };
+}
+
+export type EditSubmissionResult =
+  | { ok: true }
+  | { ok: false; error: "validation"; fieldErrors: Record<string, string[]> }
+  | { ok: false; error: "not_found" | "invalid_transition" | "db"; message: string };
+
+/**
+ * Admin in-place edit of an open submission's content fields. Identity fields
+ * (submitter_*) are locked by the schema and never written; the status is
+ * untouched; every save appends one audit-log row (from_status = to_status).
+ */
+export async function editSubmission(id: number, raw: unknown): Promise<EditSubmissionResult> {
+  const session = await requireAdmin();
+  const userId = adminUserId(session);
+
+  const parsed = submissionEditSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { ok: false, error: "validation", fieldErrors: zodFieldErrors(parsed.error) };
+  }
+  const data = parsed.data;
+
+  let outcome:
+    | { kind: "ok" }
+    | { kind: "not_found" }
+    | { kind: "invalid_transition" }
+    | { kind: "db"; message: string };
+  try {
+    outcome = await db.transaction(async (tx) => {
+      const sub = await lockSubmission(tx, id);
+      if (!sub) return { kind: "not_found" as const };
+      if (!["pending", "under_review", "info_requested"].includes(sub.status)) {
+        return { kind: "invalid_transition" as const };
+      }
+
+      await tx
+        .update(appSubmissions)
+        .set({
+          appNameEn: data.app_name_en,
+          appNameAr: data.app_name_ar,
+          shortDescriptionEn: data.short_description_en,
+          shortDescriptionAr: data.short_description_ar,
+          descriptionEn: data.description_en,
+          descriptionAr: data.description_ar,
+          googlePlayLink: data.google_play_link,
+          appStoreLink: data.app_store_link,
+          appGalleryLink: data.app_gallery_link,
+          websiteLink: data.website_link,
+          appIconUrl: data.app_icon_url,
+          mainImageEn: data.main_image_en,
+          mainImageAr: data.main_image_ar,
+          screenshotsEn: data.screenshots_en,
+          screenshotsAr: data.screenshots_ar,
+          developerNameEn: data.developer_name_en,
+          developerNameAr: data.developer_name_ar,
+          developerWebsite: data.developer_website,
+          developerEmail: data.developer_email,
+          isDeveloper: data.is_developer,
+          additionalNotes: data.additional_notes,
+        })
+        .where(eq(appSubmissions.id, sub.id));
+
+      await tx
+        .delete(appSubmissionsCategories)
+        .where(eq(appSubmissionsCategories.appsubmissionId, sub.id));
+      const uniqueCats = [...new Set(data.categories)];
+      if (uniqueCats.length > 0) {
+        await tx
+          .insert(appSubmissionsCategories)
+          .values(uniqueCats.map((categoryId) => ({ appsubmissionId: sub.id, categoryId })));
+      }
+
+      await tx.insert(submissionStatusLogs).values({
+        submissionId: sub.id,
+        fromStatus: sub.status,
+        toStatus: sub.status,
+        changedById: userId,
+        notes: "تم تعديل بيانات الطلب بواسطة الإدارة",
+      });
+      return { kind: "ok" as const };
+    });
+  } catch (e) {
+    console.error("editSubmission error", e);
+    outcome = { kind: "db", message: "تعذر تعديل الطلب: خطأ في قاعدة البيانات." };
+  }
+
+  if (outcome.kind === "ok") {
+    revalidateTag("submissions", "max");
+    return { ok: true };
+  }
+  if (outcome.kind === "not_found") return { ok: false, error: "not_found", message: "الطلب غير موجود." };
+  if (outcome.kind === "invalid_transition")
+    return { ok: false, error: "invalid_transition", message: "لا يمكن تعديل بيانات هذا الطلب في حالته الحالية." };
   return { ok: false, error: "db", message: outcome.message };
 }
 
