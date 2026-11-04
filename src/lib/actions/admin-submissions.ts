@@ -227,6 +227,7 @@ export async function approveSubmission(id: number): Promise<ReviewResult> {
 
       // Step 5: insert the published app. Plain aggregate select inside the tx
       // (no row lock, spec §4-F1): submission-born apps take the next sort slot.
+      // Same invariant as getNextSortOrder (src/lib/repo/apps.ts) — keep in sync.
       const [{ nxt: nextSort }] = await tx
         .select({ nxt: sql`COALESCE(MAX(${apps.sortOrder}), -1) + 1` })
         .from(apps);

@@ -25,11 +25,11 @@
 .app-md h2,
 .app-md h3,
 .app-md h4 {
-  color: var(--text-primary);
+  color: var(--text-color);
   font-weight: 600;
   line-height: 1.3;
   margin-block: 0.9em 0.4em;
-  text-align: revert;
+  text-align: start;
   overflow-wrap: break-word;
 }
 
@@ -51,14 +51,14 @@
 
 .app-md p {
   margin-block: 0.5em;
-  text-align: revert;
+  text-align: start;
 }
 
 .app-md ul,
 .app-md ol {
   padding-inline-start: 1.5em;
   margin-block: 0.5em;
-  text-align: revert;
+  text-align: start;
   /* Tailwind v4 preflight sets list-style: none; restore markers. */
   list-style: revert;
 }

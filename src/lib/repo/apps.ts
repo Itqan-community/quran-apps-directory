@@ -15,6 +15,8 @@ export async function getApps(filters: AppsFilters = {}) {
 
 /** Next directory sort position: global max(sort_order) + 1 (0 when the table is empty). */
 export async function getNextSortOrder(): Promise<number> {
+  // Invariant shared with approveSubmission (src/lib/actions/admin-submissions.ts):
+  // next insert order = COALESCE(MAX(sort_order), -1) + 1. Keep both in sync.
   const [row] = await db
     .select({ nxt: sql`COALESCE(MAX(${apps.sortOrder}), -1) + 1` })
     .from(apps);

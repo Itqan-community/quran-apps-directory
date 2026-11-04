@@ -34,11 +34,25 @@ import type { SubmissionEditInput } from "@/lib/validation/submission";
 
 type ServerErrors = Record<string, string[]>;
 
+/**
+ * Zod sentinels/defaults the server sends verbatim → Arabic. Only exact
+ * sentinel and obvious Zod-default strings are mapped; Arabic server
+ * messages pass through unchanged (mirrors submit-app-form's mapping).
+ */
+const SENTINEL_AR: Record<string, string> = {
+  invalidStoreLink: "رابط غير صالح",
+  Required: "حقل مطلوب",
+};
+
+function translateMessage(msg: string): string {
+  return SENTINEL_AR[msg] ?? msg;
+}
+
 /** Field errors under the matching input (schema keys are snake_case). */
 function errorFor(errors: ServerErrors, ...keys: string[]): string[] {
   for (const k of keys) {
     const list = errors[k];
-    if (list && list.length > 0) return list;
+    if (list && list.length > 0) return list.map(translateMessage);
   }
   return [];
 }
