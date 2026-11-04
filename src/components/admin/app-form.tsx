@@ -315,22 +315,26 @@ export default function AppForm({
             </label>
           </div>
           <div className="grid gap-4 pt-4 md:grid-cols-2">
-            <label className="flex min-w-0 flex-col gap-1">
-              <span className={labelCls}>
-                الوصف الكامل <LangTag lang="EN" /> *
-              </span>
-              <textarea rows={6} value={f.descriptionEn} onChange={(e) => field("descriptionEn")(e.target.value)} className={inputCls} dir="ltr" required />
-              <ErrorList messages={errorFor(serverErrors, "descriptionEn")} />
+            <div className="flex min-w-0 flex-col gap-1">
+              <label className="flex min-w-0 flex-col gap-1">
+                <span className={labelCls}>
+                  الوصف الكامل <LangTag lang="EN" /> *
+                </span>
+                <textarea rows={6} value={f.descriptionEn} onChange={(e) => field("descriptionEn")(e.target.value)} className={inputCls} dir="ltr" required />
+                <ErrorList messages={errorFor(serverErrors, "descriptionEn")} />
+              </label>
               <MdPreviewToggle dir="ltr" value={f.descriptionEn} />
-            </label>
-            <label className="flex min-w-0 flex-col gap-1">
-              <span className={labelCls}>
-                الوصف الكامل <LangTag lang="AR" /> *
-              </span>
-              <textarea rows={6} value={f.descriptionAr} onChange={(e) => field("descriptionAr")(e.target.value)} className={inputCls} required />
-              <ErrorList messages={errorFor(serverErrors, "descriptionAr")} />
+            </div>
+            <div className="flex min-w-0 flex-col gap-1">
+              <label className="flex min-w-0 flex-col gap-1">
+                <span className={labelCls}>
+                  الوصف الكامل <LangTag lang="AR" /> *
+                </span>
+                <textarea rows={6} value={f.descriptionAr} onChange={(e) => field("descriptionAr")(e.target.value)} className={inputCls} required />
+                <ErrorList messages={errorFor(serverErrors, "descriptionAr")} />
+              </label>
               <MdPreviewToggle dir="rtl" value={f.descriptionAr} />
-            </label>
+            </div>
           </div>
         </div>
         {mode === "edit" && (
