@@ -597,6 +597,8 @@
   padding-inline-start: 1.5em;
   margin-block: 0.5em;
   text-align: revert;
+  /* Tailwind v4 preflight sets list-style: none; restore markers. */
+  list-style: revert;
 }
 
 .app-md li {

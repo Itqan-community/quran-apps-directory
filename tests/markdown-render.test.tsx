@@ -56,6 +56,9 @@ describe("AppDescriptionMarkdown", () => {
     const listRule = css.match(/\.app-md\s+ul[^{]*\{[^}]*\}/);
     expect(listRule, ".app-md ul/ol rule in app-detail.css").toBeTruthy();
     expect(listRule![0]).toContain("padding-inline-start");
+    // Tailwind v4 preflight strips list markers (list-style: none), so the
+    // rule must restore them or lists render as marker-less indented lines.
+    expect(listRule![0]).toContain("list-style: revert");
     // The wrapper rule should exist too.
     expect(css.match(/\.app-md\s*\{/), ".app-md wrapper rule in app-detail.css").toBeTruthy();
   });
