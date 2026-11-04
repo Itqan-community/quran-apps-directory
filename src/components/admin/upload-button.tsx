@@ -1,14 +1,16 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { UploadCloud } from "lucide-react";
+import { uploadImageFile, type UploadKind } from "@/components/admin/image-upload";
 
 /**
  * Upload island for the admin app form: label wraps a hidden file input;
- * onchange POSTs FormData {file, kind} to /upload via XHR (progress shown);
- * the resulting URL is handed to the form through onUploaded. Reusable for
- * icon / main / screenshot kinds — the form treats uploaded values as plain
- * URL strings, so a route-fulfilled fake also works.
+ * onchange uploads via the shared `uploadImageFile` transport — the resulting
+ * URL is handed to the form through onUploaded. Reusable for icon / main /
+ * screenshot kinds — the form treats uploaded values as plain URL strings.
+ * Drag & drop surface lives in `image-upload.tsx` (`ImageDropZone`), wired
+ * around these same image sections.
  */
 export default function UploadButton({
   kind,
@@ -16,17 +18,16 @@ export default function UploadButton({
   label = "رفع صورة",
   className = "",
 }: {
-  kind: "icon" | "main" | "screenshot";
+  kind: UploadKind;
   onUploaded?: (url: string) => void;
   label?: string;
   className?: string;
 }) {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
-  function pick(e: React.ChangeEvent<HTMLInputElement>) {
+  async function pick(e: React.ChangeEvent<HTMLInputElement>) {
     const input = e.target;
     const file = input.files?.[0];
     input.value = ""; // allow re-picking the same file
@@ -34,36 +35,14 @@ export default function UploadButton({
     setError(null);
     setBusy(true);
     setProgress(0);
-
-    const fd = new FormData();
-    fd.append("file", file);
-    fd.append("kind", kind);
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/upload");
-    xhr.upload.onprogress = (ev) => {
-      if (ev.lengthComputable && ev.total > 0) {
-        setProgress(Math.round((ev.loaded / ev.total) * 100));
-      }
-    };
-    xhr.onload = () => {
+    try {
+      const url = await uploadImageFile(file, kind, setProgress);
+      onUploaded?.(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "فشل الرفع");
+    } finally {
       setBusy(false);
-      try {
-        const data = JSON.parse(xhr.responseText) as { ok?: boolean; url?: string; message?: string };
-        if (xhr.status === 200 && data.ok && data.url) {
-          onUploaded?.(data.url);
-        } else {
-          setError(data.message || "فشل الرفع");
-        }
-      } catch {
-        setError("فشل الرفع");
-      }
-    };
-    xhr.onerror = () => {
-      setBusy(false);
-      setError("فشل الرفع");
-    };
-    xhr.send(fd);
+    }
   }
 
   return (
@@ -76,7 +55,6 @@ export default function UploadButton({
         <UploadCloud aria-hidden className="size-3.5 text-text-secondary" />
         <span>{busy ? `جارٍ الرفع… ${progress}%` : label}</span>
         <input
-          ref={inputRef}
           type="file"
           accept="image/*"
           className="hidden"

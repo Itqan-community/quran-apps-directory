@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { AppleMark, GooglePlayMark, WebMark } from "@/components/brand-marks";
 import UploadButton from "@/components/admin/upload-button";
+import { ImageDropZone } from "@/components/admin/image-upload";
 
 export const inputCls =
   "w-full rounded-app border border-border bg-surface px-3 py-2 text-sm text-text transition disabled:opacity-50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/25";
@@ -246,7 +247,10 @@ export function UrlUploadField({
 
   return (
     <div className="flex min-w-0 flex-col overflow-hidden rounded-xl border border-border/70 bg-surface/30">
-      <div
+      <ImageDropZone
+        kind={kind}
+        onUploaded={(url) => onChange(url)}
+        overlayLabel="أفلت الصورة هنا"
         className={
           kind === "icon"
             ? "flex h-32 items-center justify-center bg-surface/60 p-3"
@@ -271,7 +275,7 @@ export function UrlUploadField({
             <span className="text-[11px]">لا توجد صورة بعد</span>
           </span>
         )}
-      </div>
+      </ImageDropZone>
       <div className="flex min-w-0 flex-1 flex-col gap-2 border-t border-border/60 p-3">
         <span className={`${labelCls} flex items-center justify-between gap-2`}>
           <span className="flex min-w-0 items-center">
@@ -518,11 +522,17 @@ export function ScreenshotsEditor({
         </>
       }
     >
-      {urls.length === 0 ? (
-        <p className="rounded-app border border-dashed border-border px-3 py-6 text-center text-xs text-text-secondary">
-          لا توجد لقطات بعد — ارفع صورة أو أضف رابطًا.
-        </p>
-      ) : (
+      <ImageDropZone
+        kind="screenshot"
+        onUploaded={(url) => replace([...urls, url])}
+        overlayLabel="أفلت الصورة أو الصور هنا"
+        className="rounded-app"
+      >
+        {urls.length === 0 ? (
+          <p className="rounded-app border border-dashed border-border px-3 py-6 text-center text-xs text-text-secondary">
+            لا توجد لقطات بعد — ارفع صورة أو أضف رابطًا أو أفلت صورة هنا.
+          </p>
+        ) : (
         <ol className="flex flex-col gap-2">
           {urls.map((url, i) => {
             const t = url.trim();
@@ -597,7 +607,8 @@ export function ScreenshotsEditor({
             );
           })}
         </ol>
-      )}
+        )}
+      </ImageDropZone>
     </SubPanel>
   );
 }
