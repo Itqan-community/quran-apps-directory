@@ -175,6 +175,7 @@ export type SubmissionDetail = {
   links: { googlePlay: string; appStore: string; appGallery: string; website: string };
   developer: { nameEn: string; nameAr: string; website: string; email: string };
   media: { appIconUrl: string; mainImageEn: string; mainImageAr: string; screenshotsEn: string[]; screenshotsAr: string[] };
+  additionalNotes: string;
   crawledContent: string | null;
   adminNotes: string;
   rejectionReason: string;
@@ -266,6 +267,7 @@ export async function getSubmissionDetail(id: number): Promise<SubmissionDetail 
       screenshotsEn: s.screenshotsEn,
       screenshotsAr: s.screenshotsAr,
     },
+    additionalNotes: s.additionalNotes,
     crawledContent: s.crawledContent,
     adminNotes: s.adminNotes,
     rejectionReason: s.rejectionReason,

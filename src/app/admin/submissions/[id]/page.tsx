@@ -3,7 +3,8 @@ import Link from "next/link";
 import { BackLink } from "@/components/admin/ui";
 import { notFound } from "next/navigation";
 import type { SubmissionDetail } from "@/lib/repo/admin";
-import { getSubmissionDetail } from "@/lib/repo/admin";
+import { getAllCategories, getSubmissionDetail } from "@/lib/repo/admin";
+import { SubmissionEditLauncher } from "@/components/admin/submission-edit-form";
 import StatusBadge from "@/components/admin/status-badge";
 import SubmissionActions, { AdminNotesEditor } from "@/components/admin/submission-actions";
 import { AppDescriptionMarkdown } from "@/components/apps/app-description-markdown";
@@ -41,8 +42,10 @@ export default function SubmissionDetailPage({
 async function DetailContent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const numId = Number(id);
-  const detail =
-    Number.isInteger(numId) && numId > 0 ? await getSubmissionDetail(numId) : null;
+  const [detail, allCategories] = await Promise.all([
+    Number.isInteger(numId) && numId > 0 ? getSubmissionDetail(numId) : Promise.resolve(null),
+    getAllCategories(),
+  ]);
   if (!detail) notFound();
 
   return (
@@ -52,6 +55,7 @@ async function DetailContent({ params }: { params: Promise<{ id: string }> }) {
         status={detail.status}
         hasCreatedApp={detail.createdApp !== null}
       />
+      <SubmissionEditLauncher detail={detail} categories={allCategories} />
       <TrackingSection detail={detail} />
       <SubmitterSection detail={detail} />
       <AppDetailsSection detail={detail} />
