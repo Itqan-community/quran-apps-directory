@@ -1,0 +1,126 @@
+/* Admin-scoped copy of the `.app-md` block from
+   src/components/apps/app-detail.css (kept in sync manually).
+
+   The full app-detail.css is NOT self-contained — it carries ~1500 lines of
+   unscoped app-detail-page classes (hero, swiper, lightbox, related apps, …),
+   so it must not be imported into admin surfaces. Only the `.app-md` rules
+   needed by AppDescriptionMarkdown live here. */
+
+/* Markdown descriptions — rendered by AppDescriptionMarkdown.
+   All horizontal spacing uses logical properties so RTL (Arabic)
+   content indents on the correct side automatically. */
+.app-md {
+  overflow-wrap: break-word;
+}
+
+.app-md > :first-child {
+  margin-block-start: 0;
+}
+
+.app-md > :last-child {
+  margin-block-end: 0;
+}
+
+.app-md h1,
+.app-md h2,
+.app-md h3,
+.app-md h4 {
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.3;
+  margin-block: 0.9em 0.4em;
+  text-align: revert;
+  overflow-wrap: break-word;
+}
+
+.app-md h1 {
+  font-size: 1.25em;
+}
+
+.app-md h2 {
+  font-size: 1.15em;
+}
+
+.app-md h3 {
+  font-size: 1.05em;
+}
+
+.app-md h4 {
+  font-size: 1em;
+}
+
+.app-md p {
+  margin-block: 0.5em;
+  text-align: revert;
+}
+
+.app-md ul,
+.app-md ol {
+  padding-inline-start: 1.5em;
+  margin-block: 0.5em;
+  text-align: revert;
+  /* Tailwind v4 preflight sets list-style: none; restore markers. */
+  list-style: revert;
+}
+
+.app-md li {
+  margin-block: 0.2em;
+}
+
+.app-md a {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.app-md a:hover {
+  color: var(--primary-hover);
+}
+
+.app-md code {
+  background: var(--bg-secondary, rgba(0, 0, 0, 0.06));
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+  border-radius: 4px;
+  padding: 0.1em 0.3em;
+  font-size: 0.9em;
+}
+
+.app-md pre {
+  background: var(--bg-secondary, rgba(0, 0, 0, 0.06));
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-block: 0.5em;
+  overflow-x: auto;
+}
+
+.app-md pre code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.app-md blockquote {
+  border-inline-start: 3px solid var(--primary-color);
+  margin-block: 0.5em;
+  padding-inline-start: 12px;
+  color: var(--text-secondary);
+}
+
+.app-md table {
+  border-collapse: collapse;
+  margin-block: 0.5em;
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.app-md th,
+.app-md td {
+  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+  padding: 4px 8px;
+}
+
+.app-md th {
+  background: var(--bg-secondary, rgba(0, 0, 0, 0.04));
+  font-weight: 600;
+}

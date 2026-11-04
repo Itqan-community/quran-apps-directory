@@ -323,7 +323,8 @@
     "hints": {
       "iconUrl": "Recommended: 512x512 PNG or JPG image",
       "mainImage": "Featured image shown on app cards. Recommended: 600x400 PNG or JPG",
-      "screenshots": "Enter one URL per line. Up to 5 screenshots recommended."
+      "screenshots": "Enter one URL per line. Up to 5 screenshots recommended.",
+      "markdown": "Formatting supported: headings, **bold**, lists, links"
     },
     "screenshotsDetected": "screenshots detected",
     "submitButton": "Submit App",

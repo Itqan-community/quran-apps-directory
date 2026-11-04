@@ -6,6 +6,8 @@ import type { SubmissionDetail } from "@/lib/repo/admin";
 import { getSubmissionDetail } from "@/lib/repo/admin";
 import StatusBadge from "@/components/admin/status-badge";
 import SubmissionActions, { AdminNotesEditor } from "@/components/admin/submission-actions";
+import { AppDescriptionMarkdown } from "@/components/apps/app-description-markdown";
+import "@/components/admin/app-md.css";
 
 const dateTimeFmt = new Intl.DateTimeFormat("ar", { dateStyle: "medium", timeStyle: "short" });
 
@@ -143,7 +145,7 @@ function AppDetailsSection({ detail }: { detail: SubmissionDetail }) {
             <Field label="الاسم (EN)">{dash(a.nameEn)}</Field>
             <Field label="الوصف المختصر (EN)">{dash(a.shortDescriptionEn)}</Field>
             <Field label="الوصف الكامل (EN)">
-              <p className="whitespace-pre-line">{dash(a.descriptionEn)}</p>
+              {a.descriptionEn ? <AppDescriptionMarkdown text={a.descriptionEn} /> : "—"}
             </Field>
           </dl>
         </div>
@@ -153,7 +155,7 @@ function AppDetailsSection({ detail }: { detail: SubmissionDetail }) {
             <Field label="الاسم (AR)">{dash(a.nameAr)}</Field>
             <Field label="الوصف المختصر (AR)">{dash(a.shortDescriptionAr)}</Field>
             <Field label="الوصف الكامل (AR)">
-              <p className="whitespace-pre-line">{dash(a.descriptionAr)}</p>
+              {a.descriptionAr ? <AppDescriptionMarkdown text={a.descriptionAr} /> : "—"}
             </Field>
           </dl>
         </div>

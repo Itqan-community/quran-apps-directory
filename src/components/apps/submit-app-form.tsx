@@ -392,10 +392,10 @@ export function SubmitAppForm({
               <Field label={t("fields.shortDescAr")} error={errors.short_description_ar} hint={`${form.short_description_ar.length}/150`}>
                 <textarea className={inputCls} dir="rtl" rows={3} value={form.short_description_ar} onChange={(e) => set("short_description_ar", e.target.value)} placeholder={t("placeholders.shortDescAr")} />
               </Field>
-              <Field label={t("fields.descEn")}>
+              <Field label={t("fields.descEn")} hint={t("hints.markdown")}>
                 <textarea className={inputCls} dir="ltr" rows={6} value={form.description_en} onChange={(e) => set("description_en", e.target.value)} placeholder={t("placeholders.descEn")} />
               </Field>
-              <Field label={t("fields.descAr")}>
+              <Field label={t("fields.descAr")} hint={t("hints.markdown")}>
                 <textarea className={inputCls} dir="rtl" rows={6} value={form.description_ar} onChange={(e) => set("description_ar", e.target.value)} placeholder={t("placeholders.descAr")} />
               </Field>
             </div>

@@ -18,6 +18,7 @@ import {
 import { AppleMark, GooglePlayMark, HuaweiMark } from "@/components/brand-marks";
 import { saveApp, deleteApp } from "@/lib/actions/admin-apps";
 import { DeveloperModal } from "@/components/admin/taxonomy-editor";
+import { MdPreviewToggle } from "@/components/admin/md-preview";
 import {
   DeveloperCombobox,
   LangTag,
@@ -320,6 +321,7 @@ export default function AppForm({
               </span>
               <textarea rows={6} value={f.descriptionEn} onChange={(e) => field("descriptionEn")(e.target.value)} className={inputCls} dir="ltr" required />
               <ErrorList messages={errorFor(serverErrors, "descriptionEn")} />
+              <MdPreviewToggle dir="ltr" value={f.descriptionEn} />
             </label>
             <label className="flex min-w-0 flex-col gap-1">
               <span className={labelCls}>
@@ -327,6 +329,7 @@ export default function AppForm({
               </span>
               <textarea rows={6} value={f.descriptionAr} onChange={(e) => field("descriptionAr")(e.target.value)} className={inputCls} required />
               <ErrorList messages={errorFor(serverErrors, "descriptionAr")} />
+              <MdPreviewToggle dir="rtl" value={f.descriptionAr} />
             </label>
           </div>
         </div>
