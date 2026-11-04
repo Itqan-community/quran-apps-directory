@@ -10,12 +10,20 @@ export type CardCategory = {
 
 /**
  * Tag row for app cards. Shows up to `MAX_VISIBLE` full category names and
- * folds the rest into a "+N" chip. Clicking the chip pops the hidden tags
- * in a floating sheet (like the old project's tooltip — but tap-friendly:
- * hover never worked on touch). Closes on outside tap, scroll or Escape.
- * `position: fixed` so the card's clipped tag row can't cut the pop off.
+ * folds the rest into a "+N" chip. Like the old project, the hidden tags
+ * appear in a floating sheet:
+ * - desktop: opens on hover/focus of the chip (grace delay so the pointer
+ *   can reach the sheet), closes when the pointer leaves both
+ * - everywhere: click/tap pins it open; closes on outside tap, scroll,
+ *   or Escape
+ * The sheet is `position: fixed` with coords taken from the chip when it
+ * opens, so the clipped tag row or viewport edge can never cut it off.
  */
 const MAX_VISIBLE = 2;
+// how long the pointer may spend bouncing across the chip → sheet gap
+const HOVER_GRACE_MS = 150;
+// sheet opens below the chip when there is less room above than this
+const ABOVE_THRESHOLD_PX = 110;
 
 export function CategoryTagsRow({
   tags,
@@ -28,8 +36,11 @@ export function CategoryTagsRow({
   moreLabel: string;
   lessLabel: string;
 }) {
-  const [open, setOpen] = useState(false);
-  // Anchor + above/below placement computed from the chip at click time.
+  // `pinned` = click/tap state; `hovered` = desktop hover/focus state.
+  const [pinned, setPinned] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const open = pinned || hovered;
+  // Anchor + above/below placement computed from the chip when it opens.
   const [pos, setPos] = useState<{
     left: number;
     bottomEdge: number | null;
@@ -37,28 +48,52 @@ export function CategoryTagsRow({
   } | null>(null);
   const popRef = useRef<HTMLDivElement | null>(null);
   const rowRef = useRef<HTMLDivElement | null>(null);
+  const hoverCloseTimer = useRef<number | null>(null);
+
+  const cancelHoverClose = () => {
+    if (hoverCloseTimer.current !== null) {
+      window.clearTimeout(hoverCloseTimer.current);
+      hoverCloseTimer.current = null;
+    }
+  };
+  const scheduleHoverClose = () => {
+    cancelHoverClose();
+    hoverCloseTimer.current = window.setTimeout(() => setHovered(false), HOVER_GRACE_MS);
+  };
+  const canHover = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(hover: hover) and (pointer: fine)").matches === true;
+
+  const closeAll = () => {
+    cancelHoverClose();
+    setPinned(false);
+    setHovered(false);
+  };
 
   useEffect(() => {
-    if (!open) return;
-    const close = () => setOpen(false);
+    if (!open) {
+      cancelHoverClose();
+      return;
+    }
     const onPointerDown = (e: PointerEvent) => {
       const target = e.target as Node;
       if (popRef.current?.contains(target) || rowRef.current?.contains(target)) return;
-      close();
+      closeAll();
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
+      if (e.key === "Escape") closeAll();
     };
-    window.addEventListener("scroll", close, true);
-    window.addEventListener("resize", close);
+    window.addEventListener("scroll", closeAll, true);
+    window.addEventListener("resize", closeAll);
     window.addEventListener("keydown", onKey);
     document.addEventListener("pointerdown", onPointerDown);
     return () => {
-      window.removeEventListener("scroll", close, true);
-      window.removeEventListener("resize", close);
+      window.removeEventListener("scroll", closeAll, true);
+      window.removeEventListener("resize", closeAll);
       window.removeEventListener("keydown", onKey);
       document.removeEventListener("pointerdown", onPointerDown);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   if (tags.length === 0) return null;
@@ -67,27 +102,37 @@ export function CategoryTagsRow({
   const shown = tags.slice(0, MAX_VISIBLE);
   const hiddenCount = tags.length - shown.length;
 
-  function toggle(e: React.MouseEvent<HTMLButtonElement>) {
-    // don't route to anything behind the chip
-    e.stopPropagation();
-    if (open) {
-      setOpen(false);
-      return;
-    }
-    const r = e.currentTarget.getBoundingClientRect();
+  /** Anchor the sheet to the chip; above it, unless the page top is close. */
+  function anchorTo(el: HTMLElement) {
+    const r = el.getBoundingClientRect();
     const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    // keep the sheet (~260px wide at most) fully on screen
     const half = Math.min(140, vw / 2 - 8);
     const left = Math.min(Math.max(r.left + r.width / 2, half + 8), vw - half - 8);
-    // cap the sheet height against the smaller phone viewport
-    const above = r.top > 110;
+    const above = r.top > ABOVE_THRESHOLD_PX;
     setPos({
       left,
-      bottomEdge: above ? vh - r.top + 8 : null,
+      bottomEdge: above ? window.innerHeight - r.top + 8 : null,
       topEdge: above ? null : r.bottom + 8,
     });
-    setOpen(true);
+  }
+
+  function onClick(e: React.MouseEvent<HTMLButtonElement>) {
+    // don't route to anything behind the chip
+    e.stopPropagation();
+    if (pinned) {
+      // second click releases the pin (even when the hover is holding it open)
+      closeAll();
+      return;
+    }
+    anchorTo(e.currentTarget);
+    setPinned(true);
+  }
+
+  function onEnter(e: React.MouseEvent<HTMLButtonElement>) {
+    if (!canHover()) return;
+    cancelHoverClose();
+    anchorTo(e.currentTarget);
+    setHovered(true);
   }
 
   return (
@@ -109,8 +154,15 @@ export function CategoryTagsRow({
             aria-expanded={open}
             aria-haspopup="dialog"
             aria-label={open ? lessLabel : moreLabel}
-            title={open ? lessLabel : moreLabel}
-            onClick={toggle}
+            onClick={onClick}
+            onMouseEnter={onEnter}
+            onMouseLeave={scheduleHoverClose}
+            onFocus={(e) => {
+              if (!canHover()) return;
+              anchorTo(e.currentTarget);
+              setHovered(true);
+            }}
+            onBlur={() => setHovered(false)}
           >
             +{hiddenCount}
           </button>
@@ -128,6 +180,8 @@ export function CategoryTagsRow({
               ? { bottom: pos.bottomEdge }
               : { top: pos.topEdge }),
           }}
+          onMouseEnter={cancelHoverClose}
+          onMouseLeave={scheduleHoverClose}
         >
           {tags.slice(MAX_VISIBLE).map((tag) => {
             const label = isAr ? tag.nameAr : tag.nameEn;
