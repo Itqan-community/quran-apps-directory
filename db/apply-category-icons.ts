@@ -26,12 +26,16 @@ import { resolve } from "node:path";
 
 const SNAPSHOT_PATH = resolve("db/seed-data/category-icons.sql");
 
-if (!process.env.DATABASE_URL) {
-  console.error("DATABASE_URL is not set — run this via `npm run db:apply-category-icons` (loads .env.prod) or export DATABASE_URL first.");
-  process.exit(1);
+const DATABASE_URL = process.env.DATABASE_URL;
+if (!DATABASE_URL) {
+  throw new Error(
+    "DATABASE_URL is not set — run this via `npm run db:apply-category-icons` (loads .env.prod) or export DATABASE_URL first.",
+  );
 }
 
-const sql = postgres(process.env.DATABASE_URL, { max: 1 });
+const sql = postgres(DATABASE_URL, { max: 1 });
+/** Narrowed, closure-safe reference for use inside main(). */
+const dbUrl: string = DATABASE_URL;
 
 // The SQL file ships BEGIN; ... COMMIT; plus a verify query. Extract the
 // transaction body and split it per statement ("UPDATE categories" markers,
@@ -49,11 +53,11 @@ const statements = fileText
   .slice(1)
   .map((chunk, i) => "UPDATE categories" + chunk)
   .map(s => s.trim());
-const slugs = statements.map(s => s.match(/WHERE slug = '([^']+)'/)?.[1] ?? `statement-${i}`);
+const slugs = statements.map((s, i) => s.match(/WHERE slug = '([^']+)'/)?.[1] ?? `statement-${i}`);
 
 async function main() {
   const before = await sql`SELECT id, slug FROM categories WHERE icon IS NULL OR icon = '' ORDER BY id`;
-  console.log(`target db: ${new URL(process.env.DATABASE_URL).pathname} — ${before.length} of the categories are missing icons: ${before.map(r => r.slug).join(", ") || "none"}`);
+  console.log(`target db: ${new URL(dbUrl).pathname} — ${before.length} of the categories are missing icons: ${before.map(r => r.slug).join(", ") || "none"}`);
   if (before.length === 0) {
     console.log("Nothing to backfill; exiting.");
     return;
